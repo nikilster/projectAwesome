@@ -21,8 +21,8 @@ def apiGetTestVisionList():
                  }
     imageVision = { 'visionId' : 1,
                    'category' : 'stuff',
-                   'text'     : 'Awesome duuuuuuuuude...',
-                   'photoUrl' : 'https://s3.amazonaws.com/mish-img/user/166/2_fce375f88ff3107768200c245ac1253b_m.jpg',
+                   'text'     : 'Le Tigre',
+                   'photoUrl' : 'http://mynethome.net/blog/wp-content/uploads/2009/05/derek-zoolander.jpg',
                    'isPrivate' : False,
                    'isGloballyShared' : False,
                    'isFbShared' : False

@@ -27,6 +27,10 @@ var App = {
 /******************************************************************************
  * Backbone models
  */
+App.Backbone.Model.User = Backbone.Model.extend({
+
+});
+
 App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
         visionId: -1,
@@ -38,17 +42,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         isFbShared: false,
     },
     initialize: function() {
-        /*
-        this.set({
-            visionId: this.get("visionId"),
-            category: this.get("category"),
-            text: this.get("text"),
-            photoUrl: this.get("photoUrl"),
-            isPrivate: this.get("isPrivate"),
-            isGloballyShared: this.get("isGloballyShared"),
-            isFbShared: this.get("isFbShared"),
-        });
-        */
     },
     visionId: function() { return this.get("visionId"); },
     category: function() { return this.get("category"); },
@@ -61,6 +54,10 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
 
 App.Backbone.Model.VisionList = Backbone.Collection.extend({
     model: App.Backbone.Model.Vision
+});
+
+App.Backbone.Model.VisionComment = Backbone.Model.extend({
+
 });
 
 App.Backbone.Model.Page = Backbone.Model.extend({
@@ -86,7 +83,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         this.render();
     },
     render: function() {
-        var variables = {text : this.model.text() };
+        var variables = {text : this.model.text(),
+                         photoUrl: this.model.photoUrl(),
+                        };
 
         if (this.model.photoUrl() == "") {
             var template = _.template($("#VisionTemplate").html(), variables);
