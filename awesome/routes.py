@@ -9,6 +9,10 @@ from . import APP
 def index():
     return render_template('index.html')
 
+@APP.route('/profile', methods=['GET'])
+def user_profile():
+    return render_template('index.html')
+
 @APP.route('/api/get_test_vision_list', methods=['GET'])
 def apiGetTestVisionList():
     textVision = { 'visionId' : 1,

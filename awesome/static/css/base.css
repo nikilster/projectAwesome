@@ -8,11 +8,15 @@ body {
 }
 #ContentContainer {
   margin-top: 20px;
+  margin-bottom: 20px;
   background-color: #FFFFFF;
   padding: 21px;
 }
 .Hide {
   display: none;
+}
+#MasonryContainer {
+  overflow: auto;
 }
 .MasonryItem {
   width: 285px;
@@ -24,6 +28,12 @@ body {
   overflow: hidden;
 }
 .MasonryItemInner {
-  margin: 5px;
+  padding: 4px;
   position: relative;
+}
+.MasonryItemUnselected {
+  border: 1px solid #DDDDDD;
+}
+.MasonryItemSelected {
+  border: 1px solid #AA3333;
 }

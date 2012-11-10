@@ -11,8 +11,13 @@
         <div id="ContentContainer">
             <div class="LogoTitle">Project AWESOME</div>
 
+            <div>
+                <a id="NavHome" href="/">HOME</a> |
+                <a id="NavProfile" href="/profile">PROFILE</a>
+            </div>
+            <div>
                 Time to level up homie...
-
+            </div>
             <div id="MasonryContainer"></div>
         </div>
     </div>
@@ -37,7 +42,7 @@
 </script>
 
 <script type="text/template" id="VisionImageTemplate">
-<div class="MasonryItemInner">
+<div class="MasonryItemInner <%= selectedClass %>">
     <div style="position: relative;">
         <img src="<%= photoUrl %>" width="285"/>
         <div style="position:absolute; bottom:0px; left:0px; width:100%;

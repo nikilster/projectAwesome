@@ -40,9 +40,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         isPrivate: false,
         isGloballyShared: false,
         isFbShared: false,
+        isSelected: false,
     },
     initialize: function() {
     },
+    // Getters
     visionId: function() { return this.get("visionId"); },
     category: function() { return this.get("category"); },
     text: function() { return this.get("text"); },
@@ -50,6 +52,12 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     isPrivate: function() { return this.get("isPrivate"); },
     isGloballyShared: function() { return this.get("isGloballyShared"); },
     isFbShared: function() { return this.get("isFbShared"); },
+    isSelected: function() { return this.get("isSelected"); },
+
+    // Setters
+    toggleSelected: function() {
+        this.set({isSelected: !this.get("isSelected")});
+    },
 });
 
 App.Backbone.Model.VisionList = Backbone.Collection.extend({
@@ -80,11 +88,21 @@ App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "div",
     className: "MasonryItem",
     initialize: function() {
+        _.bindAll(this, "itemSelect");
+        this.model.bind("change", this.render, this);
         this.render();
     },
+    events: {
+        "click .MasonryItemInner" : "itemSelect",
+    },
     render: function() {
+        var selectedClass = "MasonryItemUnselected";
+        if (this.model.isSelected()) {
+            selectedClass = "MasonryItemSelected";
+        }
         var variables = {text : this.model.text(),
                          photoUrl: this.model.photoUrl(),
+                         selectedClass: selectedClass,
                         };
 
         if (this.model.photoUrl() == "") {
@@ -97,6 +115,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         return this;
     },
+    itemSelect: function() {
+        console.log("CLICK");
+        this.model.toggleSelected();
+    },
 });
 
 App.Backbone.View.Page = Backbone.View.extend({
@@ -106,6 +128,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     render: function() {
         if (this.options.loading == false && this.options.loadError == false) {
+            console.log("Render Vision list");
             this.renderVisionList();
         }
     },
@@ -119,13 +142,15 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         masonryContainer.append(this.children);
 
+        // TODO: Don't need to reload once we know heights of images
         masonryContainer.masonry({
             itemSelector: "div.MasonryItem",
             columnWidth:299
+        }).imagesLoaded(function() {
+            $("#MasonryContainer").masonry('reload');
         });
     },
     renderVision: function(vision, index) {
-        console.log("VISON: " + JSON.stringify(vision));
         var vision = new App.Backbone.View.Vision({ model: vision });
         this.children.push(vision.el);
     },
@@ -137,9 +162,9 @@ App.Backbone.View.Page = Backbone.View.extend({
 
 App.Var.Controller = {
     initialize: function() {
-        App.Var.Controller.showVisionBoard();
+        Backbone.history.start({pushState: true});
     },
-    showVisionBoard: function() {
+    showHome: function() {
         var ajaxUrl = "/api/get_test_vision_list";
 
         $.ajax({
@@ -155,22 +180,23 @@ App.Var.Controller = {
             },
             complete: function(jqXHR, textStatus) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                App.Var.Controller.renderVisionBoardError();
+                App.Var.Controller.renderHomeError();
             },
             success: function(data, textStatus, jqXHR) {
                 //console.log("DATA: " + JSON.stringify(data));
                 App.Var.JSON = data;
-                App.Var.Controller.renderVisionBoard();
+                App.Var.Controller.renderHome();
             }
         });
     },
-    renderVisionBoard: function() {
+    renderHome: function() {
+        console.log("Render Home");
         App.Var.Model = new App.Backbone.Model.Page(App.Var.JSON);
         App.Var.View = new App.Backbone.View.Page({model: App.Var.Model,
                                                    loading: false,
                                                    loadError: false });
     },
-    renderVisionBoardError: function() {
+    renderHomeError: function() {
         App.Var.View = new App.Backbone.View.Page({model: null,
                                                    loading: false,
                                                    loadError: true });
@@ -180,7 +206,30 @@ App.Var.Controller = {
                                                    loading: true,
                                                    loadError: false});
     },
+
+    showProfile: function() {
+        console.log("Render Profile");
+        $("#MasonryContainer").empty().masonry();
+    },
 };
+
+/******************************************************************************
+ * Router
+ */
+App.Backbone.Router = Backbone.Router.extend({
+  routes: {
+    ""                : "home",
+    "profile"         : "profile",
+    "*action"         : "home",
+  },
+  home: function() {
+    App.Var.Controller.showHome();
+  },
+  profile: function() {
+    App.Var.Controller.showProfile();
+  },
+});
+App.Var.Router = new App.Backbone.Router();
 
 /******************************************************************************
  * Document ready
@@ -189,6 +238,17 @@ $(document).ready(function() {
     $.ajaxSetup({ cache: false});
 
     App.Var.Controller.initialize();
+
+    $("#NavHome").click(function(e) {
+        e.preventDefault();
+        console.log("HOME");
+        App.Var.Router.navigate("/", {trigger: true});
+    });
+    $("#NavProfile").click(function(e) {
+        e.preventDefault();
+        console.log("PROFILE");
+        App.Var.Router.navigate("/profile", {trigger: true});
+    });
 });
 
 /* $eof */
