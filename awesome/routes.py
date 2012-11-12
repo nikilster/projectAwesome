@@ -5,6 +5,8 @@ from flask import Response
 
 from . import APP
 
+from api.data.api import *
+
 @APP.route('/', methods=['GET'])
 def index():
     if request.method == 'GET':
