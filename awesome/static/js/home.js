@@ -5,6 +5,28 @@
  ******************************************************************************/
 
 /******************************************************************************
+ * Utility functions
+ */
+function abort() {
+  throw new Error("Abort");
+}     
+      
+function AssertException(message) { this.message = message; }
+  AssertException.prototype.toString = function () {
+  return 'AssertException: ' + this.message;
+} 
+
+function assert(exp, message) {
+  if (!exp) {
+    throw new AssertException(message);
+  }
+}
+
+function userLoggedIn() {
+    return USER != null;
+}
+
+/******************************************************************************
  * Namespace
  */
 var App = {
@@ -14,9 +36,20 @@ var App = {
         View: {},
         Router: null,
     },
+    Const: {
+        PageMode: {
+            EMPTY: 0,
+            HOME_GUEST: 1,
+            HOME_USER: 2,
+            USER_PROFILE: 3,
+            INVALID: 4, // Keep at end: we use to check validity of pageMode
+        },
+    },
     // Variables in app
     Var: {
         JSON: null,
+        PageStateModel: null,
+        PageStateView: null,
         Model: null,
         View: null,
         Controller: null,
@@ -27,6 +60,7 @@ var App = {
 /******************************************************************************
  * Backbone models
  */
+
 App.Backbone.Model.User = Backbone.Model.extend({
 
 });
@@ -70,14 +104,28 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
 
 App.Backbone.Model.Page = Backbone.Model.extend({
     defaults: {
+        pageMode: App.Const.PageMode.HOME_LOADING,
         visionList: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
         this.set({
-            visionList: new App.Backbone.Model.VisionList(this.get("visionList")),
+            visionList: new App.Backbone.Model.VisionList(
+                                                        this.get("visionList")),
         });
     },
+    // Getters
+    pageMode: function() { return this.get("pageMode"); },
     visionList: function() { return this.get("visionList"); },
+
+    // Setters
+    setPageMode: function(mode) {
+        assert(mode > 0 && mode < App.Const.PageMode.INVALID,
+               "Invalid page mode");
+        this.set({pageMode: mode});
+    },
+    setVisionList: function(visionList) {
+        this.set({visionList: new App.Backbone.Model.VisionList(visionList) });
+    },
 });
 
 /******************************************************************************
@@ -102,7 +150,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         var variables = {text : this.model.text(),
                          photoUrl: this.model.photoUrl(),
-                         selectedClass: selectedClass,
+                         selected: selectedClass,
                         };
 
         if (this.model.photoUrl() == "") {
@@ -116,22 +164,60 @@ App.Backbone.View.Vision = Backbone.View.extend({
         return this;
     },
     itemSelect: function() {
-        console.log("CLICK");
-        this.model.toggleSelected();
+        var pageMode = App.Var.Model.pageMode();
+        if (pageMode == App.Const.PageMode.HOME_GUEST) {
+            this.model.toggleSelected();
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            $("#VisionDetailsModal").modal();
+        } else {
+            assert(false, "Invalid page mode in item select");
+        }
     },
 });
 
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, "renderVisionList", "renderVision");
-        this.render();
+        _.bindAll(this, "changePageMode",
+                        "renderVisionList",
+                        "renderVision",
+                        "showPageLoading",
+                        "hidePageLoading",
+                        "showInfoBar",
+                        "hideInfoBar",
+                        "showHome",
+                        "renderHome",
+                        "renderHomeError",
+                        "showProfile",
+                        "renderProfile",
+                        "renderProfileError");
+        this.model.bind("change:pageMode", this.changePageMode, this);
+        this.model.bind("change:visionList", this.renderVisionList, this);
     },
-    render: function() {
-        if (this.options.loading == false && this.options.loadError == false) {
-            console.log("Render Vision list");
-            this.renderVisionList();
+
+    /*
+     * Changing page mode triggered by set of this.model.pageMode
+     */
+    changePageMode: function() {
+        console.log("CHANGE MODE: " + this.model.pageMode());
+
+        var pageMode = this.model.pageMode();
+
+        if (pageMode == App.Const.PageMode.HOME_GUEST) {
+            this.showInfoBar();
+            this.showHome();
+        } else if (pageMode == App.Const.PageMode.HOME_USER) {
+            this.hideInfoBar();
+            this.showHome();
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            this.showProfile();
+        } else {
+            assert(false, "Invalid page mode in changePageMode");
         }
     },
+
+    /*
+     * Render vision list: triggered by set of this.model.visionList
+     */
     renderVisionList: function() {
         var masonryContainer = $("#MasonryContainer").first();
 
@@ -154,18 +240,41 @@ App.Backbone.View.Page = Backbone.View.extend({
         var vision = new App.Backbone.View.Vision({ model: vision });
         this.children.push(vision.el);
     },
-});
 
-/******************************************************************************
- * Controller
- */
+    /*
+     * Show/hide notice of page loading
+     */
+    showPageLoading: function() {
+        var masonryContainer = $("#MasonryContainer").first();
+        masonryContainer.empty().masonry();
 
-App.Var.Controller = {
-    initialize: function() {
-        Backbone.history.start({pushState: true});
+        var variables = {};
+        var template = _.template($("#PageLoadingTemplate").html(), variables);
+        $("#PageLoadingNotice").html(template).show();
     },
+    hidePageLoading: function() {
+        $("#PageLoadingNotice").hide();
+    },
+
+    /*
+     * Show/hide information bar
+     */
+    showInfoBar: function() {
+        $("#InfoContainer").show();
+        $("#InfoContainerPadding").show();
+    },
+    hideInfoBar: function() {
+        $("#InfoContainer").hide();
+        $("#InfoContainerPadding").hide();
+    },
+
+    /*
+     * Render home page
+     */
     showHome: function() {
-        var ajaxUrl = "/api/get_test_vision_list";
+        this.showPageLoading();
+
+        var ajaxUrl = "/api/get_shared_visions";
 
         $.ajax({
             type: "GET",
@@ -176,42 +285,76 @@ App.Var.Controller = {
                 if (jqXHR.overrideMimeType) {
                     jqXHR.overrideMimeType("application/json");
                 }
-                App.Var.Controller.renderPageLoading();
             },
             complete: function(jqXHR, textStatus) {},
             error: function(jqXHR, textStatus, errorThrown) {
-                App.Var.Controller.renderHomeError();
+                App.Var.View.renderHomeError();
             },
             success: function(data, textStatus, jqXHR) {
-                //console.log("DATA: " + JSON.stringify(data));
                 App.Var.JSON = data;
-                App.Var.Controller.renderHome();
+                App.Var.View.renderHome();
             }
         });
     },
     renderHome: function() {
         console.log("Render Home");
-        App.Var.Model = new App.Backbone.Model.Page(App.Var.JSON);
-        App.Var.View = new App.Backbone.View.Page({model: App.Var.Model,
-                                                   loading: false,
-                                                   loadError: false });
+        this.hidePageLoading();
+        this.model.setVisionList(App.Var.JSON.visionList);
     },
     renderHomeError: function() {
-        App.Var.View = new App.Backbone.View.Page({model: null,
-                                                   loading: false,
-                                                   loadError: true });
-    },
-    renderPageLoading: function() {
-        App.Var.View = new App.Backbone.View.Page({model: null,
-                                                   loading: true,
-                                                   loadError: false});
+        var masonryContainer = $("#MasonryContainer").first();
+        masonryContainer.empty().masonry();
+
+        var variables = {};
+        var template = _.template($("#HomePageLoadErrorTemplate").html(),
+                                  variables);
+        $("#PageLoadingNotice").html(template).show();
     },
 
+    /*
+     * Render user profile page
+     */
     showProfile: function() {
-        console.log("Render Profile");
-        $("#MasonryContainer").empty().masonry();
+        this.showPageLoading();
+        this.hideInfoBar();
+
+        var ajaxUrl = "/api/get_user_visions";
+
+        $.ajax({
+            type: "GET",
+            cache: false,
+            contentType : "application/json",
+            url: ajaxUrl,
+            beforeSend: function(jqXHR, settings) {
+                if (jqXHR.overrideMimeType) {
+                    jqXHR.overrideMimeType("application/json");
+                }
+            },
+            complete: function(jqXHR, textStatus) {},
+            error: function(jqXHR, textStatus, errorThrown) {
+                App.Var.View.renderProfileError();
+            },
+            success: function(data, textStatus, jqXHR) {
+                App.Var.JSON = data;
+                App.Var.View.renderProfile();
+            }
+        });
     },
-};
+    renderProfile: function() {
+        console.log("Render Profile");
+        this.hidePageLoading();
+        this.model.setVisionList(App.Var.JSON.visionList);
+    },
+    renderProfileError: function() {
+        var masonryContainer = $("#MasonryContainer").first();
+        masonryContainer.empty().masonry();
+
+        var variables = {};
+        var template = _.template($("#ProfileLoadErrorTemplate").html(),
+                                  variables);
+        $("#PageLoadingNotice").html(template).show();
+    },
+});
 
 /******************************************************************************
  * Router
@@ -223,10 +366,14 @@ App.Backbone.Router = Backbone.Router.extend({
     "*action"         : "home",
   },
   home: function() {
-    App.Var.Controller.showHome();
+    if (userLoggedIn()) {
+        App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
+    } else {
+        App.Var.Model.setPageMode(App.Const.PageMode.HOME_GUEST);
+    }
   },
   profile: function() {
-    App.Var.Controller.showProfile();
+    App.Var.Model.setPageMode(App.Const.PageMode.USER_PROFILE);
   },
 });
 App.Var.Router = new App.Backbone.Router();
@@ -237,17 +384,28 @@ App.Var.Router = new App.Backbone.Router();
 $(document).ready(function() {
     $.ajaxSetup({ cache: false});
 
-    App.Var.Controller.initialize();
+    App.Var.Model = new App.Backbone.Model.Page();
+    App.Var.View = new App.Backbone.View.Page({model: App.Var.Model});
+
+    // Do this after we have created Page model and view
+    Backbone.history.start({pushState: true});
 
     $("#NavHome").click(function(e) {
         e.preventDefault();
-        console.log("HOME");
         App.Var.Router.navigate("/", {trigger: true});
     });
     $("#NavProfile").click(function(e) {
         e.preventDefault();
-        console.log("PROFILE");
         App.Var.Router.navigate("/profile", {trigger: true});
+    });
+
+    $("#ReloadHome").live("click", function(e) {
+        e.preventDefault();
+        App.Var.View.showHome();
+    });
+    $("#ReloadProfile").live("click", function(e) {
+        e.preventDefault();
+        App.Var.View.showProfile();
     });
 });
 

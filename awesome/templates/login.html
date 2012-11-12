@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='opt/bootstrap/css/bootstrap.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+</head>
+
+<body>
+    <div class="container">
+        <div id="ContentContainer">
+            <div class="LogoTitle">Login</div>
+            <div>
+            <form action="{{ url_for('login') }}" method="POST">
+                <input class="RegisterField" type="text" name="username"/>
+                <input class="RegisterField" type="password" name="password"/>
+                <br>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+

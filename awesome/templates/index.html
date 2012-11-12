@@ -1,27 +1,81 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Project AWESOME</title>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='opt/bootstrap/css/bootstrap.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+
+    <script>
+{% if userName != "" %}
+var USER = { userName: '{{ userName }}' }
+{% else %}
+var USER = null;
+{% endif %}
+    </script>
 </head>
 
 <body>
-    <div class="container">
-        <div id="ContentContainer">
-            <div class="LogoTitle">Project AWESOME</div>
+    <div style="position:fixed; width:100%; height:40px;
+                background-color: #333333; z-index: 100;">
+        <div style="position: relative; width:940px; margin:0px auto;
+                    z-index:1;">
+            <div class="LogoTitle" style="text-align:center; padding-top:8px;">
+                <a id="NavHome" href="/">Project [AWESOME]</a>
+            </div>
 
-            <div>
-                <a id="NavHome" href="/">HOME</a> |
-                <a id="NavProfile" href="/profile">PROFILE</a>
+            {% if userName != "" %}
+            <div style="position: absolute; top:0px; right:0px;">
+                <a id="NavProfile" class="NavButton" href="/profile">
+                    {{ userName }}
+                </a>
+                <a id="NavLogout" class="NavButton" href="/logout">
+                    Logout
+                </a>
             </div>
-            <div>
-                Time to level up homie...
+            {% endif %}
+        </div>
+        <div id="InfoContainer"
+             style="position: absolute; top:100%; left: 50%;
+                    width: 520px; margin-left:-260px; height:40px; 
+                    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
+                    border-bottom: 1px #E391B2 solid;
+                    border-left: 1px #E391B2 solid;
+                    border-right: 1px #E391B2 solid;">
+            <div style="font-size:16px; line-height:1.4; font-weight:bold;">
+                Create and share your personal vision board
             </div>
+            <div style="font-size:13px; line-height:1.4; color:#555555;">
+            &nbsp; >> Get started by selecting up to 10 items... 
+            <span style="color:black;">(1/10)</span>
+            </div>
+            <div style="position: absolute; top: 0px; right: 0px; padding:10px;">
+                <a href="{{ url_for('register') }}"
+                   class="btn btn-success">Register</a>
+                <button class="btn btn-info" style="display:none;">View board</button>
+                <a href="{{ url_for('login') }}"
+                   class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div id="InfoContainerPadding"></div>
+        <div id="ContentContainer">
+            <div id="PageLoadingNotice" style="display:none;"></div>
             <div id="MasonryContainer"></div>
         </div>
     </div>
 
+    <div id="VisionDetailsModal" class="modal hide fade">
+        <div class="modal-header" style="font-size:18pt">
+            Vision details
+        </div>
+        <div class="modal-body">
+            <div>Stuff</div>
+
+            <div class="btn btn-large" data-dismiss="modal">Close</div>
+        </div>
+    </div>
 </body>
 
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>
@@ -35,18 +89,36 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
 
+<script type="text/template" id="PageLoadingTemplate">
+<div style="text-align:center;">
+    Loading...
+</div>
+</script>
+
+<script type="text/template" id="HomePageLoadErrorTemplate">
+<div style="text-align:center;">
+    Error: <a href="#" id="ReloadHome">try again</a>
+</div>
+</script>
+
+<script type="text/template" id="ProfileLoadErrorTemplate">
+<div style="text-align:center;">
+    Error: <a href="#" id="ReloadProfile">try again</a>
+</div>
+</script>
+
 <script type="text/template" id="VisionTemplate">
-<div class="MasonryItemInner">
+<div class="MasonryItemInner <%= selected %>">
     <%= text %>
 </div>
 </script>
 
 <script type="text/template" id="VisionImageTemplate">
-<div class="MasonryItemInner <%= selectedClass %>">
+<div class="MasonryItemInner <%= selected %>">
     <div style="position: relative;">
         <img src="<%= photoUrl %>" width="285"/>
         <div style="position:absolute; bottom:0px; left:0px; width:100%;
-                    color: white; background-color: rgba(0,0,0,.1);">
+                    color: white; background-color: rgba(0,0,0,.4);">
             <div style="padding:3px;">
             <%= text %>
             </div>

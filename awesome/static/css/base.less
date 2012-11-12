@@ -4,22 +4,44 @@
 // Includes all global LESS variables and mixins
 //
 
-@LogoColor: #EE3300;
+@LogoColor: #E391B2;
 
 .LogoTitle {
     color: @LogoColor;
     font-size: 20px;
     line-height: 1.2;
 }
-
-body {
-    background-color: #EEEEEE;
+#NavHome {
+    color: @LogoColor;
+    text-decoration:none;
+}
+#NavHome:hover {
+    color: @LogoColor;
+    text-decoration:underline;
+}
+.NavButton {
+    display:inline-block;
+    font-size:15px;
+    line-height:1.2;
+    color: #AAAAAA;
+    padding: 10px 10px;
+}
+.NavButton:hover {
+    color: #AAAAAA;
+    text-decoration: underline;
+    background-color: #555555;
 }
 
+body {
+    background-color: #F8F8F8;
+}
+
+#InfoContainerPadding {
+    height:50px;
+}
 #ContentContainer {
-    margin-top:20px;
+    margin-top: 30px;
     margin-bottom:20px;
-    background-color: #FFFFFF;
     padding:21px;
 }
 
@@ -37,8 +59,9 @@ body {
     border: 0px;
     padding: 0px;
     float: left;
-    background-color: #DDDDDD;
+    background-color: #FFFFFF;
     overflow: hidden;
+    cursor: pointer;
 }
 .MasonryItemInner {
     padding: 4px;
@@ -48,6 +71,6 @@ body {
     border: 1px solid #DDDDDD;
 }
 .MasonryItemSelected {
-    border: 1px solid #AA3333;
+    border: 1px solid #AA1111;
 }
 
