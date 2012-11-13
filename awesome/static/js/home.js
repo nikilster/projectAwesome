@@ -274,7 +274,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     showHome: function() {
         this.showPageLoading();
 
-        var ajaxUrl = "/api/get_shared_visions";
+        var ajaxUrl = "/api/get_main_page_visions";
 
         $.ajax({
             type: "GET",
