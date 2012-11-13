@@ -5,7 +5,8 @@ from flask import Response
 
 from . import APP
 
-from util.debug import logD, logW, logE
+from util.Logger import Logger
+from util.PasswordEncrypt import PasswordEncrypt
 
 from api.data.DataApi import DataApi
 
@@ -108,6 +109,8 @@ def apiGetMainPageVisions():
 @APP.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
     visions = DataApi.getVisionsForUser(1)
+
+    Logger.debug("Hello")
 
     data = { 'visionList' : [] }
 
