@@ -48,11 +48,8 @@ var App = {
     // Variables in app
     Var: {
         JSON: null,
-        PageStateModel: null,
-        PageStateView: null,
         Model: null,
         View: null,
-        Controller: null,
         Router: null,
     },
 }
