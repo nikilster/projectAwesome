@@ -67,7 +67,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         visionId: -1,
         category: "",
         text: "",
-        photoUrl: "",
+        picture: "",
         isPrivate: false,
         isGloballyShared: false,
         isFbShared: false,
@@ -79,7 +79,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     visionId: function() { return this.get("visionId"); },
     category: function() { return this.get("category"); },
     text: function() { return this.get("text"); },
-    photoUrl: function() { return this.get("photoUrl"); },
+    picture: function() { return this.get("picture"); },
     isPrivate: function() { return this.get("isPrivate"); },
     isGloballyShared: function() { return this.get("isGloballyShared"); },
     isFbShared: function() { return this.get("isFbShared"); },
@@ -101,7 +101,7 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
 
 App.Backbone.Model.Page = Backbone.Model.extend({
     defaults: {
-        pageMode: App.Const.PageMode.HOME_LOADING,
+        pageMode: App.Const.PageMode.EMPTY,
         visionList: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
@@ -146,11 +146,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
             selectedClass = "MasonryItemSelected";
         }
         var variables = {text : this.model.text(),
-                         photoUrl: this.model.photoUrl(),
+                         picture: this.model.picture(),
                          selected: selectedClass,
                         };
 
-        if (this.model.photoUrl() == "") {
+        if (this.model.picture() == "") {
             var template = _.template($("#VisionTemplate").html(), variables);
             $(this.el).html(template);
         } else {
