@@ -22,6 +22,10 @@ function assert(exp, message) {
   }
 }
 
+/******************************************************************************
+ * Utility functions for getting/setting global state
+ */
+
 function userLoggedIn() {
     return USER != null;
 }
@@ -87,12 +91,12 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         if (!this.isSelected()) {
             if (App.Var.Model.numSelectedVisions() <
                 App.Const.MAX_SELECTED_VISIONS) {
-                App.Var.Model.addToSelectedVisions(this.visionId());
+                App.Var.Model.addToSelectedVisions(this);
             } else {
                 return;
             }
         } else {
-            App.Var.Model.removeFromSelectedVisions(this.visionId());
+            App.Var.Model.removeFromSelectedVisions(this);
         }
         this.set({isSelected: !this.get("isSelected")});
     },
@@ -110,7 +114,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     defaults: {
         pageMode: App.Const.PageMode.EMPTY,
         visionList: new App.Backbone.Model.VisionList(),
-        selectedVisions: [],
+        selectedVisions: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
         this.set({
@@ -122,9 +126,13 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     pageMode: function() { return this.get("pageMode"); },
     visionList: function() { return this.get("visionList"); },
     selectedVisions: function() { return this.get("selectedVisions"); },
-    visionIsSelected: function(visionId) {
-        var index = this.selectedVisions().indexOf(visionId);
-        return index >= 0;
+    getSelectedVisionId: function(visionId) {
+        var list = this.selectedVisions().where({id: visionId});
+        if (list.length > 0) {
+            assert(list.length == 1, "Shouldn't have multiple models here")
+            return list[0];
+        }
+        return null;
     },
     numSelectedVisions: function() {
         return this.selectedVisions().length;
@@ -139,23 +147,21 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     setVisionList: function(visionList) {
         this.set({visionList: new App.Backbone.Model.VisionList(visionList) });
     },
-    addToSelectedVisions: function(visionId) {
-        if (!(this.visionIsSelected(visionId))) {
-            this.selectedVisions().unshift(visionId);
-            this.trigger("change:selectedVisions");
+    addToSelectedVisions: function(model) {
+        var vision = this.getSelectedVisionId(model.visionId());
+        if (vision == null) {
+            // Note that we clone the model. We want our own copy for in
+            // case we want to let the user edit it in some way
+            this.selectedVisions().unshift(model.clone());
             return true;
         }
         return false;
     },
-    removeFromSelectedVisions: function(visionId) {
-        var selectedVisions = this.selectedVisions();
-        if (this.visionIsSelected(visionId)) {
-            var index = selectedVisions.indexOf(visionId);
-            if (index != -1) {
-                selectedVisions.splice(index, 1);
-                this.trigger("change:selectedVisions");
-                return true;
-            }
+    removeFromSelectedVisions: function(model) {
+        var vision = this.getSelectedVisionId(model.visionId());
+        if (vision != null) {
+            this.selectedVisions().remove(vision);
+            return true;
         }
         return false;
     },
@@ -228,8 +234,12 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfileError");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.bind("change:visionList", this.renderVisionList, this);
-        this.model.bind("change:selectedVisions", this.changeInSelectedVisions,
-                        this);
+        this.model.selectedVisions().bind("add", 
+                                          this.changeInSelectedVisions,
+                                          this);
+        this.model.selectedVisions().bind("remove", 
+                                          this.changeInSelectedVisions,
+                                          this);
     },
 
     /*
@@ -307,6 +317,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     changeInSelectedVisions: function() {
+        console.log("CHANGE");
         var length = this.model.numSelectedVisions();
         if (length <= 0) {
             $("#SelectedVisionCountContainer").hide();
