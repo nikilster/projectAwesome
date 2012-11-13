@@ -55,7 +55,6 @@ def register():
 
 @APP.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
-    '''
     visions = getMainPageVisions()
 
     data = { 'visionList' : [] }
@@ -103,6 +102,7 @@ def apiGetMainPageVisions():
     data['visionList'].append(textVision)
     data['visionList'].append(textVision)
     data['visionList'].append(textVision)
+    '''
     return jsonify(data)
 
 @APP.route('/api/get_user_visions', methods=['GET'])
