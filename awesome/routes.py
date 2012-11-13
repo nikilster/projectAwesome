@@ -5,9 +5,10 @@ from flask import Response
 
 from . import APP
 
-from util.debug import logD, logW, logE
+from util.Logger import Logger
+from util.PasswordEncrypt import PasswordEncrypt
 
-from api.data.api import *
+from api.data.DataApi import DataApi
 
 @APP.route('/', methods=['GET'])
 def index():
@@ -55,7 +56,7 @@ def register():
 
 @APP.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
-    visions = getMainPageVisions()
+    visions = DataApi.getMainPageVisions()
 
     data = { 'visionList' : [] }
 
@@ -107,6 +108,17 @@ def apiGetMainPageVisions():
 
 @APP.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
+    visions = DataApi.getVisionsForUser(1)
+
+    Logger.debug("Hello")
+
+    data = { 'visionList' : [] }
+
+    for vision in visions:
+        data['visionList'].append(vision.__dict__)
+
+    return jsonify(data)
+    '''
     textVision = { 'visionId' : 1,
                    'category' : 'stuff',
                    'text'     : 'What?',
@@ -132,4 +144,4 @@ def apiGetUserVisions():
     data['visionList'].append(textVision)
     
     return jsonify(data)
-
+    '''
