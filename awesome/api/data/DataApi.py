@@ -1,20 +1,20 @@
 '''
-	Class: Data API
+    Class: Data API
 
-	Main api for data
+    Main api for data
 
-	Functions:
+    Functions:
 
-		Add User
-		Add Vision
-		Get Visions for User
-		Get Main Page Visions
-
-'''
-
+        Add User
+        Add Vision
+        Get Visions for User
+        Get Main Page Visions
 
 '''
-	Creates and adds the user to the database
+
+
+'''
+    Creates and adds the user to the database
 
 '''
 
@@ -36,130 +36,130 @@ from time import time
 
 class DataApi:
 
-	@staticmethod
-	def addUser(firstName, lastName, email, password):
+    @staticmethod
+    def addUser(firstName, lastName, email, password):
 
-		#TODO: Validate
+        #TODO: Validate
 
-		#Init (create) Db
-		db = DB() 
+        #Init (create) Db
+        db = DB() 
 
-		#Create User Object
-		#Get the next id from redis
-		newUser = User()
-		newUser.setInfo(db.getNextUserId(), firstName, lastName, email, password, time())
+        #Create User Object
+        #Get the next id from redis
+        newUser = User()
+        newUser.setInfo(db.getNextUserId(), firstName, lastName, email, password, time())
 
-		#Save
-		#TODO: figure out if the save was successful or not
-		result = db.saveUser(newUser)
+        #Save
+        #TODO: figure out if the save was successful or not
+        result = db.saveUser(newUser)
 
-		if(result): return newUser.id
-		else: return -1
+        if(result): return newUser.id
+        else: return -1
 
-	'''
-		Gets a user by id
-	'''
-	@staticmethod
-	def getUser(id):
+    '''
+        Gets a user by id
+    '''
+    @staticmethod
+    def getUser(id):
 
-		#Create Db
-		db = DB()
-		userJson = db.getUser(id)
+        #Create Db
+        db = DB()
+        userJson = db.getUser(id)
 
-		if(userJson is None): return None
+        if(userJson is None): return None
 
-		#Convert to User object
-		userObject = User()
-		userObject.setFromJson(userJson)
+        #Convert to User object
+        userObject = User()
+        userObject.setFromJson(userJson)
 
-		return userObject
+        return userObject
 
-	'''
-		Gets a user by email address
+    '''
+        Gets a user by email address
         
         **** STUB *****
-	'''
-	@staticmethod
-	def getUserByEmail(email):
+    '''
+    @staticmethod
+    def getUserByEmail(email):
         return DataApi.getUser(1)
 
-	'''
-		Add Vision
-	'''
-	@staticmethod
-	def addVision(userId, text, picture, parentId):
+    '''
+        Add Vision
+    '''
+    @staticmethod
+    def addVision(userId, text, picture, parentId):
 
-		db = DB()
+        db = DB()
 
-		#serializing from json is the common use case
-		newVision = Vision()
-		newVision.setInfo(db.getNextVisionId(), userId, text, picture, parentId, time())
+        #serializing from json is the common use case
+        newVision = Vision()
+        newVision.setInfo(db.getNextVisionId(), userId, text, picture, parentId, time())
 
-		#save
-		result = db.saveVision(newVision)
-		return result
+        #save
+        result = db.saveVision(newVision)
+        return result
 
-	'''
-		Get Vision
-	'''
-	@staticmethod
-	def getVision(id):
+    '''
+        Get Vision
+    '''
+    @staticmethod
+    def getVision(id):
 
-		#Create Db
-		db = DB()
-		visionJson = db.getVision(id)
+        #Create Db
+        db = DB()
+        visionJson = db.getVision(id)
 
-		if(visionJson is None): return None
+        if(visionJson is None): return None
 
-		#Create to Vision Object
-		visionObject = Vision()
-		visionObject.setFromJson(visionJson)
+        #Create to Vision Object
+        visionObject = Vision()
+        visionObject.setFromJson(visionJson)
 
-		return visionObject
-
-
-	'''
-		Get Main Page Visions
-	'''
-	@staticmethod
-	def getMainPageVisions():
-
-		#Number of max visions to return
-		MAX_VISIONS = 100
-
-		#Get from db
-		db = DB()
-		visionsJson = db.mostRecentVisions(MAX_VISIONS)
-
-		#Create Objects
-		return DataApi.__visionObjectsFromJson(visionsJson)
+        return visionObject
 
 
-	'''
-		Get All Visions for User
-	'''
-	@staticmethod
-	def getVisionsForUser(userId):
+    '''
+        Get Main Page Visions
+    '''
+    @staticmethod
+    def getMainPageVisions():
 
-		#Get from Db
-		db = DB()
-		visionsJson = db.getVisionsForUser(userId)
+        #Number of max visions to return
+        MAX_VISIONS = 100
 
-		#Create objects
-		return DataApi.__visionObjectsFromJson(visionsJson)
+        #Get from db
+        db = DB()
+        visionsJson = db.mostRecentVisions(MAX_VISIONS)
+
+        #Create Objects
+        return DataApi.__visionObjectsFromJson(visionsJson)
 
 
-	'''
-		Vision Objects From Json	
-	'''
-	@staticmethod
-	def __visionObjectsFromJson(visionsJson):
-		
-		#Create Vision Objects
-		visions = []
-		for json in visionsJson:
-			v = Vision()
-			v.setFromJson(json)
-			visions.append(v)
+    '''
+        Get All Visions for User
+    '''
+    @staticmethod
+    def getVisionsForUser(userId):
 
-		return visions
+        #Get from Db
+        db = DB()
+        visionsJson = db.getVisionsForUser(userId)
+
+        #Create objects
+        return DataApi.__visionObjectsFromJson(visionsJson)
+
+
+    '''
+        Vision Objects From Json    
+    '''
+    @staticmethod
+    def __visionObjectsFromJson(visionsJson):
+        
+        #Create Vision Objects
+        visions = []
+        for json in visionsJson:
+            v = Vision()
+            v.setFromJson(json)
+            visions.append(v)
+
+        return visions
