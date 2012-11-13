@@ -5,6 +5,8 @@ from flask import Response
 
 from . import APP
 
+from util.debug import logD, logW, logE
+
 from api.data.api import *
 
 @APP.route('/', methods=['GET'])
@@ -51,8 +53,17 @@ def logout():
 def register():
     return render_template('register.html')
 
-@APP.route('/api/get_shared_visions', methods=['GET'])
-def apiGetSharedVisions():
+@APP.route('/api/get_main_page_visions', methods=['GET'])
+def apiGetMainPageVisions():
+    visions = getMainPageVisions()
+
+    data = { 'visionList' : [] }
+
+    for vision in visions:
+        data['visionList'].append(vision.__dict__)
+
+    return jsonify(data)
+    '''
     textVision = { 'visionId' : 1,
                    'category' : 'stuff',
                    'text'     : 'What?',
@@ -91,7 +102,7 @@ def apiGetSharedVisions():
     data['visionList'].append(textVision)
     data['visionList'].append(textVision)
     data['visionList'].append(textVision)
-
+    '''
     return jsonify(data)
 
 @APP.route('/api/get_user_visions', methods=['GET'])
