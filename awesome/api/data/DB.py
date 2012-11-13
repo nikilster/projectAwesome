@@ -131,3 +131,7 @@ class DB:
 	#the user vision
 	def __getUserVisionSetKey(self, userId):
 		return DB.USER_VISION_SET_PREFIX + self.__cleanInt(userId)
+
+	#!!!!!!
+	def __secretClean(self):
+		return self.r.flushdb()

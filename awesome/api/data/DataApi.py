@@ -52,7 +52,9 @@ class DataApi:
 		#Save
 		#TODO: figure out if the save was successful or not
 		result = db.saveUser(newUser)
-		return result
+
+		if(result): return newUser.id
+		else: return -1
 
 	'''
 		Gets a user by id
