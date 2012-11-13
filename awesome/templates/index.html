@@ -47,12 +47,16 @@ var USER = null;
             </div>
             <div style="font-size:13px; line-height:1.4; color:#555555;">
             &nbsp; >> Get started by selecting up to 10 items... 
-            <span style="color:black;">(1/10)</span>
+            <span id="SelectedVisionCountContainer"
+                  style="display:none; color:black;">
+                (<span id="SelectedVisionCount">0</span>/10)
+            </span>
             </div>
             <div style="position: absolute; top: 0px; right: 0px; padding:10px;">
-                <a href="{{ url_for('register') }}"
+                <a id="RegisterButton" href="{{ url_for('register') }}"
                    class="btn btn-success">Register</a>
-                <button class="btn btn-info" style="display:none;">View board</button>
+                <button id="ViewBoardButton" class="btn btn-info"
+                        style="display:none;">View board</button>
                 <a href="{{ url_for('login') }}"
                    class="btn btn-primary">Login</a>
             </div>

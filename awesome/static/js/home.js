@@ -44,6 +44,7 @@ var App = {
             USER_PROFILE: 3,
             INVALID: 4, // Keep at end: we use to check validity of pageMode
         },
+        MAX_SELECTED_VISIONS: 10,
     },
     // Variables in app
     Var: {
@@ -64,29 +65,35 @@ App.Backbone.Model.User = Backbone.Model.extend({
 
 App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
-        visionId: -1,
-        category: "",
+        id: -1,
+        parentId: -1,
+        userId: -1,
         text: "",
         picture: "",
-        isPrivate: false,
-        isGloballyShared: false,
-        isFbShared: false,
         isSelected: false,
     },
     initialize: function() {
     },
     // Getters
-    visionId: function() { return this.get("visionId"); },
-    category: function() { return this.get("category"); },
-    text: function() { return this.get("text"); },
+    visionId: function() { return this.get("id"); },
+    parentId: function() { return this.get("parentId"); },
+    userId: function() { return this.get("userId"); },
     picture: function() { return this.get("picture"); },
-    isPrivate: function() { return this.get("isPrivate"); },
-    isGloballyShared: function() { return this.get("isGloballyShared"); },
-    isFbShared: function() { return this.get("isFbShared"); },
+    text: function() { return this.get("text"); },
     isSelected: function() { return this.get("isSelected"); },
 
     // Setters
     toggleSelected: function() {
+        if (!this.isSelected()) {
+            if (App.Var.Model.numSelectedVisions() <
+                App.Const.MAX_SELECTED_VISIONS) {
+                App.Var.Model.addToSelectedVisions(this.visionId());
+            } else {
+                return;
+            }
+        } else {
+            App.Var.Model.removeFromSelectedVisions(this.visionId());
+        }
         this.set({isSelected: !this.get("isSelected")});
     },
 });
@@ -103,6 +110,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     defaults: {
         pageMode: App.Const.PageMode.EMPTY,
         visionList: new App.Backbone.Model.VisionList(),
+        selectedVisions: [],
     },
     initialize: function() {
         this.set({
@@ -113,6 +121,14 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     // Getters
     pageMode: function() { return this.get("pageMode"); },
     visionList: function() { return this.get("visionList"); },
+    selectedVisions: function() { return this.get("selectedVisions"); },
+    visionIsSelected: function(visionId) {
+        var index = this.selectedVisions().indexOf(visionId);
+        return index >= 0;
+    },
+    numSelectedVisions: function() {
+        return this.selectedVisions().length;
+    },
 
     // Setters
     setPageMode: function(mode) {
@@ -122,6 +138,26 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     setVisionList: function(visionList) {
         this.set({visionList: new App.Backbone.Model.VisionList(visionList) });
+    },
+    addToSelectedVisions: function(visionId) {
+        if (!(this.visionIsSelected(visionId))) {
+            this.selectedVisions().unshift(visionId);
+            this.trigger("change:selectedVisions");
+            return true;
+        }
+        return false;
+    },
+    removeFromSelectedVisions: function(visionId) {
+        var selectedVisions = this.selectedVisions();
+        if (this.visionIsSelected(visionId)) {
+            var index = selectedVisions.indexOf(visionId);
+            if (index != -1) {
+                selectedVisions.splice(index, 1);
+                this.trigger("change:selectedVisions");
+                return true;
+            }
+        }
+        return false;
     },
 });
 
@@ -164,6 +200,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             this.model.toggleSelected();
+        } else if (pageMode == App.Const.PageMode.HOME_USER) {
+            // Skip
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             $("#VisionDetailsModal").modal();
         } else {
@@ -181,6 +219,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "hidePageLoading",
                         "showInfoBar",
                         "hideInfoBar",
+                        "changeInSelectedVisions",
                         "showHome",
                         "renderHome",
                         "renderHomeError",
@@ -189,6 +228,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfileError");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.bind("change:visionList", this.renderVisionList, this);
+        this.model.bind("change:selectedVisions", this.changeInSelectedVisions,
+                        this);
     },
 
     /*
@@ -263,6 +304,23 @@ App.Backbone.View.Page = Backbone.View.extend({
     hideInfoBar: function() {
         $("#InfoContainer").hide();
         $("#InfoContainerPadding").hide();
+    },
+
+    changeInSelectedVisions: function() {
+        var length = this.model.numSelectedVisions();
+        if (length <= 0) {
+            $("#SelectedVisionCountContainer").hide();
+
+            $("#ViewBoardButton").hide();
+            $("#RegisterButton").show();
+        } else {
+            $("#SelectedVisionCountContainer").show();
+            $("#SelectedVisionCount").html(length);
+
+            $("#RegisterButton").hide();
+            $("#ViewBoardButton").show();
+        }
+        console.log("Visions: " + JSON.stringify(this.model.selectedVisions()));
     },
 
     /*
