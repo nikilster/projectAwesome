@@ -12,15 +12,22 @@
         <div id="ContentContainer">
             <div class="LogoTitle">Register</div>
 
-            <form>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == "RegisterError" %}
+                 <div class="ErrorNotice"><b>Error</b>: {{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('register') }}" method="POST">
                 First Name: <input class="RegisterField" type="text" name="firstName"/>
                 <br>
                 Last Name: <input class="RegisterField" type="text" name="lastName"/>
                 <br>
                 Email: <input class="RegisterField" type="text" name="email"/>
-                <br>
-
-                Username: <input class="RegisterField" type="text" name="userName"/>
                 <br>
                 Password: <input class="RegisterField" type="password" name="password"/>
                 <br>

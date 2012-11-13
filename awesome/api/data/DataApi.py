@@ -74,6 +74,14 @@ class DataApi:
 
 		return userObject
 
+	'''
+		Gets a user by email address
+        
+        **** STUB *****
+	'''
+	@staticmethod
+	def getUserByEmail(email):
+        return DataApi.getUser(1)
 
 	'''
 		Add Vision

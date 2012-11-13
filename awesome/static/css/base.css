@@ -37,6 +37,14 @@ body {
 .Hide {
   display: none;
 }
+.ErrorNotice {
+  color: red;
+  background-color: rgba(255, 204, 204, 0.9);
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin: 10px 0px;
+  padding: 5px;
+}
 #MasonryContainer {
   overflow: auto;
 }
