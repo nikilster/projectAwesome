@@ -24,6 +24,9 @@ class Data:
 		for field in fields:
 			self.__setAttr(field, dict)
 
+	#Returns the dictionary representation of the object so that it can be jsonified in an an array
+	def toDictionary(self):
+		return self.__dict__
 
 	#Private (Not Really Private) Helper Methods
 	#http://stackoverflow.com/questions/70528/why-are-pythons-private-methods-not-actually-private
