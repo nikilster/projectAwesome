@@ -45,8 +45,9 @@ var App = {
             EMPTY: 0,
             HOME_GUEST: 1,
             HOME_USER: 2,
-            USER_PROFILE: 3,
-            INVALID: 4, // Keep at end: we use to check validity of pageMode
+            TEST_VISION: 3,
+            USER_PROFILE: 4,
+            INVALID: 5, // Keep at end: we use to check validity of pageMode
         },
         MAX_SELECTED_VISIONS: 10,
     },
@@ -77,6 +78,10 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         isSelected: false,
     },
     initialize: function() {
+        if (null != App.Var.Model &&
+            null != App.Var.Model.getSelectedVision(this.visionId())) {
+            this.set({isSelected: true});
+        }
     },
     // Getters
     visionId: function() { return this.get("id"); },
@@ -126,7 +131,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     pageMode: function() { return this.get("pageMode"); },
     visionList: function() { return this.get("visionList"); },
     selectedVisions: function() { return this.get("selectedVisions"); },
-    getSelectedVisionId: function(visionId) {
+    getSelectedVision: function(visionId) {
         var list = this.selectedVisions().where({id: visionId});
         if (list.length > 0) {
             assert(list.length == 1, "Shouldn't have multiple models here")
@@ -148,7 +153,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         this.set({visionList: new App.Backbone.Model.VisionList(visionList) });
     },
     addToSelectedVisions: function(model) {
-        var vision = this.getSelectedVisionId(model.visionId());
+        var vision = this.getSelectedVision(model.visionId());
         if (vision == null) {
             // Note that we clone the model. We want our own copy for in
             // case we want to let the user edit it in some way
@@ -158,7 +163,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         return false;
     },
     removeFromSelectedVisions: function(model) {
-        var vision = this.getSelectedVisionId(model.visionId());
+        var vision = this.getSelectedVision(model.visionId());
         if (vision != null) {
             this.selectedVisions().remove(vision);
             return true;
@@ -183,8 +188,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
         "click .MasonryItemInner" : "itemSelect",
     },
     render: function() {
+        var pageMode = App.Var.Model.pageMode();
+
         var selectedClass = "MasonryItemUnselected";
-        if (this.model.isSelected()) {
+        if (pageMode == App.Const.PageMode.HOME_GUEST &&
+            this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
         }
         var variables = {text : this.model.text(),
@@ -206,7 +214,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             this.model.toggleSelected();
-        } else if (pageMode == App.Const.PageMode.HOME_USER) {
+        } else if (pageMode == App.Const.PageMode.HOME_USER ||
+                   pageMode == App.Const.PageMode.TEST_VISION) {
             // Skip
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             $("#VisionDetailsModal").modal();
@@ -221,6 +230,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         _.bindAll(this, "changePageMode",
                         "renderVisionList",
                         "renderVision",
+                        "renderSelectedVisions", "renderSelectedVision",
                         "showPageLoading",
                         "hidePageLoading",
                         "showInfoBar",
@@ -251,12 +261,16 @@ App.Backbone.View.Page = Backbone.View.extend({
         var pageMode = this.model.pageMode();
 
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
-            this.showInfoBar();
+            this.showInfoBar(true);
             this.showHome();
+        } else if (pageMode == App.Const.PageMode.TEST_VISION) {
+            this.showInfoBar(false);
+            this.showTestVision();
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
             this.hideInfoBar();
             this.showHome();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            this.hideInfoBar();
             this.showProfile();
         } else {
             assert(false, "Invalid page mode in changePageMode");
@@ -290,6 +304,32 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     /*
+     * Render test vision board
+     */
+    renderSelectedVisions: function() {
+        var masonryContainer = $("#TestVisionContainer").first();
+
+        masonryContainer.empty();
+        this.testVisions = []
+
+        this.model.selectedVisions().each(this.renderSelectedVision);
+
+        masonryContainer.append(this.testVisions);
+
+        // TODO: Don't need to reload once we know heights of images
+        masonryContainer.masonry({
+            itemSelector: "div.MasonryItem",
+            columnWidth:299
+        }).imagesLoaded(function() {
+            $("#TestVisionContainer").masonry('reload');
+        });
+    },
+    renderSelectedVision: function(vision, index) {
+        var vision = new App.Backbone.View.Vision({ model: vision });
+        this.testVisions.push(vision.el);
+    },
+
+    /*
      * Show/hide notice of page loading
      */
     showPageLoading: function() {
@@ -306,9 +346,18 @@ App.Backbone.View.Page = Backbone.View.extend({
 
     /*
      * Show/hide information bar
+     *
+     * Input for now: true = info, false = test vision
+     * *** TODO: make this better ***
      */
-    showInfoBar: function() {
-        $("#InfoContainer").show();
+    showInfoBar: function(showInfo) {
+        if (showInfo) {
+            $("#TestVisionInfoContainer").hide();
+            $("#InfoContainer").show();
+        } else {
+            $("#InfoContainer").hide();
+            $("#TestVisionInfoContainer").show();
+        }
         $("#InfoContainerPadding").show();
     },
     hideInfoBar: function() {
@@ -339,6 +388,8 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showHome: function() {
         this.showPageLoading();
+        $("#TestVisionContainer").empty().hide();
+        $("#MasonryContainer").show();
 
         var ajaxUrl = "/api/get_main_page_visions";
 
@@ -378,11 +429,21 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     /*
+     * Show test vision
+     */
+    showTestVision: function() {
+        $("#MasonryContainer").hide();
+        $("#TestVisionContainer").empty().show();
+        this.renderSelectedVisions();
+    },
+
+    /*
      * Render user profile page
      */
     showProfile: function() {
         this.showPageLoading();
-        this.hideInfoBar();
+        $("#TestVisionContainer").empty().hide();
+        $("#MasonryContainer").show();
 
         var ajaxUrl = "/api/get_user_visions";
 
@@ -429,6 +490,7 @@ App.Backbone.Router = Backbone.Router.extend({
   routes: {
     ""                : "home",
     "profile"         : "profile",
+    "view_board"      : "viewBoard",
     "*action"         : "home",
   },
   home: function() {
@@ -437,6 +499,14 @@ App.Backbone.Router = Backbone.Router.extend({
     } else {
         App.Var.Model.setPageMode(App.Const.PageMode.HOME_GUEST);
     }
+  },
+  viewBoard: function() {
+      if (!userLoggedIn() &&
+          App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+        App.Var.Model.setPageMode(App.Const.PageMode.TEST_VISION);
+      } else {
+        assert(false, "Shouldn't be logged in or come from another page");
+      }
   },
   profile: function() {
     App.Var.Model.setPageMode(App.Const.PageMode.USER_PROFILE);
@@ -460,9 +530,18 @@ $(document).ready(function() {
         e.preventDefault();
         App.Var.Router.navigate("/", {trigger: true});
     });
+    $("#BackToMainPageButton").click(function(e) {
+        e.preventDefault();
+        App.Var.Router.navigate("/", {trigger: true});
+    });
     $("#NavProfile").click(function(e) {
         e.preventDefault();
         App.Var.Router.navigate("/profile", {trigger: true});
+    });
+
+    $("#ViewBoardButton").click(function(e) {
+        e.preventDefault();
+        App.Var.Router.navigate("/view_board", {trigger: true});
     });
 
     $("#ReloadHome").live("click", function(e) {

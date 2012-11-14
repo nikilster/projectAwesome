@@ -23,6 +23,10 @@ def index():
             return render_template('index.html', userName='')
     abort(405)
 
+@APP.route('/view_board', methods=['GET'])
+def view_board():
+    return redirect(url_for('index'))
+
 @APP.route('/profile', methods=['GET'])
 def user_profile():
     if request.method == 'GET':
