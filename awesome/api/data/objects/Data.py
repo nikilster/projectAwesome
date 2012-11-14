@@ -5,6 +5,7 @@
 	and create from json
 '''
 import json
+import inspect
 
 class Data:
 	
@@ -25,8 +26,20 @@ class Data:
 			self.__setAttr(field, dict)
 
 	#Returns the dictionary representation of the object so that it can be jsonified in an an array
+	#(for Picture) Also turn any embedded objects into dictionaries
 	def toDictionary(self):
-		return self.__dict__
+		dict = self.__dict__
+
+		#if we have any object
+		# (which are subclasses of Data)
+		for key in dict.keys():
+			value = dict[key]
+
+			#Dictionary it
+			if(isinstance(value, Data)):
+				dict[key] = value.toDictionary()
+
+		return dict
 
 	#Private (Not Really Private) Helper Methods
 	#http://stackoverflow.com/questions/70528/why-are-pythons-private-methods-not-actually-private

@@ -6,7 +6,7 @@
     Functions:
 
         Add User
-        Add Vision
+        Add Vision 
         Get Visions for User
         Get Main Page Visions
 
@@ -29,12 +29,19 @@ sys.path.append(OBJECT_FILES_PATH)
 
 from User import User
 from Vision import Vision
+from Picture import Picture
 from DB import DB
 
 #For date created
 from time import time
 
 class DataApi:
+
+    #Returned when we dont have an object for that id
+    NO_OBJECT_EXISTS_ID = -1
+
+    #Returned when the object does not exist
+    NO_OBJECT_EXISTS = None
 
     @staticmethod
     def addUser(firstName, lastName, email, password):
@@ -53,8 +60,10 @@ class DataApi:
         #TODO: figure out if the save was successful or not
         result = db.saveUser(newUser)
 
-        if(result): return newUser.id
-        else: return -1
+        if(result): 
+            return newUser.id
+        else: 
+            return DataApi.NO_OBJECT_EXISTS_ID
 
     '''
         Gets a user by id
@@ -66,7 +75,9 @@ class DataApi:
         db = DB()
         userJson = db.getUser(id)
 
-        if(userJson is None): return None
+        #handle None
+        if(userJson is None): 
+            return DataApi.NO_OBJECT_EXISTS
 
         #Convert to User object
         userObject = User()
@@ -76,8 +87,6 @@ class DataApi:
 
     '''
         Gets a user by email address
-        
-        **** STUB *****
     '''
     @staticmethod
     def getUserByEmail(email):
@@ -87,17 +96,22 @@ class DataApi:
         Add Vision
     '''
     @staticmethod
-    def addVision(userId, text, picture, parentId):
+    def addVision(userId, text, pictureId, parentId):
 
         db = DB()
 
         #serializing from json is the common use case
         newVision = Vision()
-        newVision.setInfo(db.getNextVisionId(), userId, text, picture, parentId, time())
+        newVision.setInfo(db.getNextVisionId(), userId, text, pictureId, parentId, time())
 
         #save
         result = db.saveVision(newVision)
-        return result
+        
+        if(result):
+            return newVision.id
+        else:
+            return DataApi.NO_OBJECT_EXISTS_ID
+            
 
     '''
         Get Vision
@@ -109,13 +123,60 @@ class DataApi:
         db = DB()
         visionJson = db.getVision(id)
 
-        if(visionJson is None): return None
+        #Handle None
+        if(visionJson is None): 
+            return DataApi.NO_OBJECT_EXISTS
 
         #Create to Vision Object
         visionObject = Vision()
         visionObject.setFromJson(visionJson)
 
+        #Get and set the picture object
+        picture = DataApi.getPicture(visionObject.pictureId)
+        visionObject.setPicture(picture)
+
         return visionObject
+
+    '''
+        Add Picture
+    '''
+    @staticmethod
+    def addPicture(url, filename):
+
+        db = DB()
+
+        #Create Object
+        newPicture = Picture()
+        newPicture.setInfo(db.getNextPictureId(), url, filename)
+
+        #save
+        result = db.savePicture(newPicture)
+
+        if(result):
+            return newPicture.id
+        else:
+            return DataApi.NO_OBJECT_EXISTS_ID
+
+
+    '''
+        Get Picture
+    '''
+    @staticmethod
+    def getPicture(id):
+
+        #Create the db
+        db = DB()
+        pictureJson = db.getPicture(id)
+
+        #handle None
+        if(pictureJson is None): 
+            return DataApi.NO_OBJECT_EXISTS
+
+        #Create Picture Object
+        pictureObject = Picture()
+        pictureObject.setFromJson(pictureJson)
+
+        return pictureObject
 
 
     '''

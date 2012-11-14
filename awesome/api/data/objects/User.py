@@ -7,6 +7,8 @@
 
 	Fields:
 			id
+			firstName
+			lastName
 			email
 			dateCreated
 			password

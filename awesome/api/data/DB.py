@@ -24,11 +24,13 @@ class DB:
 	#different setsz (uses the id  after the color)
 	USER_PREFIX = "user:"
 	VISION_PREFIX = "vision:"
+	PICTURE_PREFIX = "picture:"
 	USER_VISION_SET_PREFIX = "visionsSetForUser:"
 
 	#Increment Keys
 	USER_NEXT_ID_KEY = "global:nextUserId"
 	VISION_NEXT_ID_KEY = "global:nextVisionId"
+	PICTURE_NEXT_ID_KEY = "global:nextPictureId"
 
 	#set up redis
 	def __init__(self):
@@ -68,6 +70,18 @@ class DB:
 		visionKey = self.__getVisionKey(visionId)
 		return self.r.get(visionKey)
 
+
+	#Save the picture to the db
+	def savePicture(self, newPicture):
+		pictureKey = self.__getPictureKey(newPicture.id)
+		return self.r.set(pictureKey, newPicture.toJson())
+
+	#Get the picture from the db
+	def getPicture(self, pictureId):
+		pictureKey = self.__getPictureKey(pictureId)
+		return self.r.get(pictureKey)
+
+
 	#Get Visions for User
 	def getVisionsForUser(self, userId):
 		
@@ -99,6 +113,11 @@ class DB:
 
 		return visions
 
+
+
+	'''
+		Object Id Counters
+	'''
 	#Gets the next user id from the global counter in the database
 	def getNextUserId(self):
 		return self.r.incr(DB.USER_NEXT_ID_KEY)
@@ -107,6 +126,12 @@ class DB:
 	def getNextVisionId(self):
 		return self.r.incr(DB.VISION_NEXT_ID_KEY)
 	
+	#Gets the next picture id from the global counter in the database
+	def getNextPictureId(self):
+		return self.r.incr(DB.PICTURE_NEXT_ID_KEY)
+
+
+
 	#TODO: Check this
 	#Assume contiguous
 	def __getNumVisions(self):
@@ -117,20 +142,32 @@ class DB:
 	def __cleanInt(self, number):
 		return str(int(number))
 
-	#Function which returns the correct format of the string to index into
-	#the main user set 
+
+
+	'''
+		Keys
+	'''
+	#Function which returns the correct format of the string to index
+	#to get the user 
 	def __getUserKey(self, userId):
 		return DB.USER_PREFIX + self.__cleanInt(userId)
 
-	#Function which returns the correct format of the string to index into
-	#the vision set
+	#Function which returns the correct format of the string to index
+	#to get the vision
 	def __getVisionKey(self, visionId):
 		return DB.VISION_PREFIX + self.__cleanInt(visionId)
+
+	#Function which returns the correct format of the string to index 
+	#to get the picture
+	def __getPictureKey(self, pictureId):
+		return DB.PICTURE_PREFIX + self.__cleanInt(pictureId)
 
 	#Function which returns the correct format of the string to index into
 	#the user vision
 	def __getUserVisionSetKey(self, userId):
 		return DB.USER_VISION_SET_PREFIX + self.__cleanInt(userId)
+
+
 
 	#!!!!!!
 	def __secretClean(self):
