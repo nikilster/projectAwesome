@@ -6,7 +6,11 @@
     Functions:
 
         Add User
+        Get User
         Add Vision 
+        Get Vision
+        Add Picture
+        Get Picture
         Get Visions for User
         Get Main Page Visions
 
