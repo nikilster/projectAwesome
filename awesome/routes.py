@@ -37,6 +37,10 @@ def user_profile():
             return render_template('index.html', userName='')
     abort(405)
 
+@APP.route('/about', methods=['GET'])
+def about():
+    return render_template('about.html')
+
 @APP.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':

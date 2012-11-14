@@ -180,12 +180,15 @@ App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "div",
     className: "MasonryItem",
     initialize: function() {
-        _.bindAll(this, "itemSelect");
+        _.bindAll(this, "itemSelect",
+                        "mouseEnter", "mouseLeave");
         this.model.bind("change", this.render, this);
         this.render();
     },
     events: {
         "click .MasonryItemInner" : "itemSelect",
+        "mouseenter .MasonryItemInner" : "mouseEnter",
+        "mouseleave .MasonryItemInner" : "mouseLeave",
     },
     render: function() {
         var pageMode = App.Var.Model.pageMode();
@@ -195,18 +198,18 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
         }
+        var pictureDisplay = "block";
+        if (this.model.picture() == "") {
+            pictureDisplay = "none";
+        }
         var variables = {text : this.model.text(),
                          picture: this.model.picture(),
                          selected: selectedClass,
+                         pictureDisplay: pictureDisplay,
                         };
 
-        if (this.model.picture() == "") {
-            var template = _.template($("#VisionTemplate").html(), variables);
-            $(this.el).html(template);
-        } else {
-            var template = _.template($("#VisionImageTemplate").html(), variables);
-            $(this.el).html(template);
-        }
+        var template = _.template($("#VisionTemplate").html(), variables);
+        $(this.el).html(template);
 
         return this;
     },
@@ -214,6 +217,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             this.model.toggleSelected();
+            this.mouseEnter();
         } else if (pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.TEST_VISION) {
             // Skip
@@ -221,6 +225,21 @@ App.Backbone.View.Vision = Backbone.View.extend({
             $("#VisionDetailsModal").modal();
         } else {
             assert(false, "Invalid page mode in item select");
+        }
+    },
+    mouseEnter: function() {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+            if (!this.model.isSelected()) {
+                $(this.el).find(".AddVisionOverlay").show();
+            } else {
+                $(this.el).find(".RemoveVisionOverlay").show();
+            }
+        }
+    },
+    mouseLeave: function() {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+            $(this.el).find(".AddVisionOverlay").hide();
+            $(this.el).find(".RemoveVisionOverlay").hide();
         }
     },
 });
