@@ -36,6 +36,12 @@ class TestData:
 				'http://bluesuedeshoes.files.wordpress.com/2010/03/13zoolander.jpg', \
 				'http://www.geekosystem.com/wp-content/uploads/2011/01/zoolander.jpg', \
 				'http://t0.gstatic.com/images?q=tbn:ANd9GcSd61qC_S8cVn1biniVS4Sbppdc-xGx-eqNo8k1M86C3idBAN_gHc2h9CEg3g']
+
+	#TODO: picture deduplication -url hashing 
+
+	#picture filename
+	pictureFilename = "1"
+
 	#repost
 	parentId = 0
 
@@ -103,10 +109,23 @@ class TestData:
 
 		for i in range(0, numVisionsToAdd):
 			text = random.choice(TestData.texts)
-			picture = random.choice(TestData.pictures)
+			pictureId = self.addPicture()
 			parentId = TestData.parentId
 
 			#Add
-			DataApi.addVision(userId, text, picture, parentId)
+			DataApi.addVision(userId, text, pictureId, parentId)
 
+	''' 
+		Add Picture
+			Return Id
+	'''
+
+	def addPicture(self):
+
+		#Picture Fields
+		url = random.choice(TestData.pictures)
+		filename = TestData.pictureFilename
+
+		#Create
+		return DataApi.addPicture(url, filename)
 
