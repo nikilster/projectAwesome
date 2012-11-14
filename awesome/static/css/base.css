@@ -48,7 +48,10 @@ body {
 #MasonryContainer {
   overflow: auto;
 }
-.MasonryItem {
+li.MasonryItem {
+  float: left;
+}
+li.MasonryBox {
   width: 285px;
   margin: 7px;
   border: 0px;
@@ -56,7 +59,8 @@ body {
   float: left;
   background-color: #FFFFFF;
   overflow: hidden;
-  cursor: pointer;
+  cursor: default;
+  list-style-type: none;
 }
 .MasonryItemInner {
   padding: 4px;
@@ -67,6 +71,33 @@ body {
 }
 .MasonryItemSelected {
   border: 1px solid #e391b2;
+}
+.MasonryItemPointerCursor {
+  cursor: pointer;
+}
+.MasonryItemMoveCursor {
+  cursor: move;
+}
+.VisionToolbar {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+}
+.VisionToolbarButton {
+  display: inline-block;
+  font-size: 10pt;
+  line-height: 1.2;
+  margin: 2px 2px 2px 0px;
+  padding: 3px;
+  border: 1px solid white;
+  background-color: rgba(0, 0, 0, 0.3);
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.VisionToolbarButton:hover {
+  background-color: rgba(100, 100, 100, 0.3);
+  cursor: pointer;
 }
 .VisionOverlay {
   display: none;

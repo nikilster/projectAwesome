@@ -22,6 +22,12 @@ function assert(exp, message) {
   }
 }
 
+function listMoveItem(list, oldIndex, newIndex) {
+    var oldLength = list.length;
+    list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
+    assert(list.length == oldLength, "Length of list should not be modified!");
+}   
+
 /******************************************************************************
  * Utility functions for getting/setting global state
  */
@@ -170,6 +176,12 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         }
         return false;
     },
+    moveSelectedVision: function(srcIndex, destIndex) {
+        // We use a silent move because the view is already updated by
+        // jQuery UI sortable
+        listMoveItem(this.selectedVisions().models,
+                     srcIndex, destIndex);
+    },
 });
 
 /******************************************************************************
@@ -177,8 +189,8 @@ App.Backbone.Model.Page = Backbone.Model.extend({
  */
 
 App.Backbone.View.Vision = Backbone.View.extend({
-    tagName: "div",
-    className: "MasonryItem",
+    tagName: "li",
+    className: "MasonryItem  MasonryBox",
     initialize: function() {
         _.bindAll(this, "itemSelect",
                         "mouseEnter", "mouseLeave");
@@ -202,10 +214,21 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (this.model.picture() == "") {
             pictureDisplay = "none";
         }
+        var cursorClass = "";
+        if (pageMode == App.Const.PageMode.TEST_VISION) {
+            cursorClass = "MasonryItemMoveCursor";
+        } else if (pageMode == App.Const.PageMode.HOME_GUEST ||
+                   pageMode == App.Const.PageMode.USER_PROFILE) {
+            cursorClass = "MasonryItemPointerCursor";
+        }
+        var moveDisplay = "none";
+
         var variables = {text : this.model.text(),
                          picture: this.model.picture(),
                          selected: selectedClass,
                          pictureDisplay: pictureDisplay,
+                         cursorClass: cursorClass,
+                         moveDisplay: moveDisplay,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -255,6 +278,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "showInfoBar",
                         "hideInfoBar",
                         "changeInSelectedVisions",
+                        "selectedVisionsSortStart",
+                        "selectedVisionsSortChange",
+                        "selectedVisionsSortStop",
                         "showHome",
                         "renderHome",
                         "renderHomeError",
@@ -269,6 +295,8 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.selectedVisions().bind("remove", 
                                           this.changeInSelectedVisions,
                                           this);
+        // initialize a few variables
+        this.selectedVisionMoveIndex = -1;
     },
 
     /*
@@ -311,7 +339,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         // TODO: Don't need to reload once we know heights of images
         masonryContainer.masonry({
-            itemSelector: "div.MasonryItem",
+            itemSelector: "li.MasonryItem",
             columnWidth:299
         }).imagesLoaded(function() {
             $("#MasonryContainer").masonry('reload');
@@ -337,15 +365,45 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         // TODO: Don't need to reload once we know heights of images
         masonryContainer.masonry({
-            itemSelector: "div.MasonryItem",
+            itemSelector: "li.MasonryItem",
             columnWidth:299
         }).imagesLoaded(function() {
             $("#TestVisionContainer").masonry('reload');
+        });
+        masonryContainer.sortable({
+            items: "li.MasonryItem",
+            distance: 12,
+            forcePlaceholderSize: true,
+            tolerance: 'intersect',
+            start: this.selectedVisionsSortStart,
+            change: this.selectedVisionsSortChange,
+            stop: this.selectedVisionsSortStop,
         });
     },
     renderSelectedVision: function(vision, index) {
         var vision = new App.Backbone.View.Vision({ model: vision });
         this.testVisions.push(vision.el);
+    },
+    selectedVisionsSortStart: function(event, ui) {
+        ui.item.removeClass("MasonryItem");
+        ui.item.parent().masonry('reload');
+
+        this.selectedVisionMoveIndex = ui.item.index();
+    },
+    selectedVisionsSortStop: function(event, ui) {
+        ui.item.addClass("MasonryItem");
+        ui.item.parent().masonry('reload');
+        var destIndex = ui.item.index();
+        if (destIndex != this.selectedVisionMoveIndex &&
+            this.selectedVisionMoveIndex >= 0) {
+            this.model.moveSelectedVision(this.selectedVisionMoveIndex,
+                                          destIndex);
+            console.log("SORT: " +
+                        JSON.stringify(this.model.selectedVisions()));
+        }
+    },
+    selectedVisionsSortChange: function(event, ui) {
+        ui.item.parent().masonry('reload');
     },
 
     /*
