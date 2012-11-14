@@ -24,16 +24,19 @@ var USER = null;
                 <a id="NavHome" href="/">Project [AWESOME]</a>
             </div>
 
-            {% if userName != "" %}
             <div style="position: absolute; top:0px; right:0px;">
+                <a class="NavButton" href="{{ url_for('about') }}">
+                    About
+                </a>
+                {% if userName != "" %}
                 <a id="NavProfile" class="NavButton" href="/profile">
                     {{ userName }}
                 </a>
                 <a id="NavLogout" class="NavButton" href="/logout">
                     Logout
                 </a>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
         <div id="InfoContainer"
              style="position: absolute; top:100%; left: 50%;
