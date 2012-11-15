@@ -74,16 +74,32 @@ App.Backbone.Model.User = Backbone.Model.extend({
 
 });
 
+App.Backbone.Model.Picture = Backbone.Model.extend({
+    defaults: {
+        id: -1,
+        filename: "",
+        url: "",
+    },
+    initialize: function() {
+    },
+    pictureId: function() { return this.get("id"); },
+    url: function() { return this.get("url"); },
+});
+
 App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
         id: -1,
         parentId: -1,
         userId: -1,
         text: "",
-        picture: "",
+        picture: null,
         isSelected: false,
     },
     initialize: function() {
+        this.set({
+            picture: new App.Backbone.Model.Picture(this.get("picture"))
+        });
+
         if (null != App.Var.Model &&
             null != App.Var.Model.getSelectedVision(this.visionId())) {
             this.set({isSelected: true});
@@ -210,9 +226,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
         }
-        var pictureDisplay = "block";
-        if (this.model.picture() == "") {
-            pictureDisplay = "none";
+        var pictureDisplay = "none";
+        var pictureUrl = "";
+        if (null != this.model.picture()) {
+            pictureDisplay = "block";
+            pictureUrl = this.model.picture().url();
         }
         var cursorClass = "";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
@@ -224,9 +242,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var moveDisplay = "none";
 
         var variables = {text : this.model.text(),
-                         picture: this.model.picture(),
                          selected: selectedClass,
                          pictureDisplay: pictureDisplay,
+                         pictureUrl: pictureUrl,
                          cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
                         };
