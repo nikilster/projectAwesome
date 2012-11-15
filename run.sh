@@ -3,15 +3,34 @@
 #Run.sh - Sets up the web app!
 ####################
 
-#Regenerate the data?
-WIPE_AND_GENERATE_DATA=true
-echo "WIPE_AND_GENERATE_DATA = True"
-echo "Press control+c NOW if don't want to wipe data!"
+# Read command line parameters
+
+WIPE_AND_GENERATE_DATA=false
+
+while getopts "wh" opt; do
+    case $opt in
+        w)
+            WIPE_AND_GENERATE_DATA=true
+            echo "WIPE"
+            ;;
+        h)  echo ""
+            echo "Usage: run.sh [-w to wipe redis DB]"
+            echo ""
+            exit 1
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+echo "WIPE_AND_GENERATE_DATA = $WIPE_AND_GENERATE_DATA"
 
 #Activate the virutal envronment
+echo "Activating virtual environment"
 . venv/bin/activate
-
-
 
 #If redis is not running, start redis
 #http://www.anyexample.com/linux_bsd/bash/check_if_program_is_running_with_bash_shell_script.xml
