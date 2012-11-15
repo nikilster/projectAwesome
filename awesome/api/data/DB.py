@@ -23,9 +23,11 @@ class DB:
 	#Prefixes for the 
 	#different setsz (uses the id  after the color)
 	USER_PREFIX = "user:"
+	EMAIL_PREFIX = "email:" 	#email -> userId
 	VISION_PREFIX = "vision:"
 	PICTURE_PREFIX = "picture:"
 	USER_VISION_SET_PREFIX = "visionsSetForUser:"
+
 
 	#Increment Keys
 	USER_NEXT_ID_KEY = "global:nextUserId"
@@ -39,14 +41,35 @@ class DB:
 
 	#Save the user to db
 	def saveUser(self, newUser):
+		
+		#Save user to the user id set
 		userKey = self.__getUserKey(newUser.id)
-		return self.r.set(userKey, newUser.toJson())
+		save1 = self.r.set(userKey, newUser.toJson())
+
+		#Save the user to the Email -> userId mapping
+		emailKey = self.__getEmailKey(newUser.email)
+		userId = self.__cleanInt(newUser.id)
+		save2 = self.r.set(emailKey, userId)
+
+		#Return if true if both are successful
+		return save1 and save2
 
 	#Get the user from the db
 	def getUser(self, userId):
 		userKey = self.__getUserKey(userId)
 		return self.r.get(userKey)
 
+
+	#Get the user by email
+	def getUserFromEmail(self, email):
+		emailKey = self.__getEmailKey(email)
+		userId = self.r.get(emailKey)
+
+		#If the user exists
+		if userId is not None:
+			return self.getUser(userId)
+		else:
+			return None
 
 	#Save the vision to the db
 	def saveVision(self, newVision):
@@ -59,10 +82,9 @@ class DB:
 		#This is actually a set
 		userVisionSetKey = self.__getUserVisionSetKey(newVision.userId)
 		visionId = self.__cleanInt(newVision.id)
-
-		#save 
 		save2 = self.r.sadd(userVisionSetKey, visionId)
 
+		#Return whether both different saves are successful 
 		return save1 and save2
 
 	#Get Vision
@@ -132,6 +154,10 @@ class DB:
 	def __cleanInt(self, number):
 		return str(int(number))
 
+	#Clean the email passed in address
+	#TODO: do this!
+	def __cleanEmail(self, email):
+		return str(email)
 
 
 	'''
@@ -141,6 +167,9 @@ class DB:
 	#to get the user 
 	def __getUserKey(self, userId):
 		return DB.USER_PREFIX + self.__cleanInt(userId)
+
+	def __getEmailKey(self, email):
+		return DB.EMAIL_PREFIX + self.__cleanEmail(email)
 
 	#Function which returns the correct format of the string to index
 	#to get the vision

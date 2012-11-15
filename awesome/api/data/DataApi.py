@@ -79,7 +79,7 @@ class DataApi:
         db = DB()
         userJson = db.getUser(id)
 
-        #handle None
+        #Handle None
         if(userJson is None): 
             return DataApi.NO_OBJECT_EXISTS
 
@@ -93,8 +93,21 @@ class DataApi:
         Gets a user by email address
     '''
     @staticmethod
-    def getUserByEmail(email):
-        return DataApi.getUser(1)
+    def getUserFromEmail(email):
+        
+        db = DB()
+        userJson = db.getUserFromEmail(email)
+
+        #Handle No User
+        if(userJson is None): 
+            return DataApi.NO_OBJECT_EXISTS
+
+        #Convert to user Object
+        userObject = User()
+        userObject.setFromJson(userJson)
+
+        return userObject
+
 
     '''
         Add Vision

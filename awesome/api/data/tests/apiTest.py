@@ -18,14 +18,14 @@ visionId = DataApi.addVision("1", "Live Well!", pictureId, 0)
 print "Saved Vision, got id = " + str(visionId)
 print(DataApi.getVision(visionId))
 
-'''
 DataApi.addUser('nikil', 'viswanthan', 'nikilster@gmail.com', 'as')
-print(DataApi.getUser(1))
+print(DataApi.getUserFromEmail('nikilster@gmail.com'))
 
+'''
 DataApi.addVision('1', 'I am awesome!!!', ':)', '1')
 
 print(DataApi.getVision(3))
-'''
+
 
 print(DataApi.getVisionsForUser(1))
 
@@ -33,3 +33,4 @@ visions = DataApi.getMainPageVisions()
 
 for vision in visions:
 	print vision.toDictionary()
+'''
