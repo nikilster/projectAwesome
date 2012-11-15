@@ -23,8 +23,9 @@
             {% endwith %}
 
             <form action="{{ url_for('login') }}" method="POST">
-                <input class="RegisterField" type="text" name="email"/>
-                <input class="RegisterField" type="password" name="password"/>
+                Email: <input class="RegisterField" type="text" name="email"/>
+                <br>
+                Password: <input class="RegisterField" type="password" name="password"/>
                 <br>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
