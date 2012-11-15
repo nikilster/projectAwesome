@@ -10,11 +10,34 @@ from ..util.Verifier import Verifier
 from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
 
-from FlashMessages import RegisterError
+from FlashMessages import *
 
 class Api:
+    @staticmethod
+    def loginUser(email, passwordText):
+        email = email.strip().lower()
+        passwordText = passwordText.strip()
+
+        errorMsg = None
+
+        user = DataApi.getUserFromEmail(email)
+
+        if len(email) <= 0:
+            errorMsg = LoginError.EMAIL_REQUIRED
+        elif DataApi.NO_OBJECT_EXISTS == user:
+            errorMsg = LoginError.EMAIL_NOT_FOUND
+        elif len(passwordText) <= 0:
+            errorMsg = LoginError.PASSWORD_REQUIRED
+        elif not PasswordEncrypt.verifyPassword(passwordText, user.password):
+            errorMsg = LoginError.PASSWORD_INVALID
+        else:
+            return (user, None)
+        assert errorMsg != None, "Error msg should exist"
+        return (None, errorMsg)
+       
+
     '''
-        addUser - adds new user if input is OK
+        registerUser - adds new user if input is OK
 
         This cleans up the input, verifies it, and creates the user if it can.
         If not, we return an error message.
@@ -22,7 +45,7 @@ class Api:
         Returns: (newUserId or None, errorMessage or "" if user created)
     '''
     @staticmethod
-    def addUser(firstName, lastName, email, passwordText):
+    def registerUser(firstName, lastName, email, passwordText):
         firstName = firstName.strip()
         lastName = lastName.strip()
         email = email.strip().lower()

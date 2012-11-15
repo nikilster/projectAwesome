@@ -49,8 +49,18 @@ def login():
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
 
-        session['user'] = { 'userName' : 'Derek' }
-        return redirect (url_for('index'))
+        Logger.debug("Email: " + str(email))
+
+        (user, errorMsg) = Api.loginUser(email, password)
+
+        if user:
+            Logger.debug("Name: " + user.firstName)
+            session['user'] = { 'userName' : user.firstName }
+            return redirect(url_for('user_profile'))
+        else:
+            assert errorMsg != None, "Error msg should exist"
+            flash(errorMsg, LoginError.TAG)
+            return redirect (url_for('login'))
     abort(405)
 
 @APP.route('/logout', methods=['GET'])
@@ -85,8 +95,8 @@ def register_user():
             selectedVisionsJson = session['selectedVisions']
         '''
 
-        (newUserId, errorMsg) = Api.addUser(firstName, lastName,
-                                            email, password)
+        (newUserId, errorMsg) = Api.registerUser(firstName, lastName,
+                                                 email, password)
 
         Logger.debug("NEW USER ID: " + str(newUserId))
         if None != newUserId:

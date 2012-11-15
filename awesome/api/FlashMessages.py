@@ -2,6 +2,14 @@
 # Flash messages
 #
 
+class LoginError:
+    TAG = "LoginError"
+    EMAIL_REQUIRED = "Email address is required"
+    EMAIL_NOT_FOUND = "Email address not found"
+    PASSWORD_REQUIRED = "Password is required"
+    PASSWORD_INVALID = "Password is invalid"
+    DB_ERROR = "Database error. Sorry, please try again!"
+
 class RegisterError:
     TAG = "RegisterError"
     FIRST_NAME_REQUIRED = "First name is required"
