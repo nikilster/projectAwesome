@@ -74,16 +74,32 @@ App.Backbone.Model.User = Backbone.Model.extend({
 
 });
 
+App.Backbone.Model.Picture = Backbone.Model.extend({
+    defaults: {
+        id: -1,
+        filename: "",
+        url: "",
+    },
+    initialize: function() {
+    },
+    pictureId: function() { return this.get("id"); },
+    url: function() { return this.get("url"); },
+});
+
 App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
         id: -1,
         parentId: -1,
         userId: -1,
         text: "",
-        picture: "",
+        picture: null,
         isSelected: false,
     },
     initialize: function() {
+        this.set({
+            picture: new App.Backbone.Model.Picture(this.get("picture"))
+        });
+
         if (null != App.Var.Model &&
             null != App.Var.Model.getSelectedVision(this.visionId())) {
             this.set({isSelected: true});
@@ -110,6 +126,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
             App.Var.Model.removeFromSelectedVisions(this);
         }
         this.set({isSelected: !this.get("isSelected")});
+    },
+    deepClone: function() {
+        var cloneModel = this.clone();
+        cloneModel.set({ picture: this.picture().clone() });
+        return cloneModel;
     },
 });
 
@@ -163,7 +184,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         if (vision == null) {
             // Note that we clone the model. We want our own copy for in
             // case we want to let the user edit it in some way
-            this.selectedVisions().unshift(model.clone());
+            this.selectedVisions().unshift(model.deepClone());
             return true;
         }
         return false;
@@ -210,9 +231,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
         }
-        var pictureDisplay = "block";
-        if (this.model.picture() == "") {
-            pictureDisplay = "none";
+        var pictureDisplay = "none";
+        var pictureUrl = "";
+        if (null != this.model.picture()) {
+            pictureDisplay = "block";
+            pictureUrl = this.model.picture().url();
         }
         var cursorClass = "";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
@@ -224,9 +247,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var moveDisplay = "none";
 
         var variables = {text : this.model.text(),
-                         picture: this.model.picture(),
                          selected: selectedClass,
                          pictureDisplay: pictureDisplay,
+                         pictureUrl: pictureUrl,
                          cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
                         };
@@ -458,6 +481,13 @@ App.Backbone.View.Page = Backbone.View.extend({
             $("#ViewBoardButton").show();
         }
         console.log("Visions: " + JSON.stringify(this.model.selectedVisions()));
+
+        // Update hidden field in registration
+        var visionIds = [];
+        for (var i = 0 ; i < length ; i++) {
+            visionIds.push(this.model.selectedVisions().at(i).visionId());
+        }
+        $("#UserSelectedVisions").first().attr("value", JSON.stringify(visionIds));
     },
 
     /*
@@ -628,6 +658,9 @@ $(document).ready(function() {
     $("#ReloadProfile").live("click", function(e) {
         e.preventDefault();
         App.Var.View.showProfile();
+    });
+    $("#JoinSiteButton").click(function() {
+        $("#RegisterForm").first().submit();
     });
 });
 
