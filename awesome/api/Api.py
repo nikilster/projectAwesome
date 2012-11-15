@@ -10,7 +10,7 @@ from ..util.Verifier import Verifier
 from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
 
-from FlashMessages import *
+from FlashMessages import RegisterError
 
 class Api:
     '''
@@ -28,7 +28,7 @@ class Api:
         email = email.strip().lower()
         passwordText = passwordText.strip()
 
-        errorMsg = ""
+        errorMsg = None
 
         if len(firstName) <= 0:
             errorMsg = RegisterError.FIRST_NAME_REQUIRED
@@ -42,13 +42,16 @@ class Api:
             errorMsg = RegisterError.EMAIL_REQUIRED
         elif not Verifier.emailValid(email):
             errorMsg = RegisterError.EMAIL_INVALID
-        # TODO: NEED TO CHECK EMAIL EXISTS
         elif len(passwordText) <= 0:
             errorMsg = RegisterError.PASSWORD_REQUIRED
         elif not Verifier.passwordValid(passwordText):
             errorMsg = RegisterError.PASSWORD_INVALID
+        else:
+            user = DataApi.getUserFromEmail(email)
+            if DataApi.NO_OBJECT_EXISTS != user:
+                errorMsg = RegisterError.EMAIL_TAKEN
 
-        if errorMsg != "":
+        if errorMsg == None:
             passwordHash = PasswordEncrypt.genHash(passwordText)
 
             Logger.debug("Name: %s %s, Email: %s, Pass: %s [%s]" % \
@@ -57,10 +60,10 @@ class Api:
 
             # Just need to add new user here and login
             userId = DataApi.addUser(firstName, lastName, email, passwordHash)
-            if userId  == DataApi.NO_OBJECT_EXISTS_ID:
-                return (None, RegisterError.DB_ERROR)
+            if userId != DataApi.NO_OBJECT_EXISTS_ID:
+                return (userId, None)
             else:
-                return (userId, "")
+                return (None, RegisterError.DB_ERROR)
         else:
             return (None, errorMsg)
 

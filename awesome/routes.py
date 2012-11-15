@@ -88,6 +88,7 @@ def register_user():
         (newUserId, errorMsg) = Api.addUser(firstName, lastName,
                                             email, password)
 
+        Logger.debug("NEW USER ID: " + str(newUserId))
         if None != newUserId:
             newUser = Api.getUserById(newUserId)
             assert newUser, "New user should exist"
@@ -120,8 +121,6 @@ def apiGetMainPageVisions():
 @APP.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
     visions = Api.getVisionsForUser(1)
-
-    Logger.debug("Hello")
 
     data = { 'visionList' : [] }
 
