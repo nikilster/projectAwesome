@@ -127,6 +127,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         }
         this.set({isSelected: !this.get("isSelected")});
     },
+    deepClone: function() {
+        var cloneModel = this.clone();
+        cloneModel.set({ picture: this.picture().clone() });
+        return cloneModel;
+    },
 });
 
 App.Backbone.Model.VisionList = Backbone.Collection.extend({
@@ -179,7 +184,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         if (vision == null) {
             // Note that we clone the model. We want our own copy for in
             // case we want to let the user edit it in some way
-            this.selectedVisions().unshift(model.clone());
+            this.selectedVisions().unshift(model.deepClone());
             return true;
         }
         return false;
