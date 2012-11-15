@@ -5,6 +5,8 @@ from flask import Response
 
 from . import APP
 
+import json
+
 from util.Logger import Logger
 
 from api.Api import Api
@@ -94,12 +96,6 @@ def register_user():
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
         
-        '''
-        selectedVisions = []
-        if 'selectedVisions' in session:
-            selectedVisionsJson = session['selectedVisions']
-        '''
-
         (newUserId, errorMsg) = Api.registerUser(firstName, lastName,
                                                  email, password)
 
@@ -108,12 +104,31 @@ def register_user():
             newUser = Api.getUserById(newUserId)
             assert newUser, "New user should exist"
 
-            '''
-                Logger.debug("Existing selected visions: " +
-                            str(session['selectedVisions']))
-            '''
-
             SessionManager.addUser(newUser)
+
+            # Add selected visions if list input valid
+            selectedVisions = []
+            if 'selectedVisions' in session:
+                data = None
+                try:
+                    data = json.loads(session['selectedVisions'])
+                except:
+                    pass
+                if data != None and isinstance(data, list):
+                    ok = True
+                    for item in data:
+                        if not isinstance(item, int):
+                            ok = False
+                            break
+                    if True == ok:
+                        selectedVisions = data
+
+                if len(selectedVisions) > 0:
+                    Logger.debug("Existing selected visions: " +
+                                 str(session['selectedVisions']))
+
+                    Api.repostVisionList(newUser.id, selectedVisions)
+                    session.pop('selectedVisions', None)
 
             return redirect(url_for('user_profile'))
         else:

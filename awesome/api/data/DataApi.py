@@ -134,10 +134,10 @@ class DataApi:
 
     '''
     @staticmethod
-    def repostVision(visionId, userId):
+    def repostVision(userId, visionId):
 
         db = DB()
-        originalVision = DataApi.getVision(userId)
+        originalVision = DataApi.getVision(visionId)
 
         #check to make sure visionId was a valid id
         #if not, return error

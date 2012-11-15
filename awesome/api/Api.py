@@ -13,6 +13,11 @@ from ..util.Logger import Logger
 from FlashMessages import *
 
 class Api:
+    '''
+        loginUser - verifies input, and returns user if exists
+
+        Returns: (user or None, errorMessage if user is None)
+    '''
     @staticmethod
     def loginUser(email, passwordText):
         email = email.strip().lower()
@@ -89,6 +94,12 @@ class Api:
                 return (None, RegisterError.DB_ERROR)
         else:
             return (None, errorMsg)
+
+    @staticmethod
+    def repostVisionList(userId, visionIds):
+        for visionId in visionIds:
+            Logger.debug("REPOST: " + str(visionId) +  "USER: " + str(userId))
+            DataApi.repostVision(userId, visionId)
 
     @staticmethod
     def getUserById(userId):
