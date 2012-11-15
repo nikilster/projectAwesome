@@ -129,6 +129,27 @@ class DataApi:
         else:
             return DataApi.NO_OBJECT_EXISTS_ID
             
+    '''
+        Repost Vision
+
+    '''
+    @staticmethod
+    def repostVision(visionId, userId):
+
+        db = DB()
+        originalVision = DataApi.getVision(userId)
+
+        #check to make sure visionId was a valid id
+        #if not, return error
+        if originalVision is None:
+            return DataApi.NO_OBJECT_EXISTS_ID
+
+        #Set the text, userId and parentid
+        text = originalVision.text
+        pictureId = originalVision.pictureId
+        parentId = originalVision.id
+
+        return DataApi.addVision(userId, text, pictureId, parentId)
 
     '''
         Get Vision
