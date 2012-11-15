@@ -83,21 +83,16 @@ class DB:
 
 
 	#Get Visions for User
-	def getVisionsForUser(self, userId):
+	def getVisionIdsForUser(self, userId):
 		
 		#Get User Vision Set
 		userVisionSetKey = self.__getUserVisionSetKey(userId)
 		visionIds = self.r.smembers(userVisionSetKey)
 
-		#Get the visions
-		visions = []
-		for id in visionIds:
-			visions.append(self.getVision(id))
+		return visionIds
 
-		return visions
-
-	#Get the maxCount most recent visions
-	def mostRecentVisions(self, maxCount):
+	#Get the ids of the maxCount most recent visions
+	def mostRecentVisionIds(self, maxCount):
 
 		#Return the min of (existing, maxtoreturn <- passed by caller)
 		numTotalVisions = self.__getNumVisions()
@@ -106,13 +101,8 @@ class DB:
 		#non inclusive
 		finalRangeIndex = numTotalVisions - numVisionsToReturn
 
-		#Get Visions
-		visions = []
-		for visionId in range(numTotalVisions, finalRangeIndex, -1):
-			visions.append(self.getVision(visionId))
-
-		return visions
-
+		#Get Vision Ids
+		return range(numTotalVisions, finalRangeIndex, -1)
 
 
 	'''

@@ -192,13 +192,11 @@ class DataApi:
         #Number of max visions to return
         MAX_VISIONS = 100
 
-        #Get from db
+        #Get vision ids from db
         db = DB()
-        visionsJson = db.mostRecentVisions(MAX_VISIONS)
+        visionIds = db.mostRecentVisionIds(MAX_VISIONS)
 
-        #Create Objects
-        return DataApi.__visionObjectsFromJson(visionsJson)
-
+        return DataApi.__visionObjectsFromIds(visionIds)
 
     '''
         Get All Visions for User
@@ -208,23 +206,21 @@ class DataApi:
 
         #Get from Db
         db = DB()
-        visionsJson = db.getVisionsForUser(userId)
+        visionIds = db.getVisionIdsForUser(userId)
 
         #Create objects
-        return DataApi.__visionObjectsFromJson(visionsJson)
+        return DataApi.__visionObjectsFromIds(visionIds)
 
 
     '''
         Vision Objects From Json    
     '''
     @staticmethod
-    def __visionObjectsFromJson(visionsJson):
+    def __visionObjectsFromIds(visionIds):
         
-        #Create Vision Objects
+        #Get Visions
         visions = []
-        for json in visionsJson:
-            v = Vision()
-            v.setFromJson(json)
-            visions.append(v)
-
+        for visionId in visionIds:
+            visions.append(DataApi.getVision(visionId))
+        
         return visions
