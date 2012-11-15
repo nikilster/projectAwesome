@@ -108,7 +108,7 @@ def apiGetMainPageVisions():
     data = { 'visionList' : [] }
 
     for vision in visions:
-        data['visionList'].append(vision.__dict__)
+        data['visionList'].append(vision.toDictionary())
 
     return jsonify(data)
 
@@ -121,7 +121,7 @@ def apiGetUserVisions():
     data = { 'visionList' : [] }
 
     for vision in visions:
-        data['visionList'].append(vision.__dict__)
+        data['visionList'].append(vision.toDictionary())
 
     return jsonify(data)
 
