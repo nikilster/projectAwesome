@@ -84,6 +84,7 @@ def register():
         if 'selectedVisions' in request.form:
             session['selectedVisions'] = str(request.form['selectedVisions'])
         return render_template('register.html')
+    abort(405)
 
 @APP.route('/register_user', methods=['POST'])
 def register_user():
@@ -123,24 +124,30 @@ def register_user():
 
 @APP.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
-    visions = Api.getMainPageVisions()
+    if request.method == 'GET':
+        visions = Api.getMainPageVisions()
 
-    data = { 'visionList' : [] }
+        data = { 'visionList' : [] }
+        for vision in visions:
+            data['visionList'].append(vision.toDictionary())
 
-    for vision in visions:
-        data['visionList'].append(vision.toDictionary())
-
-    return jsonify(data)
+        return jsonify(data)
+    abort(405)
 
 @APP.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
-    visions = Api.getVisionsForUser(1)
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
 
-    data = { 'visionList' : [] }
+            visions = Api.getVisionsForUser(userInfo['id'])
 
-    for vision in visions:
-        data['visionList'].append(vision.toDictionary())
+            data = { 'visionList' : [] }
+            for vision in visions:
+                data['visionList'].append(vision.toDictionary())
 
-    return jsonify(data)
+            return jsonify(data)
+        abort(403)
+    abort(405)
 
 # $eof
