@@ -10,12 +10,16 @@ from util.Logger import Logger
 from api.Api import Api
 from api.FlashMessages import *
 
+from util.SessionManager import SessionManager
+
+
 @APP.route('/', methods=['GET'])
 def index():
     if request.method == 'GET':
-        if 'user' in session:
-            userName = session['user']['userName']
-            return render_template('index.html', userName=userName)
+        Logger.debug("SESSION CLASS: " + session.__class__.__name__)
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('index.html', userName=userInfo['firstName'])
         else:
             return render_template('index.html', userName='')
     abort(405)
@@ -27,9 +31,9 @@ def view_board():
 @APP.route('/profile', methods=['GET'])
 def user_profile():
     if request.method == 'GET':
-        if 'user' in session:
-            userName = session['user']['userName']
-            return render_template('index.html', userName=userName)
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('index.html', userName=userInfo['firstName'])
         else:
             return render_template('index.html', userName='')
     abort(405)
@@ -41,7 +45,7 @@ def about():
 @APP.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        if 'user' in session:
+        if SessionManager.userLoggedIn():
             return redirect(url_for('index'))
         else:
             return render_template('login.html')
@@ -55,7 +59,7 @@ def login():
 
         if user:
             Logger.debug("Name: " + user.firstName)
-            session['user'] = { 'userName' : user.firstName }
+            SessionManager.addUser(user)
             return redirect(url_for('user_profile'))
         else:
             assert errorMsg != None, "Error msg should exist"
@@ -66,8 +70,8 @@ def login():
 @APP.route('/logout', methods=['GET'])
 def logout():
     if request.method == 'GET':
-        if 'user' in session:
-            session.pop('user', None)
+        if SessionManager.userLoggedIn():
+            SessionManager.removeUser();
         return redirect(url_for('index'))
     abort(405)
 
@@ -108,7 +112,7 @@ def register_user():
                             str(session['selectedVisions']))
             '''
 
-            session['user'] = { 'userName' : newUser.firstName }
+            SessionManager.addUser(newUser)
 
             return redirect(url_for('user_profile'))
         else:
