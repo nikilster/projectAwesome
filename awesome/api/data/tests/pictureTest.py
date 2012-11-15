@@ -11,7 +11,7 @@ from Picture import Picture
 from Vision import Vision
 
 v = Vision()
-v.setInfo(1,1,"hi!", 2, 0, '12312312323')
+v.setInfo(1,1,"hi!", 1, 0, '12312312323')
 
 p = Picture()
 #filename is the name of the file on the web server

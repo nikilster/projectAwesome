@@ -5,8 +5,12 @@
 '''
 
 #Add the api.py (parent) folder
+import os
 import sys
-sys.path.append("../")
+dir = os.path.dirname(__file__)
+relativeDataApiPath = "../"
+OBJECT_FILES_PATH = os.path.join(dir, relativeDataApiPath)
+sys.path.append(OBJECT_FILES_PATH)
 from DataApi import DataApi
 
 import random
