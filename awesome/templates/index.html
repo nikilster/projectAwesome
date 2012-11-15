@@ -25,6 +25,9 @@ var USER = null;
             </div>
 
             <div style="position: absolute; top:0px; right:0px;">
+                <span id="AddItemButton" style="display:none;">
+                    + Vision
+                </span>
                 <a class="NavButton" href="{{ url_for('about') }}">
                     About
                 </a>
@@ -115,6 +118,18 @@ var USER = null;
             <div class="btn btn-large" data-dismiss="modal">Close</div>
         </div>
     </div>
+
+    <div id="AddItemModal" class="modal hide fade">
+        <div class="modal-header" style="font-size:18pt">
+            Add Vision
+        </div>
+        <div class="modal-body">
+            <div>Stuff</div>
+
+            <div class="btn btn-large" data-dismiss="modal">Close</div>
+        </div>
+    </div>
+
 </body>
 
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>

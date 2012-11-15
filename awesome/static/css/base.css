@@ -23,6 +23,20 @@
   text-decoration: underline;
   background-color: #555555;
 }
+#AddItemButton {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1.2;
+  color: #AAAAAA;
+  padding: 10px 10px;
+  background-color: #444444;
+}
+#AddItemButton:hover {
+  color: #AAAAAA;
+  text-decoration: underline;
+  background-color: #555555;
+  cursor: pointer;
+}
 body {
   background-color: #F8F8F8;
 }

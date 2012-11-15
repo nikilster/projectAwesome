@@ -300,6 +300,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "hidePageLoading",
                         "showInfoBar",
                         "hideInfoBar",
+                        "showAddItemButton",
+                        "hideAddItemButton",
                         "changeInSelectedVisions",
                         "selectedVisionsSortStart",
                         "selectedVisionsSortChange",
@@ -332,15 +334,19 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             this.showInfoBar(true);
+            this.hideAddItemButton();
             this.showHome();
         } else if (pageMode == App.Const.PageMode.TEST_VISION) {
             this.showInfoBar(false);
+            this.hideAddItemButton();
             this.showTestVision();
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
             this.hideInfoBar();
+            this.hideAddItemButton();
             this.showHome();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             this.hideInfoBar();
+            this.showAddItemButton();
             this.showProfile();
         } else {
             assert(false, "Invalid page mode in changePageMode");
@@ -443,6 +449,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     hidePageLoading: function() {
         $("#PageLoadingNotice").hide();
     },
+
+    /*
+     * Show/hide Add Item button
+     */
+    showAddItemButton: function() { $("#AddItemButton").show(); },
+    hideAddItemButton: function() { $("#AddItemButton").hide(); },
 
     /*
      * Show/hide information bar
@@ -661,6 +673,10 @@ $(document).ready(function() {
     });
     $("#JoinSiteButton").click(function() {
         $("#RegisterForm").first().submit();
+    });
+
+    $("#AddItemButton").click(function() {
+        $("#AddItemModal").modal();
     });
 });
 
