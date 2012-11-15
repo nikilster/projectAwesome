@@ -5,13 +5,10 @@ from flask import Response
 
 from . import APP
 
-from flash_messages import *
-
 from util.Logger import Logger
-from util.PasswordEncrypt import PasswordEncrypt
-from util.Verifier import Verifier
 
-from api.data.DataApi import DataApi
+from api.Api import Api
+from api.FlashMessages import *
 
 @APP.route('/', methods=['GET'])
 def index():
@@ -81,41 +78,37 @@ def register_user():
         lastName = request.form['lastName'].strip()
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
-
+        
+        '''
+        selectedVisions = []
         if 'selectedVisions' in session:
-            Logger.debug("Existing selected visions: " +
-                         str(session['selectedVisions']))
+            selectedVisionsJson = session['selectedVisions']
+        '''
 
-        if not Verifier.nameValid(firstName):
-            flash(RegisterError.FIRST_NAME_REQUIRED, RegisterError.TAG)
-        elif not Verifier.nameValid(lastName):
-            flash(RegisterError.LAST_NAME_REQUIRED, RegisterError.TAG)
-        elif len(email) <= 0:
-            flash(RegisterError.EMAIL_REQUIRED, RegisterError.TAG)
-        elif not Verifier.emailValid(email):
-            flash(RegisterError.EMAIL_INVALID, RegisterError.TAG)
-        # TODO: NEED TO CHECK EMAIL EXISTS
-        elif len(password) <= 0:
-            flash(RegisterError.PASSWORD_REQUIRED, RegisterError.TAG)
-        elif not Verifier.passwordValid(password):
-            flash(RegisterError.PASSWORD_INVALID, RegisterError.TAG)
+        (newUserId, errorMsg) = Api.addUser(firstName, lastName,
+                                            email, password)
+
+        if None != newUserId:
+            newUser = Api.getUserById(newUserId)
+            assert newUser, "New user should exist"
+
+            '''
+                Logger.debug("Existing selected visions: " +
+                            str(session['selectedVisions']))
+            '''
+
+            session['user'] = { 'userName' : newUser.firstName }
+
+            return redirect(url_for('user_profile'))
         else:
-            passwordHash = PasswordEncrypt.genHash(password)
-
-            verified = PasswordEncrypt.verifyPassword(password, passwordHash)
-
-            # Just need to add new user here and login
-
-            Logger.debug("Name: %s %s, Email: %s, Pass: %s [%s] -- %s" % \
-                         (firstName, lastName, email,
-                          password, passwordHash, str(verified)))
-
-        return redirect(url_for('register'))
+            assert errorMsg != "", "Error message should exist"
+            flash(errorMsg, RegisterError.TAG)
+            return redirect(url_for('register'))
     abort(405)
 
 @APP.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
-    visions = DataApi.getMainPageVisions()
+    visions = Api.getMainPageVisions()
 
     data = { 'visionList' : [] }
 
@@ -126,7 +119,7 @@ def apiGetMainPageVisions():
 
 @APP.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
-    visions = DataApi.getVisionsForUser(1)
+    visions = Api.getVisionsForUser(1)
 
     Logger.debug("Hello")
 
