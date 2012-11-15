@@ -481,6 +481,13 @@ App.Backbone.View.Page = Backbone.View.extend({
             $("#ViewBoardButton").show();
         }
         console.log("Visions: " + JSON.stringify(this.model.selectedVisions()));
+
+        // Update hidden field in registration
+        var visionIds = [];
+        for (var i = 0 ; i < length ; i++) {
+            visionIds.push(this.model.selectedVisions().at(i).visionId());
+        }
+        $("#UserSelectedVisions").first().attr("value", JSON.stringify(visionIds));
     },
 
     /*
@@ -651,6 +658,9 @@ $(document).ready(function() {
     $("#ReloadProfile").live("click", function(e) {
         e.preventDefault();
         App.Var.View.showProfile();
+    });
+    $("#JoinSiteButton").click(function() {
+        $("#RegisterForm").first().submit();
     });
 });
 

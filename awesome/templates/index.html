@@ -56,8 +56,14 @@ var USER = null;
             </span>
             </div>
             <div style="position: absolute; top: 0px; right: 0px; padding:10px;">
-                <a id="RegisterButton" href="{{ url_for('register') }}"
-                   class="btn btn-success">Register</a>
+                <form id="RegisterForm"
+                      action="{{ url_for("register") }}" method="POST"
+                      style="display: inline-block">
+                    <input id="UserSelectedVisions" type="hidden"
+                           name="selectedVisions" value=""/>
+                    <button id="RegisterButton" type="submit"
+                    class="btn btn-success">Register</button>
+                </form>
                 <button id="ViewBoardButton" class="btn btn-info"
                         style="display:none;">View board</button>
                 <a href="{{ url_for('login') }}"
@@ -85,9 +91,8 @@ var USER = null;
                 <button id="BackToMainPageButton" class="btn">
                     << Back
                 </button>
-                <a href="{{ url_for('register') }}"
-                   class="btn btn-danger"
-                   style="margin-left:5px;">Join site!</a>
+                <span id="JoinSiteButton" class="btn btn-danger"
+                   style="margin-left:5px;">Join site!</span>
             </div>
         </div>
     </div>

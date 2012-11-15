@@ -69,10 +69,22 @@ def register():
     if request.method == 'GET':
         return render_template('register.html')
     elif request.method == 'POST':
+        # Keep selected visions in session
+        if 'selectedVisions' in request.form:
+            session['selectedVisions'] = str(request.form['selectedVisions'])
+        return render_template('register.html')
+
+@APP.route('/register_user', methods=['POST'])
+def register_user():
+    if request.method == 'POST':
         firstName = request.form['firstName'].strip()
         lastName = request.form['lastName'].strip()
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
+
+        if 'selectedVisions' in session:
+            Logger.debug("Existing selected visions: " +
+                         str(session['selectedVisions']))
 
         if not Verifier.nameValid(firstName):
             flash(RegisterError.FIRST_NAME_REQUIRED, RegisterError.TAG)
@@ -98,7 +110,7 @@ def register():
                          (firstName, lastName, email,
                           password, passwordHash, str(verified)))
 
-        return render_template('register.html')
+        return redirect(url_for('register'))
     abort(405)
 
 @APP.route('/api/get_main_page_visions', methods=['GET'])
