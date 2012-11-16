@@ -111,6 +111,9 @@ var USER = null;
     <div id="VisionDetailsModal" class="modal hide fade">
         <div class="modal-header" style="font-size:18pt">
             Vision details
+            <div id="VisionDeleteButton" style="float:right; font-size:15px;">
+                Delete
+            </div>
         </div>
         <div class="modal-body">
             <div>Stuff</div>
@@ -163,7 +166,7 @@ var USER = null;
 
 <script type="text/template" id="VisionTemplate">
 <div class="MasonryItemInner <%= selected %> <%= cursorClass %>">
-    <div class="VisionToolbar">
+    <div class="VisionToolbar" style="display:none;">
         <div class="VisionToolbarButton VisionToolbarMove"
              style="display: <%= moveDisplay %>">
             <i class="icon-move icon-white"/>

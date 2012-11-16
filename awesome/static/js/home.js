@@ -238,13 +238,15 @@ App.Backbone.View.Vision = Backbone.View.extend({
             pictureUrl = this.model.picture().url();
         }
         var cursorClass = "";
+        var moveDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
             cursorClass = "MasonryItemMoveCursor";
-        } else if (pageMode == App.Const.PageMode.HOME_GUEST ||
-                   pageMode == App.Const.PageMode.USER_PROFILE) {
+        } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
             cursorClass = "MasonryItemPointerCursor";
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            cursorClass = "MasonryItemPointerCursor";
+            moveDisplay = "inline-block";
         }
-        var moveDisplay = "none";
 
         var variables = {text : this.model.text(),
                          selected: selectedClass,
@@ -274,18 +276,24 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
     },
     mouseEnter: function() {
-        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+        var pageMode = App.Var.Model.pageMode();
+        if (pageMode == App.Const.PageMode.HOME_GUEST) {
             if (!this.model.isSelected()) {
                 $(this.el).find(".AddVisionOverlay").show();
             } else {
                 $(this.el).find(".RemoveVisionOverlay").show();
             }
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            $(this.el).find(".VisionToolbar").show();
         }
     },
     mouseLeave: function() {
+        var pageMode = App.Var.Model.pageMode();
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
             $(this.el).find(".AddVisionOverlay").hide();
             $(this.el).find(".RemoveVisionOverlay").hide();
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            $(this.el).find(".VisionToolbar").hide();
         }
     },
 });
@@ -295,6 +303,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         _.bindAll(this, "changePageMode",
                         "renderVisionList",
                         "renderVision",
+                        "sortStart",
+                        "sortChange",
+                        "sortStop",
                         "renderSelectedVisions", "renderSelectedVision",
                         "showPageLoading",
                         "hidePageLoading",
@@ -322,6 +333,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                                           this);
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
+        this.moveIndex = -1;
     },
 
     /*
@@ -373,10 +385,37 @@ App.Backbone.View.Page = Backbone.View.extend({
         }).imagesLoaded(function() {
             $("#MasonryContainer").masonry('reload');
         });
+        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE) {
+            masonryContainer.sortable({
+                items: "li.MasonryItem",
+                handle: ".VisionToolbarMove",
+                distance: 12,
+                forcePlaceholderSize: true,
+                tolerance: 'intersect',
+                start: this.sortStart,
+                change: this.sortChange,
+                stop: this.sortStop,
+            });
+        }
     },
     renderVision: function(vision, index) {
         var vision = new App.Backbone.View.Vision({ model: vision });
         this.children.push(vision.el);
+    },
+    sortStart: function(event, ui) {
+        console.log("Sort");
+        ui.item.removeClass("MasonryItem");
+        ui.item.parent().masonry('reload');
+
+        this.moveIndex = ui.item.index();
+    },
+    sortStop: function(event, ui) {
+        ui.item.addClass("MasonryItem");
+        ui.item.parent().masonry('reload');
+        var destIndex = ui.item.index();
+    },
+    sortChange: function(event, ui) {
+        ui.item.parent().masonry('reload');
     },
 
     /*

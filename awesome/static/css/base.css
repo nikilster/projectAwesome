@@ -148,3 +148,11 @@ li.MasonryBox {
   border: 1px solid #33AA33;
   color: green;
 }
+#VisionDeleteButton {
+  float: right;
+  font-size: 15px;
+}
+#VisionDeleteButton:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
