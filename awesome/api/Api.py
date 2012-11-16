@@ -1,8 +1,9 @@
-
-#
-# Api.py - This is main API for the app. Acts as controller that verifies,
-#          gets, modifies, and sets stuff
-#
+'''
+ Api.py
+ 
+ This is main API for the app. Acts as controller that verifies,
+    gets, modifies, and sets stuff
+'''
 
 from data.DataApi import DataApi
 
