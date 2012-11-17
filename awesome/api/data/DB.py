@@ -26,7 +26,7 @@ class DB:
 	EMAIL_PREFIX = "email:" 	#email -> userId
 	VISION_PREFIX = "vision:"
 	PICTURE_PREFIX = "picture:"
-	USER_VISION_SET_PREFIX = "visionsSetForUser:"
+	USER_VISION_LIST_PREFIX = "visionListForUser:"
 
 
 	#Increment Keys
@@ -78,11 +78,10 @@ class DB:
 		visionKey = self.__getVisionKey(newVision.id)
 		save1 = self.r.set(visionKey, newVision.toJson())
 
-		#Save to the User Vision Set
-		#This is actually a set
-		userVisionSetKey = self.__getUserVisionSetKey(newVision.userId)
+		#Save to the User Vision list
+		userVisionListKey = self.__getUserVisionListKey(newVision.userId)
 		visionId = self.__cleanInt(newVision.id)
-		save2 = self.r.sadd(userVisionSetKey, visionId)
+		save2 = self.r.lpush(userVisionListKey, visionId)
 
 		#Return whether both different saves are successful 
 		return save1 and save2
@@ -108,8 +107,10 @@ class DB:
 	def getVisionIdsForUser(self, userId):
 		
 		#Get User Vision Set
-		userVisionSetKey = self.__getUserVisionSetKey(userId)
-		visionIds = self.r.smembers(userVisionSetKey)
+		userVisionListKey = self.__getUserVisionListKey(userId)
+		visionIds = self.r.lrange(userVisionListKey,
+                                  0,
+                                  self.r.llen(userVisionListKey) - 1)
 
 		return visionIds
 
@@ -183,8 +184,8 @@ class DB:
 
 	#Function which returns the correct format of the string to index into
 	#the user vision
-	def __getUserVisionSetKey(self, userId):
-		return DB.USER_VISION_SET_PREFIX + self.__cleanInt(userId)
+	def __getUserVisionListKey(self, userId):
+		return DB.USER_VISION_LIST_PREFIX + self.__cleanInt(userId)
 
 
 

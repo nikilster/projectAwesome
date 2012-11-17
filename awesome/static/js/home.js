@@ -22,12 +22,6 @@ function assert(exp, message) {
   }
 }
 
-function listMoveItem(list, oldIndex, newIndex) {
-    var oldLength = list.length;
-    list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
-    assert(list.length == oldLength, "Length of list should not be modified!");
-}   
-
 /******************************************************************************
  * Utility functions for getting/setting global state
  */
@@ -184,7 +178,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         if (vision == null) {
             // Note that we clone the model. We want our own copy for in
             // case we want to let the user edit it in some way
-            this.selectedVisions().unshift(model.deepClone());
+            this.selectedVisions().push(model.deepClone());
             return true;
         }
         return false;
@@ -198,10 +192,10 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         return false;
     },
     moveSelectedVision: function(srcIndex, destIndex) {
-        // We use a silent move because the view is already updated by
-        // jQuery UI sortable
-        listMoveItem(this.selectedVisions().models,
-                     srcIndex, destIndex);
+        var list = this.selectedVisions();
+        var model = list.at(srcIndex);
+        list.remove(model);
+        list.add(model, {at: destIndex})
     },
 });
 
@@ -539,6 +533,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             visionIds.push(this.model.selectedVisions().at(i).visionId());
         }
         $("#UserSelectedVisions").first().attr("value", JSON.stringify(visionIds));
+        console.log("VISION LIST: " + JSON.stringify(visionIds));
     },
 
     /*

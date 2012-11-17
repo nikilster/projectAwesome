@@ -98,7 +98,7 @@ class Api:
 
     @staticmethod
     def repostVisionList(userId, visionIds):
-        for visionId in visionIds:
+        for visionId in reversed(visionIds):
             Logger.debug("REPOST: " + str(visionId) +  "USER: " + str(userId))
             DataApi.repostVision(userId, visionId)
 
