@@ -114,6 +114,20 @@ class DB:
 
         return visionIds
 
+    #Move vision in user vision list
+    def moveUserVision(self, userId, visionId, srcIndex, destIndex):
+        userVisionListKey = self.__getUserVisionListKey(userId)
+        length = self.r.llen(userVisionListKey)
+        if srcIndex < 0 or srcIndex >= length or \
+           destIndex < 0 or destIndex >= length:
+            return False
+        srcId = self.r.lindex(userVisionListKey, srcIndex)
+        self.r.lrem(userVisionListKey, 1, visionId)
+
+        destId = self.r.lindex(userVisionListKey, destIndex)
+        self.r.linsert(userVisionListKey, 'BEFORE', visionId, destId)
+        return True
+
     #Get the ids of the maxCount most recent visions
     def mostRecentVisionIds(self, maxCount):
 

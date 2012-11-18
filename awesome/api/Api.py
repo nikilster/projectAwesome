@@ -117,4 +117,8 @@ class Api:
     def getVisionsForUser(userId):
         return DataApi.getVisionsForUser(userId)
 
+    @staticmethod
+    def moveUserVision(userId, visionId, srcIndex, destIndex):
+        return DataApi.moveUserVision(visionId, srcIndex, destIndex)
+
 # $eof

@@ -156,3 +156,42 @@ li.MasonryBox {
   text-decoration: underline;
   cursor: pointer;
 }
+#UserFeedbackSaving {
+  display: none;
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+  background-color: rgba(204, 204, 204, 0.9);
+  color: black;
+  padding: 3px;
+  font-size: 12pt;
+  line-height: 1.2;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#UserFeedbackSaved {
+  display: none;
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: black;
+  padding: 3px;
+  font-size: 12pt;
+  line-height: 1.2;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#UserFeedbackError {
+  display: none;
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+  background-color: rgba(255, 204, 204, 0.9);
+  color: red;
+  padding: 3px;
+  font-size: 12pt;
+  line-height: 1.2;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}

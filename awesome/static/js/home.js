@@ -31,6 +31,58 @@ function userLoggedIn() {
 }
 
 /******************************************************************************
+ * AJAX functions
+ */
+
+function feedbackSaving() {
+    $("#UserFeedbackSaved").hide();
+    $("#UserFeedbackError").hide();
+    $("#UserFeedbackSaving").show();
+}
+function feedbackSaved() {
+    $("#UserFeedbackError").hide();
+    $("#UserFeedbackSaving").hide();
+    $("#UserFeedbackSaved").stop(true,true).show().fadeOut(5000);
+}
+function feedbackError() {
+    $("#UserFeedbackSaving").hide();
+    $("#UserFeedbackSaved").hide();
+    $("#UserFeedbackError").show();
+}
+
+function doAjax(url, data, successFunc, errorFunc) {
+    feedbackSaving();
+
+    $.ajax({
+        type: "POST",
+        cache: false,
+        contentType : "application/json",
+        url: url,
+        data: data,
+        dataType: "json",
+        beforeSend: function(jqXHR, settings) {
+            if (jqXHR.overrideMimeType) {
+                jqXHR.overrideMimeType("application/json");
+            }
+        },
+        success: function(data, textStatus, jqXHR) {
+            if (data.result == "success") {
+                feedbackSaved();
+                successFunc(data, textStatus, jqXHR);
+            } else {
+                feedbackError();
+                errorFunc(jqXHR, textStatus, "JSON error");
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            feedbackError();
+            errorFunc(jqXHR, textStatus, errorThrown);
+        },
+        complete: function(jqXHR, textStatus) {},
+    });
+}
+
+/******************************************************************************
  * Namespace
  */
 var App = {
@@ -192,10 +244,19 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         return false;
     },
     moveSelectedVision: function(srcIndex, destIndex) {
+        // We don't move silently here because we want to trigger
+        // and update to the hidden input with the selected visions list
         var list = this.selectedVisions();
         var model = list.at(srcIndex);
         list.remove(model);
         list.add(model, {at: destIndex})
+    },
+    moveVision: function(srcIndex, destIndex) {
+        // Move silently because the UI is already updated upon move
+        var list = this.visionList();
+        var model = list.at(srcIndex);
+        list.remove(model, {silent: true});
+        list.add(model, {at: destIndex, silent: true})
     },
 });
 
@@ -294,26 +355,34 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, "changePageMode",
-                        "renderVisionList",
-                        "renderVision",
-                        "sortStart",
-                        "sortChange",
-                        "sortStop",
-                        "renderSelectedVisions", "renderSelectedVision",
+        _.bindAll(this, // Changing page mode and rendering rest of page
+                        "changePageMode",
                         "showPageLoading",
                         "hidePageLoading",
                         "showInfoBar",
                         "hideInfoBar",
+                        // For onboarding
                         "showAddItemButton",
                         "hideAddItemButton",
                         "changeInSelectedVisions",
                         "selectedVisionsSortStart",
                         "selectedVisionsSortChange",
                         "selectedVisionsSortStop",
+                        "renderSelectedVisions",
+                        "renderSelectedVision",
+                        // Show main page
                         "showHome",
                         "renderHome",
                         "renderHomeError",
+                        // Rendering Main vision list
+                        "renderVisionList",
+                        "renderVision",
+                        "sortStart",
+                        "sortChange",
+                        "sortStop",
+                        "ajaxSortSuccess",
+                        "ajaxSortError",
+                        // Show user profile
                         "showProfile",
                         "renderProfile",
                         "renderProfileError");
@@ -407,9 +476,18 @@ App.Backbone.View.Page = Backbone.View.extend({
         ui.item.addClass("MasonryItem");
         ui.item.parent().masonry('reload');
         var destIndex = ui.item.index();
+        if (destIndex != this.moveIndex && this.moveIndex >= 0) {
+            this.model.moveVision(this.moveIndex, destIndex);
+        }
     },
     sortChange: function(event, ui) {
         ui.item.parent().masonry('reload');
+    },
+    ajaxSortSuccess: function(data, textStatus, jqXHR) {
+
+    },
+    ajaxSortError: function(jqXHR, textStatus, errorThrown) {
+
     },
 
     /*

@@ -245,6 +245,15 @@ class DataApi:
         #Create objects
         return DataApi.__visionObjectsFromIds(visionIds)
 
+    '''
+        Move a vision in a user's vision list
+
+        Return: boolean if move was successful
+    '''
+    @staticmethod
+    def moveUserVision(userId, visionId, srcIndex, destIndex):
+        db = DB()
+        return db.moveUserVision(userId, visionId, srcIndex, destIndex)
 
     '''
         Vision Objects From Json    

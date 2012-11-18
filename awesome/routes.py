@@ -165,4 +165,33 @@ def apiGetUserVisions():
         abort(403)
     abort(405)
 
+@APP.route('/api/user/<int:userId>/move_vision', methods=['POST'])
+def apiUserMoveVision(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not 'visionId' in parameters or \
+               not 'srcIndex' in parameters or \
+               not 'destIndex' in parameters:
+                abort(406)
+            visionId = parameters['visionId']
+            srcIndex = parameters['srcIndex']
+            destIndex = parameters['destIndex']
+
+            result = Api.moveUserVision(userInfo['id'], visionId,
+                                        srcIndex, destIndex)
+
+            if True == result:
+                data = { 'result' : "success" }
+            else:
+                data = { 'result' : "error" }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
 # $eof
