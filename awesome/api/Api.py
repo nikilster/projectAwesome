@@ -11,6 +11,9 @@ from ..util.Verifier import Verifier
 from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
 
+#TODO: Why does (the ..) this work?
+from ..Constant import Constant
+
 from FlashMessages import *
 
 class Api:
@@ -121,4 +124,25 @@ class Api:
     def moveUserVision(userId, visionId, srcIndex, destIndex):
         return DataApi.moveUserVision(visionId, srcIndex, destIndex)
 
+    '''
+        Save (Right now from the bookmarklet)
+    '''
+    @staticmethod
+    def saveVision(userId, imageUrl, text, pageUrl):
+
+        #To Do Validate
+        url = imageUrl
+        filename = "name on server"
+        pictureId = DataApi.addPicture(url, filename)
+
+        if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
+            return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
+
+        parentId = 0
+        visionId = DataApi.addVision(userId, text, pictureId, parentId)
+
+        if visionId == DataApi.NO_OBJECT_EXISTS_ID:
+            return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
+
+        return [visionId, "Saved Vision!"]
 # $eof
