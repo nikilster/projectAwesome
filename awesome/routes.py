@@ -166,7 +166,7 @@ def apiGetUserVisions():
         abort(403)
     abort(405)
 
-@APP.route('/api/user/<int:userId>/move_vision', methods=['POST'])
+@app.route('/api/user/<int:userId>/move_vision', methods=['POST'])
 def apiUserMoveVision(userId):
     if request.method == 'POST':
         if SessionManager.userLoggedIn():
