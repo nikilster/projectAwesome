@@ -1,6 +1,8 @@
-import os
-from awesome import APP
+from awesome import app
 
-port = int(os.environ.get('PORT', 5000))
-APP.run(host='0.0.0.0', port=port, debug=APP.config['DEBUG'])
+#Debug
+app.config['DEBUG'] = True
+
+#Run
+app.run()
 

@@ -2,9 +2,10 @@ from flask import render_template
 from flask import abort, redirect, url_for, flash, jsonify
 from flask import request, session
 from flask import Response
+from flask import current_app
 
-from . import APP
-
+from . import app
+from Constant import Constant
 import json
 
 from util.Logger import Logger
@@ -15,7 +16,7 @@ from api.FlashMessages import *
 from util.SessionManager import SessionManager
 
 
-@APP.route('/', methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
     if request.method == 'GET':
         Logger.debug("SESSION CLASS: " + session.__class__.__name__)
@@ -26,11 +27,11 @@ def index():
             return render_template('index.html', userName='')
     abort(405)
 
-@APP.route('/view_board', methods=['GET'])
+@app.route('/view_board', methods=['GET'])
 def view_board():
     return redirect(url_for('index'))
 
-@APP.route('/profile', methods=['GET'])
+@app.route('/profile', methods=['GET'])
 def user_profile():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
@@ -40,11 +41,11 @@ def user_profile():
             return render_template('index.html', userName='')
     abort(405)
 
-@APP.route('/about', methods=['GET'])
+@app.route('/about', methods=['GET'])
 def about():
     return render_template('about.html')
 
-@APP.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
@@ -69,7 +70,7 @@ def login():
             return redirect (url_for('login'))
     abort(405)
 
-@APP.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['GET'])
 def logout():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
@@ -77,7 +78,7 @@ def logout():
         return redirect(url_for('index'))
     abort(405)
 
-@APP.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
@@ -88,7 +89,7 @@ def register():
         return render_template('register.html')
     abort(405)
 
-@APP.route('/register_user', methods=['POST'])
+@app.route('/register_user', methods=['POST'])
 def register_user():
     if request.method == 'POST':
         firstName = request.form['firstName'].strip()
@@ -137,7 +138,7 @@ def register_user():
             return redirect(url_for('register'))
     abort(405)
 
-@APP.route('/api/get_main_page_visions', methods=['GET'])
+@app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
         visions = Api.getMainPageVisions()
@@ -149,7 +150,7 @@ def apiGetMainPageVisions():
         return jsonify(data)
     abort(405)
 
-@APP.route('/api/get_user_visions', methods=['GET'])
+@app.route('/api/get_user_visions', methods=['GET'])
 def apiGetUserVisions():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
@@ -165,4 +166,46 @@ def apiGetUserVisions():
         abort(403)
     abort(405)
 
+'''
+    Save
+    Used for Bookmarklet
+'''
+@app.route('/save', methods=['GET'])
+def save():
+
+    #Make we only accept post
+    if request.method != 'GET': abort(405)
+
+    #TODO: check login
+
+    #Get Parameters
+    callback = request.args.get('callback', '')
+    mimetype = 'application/javascript'
+
+    url = request.args.get('url', '') #request.form['url']
+    img = request.args.get('img', '') #request.form['img']
+    text = request.args.get('text', '')
+    userId = 1
+
+    if callback == '':
+        return "Please make a valid request!"
+
+    if url == ''  or img == ''  or text == '':
+        content = callback + "('Please submit the valid data!')"
+        return current_app.response_class(content, mimetype=mimetype)
+
+    result = Api.saveVision(userId, img, text, url)
+
+    returnObject = {}
+    returnObject['message'] = result[1]
+    if(result != Constant.INVALID_OBJECT_ID):
+        returnObject['result'] = True
+        returnObject['visionId'] = result[0]
+    else:
+        returnObject['result'] = True
+
+
+    content = callback + '(' + json.dumps(returnObject) + ')'
+
+    return current_app.response_class(content, mimetype=mimetype)
 # $eof
