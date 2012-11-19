@@ -121,11 +121,25 @@ class DB:
         if srcIndex < 0 or srcIndex >= length or \
            destIndex < 0 or destIndex >= length:
             return False
-        srcId = self.r.lindex(userVisionListKey, srcIndex)
-        self.r.lrem(userVisionListKey, 1, visionId)
-
+        srcId = int(self.r.lindex(userVisionListKey, srcIndex))
+        if srcId != visionId:
+            # Vision ID should match
+            return False
+        result = self.r.lrem(userVisionListKey, 1, visionId)
+        if result == 0:
+            # If couldn't find something to remove, there is an error
+            return False
+        elif result > 1:
+            # If we removed multiple, there is an error too. Just insert it
+            # back once so we only have one copy and flag an error
+            self.r.lpush(userVisionListKey, visionId)
+            return False
         destId = self.r.lindex(userVisionListKey, destIndex)
-        self.r.linsert(userVisionListKey, 'BEFORE', visionId, destId)
+        result = self.r.linsert(userVisionListKey, 'BEFORE', destId, visionId)
+        if result == -1:
+            # If couldn't find pivot, just put vision back so we don't lose it
+            self.r.lpush(userVisionListKey, visionId)
+            return False
         return True
 
     #Get the ids of the maxCount most recent visions

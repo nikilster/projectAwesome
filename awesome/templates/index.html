@@ -7,8 +7,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
 
     <script>
-{% if userName != "" %}
-var USER = { userName: '{{ userName }}' }
+{% if user != None %}
+var USER = { id: '{{ user['id'] }}',
+             firstName: '{{ user['firstName'] }}',
+             lastName: '{{ user['lastName'] }}',
+           }
 {% else %}
 var USER = null;
 {% endif %}
@@ -31,9 +34,9 @@ var USER = null;
                 <a class="NavButton" href="{{ url_for('about') }}">
                     About
                 </a>
-                {% if userName != "" %}
+                {% if user != None %}
                 <a id="NavProfile" class="NavButton" href="/profile">
-                    {{ userName }}
+                    {{ user['firstName'] }}
                 </a>
                 <a id="NavLogout" class="NavButton" href="/logout">
                     Logout

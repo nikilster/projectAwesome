@@ -22,9 +22,9 @@ def index():
         Logger.debug("SESSION CLASS: " + session.__class__.__name__)
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', userName=userInfo['firstName'])
+            return render_template('index.html', user=userInfo)
         else:
-            return render_template('index.html', userName='')
+            return render_template('index.html', user=None)
     abort(405)
 
 @app.route('/view_board', methods=['GET'])
@@ -36,9 +36,9 @@ def user_profile():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', userName=userInfo['firstName'])
+            return render_template('index.html', user=userInfo)
         else:
-            return render_template('index.html', userName='')
+            return render_template('index.html', user=None)
     abort(405)
 
 @app.route('/about', methods=['GET'])

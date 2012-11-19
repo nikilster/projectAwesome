@@ -122,7 +122,7 @@ class Api:
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
-        return DataApi.moveUserVision(visionId, srcIndex, destIndex)
+        return DataApi.moveUserVision(userId, visionId, srcIndex, destIndex)
 
     '''
         Save (Right now from the bookmarklet)

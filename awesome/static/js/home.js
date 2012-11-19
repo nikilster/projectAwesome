@@ -396,7 +396,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                                           this);
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
-        this.moveIndex = -1;
+        this.srcIndex = -1;
     },
 
     /*
@@ -470,24 +470,31 @@ App.Backbone.View.Page = Backbone.View.extend({
         ui.item.removeClass("MasonryItem");
         ui.item.parent().masonry('reload');
 
-        this.moveIndex = ui.item.index();
+        this.srcIndex = ui.item.index();
     },
     sortStop: function(event, ui) {
         ui.item.addClass("MasonryItem");
         ui.item.parent().masonry('reload');
-        var destIndex = ui.item.index();
-        if (destIndex != this.moveIndex && this.moveIndex >= 0) {
-            this.model.moveVision(this.moveIndex, destIndex);
+        this.destIndex = ui.item.index();
+        if (this.destIndex != this.srcIndex && this.srcIndex >= 0) {
+            var visionId = this.model.visionList().at(this.srcIndex).visionId();
+            doAjax("/api/user/" + USER['id'] + "/move_vision",
+                   JSON.stringify({'visionId' : visionId,
+                                   'srcIndex' : this.srcIndex,
+                                   'destIndex' : this.destIndex}),
+                   this.ajaxSortSuccess,
+                   this.ajaxSortError
+            );
         }
     },
     sortChange: function(event, ui) {
         ui.item.parent().masonry('reload');
     },
     ajaxSortSuccess: function(data, textStatus, jqXHR) {
-
+        this.model.moveVision(this.srcIndex, this.destIndex);
     },
     ajaxSortError: function(jqXHR, textStatus, errorThrown) {
-
+        this.renderVisionList();
     },
 
     /*

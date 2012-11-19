@@ -60,7 +60,7 @@ body {
   padding: 5px;
 }
 #MasonryContainer {
-  overflow: auto;
+  overflow: hidden;
 }
 li.MasonryItem {
   float: left;
@@ -174,7 +174,7 @@ li.MasonryBox {
   float: right;
   margin-top: 5px;
   margin-right: 5px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 255, 0, 0.8);
   color: black;
   padding: 3px;
   font-size: 12pt;
