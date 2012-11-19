@@ -256,6 +256,17 @@ class DataApi:
         return db.moveUserVision(userId, visionId, srcIndex, destIndex)
 
     '''
+        Delete a vision in a user's vision list
+
+        Return: boolean if delete was successful
+    '''
+    @staticmethod
+    def deleteUserVision(userId, visionId):
+        db = DB()
+        return db.deleteUserVision(userId, visionId)
+
+
+    '''
         Vision Objects From Json    
     '''
     @staticmethod

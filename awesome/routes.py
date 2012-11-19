@@ -167,7 +167,7 @@ def apiGetUserVisions():
     abort(405)
 
 @app.route('/api/user/<int:userId>/move_vision', methods=['POST'])
-def apiUserMoveVision(userId):
+def apiMoveUserVision(userId):
     if request.method == 'POST':
         if SessionManager.userLoggedIn():
 
@@ -189,6 +189,31 @@ def apiUserMoveVision(userId):
 
             if True == result:
                 data = { 'result' : "success" }
+            else:
+                data = { 'result' : "error" }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/delete_vision', methods=['POST'])
+def apiDeleteUserVision(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not 'visionId' in parameters:
+                abort(406)
+            visionId = parameters['visionId']
+
+            result = Api.deleteUserVision(userInfo['id'], visionId)
+
+            if True == result:
+                data = { 'result'    : "success",
+                         'removedId' : visionId }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)

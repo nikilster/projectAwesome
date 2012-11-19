@@ -142,6 +142,14 @@ class DB:
             return False
         return True
 
+    # Delete vision from user's vision list
+    def deleteUserVision(self, userId, visionId):
+        userVisionListKey = self.__getUserVisionListKey(userId)
+        numRemoved = self.r.lrem(userVisionListKey, 1, visionId)
+        if numRemoved == 1:
+            return True
+        return False
+
     #Get the ids of the maxCount most recent visions
     def mostRecentVisionIds(self, maxCount):
 

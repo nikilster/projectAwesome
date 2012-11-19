@@ -223,7 +223,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         this.set({pageMode: mode});
     },
     setVisionList: function(visionList) {
-        this.set({visionList: new App.Backbone.Model.VisionList(visionList) });
+        // Note: need to use reset so that the methods bound to this collection
+        //       still get called
+        this.visionList().reset(visionList);
     },
     addToSelectedVisions: function(model) {
         var vision = this.getSelectedVision(model.visionId());
@@ -243,6 +245,14 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         }
         return false;
     },
+    getVisionInList: function(visionId) {
+        var list = this.visionList().where({id: visionId});
+        if (list.length > 0) {
+            assert(list.length == 1, "Shouldn't have multiple models here")
+            return list[0];
+        }
+        return null;
+    },
     moveSelectedVision: function(srcIndex, destIndex) {
         // We don't move silently here because we want to trigger
         // and update to the hidden input with the selected visions list
@@ -258,6 +268,14 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         list.remove(model, {silent: true});
         list.add(model, {at: destIndex, silent: true})
     },
+    deleteVision: function(visionId) {
+        var toRemove = this.getVisionInList(visionId);
+        assert(toRemove != null, "Couldn't find vision id to remove");
+        console.log("toRemove: " + toRemove.visionId());
+        console.log("vision len: " + this.visionList().length);
+        this.visionList().remove(toRemove);
+        console.log("vision len: " + this.visionList().length);
+    },
 });
 
 /******************************************************************************
@@ -271,6 +289,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _.bindAll(this, "itemSelect",
                         "mouseEnter", "mouseLeave");
         this.model.bind("change", this.render, this);
+
         this.render();
     },
     events: {
@@ -316,7 +335,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         return this;
     },
-    itemSelect: function() {
+    itemSelect: function(e) {
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             this.model.toggleSelected();
@@ -325,7 +344,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                    pageMode == App.Const.PageMode.TEST_VISION) {
             // Skip
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            $("#VisionDetailsModal").modal();
+            App.Var.View.showVisionDetails(this.model);
         } else {
             assert(false, "Invalid page mode in item select");
         }
@@ -355,7 +374,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, // Changing page mode and rendering rest of page
+        _.bindAll(this, "showVisionDetails",
+                        "deleteVision",
+                        "ajaxDeleteVisionSuccess",
+                        "ajaxDeleteVisionError",
+                        // Changing page mode and rendering rest of page
                         "changePageMode",
                         "showPageLoading",
                         "hidePageLoading",
@@ -387,7 +410,15 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError");
         this.model.bind("change:pageMode", this.changePageMode, this);
-        this.model.bind("change:visionList", this.renderVisionList, this);
+        this.model.visionList().bind("add", 
+                                     this.renderVisionList,
+                                     this);
+        this.model.visionList().bind("remove", 
+                                     this.renderVisionList,
+                                     this);
+        this.model.visionList().bind("reset", 
+                                     this.renderVisionList,
+                                     this);
         this.model.selectedVisions().bind("add", 
                                           this.changeInSelectedVisions,
                                           this);
@@ -397,6 +428,35 @@ App.Backbone.View.Page = Backbone.View.extend({
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
+        this.currentVision = null;
+    },
+    showVisionDetails: function(visionModel) {
+        this.currentVision = visionModel;
+
+        // Note: jQuery text() method escapes html brackets and stuff
+        $("#CurrentVisionText").text(this.currentVision.text());
+
+        $("#VisionDetailsModal").modal();
+    },
+    deleteVision: function() {
+        if (this.currentVision != null) {
+            console.log("DELETE");
+            doAjax("/api/user/" + USER['id'] + "/delete_vision",
+                   JSON.stringify({
+                                    'visionId' : this.currentVision.visionId(),
+                                  }),
+                   this.ajaxDeleteVisionSuccess,
+                   this.ajaxDeleteVisionError
+            );
+        }
+    },
+    ajaxDeleteVisionSuccess: function(data, textStatus, jqXHR) {
+        console.log("REMOVED ID: " + data.removedId);
+        this.model.deleteVision(data.removedId);
+        $("#VisionDetailsModal").modal("hide");
+    },
+    ajaxDeleteVisionError: function(jqXHR, textStatus, errorThrown) {
+        // Do nothing, we already showed an error and don't need to change UI
     },
 
     /*
@@ -432,6 +492,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render vision list: triggered by set of this.model.visionList
      */
     renderVisionList: function() {
+        console.log("RENDER VISION LIST");
         var masonryContainer = $("#MasonryContainer").first();
 
         masonryContainer.empty();
@@ -796,6 +857,9 @@ $(document).ready(function() {
 
     $("#AddItemButton").click(function() {
         $("#AddItemModal").modal();
+    });
+    $("#VisionDeleteButton").click(function() {
+        App.Var.View.deleteVision();
     });
 });
 

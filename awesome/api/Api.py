@@ -124,6 +124,10 @@ class Api:
     def moveUserVision(userId, visionId, srcIndex, destIndex):
         return DataApi.moveUserVision(userId, visionId, srcIndex, destIndex)
 
+    @staticmethod
+    def deleteUserVision(userId, visionId):
+        return DataApi.deleteUserVision(userId, visionId)
+
     '''
         Save (Right now from the bookmarklet)
     '''
