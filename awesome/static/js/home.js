@@ -193,17 +193,21 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         pageMode: App.Const.PageMode.EMPTY,
         visionList: new App.Backbone.Model.VisionList(),
         selectedVisions: new App.Backbone.Model.VisionList(),
+        otherVisions: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
         this.set({
             visionList: new App.Backbone.Model.VisionList(
-                                                        this.get("visionList")),
+                                                    this.get("visionList")),
+            otherVisions: new App.Backbone.Model.VisionList(
+                                                    this.get("otherVisions")),
         });
     },
     // Getters
     pageMode: function() { return this.get("pageMode"); },
     visionList: function() { return this.get("visionList"); },
     selectedVisions: function() { return this.get("selectedVisions"); },
+    otherVisions: function() { return this.get("otherVisions"); },
     getSelectedVision: function(visionId) {
         var list = this.selectedVisions().where({id: visionId});
         if (list.length > 0) {
@@ -227,6 +231,11 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         //       still get called
         this.visionList().reset(visionList);
     },
+    setOtherVisions: function(visionList) {
+        // Note: need to use reset so that the methods bound to this collection
+        //       still get called
+        this.otherVisions().reset(visionList);
+    },
     addToSelectedVisions: function(model) {
         var vision = this.getSelectedVision(model.visionId());
         if (vision == null) {
@@ -244,6 +253,11 @@ App.Backbone.Model.Page = Backbone.Model.extend({
             return true;
         }
         return false;
+    },
+    inVisionList: function(visionId) {
+        var list = this.visionList().where({id: visionId});
+        var parentList = this.visionList().where({parentId: visionId});
+        return (list.length > 0) || (parentList.length > 0);
     },
     getVisionInList: function(visionId) {
         var list = this.visionList().where({id: visionId});
@@ -316,12 +330,18 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var cursorClass = "";
         var moveDisplay = "none";
         var repostDisplay = "none";
+        var mineDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
             cursorClass = "MasonryItemMoveCursor";
         } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
             cursorClass = "MasonryItemPointerCursor";
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
-            repostDisplay = "inline-block";
+            if (App.Var.Model.inVisionList(this.model.visionId())) {
+                mineDisplay = "inline-block";
+                selectedClass = "MasonryItemSelected";
+            } else {
+                repostDisplay = "inline-block";
+            }
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             cursorClass = "MasonryItemPointerCursor";
             moveDisplay = "inline-block";
@@ -334,6 +354,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
                          repostDisplay: repostDisplay,
+                         mineDisplay: mineDisplay,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -365,7 +386,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
             }
         } else if (pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
-            $(this.el).find(".VisionToolbar").show();
+            $(this.el).find(".VisionToolbarConditional").show();
         }
     },
     mouseLeave: function() {
@@ -375,7 +396,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
             $(this.el).find(".RemoveVisionOverlay").hide();
         } else if (pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
-            $(this.el).find(".VisionToolbar").hide();
+            $(this.el).find(".VisionToolbarConditional").hide();
         }
     },
     repostVision: function() {
@@ -385,7 +406,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, "showVisionDetails",
+        _.bindAll(this, "activeVisionList",
+                        "showVisionDetails",
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
                         "ajaxDeleteVisionError",
@@ -422,6 +444,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError");
         this.model.bind("change:pageMode", this.changePageMode, this);
+        this.model.otherVisions().bind("reset", 
+                                       this.renderVisionList,
+                                       this);
         this.model.visionList().bind("add", 
                                      this.renderVisionList,
                                      this);
@@ -504,6 +529,21 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
 
+    activeVisionList: function() {
+        var pageMode = App.Var.Model.pageMode();
+        if (pageMode == App.Const.PageMode.HOME_GUEST ||
+            pageMode == App.Const.PageMode.HOME_USER) {
+            return this.model.otherVisions();
+        } else if (pageMode == App.Const.PageMode.TEST_VISION) {
+            return this.model.selectedVisions();
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            return this.model.visionList();
+        } else {
+            assert(false, "Invalid pageMode");
+            return null;
+        }
+    },
+
     /*
      * Render vision list: triggered by set of this.model.visionList
      */
@@ -514,7 +554,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         masonryContainer.empty();
         this.children = []
 
-        this.model.visionList().each(this.renderVision);
+        this.activeVisionList().each(this.renderVision);
 
         masonryContainer.append(this.children);
 
@@ -731,7 +771,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderHome: function() {
         console.log("Render Home");
         this.hidePageLoading();
-        this.model.setVisionList(App.Var.JSON.visionList);
+        this.model.setOtherVisions(App.Var.JSON.otherVisions);
     },
     renderHomeError: function() {
         var masonryContainer = $("#MasonryContainer").first();

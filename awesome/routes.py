@@ -141,11 +141,9 @@ def register_user():
 @app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
-        visions = Api.getMainPageVisions()
-
-        data = { 'visionList' : [] }
-        for vision in visions:
-            data['visionList'].append(vision.toDictionary())
+        data = { 'otherVisions' : Api.getMainPageVisionList() }
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
 
         return jsonify(data)
     abort(405)
@@ -155,13 +153,7 @@ def apiGetUserVisions():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-
-            visions = Api.getVisionsForUser(userInfo['id'])
-
-            data = { 'visionList' : [] }
-            for vision in visions:
-                data['visionList'].append(vision.toDictionary())
-
+            data = { 'visionList' : Api.getUserVisionList(userInfo['id']) }
             return jsonify(data)
         abort(403)
     abort(405)

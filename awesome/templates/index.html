@@ -180,14 +180,20 @@ var USER = null;
 
 <script type="text/template" id="VisionTemplate">
 <div class="MasonryItemInner <%= selected %> <%= cursorClass %>">
-    <div class="VisionToolbar" style="display:none;">
-        <div class="VisionToolbarButton VisionToolbarRepost"
-             style="display: <%= repostDisplay %>">
-            <i class="icon-share icon-white"/>
+    <div class="VisionToolbar">
+        <div class="VisionToolbarButton"
+            style="display: <%= mineDisplay %>;">
+            On my vision board
         </div>
-        <div class="VisionToolbarButton VisionToolbarMove"
-             style="display: <%= moveDisplay %>">
-            <i class="icon-move icon-white"/>
+        <div class="VisionToolbarConditional" style="display:none;">
+            <div class="VisionToolbarButton VisionToolbarRepost"
+                style="display: <%= repostDisplay %>">
+                <i class="icon-share icon-white"/>
+            </div>
+            <div class="VisionToolbarButton VisionToolbarMove"
+                style="display: <%= moveDisplay %>">
+                <i class="icon-move icon-white"/>
+            </div>
         </div>
     </div>
     <div style="display: <%= pictureDisplay %>; position: relative;">

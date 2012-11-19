@@ -113,12 +113,20 @@ class Api:
     # Vision-related API
     #
     @staticmethod
-    def getMainPageVisions():
-        return DataApi.getMainPageVisions()
+    def getMainPageVisionList():
+        data = DataApi.getMainPageVisions()
+        visionList = []
+        for vision in data:
+            visionList.append(vision.toDictionary())
+        return visionList
 
     @staticmethod
-    def getVisionsForUser(userId):
-        return DataApi.getVisionsForUser(userId)
+    def getUserVisionList(userId):
+        data = DataApi.getVisionsForUser(userId)
+        visionList = []
+        for vision in data:
+            visionList.append(vision.toDictionary())
+        return visionList
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
