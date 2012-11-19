@@ -181,6 +181,10 @@ var USER = null;
 <script type="text/template" id="VisionTemplate">
 <div class="MasonryItemInner <%= selected %> <%= cursorClass %>">
     <div class="VisionToolbar" style="display:none;">
+        <div class="VisionToolbarButton VisionToolbarRepost"
+             style="display: <%= repostDisplay %>">
+            <i class="icon-share icon-white"/>
+        </div>
         <div class="VisionToolbarButton VisionToolbarMove"
              style="display: <%= moveDisplay %>">
             <i class="icon-move icon-white"/>

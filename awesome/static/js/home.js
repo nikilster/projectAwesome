@@ -287,7 +287,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
     className: "MasonryItem  MasonryBox",
     initialize: function() {
         _.bindAll(this, "itemSelect",
-                        "mouseEnter", "mouseLeave");
+                        "mouseEnter", "mouseLeave",
+                        "repostVision");
         this.model.bind("change", this.render, this);
 
         this.render();
@@ -296,6 +297,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         "click .MasonryItemInner" : "itemSelect",
         "mouseenter .MasonryItemInner" : "mouseEnter",
         "mouseleave .MasonryItemInner" : "mouseLeave",
+        "click .VisionToolbarRepost"   : "repostVision",
     },
     render: function() {
         var pageMode = App.Var.Model.pageMode();
@@ -313,10 +315,13 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         var cursorClass = "";
         var moveDisplay = "none";
+        var repostDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
             cursorClass = "MasonryItemMoveCursor";
         } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
             cursorClass = "MasonryItemPointerCursor";
+        } else if (pageMode == App.Const.PageMode.HOME_USER) {
+            repostDisplay = "inline-block";
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             cursorClass = "MasonryItemPointerCursor";
             moveDisplay = "inline-block";
@@ -328,6 +333,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          pictureUrl: pictureUrl,
                          cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
+                         repostDisplay: repostDisplay,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -357,7 +363,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
             } else {
                 $(this.el).find(".RemoveVisionOverlay").show();
             }
-        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+        } else if (pageMode == App.Const.PageMode.HOME_USER ||
+                   pageMode == App.Const.PageMode.USER_PROFILE) {
             $(this.el).find(".VisionToolbar").show();
         }
     },
@@ -366,9 +373,13 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
             $(this.el).find(".AddVisionOverlay").hide();
             $(this.el).find(".RemoveVisionOverlay").hide();
-        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+        } else if (pageMode == App.Const.PageMode.HOME_USER ||
+                   pageMode == App.Const.PageMode.USER_PROFILE) {
             $(this.el).find(".VisionToolbar").hide();
         }
+    },
+    repostVision: function() {
+        App.Var.View.repostVision(this.model);
     },
 });
 
@@ -378,6 +389,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
                         "ajaxDeleteVisionError",
+                        "repostVision",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
                         "showPageLoading",
@@ -429,6 +441,10 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
         this.currentVision = null;
+    },
+    repostVision: function(visionModel) {
+        assert(visionModel != null, "Vision model to repost is null");
+        console.log("REPOST: " + visionModel.visionId());
     },
     showVisionDetails: function(visionModel) {
         this.currentVision = visionModel;
