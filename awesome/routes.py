@@ -138,9 +138,13 @@ def register_user():
 @app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
-        data = { 'otherVisions' : Api.getMainPageVisionList() }
+        data = { 'otherVisions' : Api.getMainPageVisionList(),
+                 'visionList'   : [] }
+
+        # TODO: be smarter about when to load user vision list later
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
+            data['visionList'] = Api.getUserVisionList(userInfo['id'])
 
         return jsonify(data)
     abort(405)

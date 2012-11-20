@@ -196,12 +196,6 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         otherVisions: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
-        this.set({
-            visionList: new App.Backbone.Model.VisionList(
-                                                    this.get("visionList")),
-            otherVisions: new App.Backbone.Model.VisionList(
-                                                    this.get("otherVisions")),
-        });
     },
     // Getters
     pageMode: function() { return this.get("pageMode"); },
@@ -695,8 +689,6 @@ App.Backbone.View.Page = Backbone.View.extend({
             this.selectedVisionMoveIndex >= 0) {
             this.model.moveSelectedVision(this.selectedVisionMoveIndex,
                                           destIndex);
-            console.log("SORT: " +
-                        JSON.stringify(this.model.selectedVisions()));
         }
     },
     selectedVisionsSortChange: function(event, ui) {
@@ -760,7 +752,6 @@ App.Backbone.View.Page = Backbone.View.extend({
             $("#RegisterButton").hide();
             $("#ViewBoardButton").show();
         }
-        console.log("Visions: " + JSON.stringify(this.model.selectedVisions()));
 
         // Update hidden field in registration
         var visionIds = [];
@@ -804,6 +795,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderHome: function() {
         console.log("Render Home");
         this.hidePageLoading();
+        if (this.model.visionList().isEmpty()) {
+            // TODO: be smarter about when to load and set visionList later
+            //       do this first so rendering of other visions has proper
+            //       vision list to process
+            this.model.setVisionList(App.Var.JSON.visionList);
+        }
         this.model.setOtherVisions(App.Var.JSON.otherVisions);
     },
     renderHomeError: function() {
