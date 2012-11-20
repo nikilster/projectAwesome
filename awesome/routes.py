@@ -216,43 +216,85 @@ def apiDeleteUserVision(userId):
     Save
     Used for Bookmarklet
 '''
-@app.route('/save', methods=['GET'])
-def save():
+@app.route('/vision/create/bookmarklet', methods=['GET'])
+def bookmarkletCreate():
 
-    #Make we only accept post
+    #Make we only accept get
     if request.method != 'GET': abort(405)
 
     #TODO: check login
 
     #Get Parameters
+    '''
     callback = request.args.get('callback', '')
     mimetype = 'application/javascript'
+    '''
 
-    url = request.args.get('url', '') #request.form['url']
-    img = request.args.get('img', '') #request.form['img']
-    text = request.args.get('text', '')
+    mediaUrl = request.args.get(Constant.BOOKMARKLET_MEDIA_URL_KEY)
+    mediaDescription = request.args.get(Constant.BOOKMARKLET_MEDIA_DESCRIPTION_KEY)
+    pageUrl = request.args.get(Constant.BOOKMARKLET_PAGE_URL_KEY)
+    pageTitle = request.args.get(Constant.BOOKMARKLET_PAGE_TITLE_KEY)
+    
     userId = 1
 
-    if callback == '':
-        return "Please make a valid request!"
+    #Validate Parameter
+    #if callback == '':
+        #return "Please make a valid request!"
 
-    if url == ''  or img == ''  or text == '':
-        content = callback + "('Please submit the valid data!')"
-        return current_app.response_class(content, mimetype=mimetype)
-
-    result = Api.saveVision(userId, img, text, url)
-
-    returnObject = {}
-    returnObject['message'] = result[1]
-    if(result != Constant.INVALID_OBJECT_ID):
-        returnObject['result'] = True
-        returnObject['visionId'] = result[0]
-    else:
-        returnObject['result'] = True
+    #Validate Parameters
+    if mediaUrl is None \
+        or mediaDescription is None \
+        or pageUrl is None \
+        or pageTitle is None:
+        return "Please submit the valid data"
+        #content = callback + "('Please submit the valid data!')"
+        #return current_app.response_class(content, mimetype=mimetype)
 
 
-    content = callback + '(' + json.dumps(returnObject) + ')'
+    return render_template('create.html', mediaUrl=mediaUrl, mediaDescription=mediaDescription,\
+        pageUrl=pageUrl, pageTitle=pageTitle)
 
-    return current_app.response_class(content, mimetype=mimetype)
+
+@app.route('/vision/create/bookmarklet', methods=['POST'])
+def create():
+
+    '''
+    Debugging Tip:
+    if you see: 
+
+        Bad Request
+        The browser (or proxy) sent a request that this server could not understand.
+
+    (a 400 error)
+
+    Make sure all of the form fields are given correctly
+
+    http://stackoverflow.com/questions/8552675/form-sending-error-flask
+    '''
+
+    mediaUrl = request.form[Constant.BOOKMARKLET_POST_MEDIA_URL]
+    text = request.form[Constant.BOOKMARKLET_POST_TEXT]
+    pageUrl = request.form[Constant.BOOKMARKLET_POST_PAGE_URL]
+    pageTitle = request.form[Constant.BOOKMARKLET_POST_PAGE_TITLE]
+
+    #Validate Parameters
+    if mediaUrl is None \
+        or text is None \
+        or pageUrl is None \
+        or pageTitle is None:
+        return "Invalid Vision Parameters"
+
+    #TODO: get the user id
+    userId = 1
+
+    #Add
+    visionId, message = Api.saveVision(userId, mediaUrl, text, pageUrl, pageTitle)
+
+    #Successful Create!
+    if(visionId != Constant.INVALID_OBJECT_ID):
+        return render_template('successCreatingVision.html', visionId=visionId)
+
+    #Error
+    return render_template('errorCreatingVision.html', message=message)
 
 # $eof

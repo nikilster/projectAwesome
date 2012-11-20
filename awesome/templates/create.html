@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Vision</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='opt/bootstrap/css/bootstrap.css') }}"/>
+<body>
+    
+<div class="container">
+    <div id="selectedMedia">
+        <img src="{{ mediaUrl }}"/>
+    </div>
+
+    <!-- Post to same page -->
+    <form class="form" method="POST" action="">
+        <input type="textarea" name="text" value="{{ mediaDescription }}"/>
+        <button type="submit" class="btn">Post It</button>
+
+        <input type="hidden" name="mediaUrl" value="{{ mediaUrl }}"/>
+        <input type="hidden" name="pageUrl" value="{{ pageUrl }}"/>
+        <input type="hidden" name="pageTitle" value=" {{ pageTitle }}"/>
+
+    </form>
+<div>
+
+</body>
+</html>
+

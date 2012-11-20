@@ -224,7 +224,7 @@ class DataApi:
     def getMainPageVisions():
 
         #Number of max visions to return
-        MAX_VISIONS = 100
+        MAX_VISIONS = 1
 
         #Get vision ids from db
         db = DB()

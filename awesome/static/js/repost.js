@@ -4,7 +4,7 @@
 if (!($ = window.jQuery)) { // typeof jQuery=='undefined' works too  
     script = document.createElement( 'script' );  
   	script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';  
-    script.onload=vision;  
+    script.onload=runBookmarklet;  
     document.body.appendChild(script);  
 }  
 else {  
@@ -152,14 +152,86 @@ function showImage(image, index, background)
 	)
 	//Post Image
 	.click(function(){
-		console.log("clicked!");
-		saveVision(image.src);
+
+		var mediaUrl = image.src;
+
+		var pageUrl = window.location.href;
+		var pageTitle = document.title;
+
+		//Media description is 1st alt tag and if no alt tag, 2nd page title, 
+		//e(can make it more detailed when we imporve the description finding)
+		var mediaDescription; 
+		image.alt == "" ? mediaDescription = pageTitle
+			: mediaDescription = image.alt;
+
+		//Debug
+		/*
+		console.log("Media Url: " + mediaUrl);
+		console.log("Page Url:" + pageUrl);
+		console.log("Page Title: " + pageTitle);
+		console.log(image);
+		console.log(image.alt);
+		console.log("Media Description: " + mediaDescription);
+		*/
+
+		saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle);
 	})
 	//.css('float', 'left')
 	.appendTo(background);
 }
 
-function saveVision(imageUrl) {  
+function saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle)
+{
+
+	/*
+		Saved by pinterest
+		(passed in the url)
+
+		Media URL
+		media=http%3A%2F%2Fmollypiper.com%2Fwp-content%2Fuploads%2F2011%2F02%2Fzoolander.jpg
+
+		Page Url
+		url=http%3A%2F%2F127.0.0.1%3A5000%2F
+	
+		Page Title
+		&title=Project%20AWESOME
+		is_video=false
+
+		This is the image alt tag
+		Defaults to page title if there is no alt tag
+		description=Project%20AWESOME
+	*/
+
+	var BASE_URL = "http://127.0.0.1:5000/vision/create/bookmarklet";
+	var MEDIA_URL_KEY = "mediaUrl";
+	var PAGE_URL_KEY = "pageUrl";
+	var PAGE_TITLE_KEY = "pageTitle";
+	var MEDIA_DESCRIPTION_KEY = "mediaDescription";
+
+	var url = BASE_URL;
+ 	url += "?" + getQueryComponent(MEDIA_URL_KEY, mediaUrl);
+	url += "&" + getQueryComponent(PAGE_URL_KEY, pageUrl);
+	url += "&" + getQueryComponent(PAGE_TITLE_KEY, pageTitle);
+	url += "&" + getQueryComponent(MEDIA_DESCRIPTION_KEY, mediaDescription)
+	
+	var name = "Create Vision";
+	//From Pinterest Specs
+	var specs = "status=no,resizable=yes,scrollbars=yes,personalbar=no,directories=no,location=no,toolbar=no,menubar=no,width=632,height=270,left=0,top=0";
+	
+	window.open(url, name, specs);
+}
+
+/*
+	Get Query Component
+	Encode Query Url
+*/
+function getQueryComponent(key, value)
+{
+	return key + '=' + encodeURIComponent(value);
+}
+
+
+function saveVisionAjax(imageUrl) {  
 
 	var url = "http://127.0.0.1:5000/save";
 	console.log(window.location);

@@ -140,12 +140,12 @@ class Api:
         Save (Right now from the bookmarklet)
     '''
     @staticmethod
-    def saveVision(userId, imageUrl, text, pageUrl):
+    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle):
 
         #To Do Validate
-        url = imageUrl
+        #TODO: Save page title
         filename = "name on server"
-        pictureId = DataApi.addPicture(url, filename)
+        pictureId = DataApi.addPicture(mediaUrl, filename)
 
         if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
