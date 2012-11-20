@@ -16,13 +16,21 @@ else {
 //Run Document
 function runBookmarklet()
 {
-	selectImage();
-}
-
-function selectImage()
-{
+	loadCSS();
 	var images = getPostableImages();
 	displayImageSelector(images);
+}
+
+//Load the CSS file for the images
+function loadCSS()
+{
+  var CSS_FILE_URL = "http://127.0.0.1:5000/static/css/postmarklet.css";
+ 
+  var cssLink =document.createElement("link")
+  cssLink.setAttribute("rel", "stylesheet")
+  cssLink.setAttribute("type", "text/css")
+  cssLink.setAttribute("href", CSS_FILE_URL)
+  document.getElementsByTagName("head")[0].appendChild(cssLink)
 }
 
 /*
@@ -67,8 +75,15 @@ function isPostableImage(image)
 */
 function displayImageSelector(images)
 {
+	// What to append to
+	var BASE = 'body';
+
 	//displayIframe();
-	displayImages(images);
+	displayBackground(BASE);
+	var body = displayBody(BASE);
+	displaySpacer(body);
+	displayHeader(body);
+	displayImages(body, images);
 
 }
 
@@ -94,62 +109,84 @@ function displayIframe()
 	//iframe.allowTransparency = "true"
 }
 
-function displayImages(images)
-{
-	var backgroundDiv = addBackground();
-	for(var i=0; i < images.length; i++)
-		showImage(images[i], i, backgroundDiv);
-}
 
-function addBackground()
+//TODO: add radom numbers to the css selectors (id)
+function displayBackground(baseElement)
 {
-	return $("<div />", {
-		//TODO: add radom numbers to the css selectors (id)
-		id: "VISION_SELECTOR_BACKGROUND",
-		width: "2000px",
-		height: "2000px"
+	$("<div />", {
+		id: "CREATE_VISION_BACKGROUND",
 	})
-	//TODO: Change to absolute
-	.css('position', 'fixed')
-	.css('top', 0)
-	.css('left', 0)
-	.css('right', 0)
-	.css('bottom', 0)
-	.css('background-color', '#F2F2F2')
-	.css('opacity', .95)
-	.css('z-index', 2147483643)
-	.css('padding-left', '10%')
-	.css('padding-right', '10%')
-	.appendTo('body');
+	.appendTo(baseElement);
 
 }
 
-function showImage(image, index, background)
+function displayBody(baseElement)
 {
+	return $("<div />", {id: "CREATE_VISION_BODY"})
+			.appendTo(baseElement);
+}
+
+
+function displaySpacer(body)
+{
+	$("<div />", {id: "CREATE_VISION_SPACER"})
+	.appendTo(body);
+}
+
+function displayHeader(body)
+{
+	var headerDiv = $("<div />", {id:"CREATE_VISION_HEADER"})
+				.appendTo(body);
+
+
+	//Logo
+	$("<span />", {id: "CREATE_VISION_LOGO"}).appendTo(headerDiv);
+
+	//Cancel
+	$("<a />", {
+		id: "CREATE_VISION_X",
+		text: "Cancel",
+		click: cancelClicked
+	}).appendTo(headerDiv);
+}
+
+
+
+function displayImages(visionBodyDiv, images)
+{
+	var imageContainer = $("<span />", {id: "CREATE_VISION_IMAGE_CONTAINER"})
+							.appendTo(visionBodyDiv);
+
+	for(var i=0; i < images.length; i++)
+		showImage(images[i], i, imageContainer);
+}
+
+function showImage(image, index, imageContainer)
+{
+	var visionContainer = $('<span />', {
+		class: "CREATE_VISION_VISION_CONTAINER"
+	}).appendTo(imageContainer);
+
+	var imageSpan = $('<span />', {
+		class: "CREATE_VISION_IMAGE"
+	}).appendTo(visionContainer);
+
 	//Pinterest Minimum Image Size
 	//> 80px in both dimensions
 	THUMBNAIL_HEIGHT = 200;
 	THUMBNAIL_WIDTH = 200;
 
+	//Thumbnail Image
 	$('<img />', {
-		class: "VISION_SELECTOR_IMAGE",
 		height: THUMBNAIL_HEIGHT,
 		width: THUMBNAIL_WIDTH,
 		src: image.src
+	}).appendTo(imageSpan);
+
+	$('<a />', {
+		rel: "image",
+		href: "#"
 	})
-	.css('margin-left', '20px')
-	.css('margin-right', '20px')
-	.css('opacity', 1)
-	.css('cursor', 'pointer')
-	.hover(
-		function(){
-			$(this).css('opacity', .95);
-			$(this).css('background-color', "#333");
-		}, 
-		function() {
-			$(this).css('opacity', 1);
-		}
-	)
 	//Post Image
 	.click(function(){
 
@@ -176,10 +213,27 @@ function showImage(image, index, background)
 
 		saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle);
 	})
-	//.css('float', 'left')
-	.appendTo(background);
+	.appendTo(imageSpan);
 }
 
+
+/*
+	------------------------ Click Handlers ------------------------
+*/
+
+/*
+	Cancel Clicked
+*/
+function cancelClicked()
+{
+	//Remove background and body
+	$('#CREATE_VISION_BACKGROUND').remove();
+	$('#CREATE_VISION_BODY').remove();
+}
+	
+/*
+	Image Clicked
+*/
 function saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle)
 {
 
