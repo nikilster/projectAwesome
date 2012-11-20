@@ -196,12 +196,6 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         otherVisions: new App.Backbone.Model.VisionList(),
     },
     initialize: function() {
-        this.set({
-            visionList: new App.Backbone.Model.VisionList(
-                                                    this.get("visionList")),
-            otherVisions: new App.Backbone.Model.VisionList(
-                                                    this.get("otherVisions")),
-        });
     },
     // Getters
     pageMode: function() { return this.get("pageMode"); },
@@ -267,6 +261,14 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         }
         return null;
     },
+    getInOtherVisions: function(visionId) {
+        var list = this.otherVisions().where({id: visionId});
+        if (list.length > 0) {
+            assert(list.length == 1, "Shouldn't have multiple models here")
+            return list[0];
+        }
+        return null;
+    },
     moveSelectedVision: function(srcIndex, destIndex) {
         // We don't move silently here because we want to trigger
         // and update to the hidden input with the selected visions list
@@ -285,10 +287,17 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     deleteVision: function(visionId) {
         var toRemove = this.getVisionInList(visionId);
         assert(toRemove != null, "Couldn't find vision id to remove");
-        console.log("toRemove: " + toRemove.visionId());
-        console.log("vision len: " + this.visionList().length);
         this.visionList().remove(toRemove);
-        console.log("vision len: " + this.visionList().length);
+    },
+    repostVisionDone: function(repostId, newVision) {
+        // Add new vision to visionList
+        this.visionList().unshift(new App.Backbone.Model.Vision(newVision),
+                                  {silent: true});
+        // Trigger change in repostId so we re-render it as in the vision list
+        var repostModel = this.getInOtherVisions(repostId);
+        if (null != repostModel) {
+            repostModel.trigger("change");
+        }
     },
 });
 
@@ -412,6 +421,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "ajaxDeleteVisionSuccess",
                         "ajaxDeleteVisionError",
                         "repostVision",
+                        "ajaxRepostVisionSuccess",
+                        "ajaxRepostVisionError",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
                         "showPageLoading",
@@ -469,8 +480,24 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     repostVision: function(visionModel) {
         assert(visionModel != null, "Vision model to repost is null");
-        console.log("REPOST: " + visionModel.visionId());
+        if (visionModel != null) {
+            console.log("REPOST: " + visionModel.visionId());
+            doAjax("/api/user/" + USER['id'] + "/repost_vision",
+                   JSON.stringify({
+                                    'visionId' : visionModel.visionId(),
+                                  }),
+                   this.ajaxRepostVisionSuccess,
+                   this.ajaxRepostVisionError
+            );
+        }
     },
+    ajaxRepostVisionSuccess: function(data, textStatus, jqXHR) {
+        this.model.repostVisionDone(data.repostParentId, data.newVision);
+    },
+    ajaxRepostVisionError: function(jqXHR, textStatus, errorThrown) {
+        // Do nothing, we already showed an error and don't need to change UI
+    },
+
     showVisionDetails: function(visionModel) {
         this.currentVision = visionModel;
 
@@ -662,8 +689,6 @@ App.Backbone.View.Page = Backbone.View.extend({
             this.selectedVisionMoveIndex >= 0) {
             this.model.moveSelectedVision(this.selectedVisionMoveIndex,
                                           destIndex);
-            console.log("SORT: " +
-                        JSON.stringify(this.model.selectedVisions()));
         }
     },
     selectedVisionsSortChange: function(event, ui) {
@@ -727,7 +752,6 @@ App.Backbone.View.Page = Backbone.View.extend({
             $("#RegisterButton").hide();
             $("#ViewBoardButton").show();
         }
-        console.log("Visions: " + JSON.stringify(this.model.selectedVisions()));
 
         // Update hidden field in registration
         var visionIds = [];
@@ -771,6 +795,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderHome: function() {
         console.log("Render Home");
         this.hidePageLoading();
+        if (this.model.visionList().isEmpty()) {
+            // TODO: be smarter about when to load and set visionList later
+            //       do this first so rendering of other visions has proper
+            //       vision list to process
+            this.model.setVisionList(App.Var.JSON.visionList);
+        }
         this.model.setOtherVisions(App.Var.JSON.otherVisions);
     },
     renderHomeError: function() {

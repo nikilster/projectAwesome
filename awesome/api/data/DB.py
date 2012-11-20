@@ -28,6 +28,8 @@ class DB:
     PICTURE_PREFIX = "picture:"
     USER_VISION_LIST_PREFIX = "visionListForUser:"
 
+    ORIG_VISION_LIST_KEY = "origVisionList"
+
 
     #Increment Keys
     USER_NEXT_ID_KEY = "global:nextUserId"
@@ -82,6 +84,10 @@ class DB:
         userVisionListKey = self.__getUserVisionListKey(newVision.userId)
         visionId = self.__cleanInt(newVision.id)
         save2 = self.r.lpush(userVisionListKey, visionId)
+
+        # If not a repost, add to origVisionList
+        if newVision.parentId == 0:
+            self.r.lpush(DB.ORIG_VISION_LIST_KEY, newVision.id)
 
         #Return whether both different saves are successful 
         return save1 and save2
@@ -154,15 +160,17 @@ class DB:
     def mostRecentVisionIds(self, maxCount):
 
         #Return the min of (existing, maxtoreturn <- passed by caller)
-        numTotalVisions = self.__getNumVisions()
+        numTotalVisions = self.__getNumOrigVisions()
         numVisionsToReturn = min(numTotalVisions, maxCount)
 
         #non inclusive
         finalRangeIndex = numTotalVisions - numVisionsToReturn
 
         #Get Vision Ids
-        return range(numTotalVisions, finalRangeIndex, -1)
-
+        #return range(numTotalVisions, finalRangeIndex, -1)
+        visionIds = self.r.lrange(DB.ORIG_VISION_LIST_KEY,
+                                  0, numVisionsToReturn - 1)
+        return visionIds
 
     '''
         Object Id Counters
@@ -185,6 +193,9 @@ class DB:
     #Assume contiguous
     def __getNumVisions(self):
         return int(self.r.get(DB.VISION_NEXT_ID_KEY)) - 1
+
+    def __getNumOrigVisions(self):
+        return int(self.r.llen(DB.ORIG_VISION_LIST_KEY))
 
     #make sure that the argument is a numeric string
     #returns a string that is guaranteed to be an integer

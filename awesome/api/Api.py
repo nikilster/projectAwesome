@@ -106,6 +106,16 @@ class Api:
             DataApi.repostVision(userId, visionId)
 
     @staticmethod
+    def repostVision(userId, visionId):
+        newVisionId = DataApi.repostVision(userId, visionId)
+        if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
+            return None
+        newVision = DataApi.getVision(newVisionId)
+        if DataApi.NO_OBJECT_EXISTS == newVision:
+            return None
+        return newVision
+
+    @staticmethod
     def getUserById(userId):
         return DataApi.getUser(userId)
 
