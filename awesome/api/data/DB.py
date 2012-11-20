@@ -161,7 +161,10 @@ class DB:
         finalRangeIndex = numTotalVisions - numVisionsToReturn
 
         #Get Vision Ids
-        return range(numTotalVisions, finalRangeIndex, -1)
+        #return range(numTotalVisions, finalRangeIndex, -1)
+        # Adding the +1 gets rid of the off-by-one error so we get the most
+        # recent vision
+        return range(numTotalVisions+1, finalRangeIndex, -1)
 
 
     '''
