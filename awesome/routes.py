@@ -56,12 +56,9 @@ def login():
         email = request.form['email'].strip().lower()
         password = request.form['password'].strip()
 
-        Logger.debug("Email: " + str(email))
-
         (user, errorMsg) = Api.loginUser(email, password)
 
         if user:
-            Logger.debug("Name: " + user.firstName)
             SessionManager.addUser(user)
             return redirect(url_for('user_profile'))
         else:
@@ -206,6 +203,32 @@ def apiDeleteUserVision(userId):
             if True == result:
                 data = { 'result'    : "success",
                          'removedId' : visionId }
+            else:
+                data = { 'result' : "error" }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/repost_vision', methods=['POST'])
+def apiRepostVision(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not 'visionId' in parameters:
+                abort(406)
+            visionId = parameters['visionId']
+
+            newVision = Api.repostVision(userInfo['id'], visionId)
+
+            if None != newVision:
+                data = { 'result'    : "success",
+                         'repostParentId' : visionId,
+                         'newVision'      : newVision.toDictionary() }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
