@@ -53,8 +53,8 @@ def login():
         else:
             return render_template('login.html')
     elif request.method == 'POST':
-        email = request.form['email'].strip().lower()
-        password = request.form['password'].strip()
+        email = request.form['email']
+        password = request.form['password']
 
         (user, errorMsg) = Api.loginUser(email, password)
 
@@ -89,10 +89,10 @@ def register():
 @app.route('/register_user', methods=['POST'])
 def register_user():
     if request.method == 'POST':
-        firstName = request.form['firstName'].strip()
-        lastName = request.form['lastName'].strip()
-        email = request.form['email'].strip().lower()
-        password = request.form['password'].strip()
+        firstName = request.form['firstName']
+        lastName = request.form['lastName']
+        email = request.form['email']
+        password = request.form['password']
         
         (newUserId, errorMsg) = Api.registerUser(firstName, lastName,
                                                  email, password)

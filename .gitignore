@@ -1,6 +1,6 @@
 /venv/
 awesome/redis-2.6.4
-awesome/dump.rdb
+dump.rdb
 *.pyc
 *.DS_Store
 *.swp
