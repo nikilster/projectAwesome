@@ -71,6 +71,7 @@ function doAjax(url, data, successFunc, errorFunc) {
                 successFunc(data, textStatus, jqXHR);
             } else {
                 feedbackError();
+                console.log("ERROR: " + JSON.stringify(data));
                 errorFunc(jqXHR, textStatus, "JSON error");
             }
         },
@@ -298,6 +299,10 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         if (null != repostModel) {
             repostModel.trigger("change");
         }
+    },
+    addVision: function(newVision) {
+        // Add new vision to visionList
+        this.visionList().unshift(new App.Backbone.Model.Vision(newVision));
     },
 });
 
@@ -941,11 +946,115 @@ $(document).ready(function() {
         $("#RegisterForm").first().submit();
     });
 
-    $("#AddItemButton").click(function() {
-        $("#AddItemModal").modal();
-    });
     $("#VisionDeleteButton").click(function() {
         App.Var.View.deleteVision();
+    });
+
+    /*
+     * File upload stuff
+     */
+    function toggleAddVisionSubmit() {
+        var enable = false;
+        var fileName = $("#FileUploadInput").val();
+        if (fileName != "") {
+            enable = true;
+        }
+        /* Should we allow text w/o image?
+        var text = $.trim($("#InputText").val());
+        if (text != "") {
+            console.log("TEXT: " + text);
+            enable = true;
+        }
+        */
+        if (enable == true) {
+            $("#AddVisionSubmit").removeAttr("disabled");
+        } else {
+            $("#AddVisionSubmit").attr("disabled", "disabled");
+        }
+    }
+
+    $("#AddItemButton").click(function() {
+        $("#AddItemModal").modal();
+        $("#FileUploadInput").val("");
+        $("#FileUploadInput").removeAttr("disabled");
+        $("#FileUploadNoPreview").show();
+        $("#FileUploadLoading").hide();
+        $("#FileUploadInvalid").hide();
+        $("#FileUploadImageContainer").hide();
+        $("#InputText").val("");
+        $("#AddVisionSubmit").attr("disabled", "disabled");
+    });
+    $("#FileUploadInput").change(function() {
+        var fileName = $("#FileUploadInput").val();
+        if (fileName != "") {
+            // Show user we are processing file
+            console.log("UPLOAD: " + fileName);
+
+            // Submit!
+            $("#FileUploadForm").submit();
+
+            // disable file upload while we are uploading this file
+            $("#FileUploadInput").attr("disabled", "disabled");
+            $("#FileUploadNoPreview").hide();
+            $("#FileUploadLoading").show();
+            $("#FileUploadInvalid").hide();
+        }
+    });
+    $("#FileUploadTarget").load(function() {
+        // Re-enable the file upload input
+        $("#FileUploadInput").removeAttr("disabled");
+
+        console.log("File uploaded!");
+        var jsonText = $("#FileUploadTarget").contents().find("body").html();
+        var result  = eval('(' + jsonText+ ')');
+        if (result && result.result == "success") {
+            // Show image uploaded
+            console.log("url: " + result.url);
+            $("#FileUploadNoPreview").hide();
+            $("#FileUploadNoPreview").hide();
+            $("#FileUploadLoading").hide();
+            $("#FileUploadImage").attr("src", result.url);
+            $("#FileUploadImageContainer").show();
+        } else {
+            // Clear the file upload image feedback
+            console.log("UPLOAD ERROR");
+            $("#FileUploadInvalid").show();
+            $("#FileUploadNoPreview").hide();
+            $("#FileUploadLoading").hide();
+            $("#FileUploadImageContainer").hide();
+            $("#FileUploadInput").val("");
+        }
+        toggleAddVisionSubmit();
+    });
+    /*
+    $("#InputText").keyup(toggleAddVisionSubmit);
+    $("#InputText").bind('paste',toggleAddVisionSubmit);
+    $("#InputText").bind('cut',toggleAddVisionSubmit);
+    */
+    $("#AddVisionSubmit").click(function() {
+        var useImage = false;
+        if ($("#FileUploadInput").val() != "") {
+            useImage = true;
+        }
+
+        var text = $.trim($("#InputText").val());
+
+        doAjax("/api/user/" + USER['id'] + "/add_vision",
+                JSON.stringify({'useImage' : useImage,
+                                'text' : text}),
+                // success
+                function(data, textStatus, jqXHR) {
+                    console.log("Success: " + JSON.stringify(data));
+                    if (data.result == true) {
+                        App.Var.Model.addVision(data.newVision);
+                        $("#AddVisionModal").modal("hide");
+                    }
+                },
+                // error
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error");
+                }
+        );
     });
 });
 

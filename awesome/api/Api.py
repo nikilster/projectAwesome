@@ -167,4 +167,9 @@ class Api:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
 
         return [visionId, "Saved Vision!"]
+
+    @staticmethod
+    def getVision(visionId):
+        return DataApi.getVision(visionId)
+
 # $eof
