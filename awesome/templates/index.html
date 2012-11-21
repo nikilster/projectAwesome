@@ -138,15 +138,68 @@ var USER = null;
 
     <div id="AddItemModal" class="modal hide fade">
         <div class="modal-header" style="font-size:18pt">
-            Add Vision
+            New Vision
         </div>
         <div class="modal-body">
-            <div>Stuff</div>
 
-            <div class="btn btn-large" data-dismiss="modal">Close</div>
-        </div>
-    </div>
+            <div style="float:left;">
+                <form id="FileUploadForm" method="post"
+                    enctype="multipart/form-data"
+                    action="{% if user != None %}{{ url_for('apiFileUpload', userId=user['id']) }}{% else %}/bogusfileupload/blahblahblah{% endif %}"
+                    target="FileUploadTarget"
+                    style="margin: 5px; border: 0px; padding: 0px;">
+                    <input id="FileUploadInput" name="picture" type="file"
+                           style="width:300px;"/>
+                    <br/>
+                    <iframe id="FileUploadTarget" name="FileUploadTarget"
+                            src=""
+                            style="width:0px;height:0px;border:0px; solid #fff;">
+                    </iframe>
+                </form>
+                <div style="margin: 5px;">
+                    <textarea id="InputText" class="RichTextArea input-xlarge"
+                            name="text"
+                            style="width:300px; height:70px; font-size:15px;
+                                  margin-left: 5px;"
+                            placeholder="Describe your vision"></textarea>
+                </div>
+            </div>
+            <div style="float:right; width: 175px; margin-top:10px;">
+                <div id="FileUploadNoPreview"
+                     style="width:150px; height:85px; padding-top: 65px;
+                            background-color:#EEEEEE; text-align: center;">
+                    No image
+                </div>
+                <div id="FileUploadLoading"
+                     style="display:none;
+                            width:150px; height:100px; padding-top:50px;
+                            background-color:#EEEEEE; text-align: center;">
+                    Loading..<br/>
+                    <img src="{{ url_for('static', filename="images/ProgressBar.gif") }}"/>
+                </div>
+                <div id="FileUploadInvalid"
+                     style="display:none; color: red;
+                            width:150px; height:80px; padding-top: 70px;
+                            background-color:#EEEEEE; text-align: center;">
+                    Invalid upload
+                </div>
 
+                <div id="FileUploadImageContainer"
+                     style="display:none; max-height:150px; overflow:hidden;">
+                    <img id="FileUploadImage" src=""
+                        style="width: 150px;"/>
+                </div>
+            </div>
+            <div style="clear:both; height:20px;"></div>
+
+            <div style="float:right;">
+                <div class="btn btn-large" data-dismiss="modal">Close</div>
+                <div id="AddVisionSubmit"
+                class="btn btn-primary btn-large" disabled="disabled">
+                    Add Vision
+                </div>
+            </div>
+      </div>
 </body>
 
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>

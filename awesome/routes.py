@@ -4,9 +4,13 @@ from flask import request, session
 from flask import Response
 from flask import current_app
 
-from . import app
+from . import app, LOCAL_IMAGE_DIR
 from Constant import Constant
 import json
+
+import os
+from werkzeug import secure_filename
+import calendar, datetime, hashlib
 
 from util.Logger import Logger
 
@@ -14,7 +18,6 @@ from api.Api import Api
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
-
 
 @app.route('/', methods=['GET'])
 def index():
@@ -233,6 +236,113 @@ def apiRepostVision(userId):
                 data = { 'result'    : "success",
                          'repostParentId' : visionId,
                          'newVision'      : newVision.toDictionary() }
+            else:
+                data = { 'result' : "error" }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+IMAGE_TYPES = dict({
+    'png' : 'image/png',
+    'jpg' : 'image/jpeg',
+    'jpeg' : 'image/jpeg',
+    'gif' : 'image/gif',
+    'bmp' : 'image/x-ms-bmp',   # this one is unofficial
+})
+
+def image_ext(filename):
+    parts = filename.rsplit('.',1)
+    if len(parts) < 2:
+        return None
+    return parts[1].lower()
+
+def image_filename_valid(filename):
+    ext = image_ext(filename)
+    if ext and ext in IMAGE_TYPES.keys():
+        return True
+    return False 
+
+def userTempImagePath(userId, filename):
+    path = LOCAL_IMAGE_DIR + '/TmpImage-' + str(userId) + "." + image_ext(filename)
+    url = '/static/tmp_image/TmpImage-' + str(userId) + "." + image_ext(filename)
+    return (path, url)
+def userFinalImagePath(userId, filename):
+    t = str(calendar.timegm(datetime.datetime.utcnow().timetuple()))
+    md5 = hashlib.md5()
+    md5.update(t)
+    digest = md5.hexdigest()
+    uniqueString = str(userId) + "_" + str(digest)
+
+    path = LOCAL_IMAGE_DIR + '/' + uniqueString + "." + image_ext(filename)
+    url = '/static/tmp_image/' + uniqueString + "." + image_ext(filename)
+
+    return (path, url)
+
+@app.route('/api/user/<int:userId>/file_upload', methods=['POST'])
+def apiFileUpload(userId):
+    errorResult = { 'result' : 'error' }
+
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                return render_template('file_upload.html',
+                                       jsonResult=errorResult)
+
+            file = request.files['picture']
+
+            if file and image_filename_valid(file.filename):
+                filename = secure_filename(file.filename)
+                path, url= userTempImagePath(userId, filename)
+                file.save(path);
+                file.close()
+                SessionManager.setPreloadedImage(path)
+                successResult = ({'result' : 'success',
+                                  'url'    : url})
+                return render_template('file_upload.html',
+                                       jsonResult=successResult)
+    return render_template('file_upload.html', jsonResult=errorResult)
+
+@app.route('/api/user/<int:userId>/add_vision', methods=['POST'])
+def apiAddUserVision(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not 'useImage' in parameters or \
+               not 'text'     in parameters:
+                abort(406)
+            useImage = parameters['useImage']
+            text = parameters['text'].strip()
+
+            # Make sure input OK to create a new vision
+            if useImage == False:
+            # TODO: should we allow text w/o image?
+            #if useImage == False and len(text) == 0:
+                abort(406)
+
+            # Make sure image link OK
+            url = ""
+            if useImage == True:
+                # Rename image, remove tmp file, and get photo pointer
+                tmpPath = SessionManager.getPreloadedImage()
+           
+                # Get final url for image and copy tmp file to final url
+                path, url = userFinalImagePath(userId, tmpPath)
+                cwd = os.getcwd()
+                os.rename(os.path.join(cwd, tmpPath),
+                          os.path.join(cwd, path))
+
+            # Create a new vision with the photo
+            visionId, errorMsg = Api.saveVision(userId, url, text, "", "")
+            vision = Api.getVision(visionId)
+
+            if None != vision:
+                data = { 'result'    : "success",
+                         'newVision' : vision.toDictionary() }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
