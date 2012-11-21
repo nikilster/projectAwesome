@@ -10,6 +10,7 @@ class LoginError:
     PASSWORD_INVALID = "Password is invalid"
     DB_ERROR = "Database error. Sorry, please try again!"
 
+#TODO: Do more specific error messages
 class RegisterError:
     TAG = "RegisterError"
     FIRST_NAME_REQUIRED = "First name is required"
@@ -20,7 +21,7 @@ class RegisterError:
     EMAIL_INVALID = "Email address is invalid"
     EMAIL_TAKEN = "Account already exists this email address"
     PASSWORD_REQUIRED = "Password is required"
-    PASSWORD_INVALID = "Password is invalid"
+    PASSWORD_INVALID = "Please use a password with at least 6 characters."
     DB_ERROR = "Database error. Sorry, please try again!"
 
 # $eof

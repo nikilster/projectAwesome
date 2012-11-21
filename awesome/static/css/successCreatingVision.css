@@ -1,0 +1,11 @@
+body
+{
+	background-color:#F7F5F5;
+}
+
+.content 
+{
+	/*TODO: change this to relative!!!;*/
+	width:650px;
+	text-align:center;
+}

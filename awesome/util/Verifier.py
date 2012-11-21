@@ -17,6 +17,7 @@ class Verifier:
     return True
 
   # TODO: be more strict about this later
+  # TODO: Client side validation
   @staticmethod
   def passwordValid(password):
     if len(password) < 6:
