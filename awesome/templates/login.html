@@ -36,7 +36,7 @@ Register
                   <div class="control-group">
                     <label class="control-label" for="email">Email</label>
                     <div class="controls">
-                      <input class="RegisterField InputLarge"
+                      <input id="EmailInput" class="RegisterField InputLarge"
                              placeholder="Email"
                              type="text" name="email"/>
                     </div>
@@ -68,6 +68,15 @@ Register
 
 {# ------------------------------------------------------------------------- #}
 {% block js %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $("#EmailInput").focus();
+});
+</script>
+
 {% endblock %}
 
 {# $eof #}

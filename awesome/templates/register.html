@@ -37,7 +37,8 @@ Register
                         Name
                     </label>
                     <div class="controls">
-                        <input class="RegisterField InputSmall"
+                        <input id="FirstNameInput"
+                               class="RegisterField InputSmall"
                                placeholder="First"
                                type="text" name="firstName"/>
                         <input class="RegisterField InputSmall"
@@ -79,6 +80,15 @@ Register
 
 {# ------------------------------------------------------------------------- #}
 {% block js %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>
+
+<script>
+$(document).ready(function() {
+    $("#FirstNameInput").focus();
+});
+</script>
+
 {% endblock %}
 
 {# $eof #}
