@@ -140,12 +140,19 @@ class DB:
             # back once so we only have one copy and flag an error
             self.r.lpush(userVisionListKey, visionId)
             return False
-        destId = self.r.lindex(userVisionListKey, destIndex)
-        result = self.r.linsert(userVisionListKey, 'BEFORE', destId, visionId)
-        if result == -1:
-            # If couldn't find pivot, just put vision back so we don't lose it
-            self.r.lpush(userVisionListKey, visionId)
-            return False
+
+        # If destIndex is end, do a rpush
+        if destIndex >= length - 1:
+            self.r.rpush(userVisionListKey, visionId)
+        else:
+            # Otherwise, go to index and insert before it
+            destId = self.r.lindex(userVisionListKey, destIndex)
+            result = self.r.linsert(userVisionListKey,
+                                    'BEFORE', destId, visionId)
+            if result == -1:
+                # If couldn't find pivot, just put vision back
+                self.r.lpush(userVisionListKey, visionId)
+                return False
         return True
 
     # Delete vision from user's vision list
