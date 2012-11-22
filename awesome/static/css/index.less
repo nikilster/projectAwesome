@@ -6,6 +6,24 @@
 
 @import "base";
 
+@VisionBackgroundColor: #FFFFFF;
+@VisionToolbarColor: #FFFFFF;
+@VisionToolbarBorderColor: #FFFFFF;
+@VisionToolbarBackgroundColor: rgba(0,0,0,.3);
+
+@VisionOverlayBackgroundColor: rgba(255,255,255,.5);
+@VisionOverlayBorderColor: #AAAAAA;
+@VisionOverlaySelectedBorderColor: #33AA33;
+
+
+@FeedbackSavingColor: black;
+@FeedbackSavingBackgroundColor: rgba(204,204,204,.9);
+@FeedbackSavedColor: black;
+@FeedbackSavedBackgroundColor: rgba(0,255,0,.8);
+@FeedbackErrorColor: red;
+@FeedbackErrorBackgroundColor: rgba(255,204,204,.9);
+
+
 #InfoContainerPadding {
     height:50px;
 }
@@ -17,95 +35,103 @@
 
 #MasonryContainer {
     overflow: hidden;
+
+    // This is added and removed when we move the vision w/ jquery ui sortable
+    li.MasonryItem {
+        float: left;
+    }
+    li.MasonryBox {
+        width: 285px;
+        margin: 7px;
+        border: 0px;
+        padding: 0px;
+        float: left;
+        background-color: @VisionBackgroundColor;
+        overflow: hidden;
+        cursor: default;
+        list-style-type: none;
+
+    }
+
+    .MasonryItemUnselected {
+        border: 1px solid #DDDDDD;
+    }
+    .MasonryItemSelected {
+        border: 1px solid @LogoColor;
+    }
+    .MasonryItemPointerCursor {
+        cursor: pointer;
+    }
+    .MasonryItemMoveCursor {
+        cursor: move;
+    }
+
+    .MasonryItemInner {
+        padding: 4px;
+        position:relative;
+    }
+
+    .VisionOverlay {
+        display: none;
+        position:absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255,255,255,.5);
+        z-index: 1;
+    }
+    .AddVisionOverlayText {
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        margin-left:-50px;
+        margin-top:-25px;
+        padding: 4px 12px;
+        text-align: center;
+        background-color: @VisionOverlayBackgroundColor;
+        border: 1px solid @VisionOverlayBorderColor;
+    }
+    .RemoveVisionOverlayText {
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        margin-left:-55px;
+        margin-top:-25px;
+        padding: 4px 12px;
+        text-align: center;
+        background-color: @VisionOverlayBackgroundColor;
+        border: 1px solid @VisionOverlaySelectedBorderColor;
+        color: green;
+    }
+
+    .VisionToolbar {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 1;
+
+        .VisionToolbarButton {
+            display:inline-block;
+            font-size:10pt;
+            line-height:1.2;
+            margin:2px 2px 2px 0px;
+            padding:3px;
+            border:1px solid @VisionToolbarBorderColor;
+            background-color: @VisionToolbarBackgroundColor;
+            color: @VisionToolbarColor;
+            .RoundBorder(3px);
+        }
+        .VisionToolbarButton:hover {
+            background-color: lighten(@VisionToolbarBackgroundColor, 20%);
+            cursor: pointer
+        }
+    }
 }
 
-li.MasonryItem {
-    float: left;
-}
-li.MasonryBox {
-    width: 285px;
-    margin: 7px;
-    border: 0px;
-    padding: 0px;
-    float: left;
-    background-color: #FFFFFF;
-    overflow: hidden;
-    cursor: default;
-    list-style-type: none;
-}
-.MasonryItemInner {
-    padding: 4px;
-    position:relative;
-}
-.MasonryItemUnselected {
-    border: 1px solid #DDDDDD;
-}
-.MasonryItemSelected {
-    border: 1px solid @LogoColor;
-}
-.MasonryItemPointerCursor {
-    cursor: pointer;
-}
-.MasonryItemMoveCursor {
-    cursor: move;
-}
-.VisionToolbar {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    z-index: 1;
-}
-.VisionToolbarButton {
-    display:inline-block;
-    font-size:10pt;
-    line-height:1.2;
-    margin:2px 2px 2px 0px;
-    padding:3px;
-    border:1px solid white;
-    background-color:rgba(0,0,0,.3);
-    color: white;
-    .RoundBorder(3px);
-}
-.VisionToolbarButton:hover {
-    background-color:rgba(100,100,100,.3);
-    cursor: pointer
-}
-.VisionOverlay {
-    display: none;
-    position:absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255,255,255,.5);
-    z-index: 1;
-}
-.AddVisionOverlayText {
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-    margin-left:-50px;
-    margin-top:-25px;
-    padding: 4px 12px;
-    text-align: center;
-    background-color: rgba(255,255,255,.5);
-    border: 1px solid #AAAAAA;
-}
-.RemoveVisionOverlayText {
-    position:absolute;
-    top: 50%;
-    left: 50%;
-    z-index: 1;
-    margin-left:-55px;
-    margin-top:-25px;
-    padding: 4px 12px;
-    text-align: center;
-    background-color: rgba(100,255,100,.5);
-    border: 1px solid #33AA33;
-    color: green;
-}
-
+// This button is in the edit vision modal
 #VisionDeleteButton {
     float:right;
     font-size:15px;
@@ -115,13 +141,16 @@ li.MasonryBox {
     cursor: pointer;
 }
 
+//
+// Styles for the notifications during AJAX calls
+//
 #UserFeedbackSaving {
     display: none;
     float:right;
     margin-top:5px;
     margin-right:5px;
-    background-color: rgba(204,204,204,.9);
-    color: black;
+    color: @FeedbackSavingColor;
+    background-color: @FeedbackSavingBackgroundColor;
     padding: 3px;
     font-size:12pt;
     line-height:1.2;
@@ -132,8 +161,8 @@ li.MasonryBox {
     float:right;
     margin-top:5px;
     margin-right:5px;
-    background-color: rgba(0,255,0,.8);
-    color: black;
+    color: @FeedbackSavedColor;
+    background-color: @FeedbackSavedBackgroundColor;
     padding: 3px;
     font-size:12pt;
     line-height:1.2;
@@ -144,8 +173,8 @@ li.MasonryBox {
     float:right;
     margin-top:5px;
     margin-right:5px;
-    background-color: rgba(255,204,204,.9);
-    color: red;
+    color: @FeedbackErrorColor;
+    background-color: @FeedbackErrorBackgroundColor;
     padding: 3px;
     font-size:12pt;
     line-height:1.2;

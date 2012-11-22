@@ -4,32 +4,36 @@
 // Includes all global LESS variables and mixins
 //
 
+@BackgroundColor: #F8F8F8;
 @LogoColor: #E391B2;
+
+@NavBarColor: #333333;
+@NavButtonTextColor: #AAAAAA;
+
+@FooterTextColor: #AAAAAA;
+
 
 html, body, #PageContainer { height: 100%; }
 body > #PageContainer { height: auto; min-height: 100%; }
 
-#Copyright {
-    margin-top: -25px;
-    font-size: 12px;
-    line-height: 1.2;
-    text-align: center;
-    color: #AAAAAA;
-    padding: 5px;
+body {
+    background-color: @BackgroundColor;
 }
 
+// This adds to container style provided by Twitter bootstrap
 .container {
 padding-top:50px;
 min-height:500px;
 }
 
-// Should have a set width for this to work
+// Centers a block: should have a set width for this to work
 .BlockCenter(@width: 500px) {
     width: @width;
     margin-left: auto;
     margin-right: auto;
 }
 
+// Centers text (inline-flow)
 .TextCenter
 {
     text-align:center;
@@ -45,6 +49,15 @@ min-height:500px;
     font-size: 20px;
     line-height: 1.2;
 }
+
+#NavBar {
+    position:fixed;
+    width:100%;
+    height:40px;
+    background-color: @NavBarColor;
+    z-index: 100;
+}
+
 #NavHome {
     color: @LogoColor;
     text-decoration:none;
@@ -57,32 +70,36 @@ min-height:500px;
     display:inline-block;
     font-size:15px;
     line-height:1.2;
-    color: #AAAAAA;
+    color: @NavButtonTextColor;
     padding: 10px 10px;
 }
 .NavButton:hover {
-    color: #AAAAAA;
+    color: @NavButtonTextColor;
     text-decoration: underline;
-    background-color: #555555;
+    background-color: lighten(@NavBarColor, 8%);
 }
 #AddItemButton {
     display:inline-block;
     font-size:15px;
     line-height:1.2;
-    color: #AAAAAA;
+    color: @NavButtonTextColor;
     padding: 10px 10px;
-    background-color: #444444;
+    background-color: lighten(@NavBarColor, 8%);
 }
 #AddItemButton:hover {
-    color: #AAAAAA;
+    color: @NavButtonTextColor;
     text-decoration: underline;
-    background-color: #555555;
+    background-color: lighten(@NavBarColor, 12%);
     cursor: pointer;
 }
 
-body {
-    background-color: #F8F8F8;
+#Footer{
+    margin-top: -25px;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    color: @FooterTextColor;
+    padding: 5px;
 }
-
 
 // $eof
