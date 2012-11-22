@@ -359,7 +359,10 @@ def bookmarkletCreate():
     #Make we only accept get
     if request.method != 'GET': abort(405)
 
-    #TODO: check login
+    #Check login
+    #TODO: Pass the referring url to the login function so we can return here!
+    if not SessionManager.userLoggedIn():
+        return render_template('login.html')
 
     #Get Parameters
     '''
@@ -371,8 +374,6 @@ def bookmarkletCreate():
     mediaDescription = request.args.get(Constant.BOOKMARKLET_MEDIA_DESCRIPTION_KEY)
     pageUrl = request.args.get(Constant.BOOKMARKLET_PAGE_URL_KEY)
     pageTitle = request.args.get(Constant.BOOKMARKLET_PAGE_TITLE_KEY)
-    
-    userId = 1
 
     #Validate Parameter
     #if callback == '':
@@ -421,8 +422,14 @@ def create():
         or pageTitle is None:
         return "Invalid Vision Parameters"
 
-    #TODO: get the user id
-    userId = 1
+
+    #Question: Do we really need to check the login again here?
+    #Check Login
+    if not SessionManager.userLoggedIn():
+        return render_template('login.html')
+
+    #Get the user id
+    userId = SessionManager.getUser()['id']
 
     #Add
     visionId, message = Api.saveVision(userId, mediaUrl, text, pageUrl, pageTitle)
