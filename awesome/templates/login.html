@@ -1,17 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
+{% extends "base.html" %}
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='opt/bootstrap/css/bootstrap.css') }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
-</head>
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+Register
+{% endblock %}
 
-<body>
-    <div class="container">
-       
+{# ------------------------------------------------------------------------- #}
+{% block css %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
         <div class="row">
-          
           <div class="center span4">
                 
                 <h1>Login</h1>
@@ -52,7 +56,10 @@
             </div>
 
         </div>
-    </div>
-</body>
+{% endblock %}
 
-</html>
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+{% endblock %}
+
+{# $eof #}

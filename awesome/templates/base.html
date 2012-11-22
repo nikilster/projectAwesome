@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Awesome | {% block subtitle %} {% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='opt/bootstrap/css/bootstrap.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    {% block css %}
+    {% endblock %}
+
+    {% block header_js %}
+    {% endblock %}
+</head>
+
+<body>
+    <div style="position:fixed; width:100%; height:40px;
+                background-color: #333333; z-index: 100;">
+        <div style="position: relative; width:940px; margin:0px auto;
+                    z-index:1;">
+            <div class="LogoTitle" style="text-align:center; padding-top:8px;">
+                <a id="NavHome" href="/">Project [AWESOME]</a>
+            </div>
+
+            <div style="position: absolute; top:0px; right:0px;">
+                <span id="AddItemButton" style="display:none;">
+                    + Vision
+                </span>
+                <a class="NavButton" href="{{ url_for('about') }}">
+                    About
+                </a>
+                {% if user and user != None %}
+                <a id="NavProfile" class="NavButton" href="/profile">
+                    {{ user['firstName'] }}
+                </a>
+                <a id="NavLogout" class="NavButton" href="/logout">
+                    Logout
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% block nav_extra %}
+        {% endblock %}
+    </div>
+
+    <div id="PageContainer">
+    <div class="container">
+    {% block content %}
+    {% endblock %}
+    </div>
+
+    </div>
+
+    <div id="Copyright">
+    Copyright 2012, Project Awesome, All rights reserved
+    {# TODO: Add Privacy & Terms #}
+    </div>
+</body>
+
+{% block js %}
+
+{% endblock %}
+
+</html>
+
