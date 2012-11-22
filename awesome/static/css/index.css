@@ -78,13 +78,16 @@ body {
   margin-bottom: 20px;
   padding: 0px 21px 21px 21px;
 }
-#MasonryContainer {
+#MasonryContainer,
+#TestVisionContainer {
   overflow: hidden;
 }
-#MasonryContainer li.MasonryItem {
+#MasonryContainer li.MasonryItem,
+#TestVisionContainer li.MasonryItem {
   float: left;
 }
-#MasonryContainer li.MasonryBox {
+#MasonryContainer li.MasonryBox,
+#TestVisionContainer li.MasonryBox {
   width: 285px;
   margin: 7px;
   border: 0px;
@@ -95,23 +98,29 @@ body {
   cursor: default;
   list-style-type: none;
 }
-#MasonryContainer .MasonryItemUnselected {
+#MasonryContainer .MasonryItemUnselected,
+#TestVisionContainer .MasonryItemUnselected {
   border: 1px solid #DDDDDD;
 }
-#MasonryContainer .MasonryItemSelected {
+#MasonryContainer .MasonryItemSelected,
+#TestVisionContainer .MasonryItemSelected {
   border: 1px solid #e391b2;
 }
-#MasonryContainer .MasonryItemPointerCursor {
+#MasonryContainer .MasonryItemPointerCursor,
+#TestVisionContainer .MasonryItemPointerCursor {
   cursor: pointer;
 }
-#MasonryContainer .MasonryItemMoveCursor {
+#MasonryContainer .MasonryItemMoveCursor,
+#TestVisionContainer .MasonryItemMoveCursor {
   cursor: move;
 }
-#MasonryContainer .MasonryItemInner {
+#MasonryContainer .MasonryItemInner,
+#TestVisionContainer .MasonryItemInner {
   padding: 4px;
   position: relative;
 }
-#MasonryContainer .VisionOverlay {
+#MasonryContainer .VisionOverlay,
+#TestVisionContainer .VisionOverlay {
   display: none;
   position: absolute;
   top: 0px;
@@ -121,7 +130,8 @@ body {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
 }
-#MasonryContainer .AddVisionOverlayText {
+#MasonryContainer .AddVisionOverlayText,
+#TestVisionContainer .AddVisionOverlayText {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -131,9 +141,10 @@ body {
   padding: 4px 12px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.5);
-  border: 1px solid #aaaaaa;
+  border: 1px solid #888888;
 }
-#MasonryContainer .RemoveVisionOverlayText {
+#MasonryContainer .RemoveVisionOverlayText,
+#TestVisionContainer .RemoveVisionOverlayText {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -142,31 +153,37 @@ body {
   margin-top: -25px;
   padding: 4px 12px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(100, 255, 100, 0.5);
   border: 1px solid #33aa33;
   color: green;
 }
-#MasonryContainer .VisionToolbar {
+#MasonryContainer .VisionToolbar,
+#TestVisionContainer .VisionToolbar {
   position: absolute;
   top: 5px;
   right: 5px;
   z-index: 1;
 }
-#MasonryContainer .VisionToolbar .VisionToolbarButton {
+#MasonryContainer .VisionToolbar .VisionToolbarButton,
+#TestVisionContainer .VisionToolbar .VisionToolbarButton {
   display: inline-block;
   font-size: 10pt;
   line-height: 1.2;
   margin: 2px 2px 2px 0px;
-  padding: 3px;
-  border: 1px solid #ffffff;
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #ffffff;
+  padding: 4px;
+  border: 1px solid #888888;
+  background-color: #f8f8f8;
+  color: #000000;
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#MasonryContainer .VisionToolbar .VisionToolbarButton:hover {
-  background-color: rgba(51, 51, 51, 0.3);
+#MasonryContainer .VisionToolbar .VisionToolbarButton:hover,
+#TestVisionContainer .VisionToolbar .VisionToolbarButton:hover {
+  background-color: #ffffff;
   cursor: pointer;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 #VisionDeleteButton {
   float: right;

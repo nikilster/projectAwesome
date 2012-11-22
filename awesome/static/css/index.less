@@ -7,12 +7,13 @@
 @import "base";
 
 @VisionBackgroundColor: #FFFFFF;
-@VisionToolbarColor: #FFFFFF;
-@VisionToolbarBorderColor: #FFFFFF;
-@VisionToolbarBackgroundColor: rgba(0,0,0,.3);
+@VisionToolbarColor: #000000;
+@VisionToolbarBorderColor: #888888;
+@VisionToolbarBackgroundColor: #F8F8F8;
 
 @VisionOverlayBackgroundColor: rgba(255,255,255,.5);
-@VisionOverlayBorderColor: #AAAAAA;
+@VisionOverlayBorderColor: #888888;
+@VisionOverlaySelectedBackgroundColor: rgba(100,255,100,.5);
 @VisionOverlaySelectedBorderColor: #33AA33;
 
 
@@ -33,7 +34,7 @@
     padding:0px 21px 21px 21px;
 }
 
-#MasonryContainer {
+#MasonryContainer, #TestVisionContainer {
     overflow: hidden;
 
     // This is added and removed when we move the vision w/ jquery ui sortable
@@ -102,7 +103,7 @@
         margin-top:-25px;
         padding: 4px 12px;
         text-align: center;
-        background-color: @VisionOverlayBackgroundColor;
+        background-color: @VisionOverlaySelectedBackgroundColor;
         border: 1px solid @VisionOverlaySelectedBorderColor;
         color: green;
     }
@@ -118,15 +119,16 @@
             font-size:10pt;
             line-height:1.2;
             margin:2px 2px 2px 0px;
-            padding:3px;
+            padding:4px;
             border:1px solid @VisionToolbarBorderColor;
             background-color: @VisionToolbarBackgroundColor;
             color: @VisionToolbarColor;
             .RoundBorder(3px);
         }
         .VisionToolbarButton:hover {
-            background-color: lighten(@VisionToolbarBackgroundColor, 20%);
-            cursor: pointer
+            background-color: lighten(@VisionToolbarBackgroundColor, 15%);
+            cursor: pointer;
+            .BoxShadow();
         }
     }
 }
