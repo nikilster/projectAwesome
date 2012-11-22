@@ -203,3 +203,6 @@ li.MasonryBox {
   -moz-border-radius: 4px;
   border-radius: 4px;
 }
+.center {
+  text-align: center;
+}
