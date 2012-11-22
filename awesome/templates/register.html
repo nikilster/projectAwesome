@@ -16,8 +16,7 @@ Register
 {# ------------------------------------------------------------------------- #}
 {% block content %}
     <div class="row">
-        <div class="center span4">
-
+        <div id="RegisterContainer">
             <h1>Register</h1>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -34,19 +33,15 @@ Register
                   class="form-horizontal">
                 <div class="control-group">
                     <label class="control-label" for="firstName">
-                        First Name
+                        Name
                     </label>
                     <div class="controls">
-                        <input class="RegisterField"
+                        <input class="RegisterField InputSmall"
+                               placeholder="First"
                                type="text" name="firstName"/>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="lastName">
-                        Last Name
-                    </label>
-                    <div class="controls">
-                        <input class="RegisterField"
+                        <input class="RegisterField InputSmall"
+                               style="margin-left:10px;"
+                               placeholder="Last"
                                type="text" name="lastName"/>
                     </div>
                 </div>
@@ -55,7 +50,9 @@ Register
                         Email
                     </label>
                     <div class="controls">
-                        <input class="RegisterField" type="text" name="email"/>
+                        <input class="RegisterField InputLarge"
+                               placeholder="Email"
+                               type="text" name="email"/>
                     </div>
                 </div>
                 <div class="control-group">
@@ -63,11 +60,17 @@ Register
                         Password
                     </label>
                     <div class="controls">
-                        <input class="RegisterField"
-                               type="text" name="password"/>
+                        <input class="RegisterField InputLarge"
+                               placeholder="Password"
+                               type="password" name="password"/>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="control-group">
+                    <button type="submit"
+                            class="SubmitButton btn btn-primary btn-large">
+                        Register
+                    </button>
+                </div>
             </form>
         </div>
     </div>

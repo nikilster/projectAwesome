@@ -16,7 +16,7 @@ Register
 {# ------------------------------------------------------------------------- #}
 {% block content %}
         <div class="row">
-          <div class="center span4">
+          <div id="RegisterContainer">
                 
                 <h1>Login</h1>
 
@@ -35,20 +35,27 @@ Register
                   <div class="control-group">
                     <label class="control-label" for="email">Email</label>
                     <div class="controls">
-                      <input class="RegisterField" type="text" name="email"/>
+                      <input class="RegisterField InputLarge"
+                             placeholder="Email"
+                             type="text" name="email"/>
                     </div>
                   </div>
 
                   <div class="control-group">
                     <label class="control-label" for="password">Password</label>
                     <div class="controls">
-                      <input class="RegisterField" type="password" name="password"/>
+                      <input class="RegisterField InputLarge"
+                             placeholder="Password"
+                             type="password" name="password"/>
                     </div>
                   </div>
 
                   <div class="control-group">
                     <div class="controls">
-                      <button type="submit" class="btn btn-primary">Submit</button>
+                      <button type="submit"
+                              class="SubmitButton btn btn-primary btn-large">
+                        Login
+                      </button>
                     </div>
                   </div>
 
