@@ -11,10 +11,10 @@
 @VisionToolbarBorderColor: #888888;
 @VisionToolbarBackgroundColor: #F8F8F8;
 
-@VisionOverlayBackgroundColor: rgba(255,255,255,.5);
+@VisionOverlayBackgroundColor: #F8F8F8;
 @VisionOverlayBorderColor: #888888;
-@VisionOverlaySelectedBackgroundColor: rgba(100,255,100,.5);
-@VisionOverlaySelectedBorderColor: #33AA33;
+@VisionOverlaySelectedBackgroundColor: #F8F8F8;
+@VisionOverlaySelectedBorderColor: #888888;
 
 
 @FeedbackSavingColor: black;
@@ -93,6 +93,8 @@
         text-align: center;
         background-color: @VisionOverlayBackgroundColor;
         border: 1px solid @VisionOverlayBorderColor;
+        .RoundBorder(3px);
+        .BoxShadow();
     }
     .RemoveVisionOverlayText {
         position:absolute;
@@ -106,6 +108,8 @@
         background-color: @VisionOverlaySelectedBackgroundColor;
         border: 1px solid @VisionOverlaySelectedBorderColor;
         color: green;
+        .RoundBorder(5px);
+        .BoxShadow();
     }
 
     .VisionToolbar {

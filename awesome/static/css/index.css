@@ -140,8 +140,13 @@ body {
   margin-top: -25px;
   padding: 4px 12px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #f8f8f8;
   border: 1px solid #888888;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 #MasonryContainer .RemoveVisionOverlayText,
 #TestVisionContainer .RemoveVisionOverlayText {
@@ -153,9 +158,14 @@ body {
   margin-top: -25px;
   padding: 4px 12px;
   text-align: center;
-  background-color: rgba(100, 255, 100, 0.5);
-  border: 1px solid #33aa33;
+  background-color: #f8f8f8;
+  border: 1px solid #888888;
   color: green;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 #MasonryContainer .VisionToolbar,
 #TestVisionContainer .VisionToolbar {

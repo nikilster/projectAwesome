@@ -332,9 +332,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
 
         var selectedClass = "MasonryItemUnselected";
+        var removeOverlayDisplay = "none";
         if (pageMode == App.Const.PageMode.HOME_GUEST &&
             this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
+            removeOverlayDisplay = "block";
         }
         var pictureDisplay = "none";
         var pictureUrl = "";
@@ -373,6 +375,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          removeDisplay: removeDisplay,
                          repostDisplay: repostDisplay,
                          mineDisplay: mineDisplay,
+                         removeOverlayDisplay: removeOverlayDisplay,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -400,7 +403,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
             if (!this.model.isSelected()) {
                 $(this.el).find(".AddVisionOverlay").show();
             } else {
-                $(this.el).find(".RemoveVisionOverlay").show();
+                //$(this.el).find(".RemoveVisionOverlay").show();
             }
         } else if (pageMode == App.Const.PageMode.TEST_VISION ||
                    pageMode == App.Const.PageMode.HOME_USER ||
@@ -412,7 +415,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
             $(this.el).find(".AddVisionOverlay").hide();
-            $(this.el).find(".RemoveVisionOverlay").hide();
+            //$(this.el).find(".RemoveVisionOverlay").hide();
         } else if (pageMode == App.Const.PageMode.TEST_VISION ||
                    pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
