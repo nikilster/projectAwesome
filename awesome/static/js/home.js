@@ -326,6 +326,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         "mouseenter .MasonryItemInner" : "mouseEnter",
         "mouseleave .MasonryItemInner" : "mouseLeave",
         "click .VisionToolbarRepost"   : "repostVision",
+        "click .VisionToolbarRemove"   : "removeVision",
     },
     render: function() {
         var pageMode = App.Var.Model.pageMode();
@@ -343,10 +344,12 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         var cursorClass = "";
         var moveDisplay = "none";
+        var removeDisplay = "none";
         var repostDisplay = "none";
         var mineDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
             cursorClass = "MasonryItemMoveCursor";
+            removeDisplay = "inline-block";
         } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
             cursorClass = "MasonryItemPointerCursor";
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
@@ -367,6 +370,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          pictureUrl: pictureUrl,
                          cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
+                         removeDisplay: removeDisplay,
                          repostDisplay: repostDisplay,
                          mineDisplay: mineDisplay,
                         };
@@ -398,7 +402,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
             } else {
                 $(this.el).find(".RemoveVisionOverlay").show();
             }
-        } else if (pageMode == App.Const.PageMode.HOME_USER ||
+        } else if (pageMode == App.Const.PageMode.TEST_VISION ||
+                   pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
             $(this.el).find(".VisionToolbarConditional").show();
         }
@@ -408,13 +413,21 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
             $(this.el).find(".AddVisionOverlay").hide();
             $(this.el).find(".RemoveVisionOverlay").hide();
-        } else if (pageMode == App.Const.PageMode.HOME_USER ||
+        } else if (pageMode == App.Const.PageMode.TEST_VISION ||
+                   pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
             $(this.el).find(".VisionToolbarConditional").hide();
         }
     },
     repostVision: function() {
         App.Var.View.repostVision(this.model);
+    },
+    removeVision: function() {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.TEST_VISION) {
+            App.Var.Model.removeFromSelectedVisions(this.model);
+        } else {
+            assert(false, "Should be in test vision page");
+        }
     },
 });
 
@@ -765,6 +778,11 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
         $("#UserSelectedVisions").first().attr("value", JSON.stringify(visionIds));
         console.log("VISION LIST: " + JSON.stringify(visionIds));
+
+        // If we are in test vision mode, we need to re-render vision
+        if (App.Var.Model.pageMode() == App.Const.PageMode.TEST_VISION) {
+            this.renderSelectedVisions();
+        }
     },
 
     /*
