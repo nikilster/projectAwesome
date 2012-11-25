@@ -118,6 +118,7 @@ body {
 #TestVisionContainer .MasonryItemInner {
   padding: 4px;
   position: relative;
+  min-height: 48px;
 }
 #MasonryContainer .VisionOverlay,
 #TestVisionContainer .VisionOverlay {
