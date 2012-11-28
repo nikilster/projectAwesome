@@ -4,9 +4,11 @@ from flask import request, session
 from flask import Response
 from flask import current_app
 
-from . import app, LOCAL_IMAGE_DIR
+from . import app
 from Constant import Constant
 import json
+
+import shutil
 
 import os
 from werkzeug import secure_filename
@@ -263,7 +265,7 @@ def image_filename_valid(filename):
     return False 
 
 def userTempImagePath(userId, filename):
-    path = LOCAL_IMAGE_DIR + '/TmpImage-' + str(userId) + "." + image_ext(filename)
+    path = Constant.LOCAL_IMAGE_DIR + '/TmpImage-' + str(userId) + "." + image_ext(filename)
     url = '/static/tmp_image/TmpImage-' + str(userId) + "." + image_ext(filename)
     return (path, url)
 def userFinalImagePath(userId, filename):
@@ -273,7 +275,7 @@ def userFinalImagePath(userId, filename):
     digest = md5.hexdigest()
     uniqueString = str(userId) + "_" + str(digest)
 
-    path = LOCAL_IMAGE_DIR + '/' + uniqueString + "." + image_ext(filename)
+    path = Constant.LOCAL_IMAGE_DIR + '/' + uniqueString + "." + image_ext(filename)
     url = '/static/tmp_image/' + uniqueString + "." + image_ext(filename)
 
     return (path, url)
@@ -333,8 +335,10 @@ def apiAddUserVision(userId):
                 # Get final url for image and copy tmp file to final url
                 path, url = userFinalImagePath(userId, tmpPath)
                 cwd = os.getcwd()
-                os.rename(os.path.join(cwd, tmpPath),
-                          os.path.join(cwd, path))
+                #os.rename(os.path.join(cwd, tmpPath),
+                #          os.path.join(cwd, path))
+                shutil.copy2(os.path.join(cwd, tmpPath),
+                             os.path.join(cwd, path))
 
             # Create a new vision with the photo
             visionId, errorMsg = Api.saveVision(userId, url, text, "", "")

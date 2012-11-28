@@ -1,280 +1,175 @@
-'''
-    Class: Data API
+from . import DB
 
-    Main api for data
+from sqlalchemy.sql import desc
 
-    Functions:
+from DbSchema import *
 
-        Add User
-        Get User
-        Add Vision 
-        Get Vision
-        Add Picture
-        Get Picture
-        Get Visions for User
-        Get Main Page Visions
-
-'''
-
-
-'''
-    Creates and adds the user to the database
-
-'''
-
-#TODO: Figure out a better way to do this!
-#add the object directory to path
-# (relative paths)
-import os
-import sys
-dir = os.path.dirname(__file__)
-OBJECT_FILES_PATH = os.path.join(dir, 'objects')
-sys.path.append(OBJECT_FILES_PATH)
-
-from User import User
-from Vision import Vision
-from Picture import Picture
-from DB import DB
-
-#For date created
-from time import time
+from awesome.util.Logger import Logger
 
 class DataApi:
-
     #Returned when we dont have an object for that id
     NO_OBJECT_EXISTS_ID = -1
 
     #Returned when the object does not exist
     NO_OBJECT_EXISTS = None
 
+    # 
+    # User methods
+    #
+
     @staticmethod
-    def addUser(firstName, lastName, email, password):
+    def getUserById(userId):
+        user = UserModel.query.filter_by(id=userId).first()
+        return user if None != user else DataApi.NO_OBJECT_EXISTS
 
-        #TODO: Validate
-
-        #Init (create) Db
-        db = DB() 
-
-        #Create User Object
-        #Get the next id from redis
-        newUser = User()
-        newUser.setInfo(db.getNextUserId(), firstName, lastName, email, password, time())
-
-        #Save
-        #TODO: figure out if the save was successful or not
-        result = db.saveUser(newUser)
-
-        if(result): 
-            return newUser.id
-        else: 
-            return DataApi.NO_OBJECT_EXISTS_ID
-
-    '''
-        Gets a user by id
-    '''
     @staticmethod
-    def getUser(id):
+    def getUserByEmail(email):
+        user = UserModel.query.filter_by(email=email).first()
+        return user if None != user else DataApi.NO_OBJECT_EXISTS
 
-        #Create Db
-        db = DB()
-        userJson = db.getUser(id)
-
-        #Handle None
-        if(userJson is None): 
-            return DataApi.NO_OBJECT_EXISTS
-
-        #Convert to User object
-        userObject = User()
-        userObject.setFromJson(userJson)
-
-        return userObject
-
-    '''
-        Gets a user by email address
-    '''
     @staticmethod
-    def getUserFromEmail(email):
-        
-        db = DB()
-        userJson = db.getUserFromEmail(email)
+    def addUser(firstName, lastName, email, passwordHash):
+        # new UserModel
+        user = UserModel(firstName, lastName, email, passwordHash)
+        DB.session.add(user)
+        DB.session.flush() # so user id is valid
 
-        #Handle No User
-        if(userJson is None): 
-            return DataApi.NO_OBJECT_EXISTS
+        # new VisionListModel
+        visionList = VisionListModel(user.id)
+        DB.session.add(visionList)
 
-        #Convert to user Object
-        userObject = User()
-        userObject.setFromJson(userJson)
+        DB.session.commit()
+        return user.id
 
-        return userObject
+    # 
+    # Vision List methods
+    #
 
-
-    '''
-        Add Vision
-    '''
     @staticmethod
-    def addVision(userId, text, pictureId, parentId):
+    def getVisionList(userId):
+        visionList = VisionListModel.query.filter_by(userId=userId).first()
+        return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
 
-        db = DB()
+    # 
+    # Vision methods
+    #
 
-        #serializing from json is the common use case
-        newVision = Vision()
-        newVision.setInfo(db.getNextVisionId(), userId, text, pictureId, parentId, time())
+    @staticmethod
+    def getVision(visionId):
+        vision = VisionModel.query.filter_by(id=visionId).first()
+        return vision if None != vision else DataApi.NO_OBJECT_EXISTS
 
-        #save
-        result = db.saveVision(newVision)
-        
-        if(result):
-            return newVision.id
-        else:
-            return DataApi.NO_OBJECT_EXISTS_ID
-            
-    '''
-        Repost Vision
+    @staticmethod
+    def addVision(userId, text, pictureId, parentId, rootId):
+        # get vision list
+        visionListModel = DataApi.getVisionList(userId)
+        assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
-    '''
+        vision = VisionModel(userId, text, pictureId, parentId, rootId)
+        DB.session.add(vision)
+        DB.session.flush() # flush so vision.id is valid
+
+        Logger.debug("ADDING")
+
+        # now add to vision list
+        visionList = visionListModel.getVisionList()
+        visionList.insert(0, vision.id)
+        visionListModel.setVisionList(visionList)
+        DB.session.add(visionListModel)
+
+        DB.session.commit()
+        return vision.id
+
     @staticmethod
     def repostVision(userId, visionId):
-
-        db = DB()
-        originalVision = DataApi.getVision(visionId)
-
-        #check to make sure visionId was a valid id
-        #if not, return error
-        if originalVision is None:
+        vision = DataApi.getVision(visionId)
+        if DataApi.NO_OBJECT_EXISTS == vision:
             return DataApi.NO_OBJECT_EXISTS_ID
-
-        #Set the text, userId and parentid
-        text = originalVision.text
-        pictureId = originalVision.pictureId
-        parentId = originalVision.id
-
-        return DataApi.addVision(userId, text, pictureId, parentId)
-
-    '''
-        Get Vision
-    '''
-    @staticmethod
-    def getVision(id):
-
-        #Create Db
-        db = DB()
-        visionJson = db.getVision(id)
-
-        #Handle None
-        if(visionJson is None): 
-            return DataApi.NO_OBJECT_EXISTS
-
-        #Create to Vision Object
-        visionObject = Vision()
-        visionObject.setFromJson(visionJson)
-
-        #Get and set the picture object
-        picture = DataApi.getPicture(visionObject.pictureId)
-        visionObject.setPicture(picture)
-
-        return visionObject
-
-    '''
-        Add Picture
-    '''
-    @staticmethod
-    def addPicture(url, filename):
-
-        db = DB()
-
-        #Create Object
-        newPicture = Picture()
-        newPicture.setInfo(db.getNextPictureId(), url, filename)
-
-        #save
-        result = db.savePicture(newPicture)
-
-        if(result):
-            return newPicture.id
-        else:
-            return DataApi.NO_OBJECT_EXISTS_ID
-
-
-    '''
-        Get Picture
-    '''
-    @staticmethod
-    def getPicture(id):
-
-        #Create the db
-        db = DB()
-        pictureJson = db.getPicture(id)
-
-        #handle None
-        if(pictureJson is None): 
-            return DataApi.NO_OBJECT_EXISTS
-
-        #Create Picture Object
-        pictureObject = Picture()
-        pictureObject.setFromJson(pictureJson)
-
-        return pictureObject
-
-
-    '''
-        Get Main Page Visions
-    '''
+        return DataApi.addVision(userId,
+                                 vision.text,
+                                 vision.pictureId,
+                                 vision.id,
+                                 vision.rootId)
+    
     @staticmethod
     def getMainPageVisions():
+        return VisionModel.query.filter_by(parentId=0) \
+                                .filter_by(privacy=VisionPrivacy.SHAREABLE) \
+                                .filter_by(removed=False) \
+                                .order_by(VisionModel.id.desc()) \
+                                .limit(100)
 
-        #Number of max visions to return
-        MAX_VISIONS = 100
-
-        #Get vision ids from db
-        db = DB()
-        visionIds = db.mostRecentVisionIds(MAX_VISIONS)
-
-        return DataApi.__visionObjectsFromIds(visionIds)
-
-    '''
-        Get All Visions for User
-    '''
     @staticmethod
     def getVisionsForUser(userId):
+        visionListModel = DataApi.getVisionList(userId)
+        assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
-        #Get from Db
-        db = DB()
-        visionIds = db.getVisionIdsForUser(userId)
+        visionIds = visionListModel.getVisionList()
 
-        #Create objects
-        return DataApi.__visionObjectsFromIds(visionIds)
+        visions = []
+        if len(visionIds) > 0:
+            visions = VisionModel.query.filter_by(userId=userId) \
+                                       .filter_by(removed=False) \
+                                       .filter(VisionModel.id.in_(visionIds)) \
+                                       .all()
+        return visions
 
-    '''
-        Move a vision in a user's vision list
-
-        Return: boolean if move was successful
-    '''
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
-        db = DB()
-        return db.moveUserVision(userId, visionId, srcIndex, destIndex)
+        visionListModel = DataApi.getVisionList(userId)
+        if DataApi.NO_OBJECT_EXISTS == visionListModel:
+            return False
+        
+        visionIds = visionListModel.getVisionList()
+        length = len(visionIds)
 
-    '''
-        Delete a vision in a user's vision list
+        if srcIndex < 0 or srcIndex >= length or \
+           destIndex < 0 or destIndex >= length or \
+           visionId != visionIds[srcIndex]:
+           return False
 
-        Return: boolean if delete was successful
-    '''
+        moveId = visionIds.pop(srcIndex)
+        visionIds.insert(destIndex, moveId)
+
+        visionListModel.setVisionList(visionIds)
+        DB.session.add(visionListModel)
+        DB.session.commit()
+        return True
+
     @staticmethod
     def deleteUserVision(userId, visionId):
-        db = DB()
-        return db.deleteUserVision(userId, visionId)
+        vision = DataApi.getVision(visionId)
+        if vision.id != userId:
+            return False
+        vision.removed = True
+        DB.session.add(vision)
+        DB.commit()
+        return True
 
 
-    '''
-        Vision Objects From Json    
-    '''
+    # 
+    # Picture methods
+    #
+
     @staticmethod
-    def __visionObjectsFromIds(visionIds):
-        
-        #Get Visions
-        visions = []
-        for visionId in visionIds:
-            visions.append(DataApi.getVision(visionId))
-        
-        return visions
+    def getPicture(pictureId):
+        picture = PictureModel.query.filter_by(id=pictureId).first()
+        return picture if None != picture else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def addPicture(userId, original, uploaded, s3Bucket,
+                           origKey, origWidth, origHeight,
+                           largeKey, largeWidth, largeHeight,
+                           mediumKey, mediumWidth, mediumHeight,
+                           smallKey, smallWidth, smallHeight):
+        # new PictureModel
+        picture = PictureModel(userId, original, uploaded, s3Bucket,
+                                origKey, origWidth, origHeight,
+                                largeKey, largeWidth, largeHeight,
+                                mediumKey, mediumWidth, mediumHeight,
+                                smallKey, smallWidth, smallHeight)
+        DB.session.add(picture)
+        DB.session.commit()
+        return picture.id
+
+# $eof

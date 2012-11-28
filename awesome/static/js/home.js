@@ -125,12 +125,12 @@ App.Backbone.Model.Picture = Backbone.Model.extend({
     defaults: {
         id: -1,
         filename: "",
-        url: "",
+        original: "",
     },
     initialize: function() {
     },
     pictureId: function() { return this.get("id"); },
-    url: function() { return this.get("url"); },
+    original: function() { return this.get("original"); },
 });
 
 App.Backbone.Model.Vision = Backbone.Model.extend({
@@ -342,7 +342,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pictureUrl = "";
         if (null != this.model.picture()) {
             pictureDisplay = "block";
-            pictureUrl = this.model.picture().url();
+            pictureUrl = this.model.picture().original();
         }
         var cursorClass = "";
         var moveDisplay = "none";
@@ -995,7 +995,7 @@ $(document).ready(function() {
     }
 
     $("#AddItemButton").click(function() {
-        $("#AddItemModal").modal();
+        $("#AddVisionModal").modal();
         $("#FileUploadInput").val("");
         $("#FileUploadInput").removeAttr("disabled");
         $("#FileUploadNoPreview").show();
@@ -1066,10 +1066,8 @@ $(document).ready(function() {
                 // success
                 function(data, textStatus, jqXHR) {
                     console.log("Success: " + JSON.stringify(data));
-                    if (data.result == true) {
-                        App.Var.Model.addVision(data.newVision);
-                        $("#AddVisionModal").modal("hide");
-                    }
+                    App.Var.Model.addVision(data.newVision);
+                    $("#AddVisionModal").modal("hide");
                 },
                 // error
                 function(jqXHR, textStatus, errorThrown) {

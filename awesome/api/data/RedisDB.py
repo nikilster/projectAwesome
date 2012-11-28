@@ -13,7 +13,7 @@
 '''
 import redis
 
-class DB:
+class RedisDB:
 
     #From https://github.com/andymccurdy/redis-py#getting-started
     HOST = 'localhost'
@@ -39,7 +39,7 @@ class DB:
     #set up redis
     def __init__(self):
         #from https://github.com/andymccurdy/redis-py#getting-started
-        self.r = redis.StrictRedis(host=DB.HOST, port=DB.PORT, db=DB.DB_ID)
+        self.r = redis.StrictRedis(host=RedisDB.HOST, port=RedisDB.PORT, db=RedisDB.DB_ID)
 
     #Save the user to db
     def saveUser(self, newUser):
@@ -175,7 +175,7 @@ class DB:
 
         #Get Vision Ids
         #return range(numTotalVisions, finalRangeIndex, -1)
-        visionIds = self.r.lrange(DB.ORIG_VISION_LIST_KEY,
+        visionIds = self.r.lrange(RedisDB.ORIG_VISION_LIST_KEY,
                                   0, numVisionsToReturn - 1)
         return visionIds
 
@@ -184,25 +184,25 @@ class DB:
     '''
     #Gets the next user id from the global counter in the database
     def getNextUserId(self):
-        return self.r.incr(DB.USER_NEXT_ID_KEY)
+        return self.r.incr(RedisDB.USER_NEXT_ID_KEY)
 
     #Gets the next vision id from the global counter in the database
     def getNextVisionId(self):
-        return self.r.incr(DB.VISION_NEXT_ID_KEY)
+        return self.r.incr(RedisDB.VISION_NEXT_ID_KEY)
     
     #Gets the next picture id from the global counter in the database
     def getNextPictureId(self):
-        return self.r.incr(DB.PICTURE_NEXT_ID_KEY)
+        return self.r.incr(RedisDB.PICTURE_NEXT_ID_KEY)
 
 
 
     #TODO: Check this
     #Assume contiguous
     def __getNumVisions(self):
-        return int(self.r.get(DB.VISION_NEXT_ID_KEY)) - 1
+        return int(self.r.get(RedisDB.VISION_NEXT_ID_KEY)) - 1
 
     def __getNumOrigVisions(self):
-        return int(self.r.llen(DB.ORIG_VISION_LIST_KEY))
+        return int(self.r.llen(RedisDB.ORIG_VISION_LIST_KEY))
 
     #make sure that the argument is a numeric string
     #returns a string that is guaranteed to be an integer
@@ -221,25 +221,25 @@ class DB:
     #Function which returns the correct format of the string to index
     #to get the user 
     def __getUserKey(self, userId):
-        return DB.USER_PREFIX + self.__cleanInt(userId)
+        return RedisDB.USER_PREFIX + self.__cleanInt(userId)
 
     def __getEmailKey(self, email):
-        return DB.EMAIL_PREFIX + self.__cleanEmail(email)
+        return RedisDB.EMAIL_PREFIX + self.__cleanEmail(email)
 
     #Function which returns the correct format of the string to index
     #to get the vision
     def __getVisionKey(self, visionId):
-        return DB.VISION_PREFIX + self.__cleanInt(visionId)
+        return RedisDB.VISION_PREFIX + self.__cleanInt(visionId)
 
     #Function which returns the correct format of the string to index 
     #to get the picture
     def __getPictureKey(self, pictureId):
-        return DB.PICTURE_PREFIX + self.__cleanInt(pictureId)
+        return RedisDB.PICTURE_PREFIX + self.__cleanInt(pictureId)
 
     #Function which returns the correct format of the string to index into
     #the user vision
     def __getUserVisionListKey(self, userId):
-        return DB.USER_VISION_LIST_PREFIX + self.__cleanInt(userId)
+        return RedisDB.USER_VISION_LIST_PREFIX + self.__cleanInt(userId)
 
 
 

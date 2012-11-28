@@ -1,7 +1,10 @@
+import os
+from awesome.Constant import Constant
 from awesome import app
 
-#Debug
-app.config['DEBUG'] = True
+# Ensure tmp folder exists for picture uploads
+if not os.path.exists(Constant.LOCAL_IMAGE_DIR):
+  os.makedirs(Constant.LOCAL_IMAGE_DIR)
 
 #Run
 app.run()

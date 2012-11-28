@@ -5,6 +5,7 @@
     gets, modifies, and sets stuff
 '''
 
+#from data.RedisDataApi import RedisDataApi
 from data.DataApi import DataApi
 
 from ..util.Verifier import Verifier
@@ -29,7 +30,7 @@ class Api:
 
         errorMsg = None
 
-        user = DataApi.getUserFromEmail(email)
+        user = DataApi.getUserByEmail(email)
 
         if len(email) <= 0:
             errorMsg = LoginError.EMAIL_REQUIRED
@@ -37,7 +38,8 @@ class Api:
             errorMsg = LoginError.EMAIL_NOT_FOUND
         elif len(passwordText) <= 0:
             errorMsg = LoginError.PASSWORD_REQUIRED
-        elif not PasswordEncrypt.verifyPassword(passwordText, user.password):
+        elif not PasswordEncrypt.verifyPassword(passwordText,
+                                                user.passwordHash):
             errorMsg = LoginError.PASSWORD_INVALID
         else:
             return (user, None)
@@ -79,7 +81,7 @@ class Api:
         elif not Verifier.passwordValid(passwordText):
             errorMsg = RegisterError.PASSWORD_INVALID
         else:
-            user = DataApi.getUserFromEmail(email)
+            user = DataApi.getUserByEmail(email)
             if DataApi.NO_OBJECT_EXISTS != user:
                 errorMsg = RegisterError.EMAIL_TAKEN
 
@@ -117,7 +119,7 @@ class Api:
 
     @staticmethod
     def getUserById(userId):
-        return DataApi.getUser(userId)
+        return DataApi.getUserById(userId)
 
     #
     # Vision-related API
@@ -152,16 +154,25 @@ class Api:
     @staticmethod
     def saveVision(userId, mediaUrl, text, pageUrl, pageTitle):
 
+        Logger.debug("SAVE VISION")
+
         #To Do Validate
         #TODO: Save page title
         filename = "name on server"
-        pictureId = DataApi.addPicture(mediaUrl, filename)
+        pictureId = DataApi.addPicture(userId,
+                                       mediaUrl, True,
+                                       "",
+                                       "none", 0, 0,
+                                       "none", 0, 0,
+                                       "none", 0, 0,
+                                       "none", 0, 0)
 
         if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
 
         parentId = 0
-        visionId = DataApi.addVision(userId, text, pictureId, parentId)
+        rootId = 0
+        visionId = DataApi.addVision(userId, text, pictureId, parentId, rootId)
 
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
