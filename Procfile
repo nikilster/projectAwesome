@@ -1,1 +1,1 @@
-web: python runserver.py
+web: newrelic-admin run-program python runserver.py
