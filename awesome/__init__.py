@@ -31,10 +31,10 @@ if app.config['LOCAL_DB']:
     DB_HOST = 'localhost'
     DB_NAME = 'projectAwesome'
 else:
-    DB_USER = 'dbroot'
+    DB_USER = 'projectAwesome'
     DB_PASSWORD = 'aw3!s0m3'
     DB_HOST = 'maindb.cylmlzjscg1s.us-east-1.rds.amazonaws.com:3306'
-    DB_NAME = 'AwesomeDB'
+    DB_NAME = 'projectAwesome'
 DB_URI = 'mysql://%s:%s@%s/%s' % (DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 
