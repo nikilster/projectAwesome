@@ -14,7 +14,7 @@ while getopts "wh" opt; do
             echo "WIPE"
             ;;
         h)  echo ""
-            echo "Usage: run.sh [-w to wipe redis DB]"
+            echo "Usage: run.sh [-w to wipe local MySQL DB]"
             echo ""
             exit 1
             ;;
@@ -36,25 +36,27 @@ echo "Activating virtual environment"
 #http://www.anyexample.com/linux_bsd/bash/check_if_program_is_running_with_bash_shell_script.xml
 SERVICE='redis'
 
-if ps ax | grep -v grep | grep $SERVICE 
-then
-    echo "$SERVICE service is already running, so skipping"
-else
-    echo "$SERVICE is not running"
-    echo "Starting $SERVICE"
-	
-	#Start Redis
-	awesome/redis-2.6.4/src/redis-server &
-
-	echo "Started Redis!"
-fi
+#if ps ax | grep -v grep | grep $SERVICE 
+#then
+#    echo "$SERVICE service is already running, so skipping"
+#else
+#    echo "$SERVICE is not running"
+#    echo "Starting $SERVICE"
+#	
+#	#Start Redis
+#	awesome/redis-2.6.4/src/redis-server &
+#
+#	echo "Started Redis!"
+#fi
 
 
 #Wipe & Generate Data
 if $WIPE_AND_GENERATE_DATA
 then
 	echo "------Wiping Data and Generating Test Data------"
-	python awesome/api/data/testData/generateTestData.py 
+	#python awesome/api/data/testData/generateTestData.py 
+    python wipeLocalDB.py
+    python generateTestData.py
 	echo "------Done Generating Test Data------"
 else
 	echo "------As set by the script variable, NOT Wiping and Generating test Data------"

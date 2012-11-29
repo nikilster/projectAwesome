@@ -21,14 +21,15 @@ Logger.info("DEBUG=" + str(app.config['DEBUG']) +
             "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
 if app.config['LOCAL_DB'] == False:
     Logger.info(" ********   DO NOT MESS WITH PRODUCTION DB   ******** ")
+
 #
 # Configuration for MySQL
 #
 if app.config['LOCAL_DB']:
-    DB_USER = 'root'
+    DB_USER = 'projectAwesome'
     DB_PASSWORD = 'awesome'
     DB_HOST = 'localhost'
-    DB_NAME = 'AwesomeDB'
+    DB_NAME = 'projectAwesome'
 else:
     DB_USER = 'dbroot'
     DB_PASSWORD = 'aw3!s0m3'
