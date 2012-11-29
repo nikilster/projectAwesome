@@ -5,4 +5,4 @@ pip install redis
 pip install py_bcrypt
 pip install Flask_SQLAlchemy
 easy_install -U distribute
-pip install mysql-python
+pip install -I MySQL_python==1.2.3
