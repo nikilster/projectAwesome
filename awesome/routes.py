@@ -445,4 +445,9 @@ def create():
     #Error
     return render_template('errorCreatingVision.html', message=message)
 
+# Target URL for New Relic availability monitoring
+@app.route('/new_relic/ping', methods=['GET'])
+def new_relic_ping_target():
+    return "pong..."
+
 # $eof
