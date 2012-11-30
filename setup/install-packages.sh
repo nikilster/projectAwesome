@@ -4,8 +4,10 @@
 # working setups and production
 #
 
+. ../venv/bin/activate
+
 pip install -I Flask==0.9
-pip install -I redis==2.7.1
+#pip install -I redis==2.7.1
 pip install -I py_bcrypt==0.2
 pip install -I Flask_SQLAlchemy==0.16
 easy_install -U distribute
