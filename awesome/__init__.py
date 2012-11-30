@@ -12,15 +12,20 @@ from util.Logger import Logger
 # This should be the default configuration we want in production
 class DEFAULT_CONFIG:
     DEBUG = True
-    LOCAL_DB = False
+    LOCAL_DB = True
 
+# Get Config
 app.config.from_object(DEFAULT_CONFIG)
 if os.getenv('PROJECT_AWESOME_FLASK_SETTINGS'):
     app.config.from_envvar('PROJECT_AWESOME_FLASK_SETTINGS')
+
+# Print current status of the config variables
 Logger.info("DEBUG=" + str(app.config['DEBUG']) +
             "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
+
+#If we are using the production database
 if app.config['LOCAL_DB'] == False:
-    Logger.info(" ********   DO NOT MESS WITH PRODUCTION DB   ******** ")
+  Logger.info(" ********   Using the Product DB - No not edit or wipe!   ******** ")
 
 #
 # Configuration for MySQL

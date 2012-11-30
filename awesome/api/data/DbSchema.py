@@ -25,7 +25,7 @@ class UserModel(DB.Model):
     lastName        = DB.Column(DB.String(40))
     passwordHash    = DB.Column(DB.String(60))
 
-    email           = DB.Column(DB.String(256), unique=True)
+    email           = DB.Column(DB.String(255), unique=True)
     emailConfirmed  = DB.Column(DB.Boolean, default=False)
 
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
