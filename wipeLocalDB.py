@@ -1,4 +1,5 @@
 from awesome import app
+import sys
 
 if app.config['LOCAL_DB'] == False:
     print "** DON'T WIPE THE PRODUCTION DB **"
