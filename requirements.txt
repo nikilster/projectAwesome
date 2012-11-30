@@ -8,4 +8,5 @@ py-bcrypt==0.2
 Flask-SQLAlchemy==0.16
 SQLAlchemy==0.7.9
 MySQL-python==1.2.3
+boto==2.6.0
 newrelic

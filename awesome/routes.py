@@ -5,6 +5,7 @@ from flask import Response
 from flask import current_app
 
 from . import app
+from . import S3_CONN, S3_BUCKET_NAME
 from Constant import Constant
 import json
 
@@ -20,6 +21,8 @@ from api.Api import Api
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
+
+from boto.s3.key import Key
 
 @app.route('/', methods=['GET'])
 def index():
@@ -264,6 +267,12 @@ def image_filename_valid(filename):
         return True
     return False 
 
+def image_content_type(filename):
+    ext = image_ext(filename)
+    if ext and ext in IMAGE_TYPES.keys():
+        return IMAGE_TYPES[ext]
+    return None
+
 def userTempImagePath(userId, filename):
     path = Constant.LOCAL_IMAGE_DIR + '/TmpImage-' + str(userId) + "." + image_ext(filename)
     url = '/static/tmp_image/TmpImage-' + str(userId) + "." + image_ext(filename)
@@ -295,12 +304,23 @@ def apiFileUpload(userId):
 
             if file and image_filename_valid(file.filename):
                 filename = secure_filename(file.filename)
-                path, url= userTempImagePath(userId, filename)
-                file.save(path);
-                file.close()
-                SessionManager.setPreloadedImage(path)
-                successResult = ({'result' : 'success',
-                                  'url'    : url})
+                contentType = image_content_type(filename)
+                if contentType:
+                    path, url= userTempImagePath(userId, filename)
+
+                    s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
+                    s3Key = Key(s3Bucket)
+                    s3Key.key = "test-" + filename
+                    numBytes = s3Key.set_contents_from_file(file,
+                                        headers={'Content-Type' : contentType})
+
+                    file.seek(0)
+                    file.save(path)
+                    file.close()
+
+                    SessionManager.setPreloadedImage(path)
+                    successResult = ({'result' : 'success',
+                                    'url'    : url})
                 return render_template('file_upload.html',
                                        jsonResult=successResult)
     return render_template('file_upload.html', jsonResult=errorResult)
