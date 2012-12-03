@@ -395,6 +395,15 @@ def create():
     #Error
     return render_template('errorCreatingVision.html', message=message)
 
+@app.route('/terms', methods=['GET'])
+def terms():
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('terms.html', user=userInfo)
+    abort(405)
+
 # Target URL for New Relic availability monitoring
 @app.route('/new_relic/ping', methods=['GET'])
 def new_relic_ping_target():

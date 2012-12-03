@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+Privacy &amp; Terms of Service
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
+        <!-- Title -->
+        <div class="row header">
+            <div class="page-header TextCenter">            
+                <h1 class="title">Privacy &amp; Terms of Service</h1>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="span8 offset2">
+            <div class="explanation">
+            Stuff
+            </div>
+        </div>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+{% endblock %}
+
+{# $eof #}
