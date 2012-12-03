@@ -1023,6 +1023,7 @@ $(document).ready(function() {
             $("#FileUploadNoPreview").hide();
             $("#FileUploadLoading").show();
             $("#FileUploadInvalid").hide();
+            $("#FileUploadImageContainer").hide();
         }
     });
     $("#FileUploadTarget").load(function() {
@@ -1035,10 +1036,14 @@ $(document).ready(function() {
         if (result && result.result == "success") {
             // Show image uploaded
             console.log("url: " + result.url);
+            // Append unique string to end of url to smash image caching
+            var t  = new Date().getTime();
+            var url = $.trim(result.url) + "?" + t.toString();
+
             $("#FileUploadNoPreview").hide();
             $("#FileUploadNoPreview").hide();
             $("#FileUploadLoading").hide();
-            $("#FileUploadImage").attr("src", result.url);
+            $("#FileUploadImage").attr("src", url);
             $("#FileUploadImageContainer").show();
         } else {
             // Clear the file upload image feedback
