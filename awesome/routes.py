@@ -253,7 +253,7 @@ def apiFileUpload(userId):
                                        jsonResult=errorResult)
 
             file = request.files['picture']
-            url = Api.previewImage(file)
+            url = Api.previewImage(userInfo['id'], file)
 
             if None != url:
                 SessionManager.setPreviewUrl(url)
