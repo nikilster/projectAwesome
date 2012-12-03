@@ -192,9 +192,8 @@ class PictureModel(DB.Model):
 
     def toDictionary(self):
         return { 'id' : self.id,
-                 'large' : self.largeUrl,
-                 'medium' : self.mediumUrl,
-                 'small' : self.smallUrl,
-                 'original' : self.original,
+                 'largeUrl' : self.largeUrl,
+                 'mediumUrl' : self.mediumUrl,
+                 'smallUrl' : self.smallUrl,
                }
 # $eof

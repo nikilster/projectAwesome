@@ -6,6 +6,8 @@
 import os
 from flask import session
 
+from Verifier import Verifier
+
 class SessionManager:
    
     @staticmethod
@@ -34,17 +36,17 @@ class SessionManager:
         session.pop('user', None)
 
     @staticmethod
-    def setPreloadedImage(filepath):
+    def setPreviewUrl(url):
         assert SessionManager.__inSession(), "Not in Flask session"
-        assert os.path.exists(filepath), "Preloaded image doesn't exist"
-        session['preloadedImage'] = filepath
+        assert Verifier.urlValid(url), "Invalid preview url"
+        session['previewUrl'] = url
 
     @staticmethod
-    def getPreloadedImage():
-        assert 'preloadedImage' in session, "Preloaded image not there"
-        filepath = session['preloadedImage']
-        assert os.path.exists(filepath), "Preloaded image doesn't exist"
-        return filepath
+    def getPreviewUrl():
+        assert 'previewUrl' in session, "Preloaded image not there"
+        url = session['previewUrl']
+        assert Verifier.urlValid(url), "Invalid preview url"
+        return url
 
     @staticmethod
     def __inSession():

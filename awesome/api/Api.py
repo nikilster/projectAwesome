@@ -16,6 +16,7 @@ from ..util.Logger import Logger
 from ..Constant import Constant
 
 from FlashMessages import *
+from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision
 
 class Api:
     '''
@@ -149,23 +150,52 @@ class Api:
         return DataApi.deleteUserVision(userId, visionId)
 
     '''
-        Save (Right now from the bookmarklet)
+        PreviewImage
+
+        return None if couldn't upload, else returns URL of preview image
     '''
     @staticmethod
-    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle):
+    def previewImage(userId, file):
+        image = ImageFilePreview(file)
+        url = None
+        if file and image.isImage():
+            url = image.uploadForPreview(userId)
+        return url
 
-        Logger.debug("SAVE VISION")
+    '''
+        Save (Right now from the bookmarklet)
 
+        isUploaded: True of user manually uploaded. False if from URL
+    '''
+    @staticmethod
+    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle, isUploaded):
         #To Do Validate
         #TODO: Save page title
         filename = "name on server"
+
+        if mediaUrl == "":
+            return [Constant.INVALID_OBJECT_ID,"No image"]
+        imageUpload = ImageUrlUpload(mediaUrl)
+        s3Vision = imageUpload.saveAsVisionImage(userId)
+
+        if None == s3Vision:
+            return [Constant.INVALID_OBJECT_ID,"Invalid image"]
+            
         pictureId = DataApi.addPicture(userId,
-                                       mediaUrl, True,
-                                       "",
-                                       "none", 0, 0,
-                                       "none", 0, 0,
-                                       "none", 0, 0,
-                                       "none", 0, 0)
+                                       mediaUrl, isUploaded,
+                                       s3Vision.s3Bucket(),
+                                       s3Vision.origKey(),
+                                       s3Vision.origWidth(),
+                                       s3Vision.origHeight(),
+                                       s3Vision.largeKey(),
+                                       s3Vision.largeWidth(),
+                                       s3Vision.largeHeight(),
+                                       s3Vision.mediumKey(),
+                                       s3Vision.mediumWidth(),
+                                       s3Vision.mediumHeight(),
+                                       s3Vision.smallKey(),
+                                       s3Vision.smallWidth(),
+                                       s3Vision.smallHeight())
 
         if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]

@@ -5,29 +5,23 @@ from flask import Response
 from flask import current_app
 
 from . import app
-from . import S3_CONN, S3_BUCKET_NAME
 from Constant import Constant
 import json
 
-import shutil
-
 import os
-from werkzeug import secure_filename
-import calendar, datetime, hashlib
+import calendar, datetime
 
 from util.Logger import Logger
+from api.S3Util import ImageFilePreview
 
 from api.Api import Api
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
 
-from boto.s3.key import Key
-
 @app.route('/', methods=['GET'])
 def index():
     if request.method == 'GET':
-        Logger.debug("SESSION CLASS: " + session.__class__.__name__)
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             return render_template('index.html', user=userInfo)
@@ -247,48 +241,6 @@ def apiRepostVision(userId):
         abort(403)
     abort(405)
 
-IMAGE_TYPES = dict({
-    'png' : 'image/png',
-    'jpg' : 'image/jpeg',
-    'jpeg' : 'image/jpeg',
-    'gif' : 'image/gif',
-    'bmp' : 'image/x-ms-bmp',   # this one is unofficial
-})
-
-def image_ext(filename):
-    parts = filename.rsplit('.',1)
-    if len(parts) < 2:
-        return None
-    return parts[1].lower()
-
-def image_filename_valid(filename):
-    ext = image_ext(filename)
-    if ext and ext in IMAGE_TYPES.keys():
-        return True
-    return False 
-
-def image_content_type(filename):
-    ext = image_ext(filename)
-    if ext and ext in IMAGE_TYPES.keys():
-        return IMAGE_TYPES[ext]
-    return None
-
-def userTempImagePath(userId, filename):
-    path = Constant.LOCAL_IMAGE_DIR + '/TmpImage-' + str(userId) + "." + image_ext(filename)
-    url = '/static/tmp_image/TmpImage-' + str(userId) + "." + image_ext(filename)
-    return (path, url)
-def userFinalImagePath(userId, filename):
-    t = str(calendar.timegm(datetime.datetime.utcnow().timetuple()))
-    md5 = hashlib.md5()
-    md5.update(t)
-    digest = md5.hexdigest()
-    uniqueString = str(userId) + "_" + str(digest)
-
-    path = Constant.LOCAL_IMAGE_DIR + '/' + uniqueString + "." + image_ext(filename)
-    url = '/static/tmp_image/' + uniqueString + "." + image_ext(filename)
-
-    return (path, url)
-
 @app.route('/api/user/<int:userId>/file_upload', methods=['POST'])
 def apiFileUpload(userId):
     errorResult = { 'result' : 'error' }
@@ -301,28 +253,14 @@ def apiFileUpload(userId):
                                        jsonResult=errorResult)
 
             file = request.files['picture']
+            url = Api.previewImage(file)
 
-            if file and image_filename_valid(file.filename):
-                filename = secure_filename(file.filename)
-                contentType = image_content_type(filename)
-                if contentType:
-                    path, url= userTempImagePath(userId, filename)
-
-                    s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
-                    s3Key = Key(s3Bucket)
-                    s3Key.key = "test-" + filename
-                    numBytes = s3Key.set_contents_from_file(file,
-                                        headers={'Content-Type' : contentType})
-
-                    file.seek(0)
-                    file.save(path)
-                    file.close()
-
-                    SessionManager.setPreloadedImage(path)
-                    successResult = ({'result' : 'success',
+            if None != url:
+                SessionManager.setPreviewUrl(url)
+                successResult = ({'result' : 'success',
                                     'url'    : url})
                 return render_template('file_upload.html',
-                                       jsonResult=successResult)
+                                        jsonResult=successResult)
     return render_template('file_upload.html', jsonResult=errorResult)
 
 @app.route('/api/user/<int:userId>/add_vision', methods=['POST'])
@@ -349,19 +287,10 @@ def apiAddUserVision(userId):
             # Make sure image link OK
             url = ""
             if useImage == True:
-                # Rename image, remove tmp file, and get photo pointer
-                tmpPath = SessionManager.getPreloadedImage()
-           
-                # Get final url for image and copy tmp file to final url
-                path, url = userFinalImagePath(userId, tmpPath)
-                cwd = os.getcwd()
-                #os.rename(os.path.join(cwd, tmpPath),
-                #          os.path.join(cwd, path))
-                shutil.copy2(os.path.join(cwd, tmpPath),
-                             os.path.join(cwd, path))
+                url = SessionManager.getPreviewUrl()
 
             # Create a new vision with the photo
-            visionId, errorMsg = Api.saveVision(userId, url, text, "", "")
+            visionId, errorMsg = Api.saveVision(userId, url, text, "", "", True)
             vision = Api.getVision(visionId)
 
             if None != vision:
@@ -456,7 +385,8 @@ def create():
     userId = SessionManager.getUser()['id']
 
     #Add
-    visionId, message = Api.saveVision(userId, mediaUrl, text, pageUrl, pageTitle)
+    visionId, message = Api.saveVision(userId, mediaUrl, text,
+                                       pageUrl, pageTitle, False)
 
     #Successful Create!
     if(visionId != Constant.INVALID_OBJECT_ID):

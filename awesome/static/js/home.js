@@ -125,12 +125,16 @@ App.Backbone.Model.Picture = Backbone.Model.extend({
     defaults: {
         id: -1,
         filename: "",
-        original: "",
+        largeUrl: "",
+        mediumUrl: "",
+        smallUrl: "",
     },
     initialize: function() {
     },
     pictureId: function() { return this.get("id"); },
-    original: function() { return this.get("original"); },
+    largeUrl: function() { return this.get("largeUrl"); },
+    mediumUrl: function() { return this.get("mediumUrl"); },
+    smallUrl: function() { return this.get("smallUrl"); },
 });
 
 App.Backbone.Model.Vision = Backbone.Model.extend({
@@ -342,7 +346,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pictureUrl = "";
         if (null != this.model.picture()) {
             pictureDisplay = "block";
-            pictureUrl = this.model.picture().original();
+            pictureUrl = this.model.picture().mediumUrl();
         }
         var cursorClass = "";
         var moveDisplay = "none";

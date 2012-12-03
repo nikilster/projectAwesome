@@ -111,6 +111,6 @@ class TestApi:
             url = random.choice(TestApi.pictures)
 
             #Add
-            Api.saveVision(userId, url, text, "", "")
+            Api.saveVision(userId, url, text, "", "", True)
 
 

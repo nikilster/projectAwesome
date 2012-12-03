@@ -32,3 +32,4 @@ class Verifier:
       return True
     return False
 
+# $eof
