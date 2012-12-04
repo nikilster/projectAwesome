@@ -69,8 +69,6 @@ class DataApi:
         DB.session.add(vision)
         DB.session.flush() # flush so vision.id is valid
 
-        Logger.debug("ADDING")
-
         # now add to vision list
         visionList = visionListModel.getVisionList()
         visionList.insert(0, vision.id)
@@ -108,10 +106,18 @@ class DataApi:
 
         visions = []
         if len(visionIds) > 0:
-            visions = VisionModel.query.filter_by(userId=userId) \
-                                       .filter_by(removed=False) \
-                                       .filter(VisionModel.id.in_(visionIds)) \
-                                       .all()
+            all_visions = VisionModel.query \
+                                     .filter_by(userId=userId) \
+                                     .filter_by(removed=False) \
+                                     .filter(VisionModel.id.in_(visionIds)) \
+                                     .all()
+            idToVision = {}
+            for vision in all_visions:
+                idToVision[vision.id] = vision
+            for visionId in visionIds:
+                assert visionId in idToVision, "Can't find vision Id"
+                visions.append(idToVision[visionId])
+            
         return visions
 
     @staticmethod
@@ -126,7 +132,7 @@ class DataApi:
         if srcIndex < 0 or srcIndex >= length or \
            destIndex < 0 or destIndex >= length or \
            visionId != visionIds[srcIndex]:
-           return False
+            return False
 
         moveId = visionIds.pop(srcIndex)
         visionIds.insert(destIndex, moveId)
