@@ -156,11 +156,24 @@ class DataApi:
     @staticmethod
     def deleteUserVision(userId, visionId):
         vision = DataApi.getVision(visionId)
-        if vision.id != userId:
+        visionListModel = DataApi.getVisionListModelForUser(userId)
+        visionIds = visionListModel.getVisionIdList()
+
+        if vision.userId != userId:
             return False
+        if not (visionId in visionIds):
+            return False
+
+        # mark the vision as removed
         vision.removed = True
         DB.session.add(vision)
-        DB.commit()
+
+        # now remove from vision list
+        visionIds.remove(visionId)
+        visionListModel.setVisionIdList(visionIds)
+        DB.session.add(visionListModel)
+
+        DB.session.commit()
         return True
 
 

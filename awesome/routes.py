@@ -45,7 +45,12 @@ def user_profile(userId):
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('about.html', user=userInfo)
+    abort(405)
 
 @app.route('/settings', methods=['GET'])
 def settings():

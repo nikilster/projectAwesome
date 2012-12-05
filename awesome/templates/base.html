@@ -27,7 +27,8 @@
                     About
                 </a>
                 {% if user and user != None %}
-                <a id="NavProfile" class="NavButton" href="/profile">
+                <a id="NavProfile" class="NavButton"
+                    href="{{ url_for('user_profile', userId = user['id']) }}">
                     {{ user['firstName'] }}
                 </a>
                 <a id="NavSettings" class="NavButton" href="{{ url_for('settings')}}">
