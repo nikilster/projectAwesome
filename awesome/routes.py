@@ -33,8 +33,8 @@ def index():
 def view_board():
     return redirect(url_for('index'))
 
-@app.route('/profile', methods=['GET'])
-def user_profile():
+@app.route('/user/<int:userId>', methods=['GET'])
+def user_profile(userId):
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
@@ -46,6 +46,16 @@ def user_profile():
 @app.route('/about', methods=['GET'])
 def about():
     return render_template('about.html')
+
+@app.route('/settings', methods=['GET'])
+def settings():
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('settings.html', user=userInfo)
+        else:
+            return render_template('index.html', user=None)
+    abort(405)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,7 +72,7 @@ def login():
 
         if user:
             SessionManager.addUser(user)
-            return redirect(url_for('user_profile'))
+            return redirect(url_for('user_profile', userId=user.id))
         else:
             assert errorMsg != None, "Error msg should exist"
             flash(errorMsg, LoginError.TAG)
@@ -130,7 +140,7 @@ def register_user():
                     Api.repostVisionList(newUser.id, selectedVisions)
                     session.pop('selectedVisions', None)
 
-            return redirect(url_for('user_profile'))
+            return redirect(url_for('user_profile', userId=newUser.id))
         else:
             assert errorMsg != "", "Error message should exist"
             flash(errorMsg, RegisterError.TAG)
@@ -151,14 +161,16 @@ def apiGetMainPageVisions():
         return jsonify(data)
     abort(405)
 
-@app.route('/api/get_user_visions', methods=['GET'])
-def apiGetUserVisions():
+@app.route('/api/user/<int:userId>/visions', methods=['GET'])
+def apiGetUserVisions(userId):
     if request.method == 'GET':
+        data = { 'otherVisions' : Api.getUserVisionList(userId),
+                 'visionList' : []
+               }
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data = { 'visionList' : Api.getUserVisionList(userInfo['id']) }
-            return jsonify(data)
-        abort(403)
+            data['visionList'] = Api.getUserVisionList(userInfo['id'])
+        return jsonify(data)
     abort(405)
 
 @app.route('/api/user/<int:userId>/move_vision', methods=['POST'])
@@ -178,6 +190,8 @@ def apiMoveUserVision(userId):
             visionId = parameters['visionId']
             srcIndex = parameters['srcIndex']
             destIndex = parameters['destIndex']
+
+            Logger.debug("V:%s src: %s dest: %s" % (visionId, srcIndex, destIndex))
 
             result = Api.moveUserVision(userInfo['id'], visionId,
                                         srcIndex, destIndex)

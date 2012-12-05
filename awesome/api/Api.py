@@ -126,20 +126,38 @@ class Api:
     # Vision-related API
     #
     @staticmethod
-    def getMainPageVisionList():
-        data = DataApi.getMainPageVisions()
+    def _visionListToObjectList(visions):
         visionList = []
-        for vision in data:
-            visionList.append(vision.toDictionary())
+
+        pictureIds = set([vision.pictureId for vision in visions])
+        pictureIds.discard(0)
+        pictures = DataApi.getPicturesFromIds(pictureIds)
+        idToPicture = dict([(picture.id, picture) for picture in pictures])
+        idToPicture[0] = ""
+
+        userIds = set([vision.userId for vision in visions])
+        users = DataApi.getUsersFromIds(userIds)
+        idToUser = dict([(user.id, user) for user in users])
+
+        for vision in visions:
+            obj = vision.toDictionary()
+            obj['name'] = idToUser[vision.userId].fullName
+            if vision.pictureId != 0:
+                obj['picture'] = idToPicture[vision.pictureId].toDictionary()
+            visionList.append(obj)
         return visionList
 
     @staticmethod
+    def getMainPageVisionList():
+        data = DataApi.getMainPageVisions()
+        return Api._visionListToObjectList(data)
+
+    # This returns all the objects and attributes necessary so it can easily
+    # be JSON-ized
+    @staticmethod
     def getUserVisionList(userId):
         data = DataApi.getVisionsForUser(userId)
-        visionList = []
-        for vision in data:
-            visionList.append(vision.toDictionary())
-        return visionList
+        return Api._visionListToObjectList(data)
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):

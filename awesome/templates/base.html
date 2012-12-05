@@ -30,6 +30,9 @@
                 <a id="NavProfile" class="NavButton" href="/profile">
                     {{ user['firstName'] }}
                 </a>
+                <a id="NavSettings" class="NavButton" href="{{ url_for('settings')}}">
+                    Settings
+                </a>
                 <a id="NavLogout" class="NavButton" href="/logout">
                     Logout
                 </a>

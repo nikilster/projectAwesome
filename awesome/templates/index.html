@@ -20,7 +20,11 @@ var USER = { id: '{{ user['id'] }}',
              lastName: '{{ user['lastName'] }}',
            }
 {% else %}
-var USER = null;
+var USER = { id: -1,
+             firstName: "Invalid",
+             lastName: "Name",
+           }
+
 {% endif %}
 </script>
 {% endblock %}
@@ -102,6 +106,9 @@ var USER = null;
     <div id="InfoContainerPadding"></div>
     <div id="ContentContainer">
         <div id="PageLoadingNotice" style="display:none;"></div>
+        <div id="UserHeader">
+            <h1 id="UserHeaderName"></h1>
+        </div>
         <div id="MasonryContainer"></div>
         <div id="TestVisionContainer"></div>
     </div>
@@ -254,6 +261,11 @@ var USER = null;
     </div>
     <div style="padding:3px;">
         <%= text %>
+    </div>
+    <div class="VisionUserBlock"
+         style="display: <%= nameDisplay %>;">
+        Shared by
+        <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
     </div>
 
     <div class="AddVisionOverlay VisionOverlay">

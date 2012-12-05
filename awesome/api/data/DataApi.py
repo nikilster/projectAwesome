@@ -41,12 +41,18 @@ class DataApi:
         DB.session.commit()
         return user.id
 
+    @staticmethod
+    def getUsersFromIds(userIds):
+        return UserModel.query \
+                        .filter(UserModel.id.in_(userIds)) \
+                        .all()
+
     # 
     # Vision List methods
     #
 
     @staticmethod
-    def getVisionList(userId):
+    def getVisionListModelForUser(userId):
         visionList = VisionListModel.query.filter_by(userId=userId).first()
         return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
 
@@ -62,20 +68,28 @@ class DataApi:
     @staticmethod
     def addVision(userId, text, pictureId, parentId, rootId):
         # get vision list
-        visionListModel = DataApi.getVisionList(userId)
+        visionListModel = DataApi.getVisionListModelForUser(userId)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
         vision = VisionModel(userId, text, pictureId, parentId, rootId)
         DB.session.add(vision)
         DB.session.flush() # flush so vision.id is valid
 
+        # if rootId == 0, root really should be self
+        if rootId == 0:
+            vision.rootId = vision.id
+            DB.session.add(vision)
+
         # now add to vision list
-        visionList = visionListModel.getVisionList()
-        visionList.insert(0, vision.id)
-        visionListModel.setVisionList(visionList)
+        visionIds = visionListModel.getVisionIdList()
+        visionIds.insert(0, vision.id)
+        visionListModel.setVisionIdList(visionIds)
         DB.session.add(visionListModel)
 
         DB.session.commit()
+
+        assert vision.rootId != 0, "Root ID should never be zero"
+
         return vision.id
 
     @staticmethod
@@ -99,10 +113,10 @@ class DataApi:
 
     @staticmethod
     def getVisionsForUser(userId):
-        visionListModel = DataApi.getVisionList(userId)
+        visionListModel = DataApi.getVisionListModelForUser(userId)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
-        visionIds = visionListModel.getVisionList()
+        visionIds = visionListModel.getVisionIdList()
 
         visions = []
         if len(visionIds) > 0:
@@ -111,22 +125,19 @@ class DataApi:
                                      .filter_by(removed=False) \
                                      .filter(VisionModel.id.in_(visionIds)) \
                                      .all()
-            idToVision = {}
-            for vision in all_visions:
-                idToVision[vision.id] = vision
-            for visionId in visionIds:
-                assert visionId in idToVision, "Can't find vision Id"
-                visions.append(idToVision[visionId])
-            
+            # hash from visionId to vision
+            idToVision = dict([(vision.id, vision) for vision in all_visions])
+            # use hash to go from visionIds to ordered vision list
+            visions = [idToVision[visionId] for visionId in visionIds]
         return visions
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
-        visionListModel = DataApi.getVisionList(userId)
+        visionListModel = DataApi.getVisionListModelForUser(userId)
         if DataApi.NO_OBJECT_EXISTS == visionListModel:
             return False
         
-        visionIds = visionListModel.getVisionList()
+        visionIds = visionListModel.getVisionIdList()
         length = len(visionIds)
 
         if srcIndex < 0 or srcIndex >= length or \
@@ -137,7 +148,7 @@ class DataApi:
         moveId = visionIds.pop(srcIndex)
         visionIds.insert(destIndex, moveId)
 
-        visionListModel.setVisionList(visionIds)
+        visionListModel.setVisionIdList(visionIds)
         DB.session.add(visionListModel)
         DB.session.commit()
         return True
@@ -161,6 +172,13 @@ class DataApi:
     def getPicture(pictureId):
         picture = PictureModel.query.filter_by(id=pictureId).first()
         return picture if None != picture else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getPicturesFromIds(pictureIds):
+        return PictureModel.query \
+                           .filter_by(removed=False) \
+                           .filter(PictureModel.id.in_(pictureIds)) \
+                           .all()
 
     @staticmethod
     def addPicture(userId, original, uploaded, s3Bucket,

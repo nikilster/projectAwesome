@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+Settings
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
+
+        <!-- Title -->
+        <div class="row header">
+            <div class="page-header TextCenter">            
+                <h1 class="title">Settings</h1>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="span8 offset2">
+            <div class="explanation">
+                <h1>What is it? <small> A technique to focus your mind and achieve your dreams.</small></h1>
+            </div>
+        </div>      
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+{% endblock %}
+
+{# $eof #}

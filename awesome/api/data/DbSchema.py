@@ -67,9 +67,9 @@ class VisionListModel(DB.Model):
         return '<VisionList %s>' % str(self.id)
 
     # Use these to set and get from the JSON list
-    def getVisionList(self):
+    def getVisionIdList(self):
         return json.loads(self.visionJson)
-    def setVisionList(self, visionList):
+    def setVisionIdList(self, visionList):
         self.visionJson = json.dumps(visionList)
 
 
@@ -105,16 +105,20 @@ class VisionModel(DB.Model):
         return '<Vision %s>' % str(self.id)
 
     def toDictionary(self):
+        '''
         picture = {}
         if self.pictureId > 0:
             # TODO: This is slow but lets worry about it later
             model = PictureModel.query.filter_by(id=self.pictureId).first()
             if model != None:
                 picture = model.toDictionary()
-
+        '''
         return {'id' : self.id,
+                'userId' : self.userId,
                 'text' : self.text,
-                'picture' : picture
+                'parentId' : self.parentId,
+                'rootId' : self.rootId,
+                #'picture' : picture,
                }
 
 #
@@ -153,6 +157,8 @@ class PictureModel(DB.Model):
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                              onupdate=datetime.datetime.utcnow)
+    removed         = DB.Column(DB.Boolean, default=False)
+
     @hybrid_property
     def largeUrl(self):
         return S3_HTTPS_HEADER + self.s3Bucket + "/" + self.largeKey

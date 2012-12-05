@@ -26,8 +26,9 @@ function assert(exp, message) {
  * Utility functions for getting/setting global state
  */
 
+// TODO: BE SAFER EVERYONE FOR IF USER IS LOGGED IN (back end should be OK tho)
 function userLoggedIn() {
-    return USER != null;
+    return USER.id > 0;
 }
 
 /******************************************************************************
@@ -110,6 +111,7 @@ var App = {
         Model: null,
         View: null,
         Router: null,
+        CurrentUserId: null,
     },
 }
 
@@ -141,8 +143,10 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
         id: -1,
         parentId: -1,
+        rootId: -1,
         userId: -1,
         text: "",
+        name: "",
         picture: null,
         isSelected: false,
     },
@@ -159,9 +163,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     // Getters
     visionId: function() { return this.get("id"); },
     parentId: function() { return this.get("parentId"); },
+    rootId: function() { return this.get("rootId"); },
     userId: function() { return this.get("userId"); },
     picture: function() { return this.get("picture"); },
     text: function() { return this.get("text"); },
+    name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
 
     // Setters
@@ -253,10 +259,10 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         }
         return false;
     },
-    inVisionList: function(visionId) {
-        var list = this.visionList().where({id: visionId});
-        var parentList = this.visionList().where({parentId: visionId});
-        return (list.length > 0) || (parentList.length > 0);
+    inVisionList: function(visionModel) {
+        var list = this.visionList().where({id: visionModel.visionId()});
+        var rootList = this.visionList().where({rootId: visionModel.rootId()});
+        return (list.length > 0) || (rootList.length > 0);
     },
     getVisionInList: function(visionId) {
         var list = this.visionList().where({id: visionId});
@@ -320,7 +326,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "itemSelect",
                         "mouseEnter", "mouseLeave",
-                        "repostVision");
+                        "repostVision", "removeVision", "goToUser");
         this.model.bind("change", this.render, this);
 
         this.render();
@@ -331,13 +337,23 @@ App.Backbone.View.Vision = Backbone.View.extend({
         "mouseleave .MasonryItemInner" : "mouseLeave",
         "click .VisionToolbarRepost"   : "repostVision",
         "click .VisionToolbarRemove"   : "removeVision",
+        "click .VisionUserName" : "goToUser",
     },
     render: function() {
+    /*
+     *
+     *
+     *
+     * WHAT IF NOT LOGGED IN??!!!
+     *
+     *
+     */
         var pageMode = App.Var.Model.pageMode();
 
         var selectedClass = "MasonryItemUnselected";
         var removeOverlayDisplay = "none";
-        if (pageMode == App.Const.PageMode.HOME_GUEST &&
+        if ((pageMode == App.Const.PageMode.HOME_GUEST ||
+            (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) &&
             this.model.isSelected()) {
             selectedClass = "MasonryItemSelected";
             removeOverlayDisplay = "block";
@@ -353,21 +369,35 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var removeDisplay = "none";
         var repostDisplay = "none";
         var mineDisplay = "none";
+        var nameDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
             cursorClass = "MasonryItemMoveCursor";
             removeDisplay = "inline-block";
         } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
             cursorClass = "MasonryItemPointerCursor";
+            nameDisplay = "block";
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
-            if (App.Var.Model.inVisionList(this.model.visionId())) {
+            nameDisplay = "block";
+            if (App.Var.Model.inVisionList(this.model)) {
                 mineDisplay = "inline-block";
                 selectedClass = "MasonryItemSelected";
             } else {
                 repostDisplay = "inline-block";
             }
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            if (userLoggedIn()) {
+                if (App.Var.CurrentUserId == USER.id) {
+                    moveDisplay = "inline-block";
+                } else {
+                    if (App.Var.Model.inVisionList(this.model)) {
+                        mineDisplay = "inline-block";
+                        selectedClass = "MasonryItemSelected";
+                    } else {
+                        repostDisplay = "inline-block";
+                    }
+                }
+            }
             cursorClass = "MasonryItemPointerCursor";
-            moveDisplay = "inline-block";
         }
 
         var variables = {text : this.model.text(),
@@ -380,6 +410,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          repostDisplay: repostDisplay,
                          mineDisplay: mineDisplay,
                          removeOverlayDisplay: removeOverlayDisplay,
+                         name: this.model.name(),
+                         nameDisplay: nameDisplay,
+                         userId: this.model.userId(),
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -426,15 +459,20 @@ App.Backbone.View.Vision = Backbone.View.extend({
             $(this.el).find(".VisionToolbarConditional").hide();
         }
     },
-    repostVision: function() {
+    repostVision: function(e) {
+        e.stopPropagation();
         App.Var.View.repostVision(this.model);
     },
-    removeVision: function() {
+    removeVision: function(e) {
+        e.stopPropagation();
         if (App.Var.Model.pageMode() == App.Const.PageMode.TEST_VISION) {
             App.Var.Model.removeFromSelectedVisions(this.model);
         } else {
             assert(false, "Should be in test vision page");
         }
+    },
+    goToUser: function() {
+    
     },
 });
 
@@ -574,7 +612,11 @@ App.Backbone.View.Page = Backbone.View.extend({
             this.showHome();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             this.hideInfoBar();
-            this.showAddItemButton();
+            if (userLoggedIn()) {
+                this.showAddItemButton();
+            } else {
+                this.hideAddItemButton();
+            }
             this.showProfile();
         } else {
             assert(false, "Invalid page mode in changePageMode");
@@ -589,7 +631,11 @@ App.Backbone.View.Page = Backbone.View.extend({
         } else if (pageMode == App.Const.PageMode.TEST_VISION) {
             return this.model.selectedVisions();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            return this.model.visionList();
+            if (App.Var.CurrentUserId == USER.id) {
+                return this.model.visionList();
+            } else {
+                return this.model.otherVisions();
+            }
         } else {
             assert(false, "Invalid pageMode");
             return null;
@@ -860,7 +906,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         $("#TestVisionContainer").empty().hide();
         $("#MasonryContainer").show();
 
-        var ajaxUrl = "/api/get_user_visions";
+        var ajaxUrl = "/api/user/" + App.Var.CurrentUserId + "/visions";
 
         $.ajax({
             type: "GET",
@@ -885,7 +931,11 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderProfile: function() {
         console.log("Render Profile");
         this.hidePageLoading();
+
         this.model.setVisionList(App.Var.JSON.visionList);
+        if (App.Var.CurrentUserId != USER.id) {
+            this.model.setOtherVisions(App.Var.JSON.otherVisions);
+        }
     },
     renderProfileError: function() {
         var masonryContainer = $("#MasonryContainer").first();
@@ -904,7 +954,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 App.Backbone.Router = Backbone.Router.extend({
   routes: {
     ""                : "home",
-    "profile"         : "profile",
+    "user/:userId"    : "profile",
     "view_board"      : "viewBoard",
     "*action"         : "home",
   },
@@ -923,7 +973,8 @@ App.Backbone.Router = Backbone.Router.extend({
         assert(false, "Shouldn't be logged in or come from another page");
       }
   },
-  profile: function() {
+  profile: function(userId) {
+    App.Var.CurrentUserId = userId;
     App.Var.Model.setPageMode(App.Const.PageMode.USER_PROFILE);
   },
 });
@@ -951,7 +1002,7 @@ $(document).ready(function() {
     });
     $("#NavProfile").click(function(e) {
         e.preventDefault();
-        App.Var.Router.navigate("/profile", {trigger: true});
+        App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
     });
 
     $("#ViewBoardButton").click(function(e) {
