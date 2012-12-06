@@ -43,6 +43,32 @@ class DataApi:
         return user if None != user else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
+    def setUserName(userId, firstName, lastName):
+        user = DatapApi.getUserById(userId)
+        if None != user:
+            change = False
+            if user.firstName != firstName:
+                user.firstName = firstName
+                change = True
+            if user.lastName != lastName:
+                user.lastName = lastName
+                change = True
+            if change == True:
+                DB.session.add(user)
+                DB.session.commit()
+                return True
+        return False
+
+    @staticmethod
+    def setUserPasswordHash(userId, passwordHash):
+        user = DatapApi.getUserById(userId)
+        if None != user:
+            if user.passwordHash != passwordHash:
+                user.passwordHash = passwordHash
+                return True
+        return False
+
+    @staticmethod
     def addUser(firstName, lastName, email, passwordHash):
         # new UserModel
         user = UserModel(firstName, lastName, email, passwordHash)
