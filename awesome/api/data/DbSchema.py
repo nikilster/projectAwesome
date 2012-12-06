@@ -14,6 +14,8 @@ class UserPrivacy:
 class VisionPrivacy:
     PRIVATE = 0
     SHAREABLE = 1
+    PUBLIC = 2
+    INVALID = 3
 
 #
 # UserModel
@@ -95,12 +97,16 @@ class VisionModel(DB.Model):
     # for future use
     privacy         = DB.Column(DB.Integer, default=VisionPrivacy.SHAREABLE)
 
-    def __init__(self, userId, text, pictureId, parentId, rootId):
+    def __init__(self, userId, text, pictureId,
+                 parentId, rootId,
+                 privacy):
+        assert privacy >= 0 and privacy < VisionPrivacy.INVALID, "Invalid vision privacy value"
         self.userId = userId
         self.text = text
         self.pictureId = pictureId
         self.parentId = parentId
         self.rootId = rootId
+        self.privacy = privacy
     def __str__(self):
         return '<Vision %s>' % str(self.id)
 

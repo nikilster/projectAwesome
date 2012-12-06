@@ -6,6 +6,21 @@ from DbSchema import *
 
 from awesome.util.Logger import Logger
 
+class UserRelationship:
+    NONE = 0    # either anonymous user, or there is no relationship
+    SELF = 1    # user and target user are same person
+    SHARED = 2  # target user has shared with user requesting data
+
+def getUserRelationship(userId, targetUserId):
+    assert targetUserId != None and targetUserId > 0, "Invalid target user id: %s" % (str(targetUserId))
+    assert userId == None or userId > 0, "Invalid user id: %s" % (str(userId))
+
+    # Right now we don't support the mastermind group so you either are your
+    # self, or you aren't related.
+    if None != userId and userId == targetUserId:
+        return UserRelationship.SELF
+    return UserRelationship.NONE
+
 class DataApi:
     #Returned when we dont have an object for that id
     NO_OBJECT_EXISTS_ID = -1
@@ -66,12 +81,12 @@ class DataApi:
         return vision if None != vision else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
-    def addVision(userId, text, pictureId, parentId, rootId):
+    def addVision(userId, text, pictureId, parentId, rootId, privacy):
         # get vision list
         visionListModel = DataApi.getVisionListModelForUser(userId)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
-        vision = VisionModel(userId, text, pictureId, parentId, rootId)
+        vision = VisionModel(userId, text, pictureId, parentId, rootId, privacy)
         DB.session.add(vision)
         DB.session.flush() # flush so vision.id is valid
 
@@ -101,34 +116,51 @@ class DataApi:
                                  vision.text,
                                  vision.pictureId,
                                  vision.id,
-                                 vision.rootId)
+                                 vision.rootId,
+                                 # TODO: use user default for this later
+                                 VisionPrivacy.PUBLIC)
     
     @staticmethod
     def getMainPageVisions():
         return VisionModel.query.filter_by(parentId=0) \
-                                .filter_by(privacy=VisionPrivacy.SHAREABLE) \
+                                .filter_by(privacy=VisionPrivacy.PUBLIC) \
                                 .filter_by(removed=False) \
                                 .order_by(VisionModel.id.desc()) \
                                 .limit(100)
 
     @staticmethod
-    def getVisionsForUser(userId):
-        visionListModel = DataApi.getVisionListModelForUser(userId)
+    def getVisionsForUser(userId, targetUserId):
+        visionListModel = DataApi.getVisionListModelForUser(targetUserId)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
         visionIds = visionListModel.getVisionIdList()
 
+        relationship = getUserRelationship(userId, targetUserId)
+
         visions = []
         if len(visionIds) > 0:
             all_visions = VisionModel.query \
-                                     .filter_by(userId=userId) \
+                                     .filter_by(userId=targetUserId) \
                                      .filter_by(removed=False) \
                                      .filter(VisionModel.id.in_(visionIds)) \
                                      .all()
+
             # hash from visionId to vision
             idToVision = dict([(vision.id, vision) for vision in all_visions])
-            # use hash to go from visionIds to ordered vision list
-            visions = [idToVision[visionId] for visionId in visionIds]
+
+            # use hash and relationship to go from visionIds to ordered
+            # vision list
+            if UserRelationship.NONE == relationship:
+                # Only show public visions
+                visions = [idToVision[visionId] for visionId in visionIds \
+                                if idToVision[visionId].privacy == \
+                                    VisionPrivacy.PUBLIC]
+            elif UserRelationship.SELF == relationship:
+                # Show all visions
+                visions = [idToVision[visionId] for visionId in visionIds]
+            else:
+                assert false, "Invalid user relationship"
+
         return visions
 
     @staticmethod

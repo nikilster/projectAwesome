@@ -18,6 +18,17 @@ from ..Constant import Constant
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision
 
+# TMP STUFF
+from data.DbSchema import VisionPrivacy
+# for now randomly generated privacy
+# TODO: actually get from front-end later
+import random
+def getPrivacy():
+    if random.randint(0,1) == 0:
+        return VisionPrivacy.SHAREABLE
+    return VisionPrivacy.PUBLIC
+## /end TMP STUFF
+
 class Api:
     '''
         loginUser - verifies input, and returns user if exists
@@ -153,10 +164,16 @@ class Api:
         return Api._visionListToObjectList(data)
 
     # This returns all the objects and attributes necessary so it can easily
-    # be JSON-ized
+    # be JSON-ized. This method obeys the privacy constraints and only passes
+    # back data that the user can see from the target user.
+    #
+    # Inputs:
+    #   userId: user id of the person asking for data (None if no user)
+    #   targetUserId: user id of the person who's data you want
+    #
     @staticmethod
-    def getUserVisionList(userId):
-        data = DataApi.getVisionsForUser(userId)
+    def getUserVisionList(userId, targetUserId):
+        data = DataApi.getVisionsForUser(userId, targetUserId)
         return Api._visionListToObjectList(data)
 
     @staticmethod
@@ -186,7 +203,8 @@ class Api:
         isUploaded: True of user manually uploaded. False if from URL
     '''
     @staticmethod
-    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle, isUploaded):
+    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle,
+                   isUploaded):
         #To Do Validate
         #TODO: Save page title
         filename = "name on server"
@@ -220,7 +238,9 @@ class Api:
 
         parentId = 0
         rootId = 0
-        visionId = DataApi.addVision(userId, text, pictureId, parentId, rootId)
+        # TODO: use real privacy later
+        visionId = DataApi.addVision(userId, text, pictureId,
+                                     parentId, rootId, getPrivacy())
 
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]

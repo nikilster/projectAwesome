@@ -17,6 +17,7 @@ from api.S3Util import ImageFilePreview
 from api.Api import Api
 from api.FlashMessages import *
 
+
 from util.SessionManager import SessionManager
 
 @app.route('/', methods=['GET'])
@@ -161,7 +162,8 @@ def apiGetMainPageVisions():
         # TODO: be smarter about when to load user vision list later
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data['visionList'] = Api.getUserVisionList(userInfo['id'])
+            data['visionList'] = Api.getUserVisionList(userInfo['id'],
+                                                       userInfo['id'])
 
         return jsonify(data)
     abort(405)
@@ -169,12 +171,18 @@ def apiGetMainPageVisions():
 @app.route('/api/user/<int:userId>/visions', methods=['GET'])
 def apiGetUserVisions(userId):
     if request.method == 'GET':
-        data = { 'otherVisions' : Api.getUserVisionList(userId),
-                 'visionList' : []
-               }
+        data = {}
+        myUserId = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data['visionList'] = Api.getUserVisionList(userInfo['id'])
+            myUserId = userInfo['id']
+            data['visionList'] = Api.getUserVisionList(userInfo['id'],
+                                                       userInfo['id'])
+        else:
+            data['visionList'] = []
+
+        data['otherVisions'] = Api.getUserVisionList(myUserId, userId)
+
         return jsonify(data)
     abort(405)
 
@@ -309,7 +317,8 @@ def apiAddUserVision(userId):
                 url = SessionManager.getPreviewUrl()
 
             # Create a new vision with the photo
-            visionId, errorMsg = Api.saveVision(userId, url, text, "", "", True)
+            visionId, errorMsg = Api.saveVision(userId, url, text, "", "",
+                                                True)
             vision = Api.getVision(visionId)
 
             if None != vision:
