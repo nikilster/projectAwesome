@@ -7,11 +7,18 @@ Settings
 
 {# ------------------------------------------------------------------------- #}
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/register.css') }}"/>
 {% endblock %}
 
 {# ------------------------------------------------------------------------- #}
 {% block header_js %}
+<script type="text/javascript">
+var USER = { id: '{{ user['id'] }}',
+             firstName: '{{ user['firstName'] }}',
+             lastName: '{{ user['lastName'] }}',
+             email: '{{ user['email'] }}',
+           }
+</script>
 {% endblock %}
 
 {# ------------------------------------------------------------------------- #}
@@ -26,14 +33,112 @@ Settings
 
         <!-- Content -->
         <div class="span8 offset2">
-            <div class="explanation">
-                <h1>What is it? <small> A technique to focus your mind and achieve your dreams.</small></h1>
-            </div>
+
+            User information
+
+            <form method="POST" class="form-horizontal"
+                action="{{ url_for('api_change_info') }}">
+                <div class="control-group">
+                    <label class="control-label" for="firstName">
+                        Name
+                    </label>
+                    <div class="controls">
+                        <input id="FirstNameInput"
+                               class="RegisterField InputSmall"
+                               placeholder="First"
+                               value="{{ user['firstName'] }}"
+                               type="text" name="firstName"/>
+                        <input id="LastNameInput"
+                               class="RegisterField InputSmall"
+                               style="margin-left:10px;"
+                               placeholder="Last"
+                               value="{{ user['lastName'] }}"
+                               type="text" name="lastName"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="email">
+                        Email
+                    </label>
+                    <div class="controls">
+                        <input id="EmailInput"
+                               class="RegisterField InputLarge"
+                               placeholder="Email"
+                               value="{{ user['email'] }}"
+                               type="text" name="email"/>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <button id="SubmitInput"
+                            type="submit"
+                            class="SubmitButton btn btn-primary btn-large"
+                            disabled="disabled">
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>      
 {% endblock %}
 
 {# ------------------------------------------------------------------------- #}
 {% block js %}
+
+<script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>
+
+<script type="text/javascript">
+function nameValid(firstName) {
+    return firstName.length > 0;
+}
+
+// From: http://www.w3schools.com/js/js_form_validation.asp
+function emailValid(email) {
+    var atpos=email.indexOf("@");
+    var dotpos=email.lastIndexOf(".");
+    if ((atpos < 1) ||
+        (dotpos < (atpos + 2)) ||
+        ((dotpos + 2) >= email.length)) {
+        return false;
+    }
+    return true;
+}
+
+function toggleSubmit() {
+    var firstName = $("#FirstNameInput").val();
+    var lastName = $("#LastNameInput").val();
+    var email = $("#EmailInput").val();
+
+    var submitValid = false;
+
+    if (firstName != USER['firstName'] && nameValid(firstName)) {
+        submitValid = true;
+    }
+    if (lastName != USER['lastName'] && nameValid(lastName)) {
+        submitValid = true;
+    }
+    if (email != USER['email'] && emailValid(email)) {
+        submitValid = true;
+    }
+
+    if (true == submitValid) {
+        $("#SubmitInput").removeAttr("disabled");
+    } else {
+        $("#SubmitInput").attr("disabled", "disabled");
+    }
+}
+
+$(document).ready(function() {
+    $("#FirstNameInput").keyup(toggleSubmit);
+    $("#FirstNameInput").bind("paste", toggleSubmit);
+    $("#FirstNameInput").bind("cut", toggleSubmit);
+    $("#LastNameInput").keyup(toggleSubmit);
+    $("#LastNameInput").bind("paste", toggleSubmit);
+    $("#LastNameInput").bind("cut", toggleSubmit);
+    $("#EmailInput").keyup(toggleSubmit);
+    $("#EmailInput").bind("paste", toggleSubmit);
+    $("#EmailInput").bind("cut", toggleSubmit);
+});
+</script>
+
 {% endblock %}
 
 {# $eof #}

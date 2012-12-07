@@ -139,6 +139,22 @@ App.Backbone.Model.Picture = Backbone.Model.extend({
     smallUrl: function() { return this.get("smallUrl"); },
 });
 
+App.Backbone.Model.VisionComment = Backbone.Model.extend({
+    defaults: {
+        id: -1,
+        authorId: -1,
+        text: "",
+    },
+    initialize: function() {
+    },
+    visionCommentId: function() { return this.get("id"); },
+    authorId: function() { return this.get("authorId"); },
+    text: function() { return this.get("text"); },
+});
+App.Backbone.Model.VisionCommentList = Backbone.Collection.extend({
+    model: App.Backbone.Model.VisionComment
+});
+
 App.Backbone.Model.Vision = Backbone.Model.extend({
     defaults: {
         id: -1,
@@ -148,11 +164,13 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         text: "",
         name: "",
         picture: null,
+        comments: null,
         isSelected: false,
     },
     initialize: function() {
         this.set({
-            picture: new App.Backbone.Model.Picture(this.get("picture"))
+            picture: new App.Backbone.Model.Picture(this.get("picture")),
+            comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
         });
 
         if (null != App.Var.Model &&
@@ -169,6 +187,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     text: function() { return this.get("text"); },
     name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
+    comments: function() { return this.get("comments"); },
 
     // Setters
     toggleSelected: function() {
@@ -193,10 +212,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
 
 App.Backbone.Model.VisionList = Backbone.Collection.extend({
     model: App.Backbone.Model.Vision
-});
-
-App.Backbone.Model.VisionComment = Backbone.Model.extend({
-
 });
 
 App.Backbone.Model.Page = Backbone.Model.extend({
@@ -333,11 +348,27 @@ App.Backbone.Model.Page = Backbone.Model.extend({
  * Backbone views
  */
 
+App.Backbone.View.VisionComment = Backbone.View.extend({
+    className: "VisionComment",
+    initialize: function() {
+        //_.bindAll(this, "");
+        this.render();
+    },
+    render: function() {
+        var variables = { 'text': this.model.text() }
+        var template = _.template($("#VisionCommentTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        return this;
+    },
+});
+
 App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "li",
     className: "MasonryItem  MasonryBox",
     initialize: function() {
-        _.bindAll(this, "itemSelect",
+        _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser");
         this.model.bind("change", this.render, this);
@@ -423,7 +454,15 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var template = _.template($("#VisionTemplate").html(), variables);
         $(this.el).html(template);
 
+        this.comments = []
+        this.model.comments().each(this.renderComment);
+        $(this.el).find(".VisionCommentContainer").append(this.comments);
+
         return this;
+    },
+    renderComment: function(comment, index) {
+        var comment = new App.Backbone.View.VisionComment({ model: comment });
+        this.comments.push(comment.el);
     },
     itemSelect: function(e) {
         var pageMode = App.Var.Model.pageMode();
@@ -976,7 +1015,8 @@ App.Backbone.Router = Backbone.Router.extend({
   },
   viewBoard: function() {
       if (!userLoggedIn() &&
-          App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+          (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST ||
+           App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE)) {
         App.Var.Model.setPageMode(App.Const.PageMode.TEST_VISION);
       } else {
         assert(false, "Shouldn't be logged in or come from another page");

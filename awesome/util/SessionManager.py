@@ -16,12 +16,13 @@ class SessionManager:
         return 'user' in session
 
     @staticmethod
-    def addUser(user):
+    def setUser(user):
         assert SessionManager.__inSession(), "Not in Flask session"
         session['user'] = {
             'id'        : user.id,
             'firstName' : user.firstName,
             'lastName'  : user.lastName,
+            'email'     : user.email,
         }
 
     @staticmethod

@@ -13,7 +13,7 @@ Home
 {# ------------------------------------------------------------------------- #}
 {% block header_js %}
 
-<script>
+<script type="text/javascript">
 {% if user != None %}
 var USER = { id: '{{ user['id'] }}',
              firstName: '{{ user['firstName'] }}',
@@ -227,6 +227,10 @@ var USER = { id: -1,
 </div>
 </script>
 
+<script type="text/template" id="VisionCommentTemplate">
+    <%= text %>
+</script>
+
 <script type="text/template" id="VisionTemplate">
 <div class="MasonryItemInner <%= selected %> <%= cursorClass %>">
     <div class="VisionToolbar">
@@ -267,6 +271,7 @@ var USER = { id: -1,
         Shared by
         <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
     </div>
+    <div class="VisionCommentContainer"></div>
 
     <div class="AddVisionOverlay VisionOverlay">
         <div class="AddVisionOverlayText">

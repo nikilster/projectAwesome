@@ -181,6 +181,14 @@ body {
 #TestVisionContainer .VisionUserName {
   font-weight: bold;
 }
+#MasonryContainer .VisionComment,
+#TestVisionContainer .VisionComment {
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 5px;
+  background-color: #FAFAFA;
+  margin: 1px;
+}
 #MasonryContainer .VisionToolbar,
 #TestVisionContainer .VisionToolbar {
   position: absolute;

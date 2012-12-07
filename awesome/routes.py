@@ -63,6 +63,34 @@ def settings():
             return render_template('index.html', user=None)
     abort(405)
 
+@app.route('/api/change_info', methods=['POST'])
+def api_change_info():
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            if not ('firstName' in request.form or
+                    'lastName' in request.form or
+                    'email' in request.form):
+                abort(406)
+
+            firstName = request.form['firstName']
+            lastName = request.form['lastName']
+            email = request.form['email']
+
+            result = Api.changeUserInfo(userInfo['id'],
+                                        firstName, lastName, email)
+            Logger.debug("RESULT: " + str(result))
+
+            # make sure to update session
+            user = Api.getUserById(userInfo['id'])
+            assert user, "New user should exist"
+            SessionManager.setUser(user)
+            userInfo = SessionManager.getUser()
+
+            return render_template('settings.html', user=userInfo)
+        abort(406)
+    abort(405)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -77,7 +105,7 @@ def login():
         (user, errorMsg) = Api.loginUser(email, password)
 
         if user:
-            SessionManager.addUser(user)
+            SessionManager.setUser(user)
             return redirect(url_for('user_profile', userId=user.id))
         else:
             assert errorMsg != None, "Error msg should exist"
@@ -120,7 +148,7 @@ def register_user():
             newUser = Api.getUserById(newUserId)
             assert newUser, "New user should exist"
 
-            SessionManager.addUser(newUser)
+            SessionManager.setUser(newUser)
 
             # Add selected visions if list input valid
             selectedVisions = []

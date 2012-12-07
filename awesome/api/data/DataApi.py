@@ -44,7 +44,7 @@ class DataApi:
 
     @staticmethod
     def setUserName(userId, firstName, lastName):
-        user = DatapApi.getUserById(userId)
+        user = DataApi.getUserById(userId)
         if None != user:
             change = False
             if user.firstName != firstName:
@@ -53,6 +53,7 @@ class DataApi:
             if user.lastName != lastName:
                 user.lastName = lastName
                 change = True
+
             if change == True:
                 DB.session.add(user)
                 DB.session.commit()
@@ -60,8 +61,22 @@ class DataApi:
         return False
 
     @staticmethod
+    def setUserEmail(userId, email):
+        user = DataApi.getUserById(userId)
+        userByEmail = DataApi.getUserByEmail(email)
+
+        # we should find the user, and there shouldn't be another user with
+        # the email address they want to use
+        if None != user and None == userByEmail:
+            user.email = email
+            DB.session.add(user)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
     def setUserPasswordHash(userId, passwordHash):
-        user = DatapApi.getUserById(userId)
+        user = DataApi.getUserById(userId)
         if None != user:
             if user.passwordHash != passwordHash:
                 user.passwordHash = passwordHash

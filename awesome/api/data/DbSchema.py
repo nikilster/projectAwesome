@@ -231,6 +231,12 @@ class VisionCommentModel(DB.Model):
     def __str__(self):
         return '<VisionComment %s>' % (str(self.id))
 
+    def toDictionary(self):
+        return { 'id' : self.id,
+                 'authorId' : self.authorId,
+                 'text' : self.text,
+               }
+
 #
 # FriendModel: Represents a one-way share of information
 #

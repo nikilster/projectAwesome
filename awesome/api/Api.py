@@ -114,6 +114,17 @@ class Api:
             return (None, errorMsg)
 
     @staticmethod
+    def changeUserInfo(userId, firstName, lastName, email):
+        change = False
+        if Verifier.userIdValid(userId) and \
+           Verifier.nameValid(firstName) and \
+           Verifier.nameValid(lastName) and \
+           Verifier.emailValid(email):
+            change |= DataApi.setUserName(userId, firstName, lastName)
+            change |= DataApi.setUserEmail(userId, email)
+        return change
+
+    @staticmethod
     def repostVisionList(userId, visionIds):
         for visionId in reversed(visionIds):
             Logger.debug("REPOST: " + str(visionId) +  "USER: " + str(userId))
@@ -155,6 +166,16 @@ class Api:
             obj['name'] = idToUser[vision.userId].fullName
             if vision.pictureId != 0:
                 obj['picture'] = idToPicture[vision.pictureId].toDictionary()
+            obj['comments'] = [{ 'id' : 1, 'authorId' : 1,
+                                'text' : "So I'm rappelling down Mount Vesuvius when suddenly I slip, and I start to fall. Just falling, ahh ahh, I'll never forget the terror. When suddenly I realize \"Holy shit, Hansel, haven't you been smoking Peyote for six straight days, and couldn't some of this maybe be in your head?\""
+                               },
+                               {'id' : 2, 'authorId' : 2,
+                                'text' : 'And?',
+                               },
+                               {'id' : 3, 'authorId' : 1,
+                                'text' : "And it was. I was totally fine. I've never even been to Mount Vesuvius."
+                               }]
+
             visionList.append(obj)
         return visionList
 
