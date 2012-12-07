@@ -1,75 +1,21 @@
-html,
-body,
-#PageContainer {
-  height: 100%;
-}
-body > #PageContainer {
-  height: auto;
-  min-height: 100%;
-}
+/*
+    base.less
+    
+    Base file for styles
+*/
 body {
-  background-color: #f8f8f8;
+  /*background-color: @backgroundColor;*/
+
+  background-image: url('../img/patterns/subtle_dots.png');
 }
-.container {
-  padding-top: 50px;
-  min-height: 500px;
+/*
+	Utility Styles
+*/
+.hidden {
+  display: none;
 }
-.TextCenter {
-  text-align: center;
-}
-.LogoTitle {
-  color: #e391b2;
-  font-size: 20px;
-  line-height: 1.2;
-}
-#NavBar {
-  position: fixed;
-  width: 100%;
-  height: 40px;
-  background-color: #333333;
-  z-index: 100;
-}
-#NavHome {
-  color: #e391b2;
-  text-decoration: none;
-}
-#NavHome:hover {
-  color: #e391b2;
-  text-decoration: underline;
-}
-.NavButton {
-  display: inline-block;
-  font-size: 15px;
-  line-height: 1.2;
-  color: #aaaaaa;
-  padding: 10px 10px;
-}
-.NavButton:hover {
-  color: #aaaaaa;
-  text-decoration: underline;
-  background-color: #474747;
-}
-#AddItemButton {
-  display: inline-block;
-  font-size: 15px;
-  line-height: 1.2;
-  color: #aaaaaa;
-  padding: 10px 10px;
-  background-color: #474747;
-}
-#AddItemButton:hover {
-  color: #aaaaaa;
-  text-decoration: underline;
-  background-color: #525252;
-  cursor: pointer;
-}
-#Footer {
-  margin-top: -25px;
-  font-size: 12px;
-  line-height: 1.2;
-  text-align: center;
-  color: #aaaaaa;
-  padding: 5px;
+.centered {
+  margin: 0 auto;
 }
 .ErrorNotice {
   color: red;

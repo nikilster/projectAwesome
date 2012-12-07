@@ -1,92 +1,96 @@
-html,
-body,
-#PageContainer {
-  height: 100%;
-}
-body > #PageContainer {
-  height: auto;
-  min-height: 100%;
-}
+/*
+    index.less
+
+    Main Page
+*/
+/*
+    base.less
+    
+    Base file for styles
+*/
 body {
-  background-color: #f8f8f8;
+  /*background-color: @backgroundColor;*/
+
+  background-image: url('../img/patterns/subtle_dots.png');
 }
-.container {
-  padding-top: 50px;
-  min-height: 500px;
+/*
+	Utility Styles
+*/
+.hidden {
+  display: none;
 }
-.TextCenter {
-  text-align: center;
+.centered {
+  margin: 0 auto;
 }
-.LogoTitle {
-  color: #e391b2;
-  font-size: 20px;
-  line-height: 1.2;
+/*
+    The Styles!
+*/
+.moveCursor {
+  cursor: move;
 }
-#NavBar {
-  position: fixed;
+.vision {
+  width: 360px;
+  margin: 6px;
+  padding: 10px;
+  background-color: #feffef;
+  list-style-type: none;
+  -webkit-transition: -webkit-transform 0.15s linear;
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+.vision img {
   width: 100%;
-  height: 40px;
-  background-color: #333333;
-  z-index: 100;
 }
-#NavHome {
-  color: #e391b2;
-  text-decoration: none;
+.vision .text {
+  background-color: #ffffff;
+  padding: 0px;
 }
-#NavHome:hover {
-  color: #e391b2;
-  text-decoration: underline;
+/*
+    On Hover of Vision
+*/
+.addVisionNotAuthenticated,
+.removeVisionNotAuthenticated {
+  position: absolute;
+  top: 14px;
+  right: 14px;
 }
-.NavButton {
-  display: inline-block;
-  font-size: 15px;
-  line-height: 1.2;
-  color: #aaaaaa;
-  padding: 10px 10px;
+.visionSelected {
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
-.NavButton:hover {
-  color: #aaaaaa;
-  text-decoration: underline;
-  background-color: #474747;
-}
-#AddItemButton {
-  display: inline-block;
-  font-size: 15px;
-  line-height: 1.2;
-  color: #aaaaaa;
-  padding: 10px 10px;
-  background-color: #474747;
-}
-#AddItemButton:hover {
-  color: #aaaaaa;
-  text-decoration: underline;
-  background-color: #525252;
-  cursor: pointer;
-}
-#Footer {
-  margin-top: -25px;
-  font-size: 12px;
-  line-height: 1.2;
-  text-align: center;
-  color: #aaaaaa;
-  padding: 5px;
-}
+/*
+    Delete
+*/
 #InfoContainerPadding {
   height: 50px;
+}
+#InfoContainer {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 520px;
+  margin-left: -260px;
+  height: 40px;
+  z-index: -1;
+  background-color: #FCE3ED;
+  padding: 5px 15px;
+  border-bottom: 1px #E391B2 solid;
+  border-left: 1px #E391B2 solid;
+  border-right: 1px #E391B2 solid;
 }
 #ContentContainer {
   margin-bottom: 20px;
   padding: 0px 21px 21px 21px;
 }
-#MasonryContainer,
+#content,
 #TestVisionContainer {
   overflow: hidden;
 }
-#MasonryContainer li.MasonryItem,
+#content li.MasonryItem,
 #TestVisionContainer li.MasonryItem {
   float: left;
 }
-#MasonryContainer li.MasonryBox,
+#content li.MasonryBox,
 #TestVisionContainer li.MasonryBox {
   width: 285px;
   margin: 7px;
@@ -98,29 +102,29 @@ body {
   cursor: default;
   list-style-type: none;
 }
-#MasonryContainer .MasonryItemUnselected,
+#content .MasonryItemUnselected,
 #TestVisionContainer .MasonryItemUnselected {
   border: 1px solid #DDDDDD;
 }
-#MasonryContainer .MasonryItemSelected,
+#content .MasonryItemSelected,
 #TestVisionContainer .MasonryItemSelected {
-  border: 1px solid #e391b2;
+  border: 1px solid red;
 }
-#MasonryContainer .MasonryItemPointerCursor,
+#content .MasonryItemPointerCursor,
 #TestVisionContainer .MasonryItemPointerCursor {
   cursor: pointer;
 }
-#MasonryContainer .MasonryItemMoveCursor,
+#content .MasonryItemMoveCursor,
 #TestVisionContainer .MasonryItemMoveCursor {
   cursor: move;
 }
-#MasonryContainer .MasonryItemInner,
+#content .MasonryItemInner,
 #TestVisionContainer .MasonryItemInner {
   padding: 4px;
   position: relative;
   min-height: 48px;
 }
-#MasonryContainer .VisionOverlay,
+#content .VisionOverlay,
 #TestVisionContainer .VisionOverlay {
   display: none;
   position: absolute;
@@ -131,7 +135,7 @@ body {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
 }
-#MasonryContainer .AddVisionOverlayText,
+#content .AddVisionOverlayText,
 #TestVisionContainer .AddVisionOverlayText {
   position: absolute;
   top: 50%;
@@ -149,7 +153,7 @@ body {
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
-#MasonryContainer .RemoveVisionOverlayText,
+#content .RemoveVisionOverlayText,
 #TestVisionContainer .RemoveVisionOverlayText {
   position: absolute;
   top: 50%;
@@ -168,14 +172,14 @@ body {
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
-#MasonryContainer .VisionToolbar,
+#content .VisionToolbar,
 #TestVisionContainer .VisionToolbar {
   position: absolute;
   top: 5px;
   right: 5px;
   z-index: 1;
 }
-#MasonryContainer .VisionToolbar .VisionToolbarButton,
+#content .VisionToolbar .VisionToolbarButton,
 #TestVisionContainer .VisionToolbar .VisionToolbarButton {
   display: inline-block;
   font-size: 10pt;
@@ -188,13 +192,28 @@ body {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#MasonryContainer .VisionToolbar .VisionToolbarButton:hover,
+#content .VisionToolbar .VisionToolbarButton:hover,
 #TestVisionContainer .VisionToolbar .VisionToolbarButton:hover {
   background-color: #ffffff;
   cursor: pointer;
   -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+}
+#TestVisionInfoContainer {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 520px;
+  margin-left: -260px;
+  height: 40px;
+  z-index: -1;
+  background-color: #FCE3ED;
+  padding: 5px 15px;
+  border-bottom: 1px #E391B2 solid;
+  border-left: 1px #E391B2 solid;
+  border-right: 1px #E391B2 solid;
+  display: none;
 }
 #VisionDeleteButton {
   float: right;

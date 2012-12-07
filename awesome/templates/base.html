@@ -12,45 +12,34 @@
 </head>
 
 <body>
-    <div id="NavBar">
-        <div style="position: relative; width:940px; margin:0px auto;
-                    z-index:1;">
-            <div class="LogoTitle" style="text-align:center; padding-top:8px;">
-                <a id="NavHome" href="/">Project [AWESOME]</a>
-            </div>
+    
+    <div id="headerBar">
+        <div class="logo">
+            <a href="/">Project [AWESOME]</a>
+        </div>
 
-            <div style="position: absolute; top:0px; right:0px;">
-                <span id="AddItemButton" style="display:none;">
-                    + Vision
-                </span>
-                <a class="NavButton" href="{{ url_for('about') }}">
-                    About
-                </a>
-                {% if user and user != None %}
-                <a id="NavProfile" class="NavButton" href="/profile">
-                    {{ user['firstName'] }}
-                </a>
-                <a id="NavLogout" class="NavButton" href="/logout">
-                    Logout
-                </a>
-                {% endif %}
-            </div>
+        <div id="navigationButtons">
+            <span>+ Vision</span>
+            <a href="{{ url_for('about') }}">About</a>
+
+            {% if user and user != None %}
+                <a href="/profile">{{ user['firstName'] }}</a>
+                <a href="/logout">Logout</a>
+            {% endif %}
         </div>
 
         {% block nav_extra %}
         {% endblock %}
     </div>
 
-    <div id="PageContainer">
-        <div class="container">
-        {% block content %}
-        {% endblock %}
-        </div>
+    <div class="container-fluid">
+    {% block content %}
+    {% endblock %}
     </div>
 
-    <div id="Footer">
-    Copyright 2012, Project Awesome, All rights reserved.
-    <a href="{{ url_for("terms")}}">Privacy & Terms</a>
+    <div id="footer">
+        &copy; 2012 Project Awesome
+        <a href="{{ url_for("terms")}}">Privacy & Terms</a>
     </div>
 </body>
 

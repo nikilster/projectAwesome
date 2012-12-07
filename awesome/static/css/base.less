@@ -1,111 +1,29 @@
-//
-// base.less
-//
-// Includes all global LESS variables and mixins
-//
+/*
+    base.less
+    
+    Base file for styles
+*/
 
-@BackgroundColor: #F8F8F8;
-@LogoColor: #E391B2;
+@backgroundColor: #F8F8F8;
+@backgroundImage: url('../img/patterns/subtle_dots.png');
+@logoColor: #E391B2;
 
-@NavBarColor: #333333;
-@NavButtonTextColor: #AAAAAA;
-
-@FooterTextColor: #AAAAAA;
-
-
-html, body, #PageContainer { height: 100%; }
-body > #PageContainer { height: auto; min-height: 100%; }
-
-body {
-    background-color: @BackgroundColor;
-}
-
-// This adds to container style provided by Twitter bootstrap
-.container {
-padding-top:50px;
-min-height:500px;
-}
-
-// Centers a block: should have a set width for this to work
-.BlockCenter(@width: 500px) {
-    width: @width;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-// Centers text (inline-flow)
-.TextCenter
+body 
 {
-    text-align:center;
+    /*background-color: @backgroundColor;*/
+    background-image: @backgroundImage;
 }
 
-.BoxShadow() {
-    -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    0px 2px 5px rgba(50, 50, 50, 0.75);
-    box-shadow:         0px 2px 5px rgba(50, 50, 50, 0.75);
+
+/*
+	Utility Styles
+*/
+.hidden 
+{
+    display:none;
 }
 
-.RoundBorder(@radius: 3px) {
-    -moz-border-radius: @radius;
-    border-radius: @radius;
+.centered
+{
+    margin:0 auto;
 }
-
-.LogoTitle {
-    color: @LogoColor;
-    font-size: 20px;
-    line-height: 1.2;
-}
-
-#NavBar {
-    position:fixed;
-    width:100%;
-    height:40px;
-    background-color: @NavBarColor;
-    z-index: 100;
-}
-
-#NavHome {
-    color: @LogoColor;
-    text-decoration:none;
-}
-#NavHome:hover {
-    color: @LogoColor;
-    text-decoration:underline;
-}
-.NavButton {
-    display:inline-block;
-    font-size:15px;
-    line-height:1.2;
-    color: @NavButtonTextColor;
-    padding: 10px 10px;
-}
-.NavButton:hover {
-    color: @NavButtonTextColor;
-    text-decoration: underline;
-    background-color: lighten(@NavBarColor, 8%);
-}
-#AddItemButton {
-    display:inline-block;
-    font-size:15px;
-    line-height:1.2;
-    color: @NavButtonTextColor;
-    padding: 10px 10px;
-    background-color: lighten(@NavBarColor, 8%);
-}
-#AddItemButton:hover {
-    color: @NavButtonTextColor;
-    text-decoration: underline;
-    background-color: lighten(@NavBarColor, 12%);
-    cursor: pointer;
-}
-
-#Footer{
-    margin-top: -25px;
-    font-size: 12px;
-    line-height: 1.2;
-    text-align: center;
-    color: @FooterTextColor;
-    padding: 5px;
-}
-
-// $eof

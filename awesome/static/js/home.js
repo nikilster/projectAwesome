@@ -5,6 +5,20 @@
  ******************************************************************************/
 
 /******************************************************************************
+* DOM Element Constants
+*******************************************************************************/
+var CONTENT_DIV = "#content";  //Main container for the visions
+var UNSAVED_VISION_BOARD_DIV = "#unsavedVisionBoard";
+var LOADING_INDICATOR_DIV = "#loadingIndicator";
+
+var VISION_CLASS = "vision";
+var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
+var CURSOR_CLASS_MOVE = "moveCursor";
+var VISION_SELECTED_CLASS = "visionSelected";
+
+var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".addVisionNotAuthenticated";
+var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".removeVisionNotAuthenticated";
+/******************************************************************************
  * Utility functions
  */
 function abort() {
@@ -316,7 +330,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
 
 App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "li",
-    className: "MasonryItem  MasonryBox",
+    className: VISION_CLASS,
     initialize: function() {
         _.bindAll(this, "itemSelect",
                         "mouseEnter", "mouseLeave",
@@ -326,60 +340,66 @@ App.Backbone.View.Vision = Backbone.View.extend({
         this.render();
     },
     events: {
-        "click .MasonryItemInner" : "itemSelect",
-        "mouseenter .MasonryItemInner" : "mouseEnter",
-        "mouseleave .MasonryItemInner" : "mouseLeave",
+        "click" : "itemSelect",
+        "mouseenter" : "mouseEnter",
+        "mouseleave" : "mouseLeave",
         "click .VisionToolbarRepost"   : "repostVision",
         "click .VisionToolbarRemove"   : "removeVision",
     },
     render: function() {
         var pageMode = App.Var.Model.pageMode();
 
-        var selectedClass = "MasonryItemUnselected";
-        var removeOverlayDisplay = "none";
+        var selected = false;
+        //For the not authenticated
+        var removeButtonVisibility = "hidden";
         if (pageMode == App.Const.PageMode.HOME_GUEST &&
             this.model.isSelected()) {
-            selectedClass = "MasonryItemSelected";
-            removeOverlayDisplay = "block";
+            selected = true;
+            //Show
+            removeButtonVisibility = "";
         }
-        var pictureDisplay = "none";
         var pictureUrl = "";
         if (null != this.model.picture()) {
-            pictureDisplay = "block";
             pictureUrl = this.model.picture().mediumUrl();
         }
-        var cursorClass = "";
+
+        //Default Pointer
+        var cursorStyleMove = false;
         var moveDisplay = "none";
         var removeDisplay = "none";
         var repostDisplay = "none";
         var mineDisplay = "none";
         if (pageMode == App.Const.PageMode.TEST_VISION) {
-            cursorClass = "MasonryItemMoveCursor";
+            cursorStyleMove = false;
             removeDisplay = "inline-block";
         } else if (pageMode == App.Const.PageMode.HOME_GUEST) {
-            cursorClass = "MasonryItemPointerCursor";
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
             if (App.Var.Model.inVisionList(this.model.visionId())) {
                 mineDisplay = "inline-block";
-                selectedClass = "MasonryItemSelected";
+                selected = true;
             } else {
                 repostDisplay = "inline-block";
             }
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            cursorClass = "MasonryItemPointerCursor";
             moveDisplay = "inline-block";
         }
 
-        var variables = {text : this.model.text(),
-                         selected: selectedClass,
-                         pictureDisplay: pictureDisplay,
+        //Clean for html (using it in the alt=" attribute of the image so don't want '' or "")
+        var text = _.escape(this.model.text());
+
+        //Selected
+        if(selected) $(this.el).addClass(VISION_SELECTED_CLASS);
+
+        //Cursor
+        //TODO: Figure out how to design move
+
+        var variables = {text : text,
                          pictureUrl: pictureUrl,
-                         cursorClass: cursorClass,
                          moveDisplay: moveDisplay,
                          removeDisplay: removeDisplay,
                          repostDisplay: repostDisplay,
                          mineDisplay: mineDisplay,
-                         removeOverlayDisplay: removeOverlayDisplay,
+                         removeButtonVisibility: removeButtonVisibility,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -405,20 +425,20 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
             if (!this.model.isSelected()) {
-                $(this.el).find(".AddVisionOverlay").show();
+                $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).show();
             } else {
                 //$(this.el).find(".RemoveVisionOverlay").show();
             }
         } else if (pageMode == App.Const.PageMode.TEST_VISION ||
                    pageMode == App.Const.PageMode.HOME_USER ||
                    pageMode == App.Const.PageMode.USER_PROFILE) {
-            $(this.el).find(".VisionToolbarConditional").show();
+            $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).show();
         }
     },
     mouseLeave: function() {
         var pageMode = App.Var.Model.pageMode();
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST) {
-            $(this.el).find(".AddVisionOverlay").hide();
+            $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).hide();
             //$(this.el).find(".RemoveVisionOverlay").hide();
         } else if (pageMode == App.Const.PageMode.TEST_VISION ||
                    pageMode == App.Const.PageMode.HOME_USER ||
@@ -601,7 +621,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     renderVisionList: function() {
         console.log("RENDER VISION LIST");
-        var masonryContainer = $("#MasonryContainer").first();
+        var masonryContainer = $(CONTENT_DIV).first();
 
         masonryContainer.empty();
         this.children = []
@@ -612,14 +632,14 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         // TODO: Don't need to reload once we know heights of images
         masonryContainer.masonry({
-            itemSelector: "li.MasonryItem",
-            columnWidth:299
+            itemSelector: VISION_CLASS_SELECTOR,
+            isFitWidth: true,
         }).imagesLoaded(function() {
-            $("#MasonryContainer").masonry('reload');
+            $(CONTENT_DIV).masonry('reload');
         });
         if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE) {
             masonryContainer.sortable({
-                items: "li.MasonryItem",
+                items: VISION_CLASS_SELECTOR,
                 handle: ".VisionToolbarMove",
                 distance: 12,
                 forcePlaceholderSize: true,
@@ -636,13 +656,13 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     sortStart: function(event, ui) {
         console.log("Sort");
-        ui.item.removeClass("MasonryItem");
+        ui.item.removeClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
 
         this.srcIndex = ui.item.index();
     },
     sortStop: function(event, ui) {
-        ui.item.addClass("MasonryItem");
+        ui.item.addClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
         this.destIndex = ui.item.index();
         if (this.destIndex != this.srcIndex && this.srcIndex >= 0) {
@@ -670,7 +690,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render test vision board
      */
     renderSelectedVisions: function() {
-        var masonryContainer = $("#TestVisionContainer").first();
+        var masonryContainer = $(UNSAVED_VISION_BOARD_DIV).first();
 
         masonryContainer.empty();
         this.testVisions = []
@@ -684,7 +704,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             itemSelector: "li.MasonryItem",
             columnWidth:299
         }).imagesLoaded(function() {
-            $("#TestVisionContainer").masonry('reload');
+            $(UNSAVED_VISION_BOARD_DIV).masonry('reload');
         });
         masonryContainer.sortable({
             items: "li.MasonryItem",
@@ -724,15 +744,15 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Show/hide notice of page loading
      */
     showPageLoading: function() {
-        var masonryContainer = $("#MasonryContainer").first();
+        var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
         var variables = {};
         var template = _.template($("#PageLoadingTemplate").html(), variables);
-        $("#PageLoadingNotice").html(template).show();
+        $(LOADING_INDICATOR_DIV).html(template).show();
     },
     hidePageLoading: function() {
-        $("#PageLoadingNotice").hide();
+        $(LOADING_INDICATOR_DIV).hide();
     },
 
     /*
@@ -797,8 +817,8 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showHome: function() {
         this.showPageLoading();
-        $("#TestVisionContainer").empty().hide();
-        $("#MasonryContainer").show();
+        $(UNSAVED_VISION_BOARD_DIV).empty().hide();
+        $(CONTENT_DIV).show();
 
         var ajaxUrl = "/api/get_main_page_visions";
 
@@ -834,21 +854,21 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.setOtherVisions(App.Var.JSON.otherVisions);
     },
     renderHomeError: function() {
-        var masonryContainer = $("#MasonryContainer").first();
+        var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
         var variables = {};
         var template = _.template($("#HomePageLoadErrorTemplate").html(),
                                   variables);
-        $("#PageLoadingNotice").html(template).show();
+        $(LOADING_INDICATOR_DIV).html(template).show();
     },
 
     /*
      * Show test vision
      */
     showTestVision: function() {
-        $("#MasonryContainer").hide();
-        $("#TestVisionContainer").empty().show();
+        $(CONTENT_DIV).hide();
+        $(UNSAVED_VISION_BOARD_DIV).empty().show();
         this.renderSelectedVisions();
     },
 
@@ -857,8 +877,8 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showProfile: function() {
         this.showPageLoading();
-        $("#TestVisionContainer").empty().hide();
-        $("#MasonryContainer").show();
+        $(UNSAVED_VISION_BOARD_DIV).empty().hide();
+        $(CONTENT_DIV).show();
 
         var ajaxUrl = "/api/get_user_visions";
 
@@ -888,13 +908,13 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.setVisionList(App.Var.JSON.visionList);
     },
     renderProfileError: function() {
-        var masonryContainer = $("#MasonryContainer").first();
+        var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
         var variables = {};
         var template = _.template($("#ProfileLoadErrorTemplate").html(),
                                   variables);
-        $("#PageLoadingNotice").html(template).show();
+        $(LOADING_INDICATOR_DIV).html(template).show();
     },
 });
 

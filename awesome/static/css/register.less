@@ -6,6 +6,18 @@
 
 @import "base";
 
+// Centers a block: should have a set width for this to work
+.BlockCenter(@width: 500px) {
+    width: @width;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.RoundBorder(@radius: 3px) {
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
 .ErrorNotice {
     color: red;
     background-color: rgba(255,204,204,.9);

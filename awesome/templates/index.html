@@ -1,39 +1,36 @@
 {% extends "base.html" %}
 
-{# ------------------------------------------------------------------------- #}
-{% block subtitle %}
-Home
-{% endblock %}
 
-{# ------------------------------------------------------------------------- #}
+{# -----------Subtitle----------- #}
+{% block subtitle %}Home{% endblock %}
+
+
+{# -----------CSS----------- #}
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}"/>
 {% endblock %}
 
-{# ------------------------------------------------------------------------- #}
-{% block header_js %}
 
+{# -----------JS----------- #}
+{% block header_js %}
 <script>
-{% if user != None %}
-var USER = { id: '{{ user['id'] }}',
-             firstName: '{{ user['firstName'] }}',
-             lastName: '{{ user['lastName'] }}',
-           }
-{% else %}
-var USER = null;
-{% endif %}
+    {% if user != None %}
+        var USER = { id: '{{ user['id'] }}',
+                     firstName: '{{ user['firstName'] }}',
+                     lastName: '{{ user['lastName'] }}',
+                   }
+    {% else %}
+        var USER = null;
+    {% endif %}
 </script>
 {% endblock %}
 
-{# ------------------------------------------------------------------------- #}
+{# ----------- Extra Navigation ----------- #}
 {% block nav_extra %}
-        <div id="InfoContainer"
-             style="position: absolute; top:100%; left: 50%;
-                    width: 520px; margin-left:-260px; height:40px; 
-                    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
-                    border-bottom: 1px #E391B2 solid;
-                    border-left: 1px #E391B2 solid;
-                    border-right: 1px #E391B2 solid;">
+
+        <!-- Box for first time user explanation -->
+        <div id="InfoContainer">
+
             <div style="font-size:16px; line-height:1.4; font-weight:bold;">
                 Create and share your personal vision board
             </div>
@@ -53,19 +50,14 @@ var USER = null;
                     <button id="RegisterButton" type="submit"
                     class="btn btn-success">Register</button>
                 </form>
-                <button id="ViewBoardButton" class="btn btn-info"
-                        style="display:none;">View board</button>
+                <button id="ViewBoardButton" class="btn btn-info hidden">View board</button>
                 <a href="{{ url_for('login') }}"
                    class="btn btn-primary" style="margin-left:5px;">Login</a>
             </div>
         </div>
-        <div id="TestVisionInfoContainer"
-             style="position: absolute; top:100%; left: 50%;
-                    width: 520px; margin-left:-260px; height:40px; 
-                    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
-                    border-bottom: 1px #E391B2 solid;
-                    border-left: 1px #E391B2 solid;
-                    border-right: 1px #E391B2 solid; display:none;">
+
+        <!-- Box for first time user explanation on their vision board -->
+        <div id="TestVisionInfoContainer">
             <div style="font-size:16px; line-height:1.4; font-weight:bold;">
                 Here's your own personal vision board!
             </div>
@@ -86,26 +78,30 @@ var USER = null;
         </div>
 
         <!-- Save/Progress/Error notifications -->
-        <div id="UserFeedbackSaving" style="display:none;">
+        <div id="UserFeedbackSaving" class="hidden">
             Saving...
         </div>
-        <div id="UserFeedbackSaved" style="display:none;">
+        <div id="UserFeedbackSaved" class="hidden">
             Saved
         </div>
-        <div id="UserFeedbackError" style="display:none;">
+        <div id="UserFeedbackError" class="hidden">
             ERROR: Couldn't save.  You may want to re-load and try again.
         </div>
 {% endblock %}
 
-{# ------------------------------------------------------------------------- #}
-{% block content %}
-    <div id="InfoContainerPadding"></div>
-    <div id="ContentContainer">
-        <div id="PageLoadingNotice" style="display:none;"></div>
-        <div id="MasonryContainer"></div>
-        <div id="TestVisionContainer"></div>
-    </div>
 
+
+{# -----------Main Container----------- #}
+{% block content %}
+
+
+    <!-- Main Content -->
+    <div id="loadingIndicator" class="hidden"></div>
+    <div id="content" class="centered"></div>
+    <div id="unsavedVisionBoard"></div>
+
+
+    <!-- Modal for vision details -->
     <div id="VisionDetailsModal" class="modal hide fade">
         <div class="modal-header" style="font-size:18pt">
             Vision details
@@ -120,6 +116,7 @@ var USER = null;
         </div>
     </div>
 
+    <!-- Modal for Add Vision -->
     <div id="AddVisionModal" class="modal hide fade">
         <div class="modal-header" style="font-size:18pt">
             New Vision
@@ -188,7 +185,8 @@ var USER = null;
 
 {% endblock %}
 
-{# ------------------------------------------------------------------------- #}
+
+{# ------------JS------------ #}
 {% block js %}
 
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-1.7.2.js') }}"></script>
@@ -201,7 +199,7 @@ var USER = null;
 <script type="text/javascript" src="{{ url_for('static', filename='opt/date.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
-
+    
 <script type="text/template" id="PageLoadingTemplate">
 <div style="text-align:center;">
     Loading...
@@ -220,53 +218,61 @@ var USER = null;
 </div>
 </script>
 
+<!-- HTML dynamically generated for a vision -->
 <script type="text/template" id="VisionTemplate">
-<div class="MasonryItemInner <%= selected %> <%= cursorClass %>">
-    <div class="VisionToolbar">
-        <div class="VisionToolbarButton"
-            style="display: <%= mineDisplay %>;">
-            On my vision board
-        </div>
-        <div class="VisionToolbarConditional" style="display:none;">
-            <div class="VisionToolbarButton VisionToolbarRepost"
-                style="display: <%= repostDisplay %>">
-                Copy vision
-            </div>
-            <div class="VisionToolbarButton VisionToolbarMove"
-                style="display: <%= moveDisplay %>">
-                <i class="icon-move"/>
-            </div>
-            <div class="VisionToolbarButton VisionToolbarRemove"
-                style="display: <%= removeDisplay %>">
-                <i class="icon-remove"/>
-            </div>
-        </div>
-    </div>
-    <div style="display: <%= pictureDisplay %>; position: relative;">
-        <img src="<%= pictureUrl %>" width="285"/>
-        <div style="position:absolute; bottom:0px; left:0px; width:100%;
-                    display:none;
-                    color: white; background-color: rgba(0,0,0,.4);">
-            <div style="padding:3px;">
-            <%= text %>
-            </div>
-        </div>
-    </div>
-    <div style="padding:3px;">
-        <%= text %>
+
+<!--//A Vision -->
+
+<!-- //Vision Content-->     
+<!-- //Image -->
+<img src="<%= pictureUrl %>" alt="<%= text %>"/>
+
+<!-- //Description -->
+<div class="text">
+    <%= text %>
+</div>
+
+
+<!-- //Overlay -->
+<div class="VisionToolbar">
+
+    <!--//Always shown: Already posted to your vision board -->
+    <div class="VisionToolbarButton"
+        style="display: <%= mineDisplay %>;">
+        On my vision board
     </div>
 
-    <div class="AddVisionOverlay VisionOverlay">
-        <div class="AddVisionOverlayText">
-            Add to my<br>Vision Board
+    <!-- // On Mouse over - Overlay -->
+    <div class="VisionToolbarConditional" class="hidden">
+        
+        <!-- //Repost Vision -->
+        <div class="VisionToolbarButton VisionToolbarRepost"
+            style="display: <%= repostDisplay %>">
+            Copy vision
+        </div>
+
+        <!-- //Move Vision -->
+        <div class="VisionToolbarButton VisionToolbarMove"
+            style="display: <%= moveDisplay %>">
+            <i class="icon-move"/>
+        </div>
+
+        <!-- //Remove Vision -->
+        <div class="VisionToolbarButton VisionToolbarRemove"
+            style="display: <%= removeDisplay %>">
+            <i class="icon-remove"/>
         </div>
     </div>
-    <div class="RemoveVisionOverlay VisionOverlay"
-         style="display: <%= removeOverlayDisplay %>">
-        <div class="RemoveVisionOverlayText">
-            <b>Added</b><br>Click to remove
-        </div>
-    </div>
+</div>
+
+<!-- //Add Vision (Not Logged In) -->
+<div class="addVisionNotAuthenticated hidden">
+    <button class="btn btn-success">Add to my Vision Board</button>
+</div>
+
+<!-- //Remove Vision (Not Logged In) -->
+<div class="removeVisionNotAuthenticated <%= removeButtonVisibility%>">
+    <button class="btn btn-inverse">Remove from my Vision Board</button>
 </div>
 </script>
 

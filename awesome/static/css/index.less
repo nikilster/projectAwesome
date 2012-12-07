@@ -1,10 +1,107 @@
-//
-// index.less
-//
-// Main css page
-//
+/*
+    index.less
+
+    Main Page
+*/
 
 @import "base";
+
+/*
+    The Styles!
+*/
+
+//Vision Styles
+@VISION_WIDTH: 360px;
+@VISION_MARGIN: 6px;
+@VISION_PADDING: 10px;
+@VISION_BACKGROUND: #FEFFEF;
+@VISION_BACKGROUND_IMAGE: url('../img/patterns/pink_small.png');
+
+@PICTURE_WIDTH: 100%;
+
+@TEXT_BACKGROUND: white;
+@TEXT_PADDING: 0px;
+
+//On Hover
+@ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
+
+.moveCursor
+{
+    cursor: move;
+}
+
+.vision
+{
+
+    width:@VISION_WIDTH;
+    margin:@VISION_MARGIN;
+    padding:@VISION_PADDING;
+
+    background-color:@VISION_BACKGROUND;
+    //background-image: @VISION_BACKGROUND_IMAGE;
+
+    //font-family: 'Marker Felt', sans-serif;
+
+    //To Do: Change this to a div
+    list-style-type: none;
+
+    //Shadow and Border
+    -webkit-transition: -webkit-transform .15s linear;
+    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.25);
+    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.25);
+
+    //The Picture
+    img 
+    {
+        //TODO: Change this to a fixed width for the picture
+        //Once we decide
+        width:@PICTURE_WIDTH;
+    }
+
+    //The Text
+    .text
+    {
+        background-color:@TEXT_BACKGROUND;
+        padding:@TEXT_PADDING;
+    }
+
+}
+
+/*
+    On Hover of Vision
+*/
+
+//Not logged in - "Add to your vision board"
+.addVisionNotAuthenticated, .removeVisionNotAuthenticated
+{
+    position:absolute;
+    top:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
+    right:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
+}
+
+.visionSelected 
+{
+    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.5);
+    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.5);
+}
+
+//Logged in
+
+/*
+    Delete
+*/
+
+.RoundBorder(@radius: 3px) {
+    -moz-border-radius: @radius;
+    border-radius: @radius;
+}
+
+.BoxShadow() {
+    -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 2px 5px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 2px 5px rgba(50, 50, 50, 0.75);
+}
+
 
 @VisionBackgroundColor: #FFFFFF;
 @VisionToolbarColor: #000000;
@@ -27,6 +124,17 @@
 
 #InfoContainerPadding {
     height:50px;
+
+}
+
+#InfoContainer
+{
+    position: absolute; top:100%; left: 50%;
+    width: 520px; margin-left:-260px; height:40px; 
+    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
+    border-bottom: 1px #E391B2 solid;
+    border-left: 1px #E391B2 solid;
+    border-right: 1px #E391B2 solid;
 }
 
 #ContentContainer {
@@ -34,7 +142,7 @@
     padding:0px 21px 21px 21px;
 }
 
-#MasonryContainer, #TestVisionContainer {
+#content, #TestVisionContainer {
     overflow: hidden;
 
     // This is added and removed when we move the vision w/ jquery ui sortable
@@ -58,7 +166,7 @@
         border: 1px solid #DDDDDD;
     }
     .MasonryItemSelected {
-        border: 1px solid @LogoColor;
+        border: 1px solid red;
     }
     .MasonryItemPointerCursor {
         cursor: pointer;
@@ -137,6 +245,17 @@
         }
     }
 }
+
+#TestVisionInfoContainer
+{
+    position: absolute; top:100%; left: 50%;
+    width: 520px; margin-left:-260px; height:40px; 
+    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
+    border-bottom: 1px #E391B2 solid;
+    border-left: 1px #E391B2 solid;
+    border-right: 1px #E391B2 solid; display:none;
+}
+
 
 // This button is in the edit vision modal
 #VisionDeleteButton {
