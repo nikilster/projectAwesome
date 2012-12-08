@@ -4,7 +4,7 @@
 {# -----------Subtitle----------- #}
 {% block subtitle %}Home{% endblock %}
 
-
+  
 {# -----------CSS----------- #}
 {% block css %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}"/>
@@ -13,14 +13,17 @@
 
 {# -----------JS----------- #}
 {% block header_js %}
-<script>
+<script type="text/javascript">
     {% if user != None %}
         var USER = { id: '{{ user['id'] }}',
                      firstName: '{{ user['firstName'] }}',
                      lastName: '{{ user['lastName'] }}',
                    }
     {% else %}
-        var USER = null;
+       var USER = { id: -1,
+             firstName: "Invalid",
+             lastName: "Name",
+           }
     {% endif %}
 </script>
 {% endblock %}
@@ -28,71 +31,33 @@
 {# ----------- Extra Navigation ----------- #}
 {% block nav_extra %}
 
-    <div class="hidden">
+    <!-- Onboarding -->
+    <div class="well" id="instructions">
+      Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds!
       <div>
-        Create your own vision board.
-        Get started by clicking 3 pictures!
+        <span id="selectedZero">Get started by choosing (clicking on) 3 pictures!</span>
+        <span id="selectedOne" class="hidden">Good Job! Chose 2 more pictures!</span>
+        <span id="selectedTwo" class="hidden">Nice! Now chose one more!</span>
+        <span id="selectedThree" class="hidden">Awesome! You did it!
+          <br/>
+          <button id="viewExampleVisionBoardButton" class="btn btn-primary">See Your Vision Board</button>
+        </span>
       </div>
     </div>
-        <!-- Box for first time user explanation -->
-        <div id="InfoContainer">
 
-            <div style="font-size:16px; line-height:1.4; font-weight:bold;">
-                Create and share your personal vision board
-            </div>
-            <div style="font-size:13px; line-height:1.4; color:#555555;">
-            &nbsp; >> Get started by selecting up to 10 items... 
-            <span id="SelectedVisionCountContainer"
-                  style="display:none; color:black;">
-                (<span id="SelectedVisionCount">0</span>/10)
-            </span>
-            </div>
-            <div style="position: absolute; top: 0px; right: 0px; padding:10px;">
-                <form id="RegisterForm"
-                      action="{{ url_for("register") }}" method="POST"
-                      style="display: inline-block">
-                    <input id="UserSelectedVisions" type="hidden"
-                           name="selectedVisions" value=""/>
-                    <button id="RegisterButton" type="submit"
-                    class="btn btn-success">Register</button>
-                </form>
-                <button id="ViewBoardButton" class="btn btn-info hidden">View board</button>
-                <a href="{{ url_for('login') }}"
-                   class="btn btn-primary" style="margin-left:5px;">Login</a>
-            </div>
-        </div>
+    <!-- Pass the selected visions to register -->
+    <form id="registerForm" class="hidden" action="{{ url_for("register") }}" method="POST">
+      <input id="userSelectedVisions" type="hidden" name="selectedVisions" value=""/>
+    </form>
 
-        <!-- Box for first time user explanation on their vision board -->
-        <div id="TestVisionInfoContainer">
-            <div style="font-size:16px; line-height:1.4; font-weight:bold;">
-                Here's your own personal vision board!
-            </div>
-            <div style="font-size:13px; line-height:1.4; color:#555555;">
-            &nbsp; >> Join and start with this vision board...
-            <span id="SelectedVisionCountContainer"
-                  style="display:none; color:black;">
-                (<span id="SelectedVisionCount">0</span>/10)
-            </span>
-            </div>
-            <div style="position: absolute; top: 0px; right: 0px; padding:10px;">
-                <button id="BackToMainPageButton" class="btn">
-                    << Back
-                </button>
-                <span id="JoinSiteButton" class="btn btn-danger"
-                   style="margin-left:5px;">Join site!</span>
-            </div>
-        </div>
+    <div id="exampleVisionBoardInstructions" class="well hidden">
+      Congrats!  Here is your own <a href="{{ url_for('about') }}">Vision Board!</a>
+      <br/>
+      Click register to save your Vision Board and add more stuff to it.
+      <br/>
+      <button id="joinSite" class="btn btn-primary">Register</a>  
+    </div>
 
-        <!-- Save/Progress/Error notifications -->
-        <div id="UserFeedbackSaving" class="hidden">
-            Saving...
-        </div>
-        <div id="UserFeedbackSaved" class="hidden">
-            Saved
-        </div>
-        <div id="UserFeedbackError" class="hidden">
-            ERROR: Couldn't save.  You may want to re-load and try again.
-        </div>
 {% endblock %}
 
 
@@ -100,11 +65,10 @@
 {# -----------Main Container----------- #}
 {% block content %}
 
-
     <!-- Main Content -->
     <div id="loadingIndicator" class="hidden"></div>
-    <div id="content" class="centered"></div>
-    <div id="unsavedVisionBoard"></div>
+    <div id="content" class="center"></div>
+    <div id="exampleVisionBoard"></div>
 
 
     <!-- Modal for vision details -->
@@ -238,6 +202,17 @@
     <%= text %>
 </div>
 
+<div class="VisionUserBlock"
+         style="display: <%= nameDisplay %>;">
+        Shared by
+        <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
+    </div>
+    <div class="VisionCommentContainer"></div>
+    <div class="AddVisionComment">
+        <input class="AddVisionCommentInput" type="text"
+               placeholder="Write comment"
+               style="width:250px; margin-top:5px;"></input>
+</div>
 
 <!-- //Overlay -->
 <div class="VisionToolbar">
@@ -278,9 +253,15 @@
 
 <!-- //Remove Vision (Not Logged In) -->
 <div class="removeVisionNotAuthenticated <%= removeButtonVisibility%>">
-    <button class="btn btn-inverse">Remove from my Vision Board</button>
+    <button class="btn btn-inverse">Remove</button>
 </div>
 </script>
+
+<!-- Vision Comments -->
+<script type="text/template" id="VisionCommentTemplate">
+    <%= text %>
+</script>
+
 
 {% endblock %}
 

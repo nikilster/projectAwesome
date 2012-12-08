@@ -15,11 +15,16 @@
 @VISION_MARGIN: 6px;
 @VISION_PADDING: 10px;
 @VISION_BACKGROUND: #FAFAFA;
-
 @PICTURE_WIDTH: 100%;
-
 @TEXT_BACKGROUND: white;
 @TEXT_PADDING: 0px;
+
+//Instructions
+@INSTRUCTIONS_WIDTH: 600px;
+@INSTRUCTIONS_MARGIN_BOTTOM: 10px;
+@TEXT_COLOR: #666;
+@TEXT_SIZE: 18px;
+@BUTTON_MARGIN_TOP: 12px;
 
 //On Hover
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
@@ -27,6 +32,20 @@
 .moveCursor
 {
     cursor: move;
+}
+
+.lightShadow
+{
+     //Shadow and Border
+    -webkit-transition: -webkit-transform .15s linear;
+    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.25);
+    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.25);
+}
+
+.darkShadow
+{
+    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.5);
+    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.5);
 }
 
 .vision
@@ -43,10 +62,7 @@
     //To Do: Change this to a div
     list-style-type: none;
 
-    //Shadow and Border
-    -webkit-transition: -webkit-transform .15s linear;
-    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.25);
-    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.25);
+    .lightShadow;
 
     //The Picture
     img 
@@ -65,6 +81,37 @@
 
 }
 
+/* Selected Vision */
+.visionSelected 
+{
+   .darkShadow;
+}
+
+
+/*
+    Instructions
+    Both (H + Example)
+*/
+
+#instructions, #exampleVisionBoardInstructions
+{
+    width:@INSTRUCTIONS_WIDTH;
+    margin:auto;
+    margin-bottom:@INSTRUCTIONS_MARGIN_BOTTOM;
+
+    text-align: center;
+    color:@TEXT_COLOR;
+    font-size:@TEXT_SIZE; 
+
+    //Shadow
+    .lightShadow;
+
+    button
+    {
+        margin-top:@BUTTON_MARGIN_TOP;
+    }
+}
+
 /*
     On Hover of Vision
 */
@@ -77,13 +124,20 @@
     right:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
 }
 
-.visionSelected 
-{
-    -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.5);
-    -moz-box-shadow: 0 3px 6px rgba(0,0,0,.5);
-}
+
 
 //Logged in
+
+
+
+
+
+
+
+
+
+
+
 
 /*
     Delete
@@ -217,6 +271,24 @@
         color: green;
         .RoundBorder(5px);
         .BoxShadow();
+    }
+    .VisionUserBlock {
+        position:relative;
+        padding:3px;
+        font-size:12px;
+        color:gray;
+        z-index:10;
+    }
+    .VisionUserName {
+        font-weight: bold;
+    }
+
+    .VisionComment {
+        font-size:12px;
+        line-height:1.2;
+        padding: 5px; 
+        background-color: #FAFAFA;
+        margin: 1px;
     }
 
     .VisionToolbar {

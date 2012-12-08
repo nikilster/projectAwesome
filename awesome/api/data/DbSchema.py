@@ -14,6 +14,8 @@ class UserPrivacy:
 class VisionPrivacy:
     PRIVATE = 0
     SHAREABLE = 1
+    PUBLIC = 2
+    INVALID = 3
 
 #
 # UserModel
@@ -67,9 +69,9 @@ class VisionListModel(DB.Model):
         return '<VisionList %s>' % str(self.id)
 
     # Use these to set and get from the JSON list
-    def getVisionList(self):
+    def getVisionIdList(self):
         return json.loads(self.visionJson)
-    def setVisionList(self, visionList):
+    def setVisionIdList(self, visionList):
         self.visionJson = json.dumps(visionList)
 
 
@@ -95,26 +97,34 @@ class VisionModel(DB.Model):
     # for future use
     privacy         = DB.Column(DB.Integer, default=VisionPrivacy.SHAREABLE)
 
-    def __init__(self, userId, text, pictureId, parentId, rootId):
+    def __init__(self, userId, text, pictureId,
+                 parentId, rootId,
+                 privacy):
+        assert privacy >= 0 and privacy < VisionPrivacy.INVALID, "Invalid vision privacy value"
         self.userId = userId
         self.text = text
         self.pictureId = pictureId
         self.parentId = parentId
         self.rootId = rootId
+        self.privacy = privacy
     def __str__(self):
         return '<Vision %s>' % str(self.id)
 
     def toDictionary(self):
+        '''
         picture = {}
         if self.pictureId > 0:
             # TODO: This is slow but lets worry about it later
             model = PictureModel.query.filter_by(id=self.pictureId).first()
             if model != None:
                 picture = model.toDictionary()
-
+        '''
         return {'id' : self.id,
+                'userId' : self.userId,
                 'text' : self.text,
-                'picture' : picture
+                'parentId' : self.parentId,
+                'rootId' : self.rootId,
+                #'picture' : picture,
                }
 
 #
@@ -153,6 +163,8 @@ class PictureModel(DB.Model):
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                              onupdate=datetime.datetime.utcnow)
+    removed         = DB.Column(DB.Boolean, default=False)
+
     @hybrid_property
     def largeUrl(self):
         return S3_HTTPS_HEADER + self.s3Bucket + "/" + self.largeKey
@@ -196,4 +208,53 @@ class PictureModel(DB.Model):
                  'mediumUrl' : self.mediumUrl,
                  'smallUrl' : self.smallUrl,
                }
+
+#
+# VisionComment
+#
+class VisionCommentModel(DB.Model):
+    __tablename__   = 'vision_comment'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    visionId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    authorId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
+
+    text            = DB.Column(DB.Text)
+
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
+                                             onupdate=datetime.datetime.utcnow)
+    removed         = DB.Column(DB.Boolean, default=False)
+
+    def __init__(self, visionId, authorId, text):
+        self.visionId = visionId
+        self.authorId = authorId
+        self.text = text
+    def __str__(self):
+        return '<VisionComment %s>' % (str(self.id))
+
+    def toDictionary(self):
+        return { 'id' : self.id,
+                 'authorId' : self.authorId,
+                 'text' : self.text,
+               }
+
+#
+# FriendModel: Represents a one-way share of information
+#
+class FriendModel(DB.Model):
+    __tablename__   = 'friend'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    friendId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
+
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
+                                             onupdate=datetime.datetime.utcnow)
+
+    def __init__(self, userId, friendId):
+        self.userId = userId
+        self.friendId = friendId
+    def __str__(self):
+        return '<Friend %s:%s>' % (str(self.userId), str(self.friendId))
+
 # $eof

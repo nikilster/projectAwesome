@@ -1,6 +1,11 @@
 import re
+from types import IntType
 
 class Verifier:
+  @staticmethod
+  def userIdValid(userId):
+    return userId > 0
+
   # TODO: be more strict about this later
   @staticmethod
   def nameValid(name):

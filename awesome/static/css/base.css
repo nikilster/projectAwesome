@@ -4,9 +4,16 @@
     Base file for styles
 */
 body {
-  /*background-color: @backgroundColor;*/
+  /*background-color: @BACKGROUND_COLOR;*/
 
   background-image: url('../img/patterns/creampaper.png');
+}
+footer {
+  width: 100%;
+  height: 40px;
+  margin-top: 15px;
+  color: #999999;
+  text-align: center;
 }
 .brand {
   position: absolute;
@@ -21,6 +28,6 @@ body {
 .hidden {
   display: none;
 }
-.centered {
+.center {
   margin: 0 auto;
 }

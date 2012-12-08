@@ -18,6 +18,17 @@ from ..Constant import Constant
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision
 
+# TMP STUFF
+from data.DbSchema import VisionPrivacy
+# for now randomly generated privacy
+# TODO: actually get from front-end later
+import random
+def getPrivacy():
+    if random.randint(0,1) == 0:
+        return VisionPrivacy.SHAREABLE
+    return VisionPrivacy.PUBLIC
+## /end TMP STUFF
+
 class Api:
     '''
         loginUser - verifies input, and returns user if exists
@@ -103,6 +114,17 @@ class Api:
             return (None, errorMsg)
 
     @staticmethod
+    def changeUserInfo(userId, firstName, lastName, email):
+        change = False
+        if Verifier.userIdValid(userId) and \
+           Verifier.nameValid(firstName) and \
+           Verifier.nameValid(lastName) and \
+           Verifier.emailValid(email):
+            change |= DataApi.setUserName(userId, firstName, lastName)
+            change |= DataApi.setUserEmail(userId, email)
+        return change
+
+    @staticmethod
     def repostVisionList(userId, visionIds):
         for visionId in reversed(visionIds):
             Logger.debug("REPOST: " + str(visionId) +  "USER: " + str(userId))
@@ -126,20 +148,58 @@ class Api:
     # Vision-related API
     #
     @staticmethod
-    def getMainPageVisionList():
-        data = DataApi.getMainPageVisions()
+    def _visionListToObjectList(visions):
         visionList = []
-        for vision in data:
-            visionList.append(vision.toDictionary())
+
+        pictureIds = set([vision.pictureId for vision in visions])
+        pictureIds.discard(0)
+        pictures = DataApi.getPicturesFromIds(pictureIds)
+        idToPicture = dict([(picture.id, picture) for picture in pictures])
+        idToPicture[0] = ""
+
+        userIds = set([vision.userId for vision in visions])
+        users = DataApi.getUsersFromIds(userIds)
+        idToUser = dict([(user.id, user) for user in users])
+
+        visionIds = [vision.id for vision in visions]
+        Logger.debug("Vision Ids: " + str(visionIds))
+        comments = DataApi.getVisionCommentsFromVisionIds(visionIds)
+        Logger.debug("Comments: " + str(comments))
+        idToComments = {}
+        for comment in comments:
+            if not comment.visionId in idToComments.keys():
+                idToComments[comment.visionId] = [comment]
+            else:
+                idToComments[comment.visionId].append(comment)
+
+        for vision in visions:
+            obj = vision.toDictionary()
+            obj['name'] = idToUser[vision.userId].fullName
+            if vision.pictureId != 0:
+                obj['picture'] = idToPicture[vision.pictureId].toDictionary()
+            obj['comments'] = []
+            if vision.id in idToComments.keys():
+                obj['comments'] = [c.toDictionary() for c in idToComments[vision.id]]
+            visionList.append(obj)
         return visionList
 
     @staticmethod
-    def getUserVisionList(userId):
-        data = DataApi.getVisionsForUser(userId)
-        visionList = []
-        for vision in data:
-            visionList.append(vision.toDictionary())
-        return visionList
+    def getMainPageVisionList():
+        data = DataApi.getMainPageVisions()
+        return Api._visionListToObjectList(data)
+
+    # This returns all the objects and attributes necessary so it can easily
+    # be JSON-ized. This method obeys the privacy constraints and only passes
+    # back data that the user can see from the target user.
+    #
+    # Inputs:
+    #   userId: user id of the person asking for data (None if no user)
+    #   targetUserId: user id of the person who's data you want
+    #
+    @staticmethod
+    def getUserVisionList(userId, targetUserId):
+        data = DataApi.getVisionsForUser(userId, targetUserId)
+        return Api._visionListToObjectList(data)
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
@@ -168,7 +228,8 @@ class Api:
         isUploaded: True of user manually uploaded. False if from URL
     '''
     @staticmethod
-    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle, isUploaded):
+    def saveVision(userId, mediaUrl, text, pageUrl, pageTitle,
+                   isUploaded):
         #To Do Validate
         #TODO: Save page title
         filename = "name on server"
@@ -202,7 +263,9 @@ class Api:
 
         parentId = 0
         rootId = 0
-        visionId = DataApi.addVision(userId, text, pictureId, parentId, rootId)
+        # TODO: use real privacy later
+        visionId = DataApi.addVision(userId, text, pictureId,
+                                     parentId, rootId, getPrivacy())
 
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [Constant.INVALID_OBJECT_ID,"Error saving picture"]
@@ -212,5 +275,19 @@ class Api:
     @staticmethod
     def getVision(visionId):
         return DataApi.getVision(visionId)
+
+
+    #
+    # Vision Comment related API
+    #
+    # returns new comment model
+    #
+    @staticmethod
+    def addVisionComment(visionId, authorId, text):
+        text = text.strip()
+        if len(text) > 0:
+            return DataApi.addVisionComment(visionId, authorId, text)
+        else:
+            return DataApi.NO_OBJECT_EXISTS
 
 # $eof

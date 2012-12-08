@@ -33,24 +33,23 @@ Register
             <form action="{{ url_for('register_user') }}" method="POST"
                   class="form-horizontal">
                 <div class="control-group">
-                    <label class="control-label" for="firstName">
-                        Name
-                    </label>
                     <div class="controls">
                         <input id="FirstNameInput"
-                               class="RegisterField InputSmall"
-                               placeholder="First"
+                               class="RegisterField InputLarge"
+                               placeholder="First Name"
                                type="text" name="firstName"/>
-                        <input class="RegisterField InputSmall"
-                               style="margin-left:10px;"
-                               placeholder="Last"
-                               type="text" name="lastName"/>
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="email">
-                        Email
-                    </label>
+                    <div class="controls">
+                       <input class="RegisterField InputLarge"
+                               placeholder="Last Name"
+                               type="text" name="lastName"/>
+                    </div>
+                </div>
+                 
+
+                <div class="control-group">
                     <div class="controls">
                         <input class="RegisterField InputLarge"
                                placeholder="Email"
@@ -58,9 +57,6 @@ Register
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label" for="password">
-                        Password
-                    </label>
                     <div class="controls">
                         <input class="RegisterField InputLarge"
                                placeholder="Password"

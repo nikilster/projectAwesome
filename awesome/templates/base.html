@@ -18,6 +18,8 @@
     <div class="navbar navbar-static-top">
       <div class="navbar-inner">
         
+        <!-- TODO: make this an eimage so we can fix side -->
+        <!-- Side spacing -->
         <a class="brand" href="/">Project [AWESOME]</a>
         
         <ul class="nav pull-right">
@@ -28,7 +30,9 @@
           {######### User Is Logged In #########}
           {% if user and user != None %}
             <li><a href="#">Add Vision</a></li>
-            <li><a href="/profile">{{ user['firstName'] }}</a></li>
+            <li><a href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
+            <li><a href="{{ url_for('settings')}}">Settings</a></li>
+                </a>
             <li><a href="/logout">Logout</a></li>
           {% endif %}
           
@@ -46,10 +50,10 @@
     {% endblock %}
     </div>
 
-    <div id="footer">
+    <footer id="footer">
         &copy; 2012 Project Awesome
         <a href="{{ url_for("terms")}}">Privacy &amp; Terms</a>
-    </div>
+    </footer>
 </body>
 
 {% block js %}

@@ -17,6 +17,7 @@ from api.S3Util import ImageFilePreview
 from api.Api import Api
 from api.FlashMessages import *
 
+
 from util.SessionManager import SessionManager
 
 @app.route('/', methods=['GET'])
@@ -33,8 +34,8 @@ def index():
 def view_board():
     return redirect(url_for('index'))
 
-@app.route('/profile', methods=['GET'])
-def user_profile():
+@app.route('/user/<int:userId>', methods=['GET'])
+def user_profile(userId):
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
@@ -45,7 +46,50 @@ def user_profile():
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('about.html', user=userInfo)
+    abort(405)
+
+@app.route('/settings', methods=['GET'])
+def settings():
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('settings.html', user=userInfo)
+        else:
+            return render_template('index.html', user=None)
+    abort(405)
+
+@app.route('/api/change_info', methods=['POST'])
+def api_change_info():
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            if not ('firstName' in request.form or
+                    'lastName' in request.form or
+                    'email' in request.form):
+                abort(406)
+
+            firstName = request.form['firstName']
+            lastName = request.form['lastName']
+            email = request.form['email']
+
+            result = Api.changeUserInfo(userInfo['id'],
+                                        firstName, lastName, email)
+            Logger.debug("RESULT: " + str(result))
+
+            # make sure to update session
+            user = Api.getUserById(userInfo['id'])
+            assert user, "New user should exist"
+            SessionManager.setUser(user)
+            userInfo = SessionManager.getUser()
+
+            return render_template('settings.html', user=userInfo)
+        abort(406)
+    abort(405)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -61,8 +105,8 @@ def login():
         (user, errorMsg) = Api.loginUser(email, password)
 
         if user:
-            SessionManager.addUser(user)
-            return redirect(url_for('user_profile'))
+            SessionManager.setUser(user)
+            return redirect(url_for('user_profile', userId=user.id))
         else:
             assert errorMsg != None, "Error msg should exist"
             flash(errorMsg, LoginError.TAG)
@@ -104,7 +148,7 @@ def register_user():
             newUser = Api.getUserById(newUserId)
             assert newUser, "New user should exist"
 
-            SessionManager.addUser(newUser)
+            SessionManager.setUser(newUser)
 
             # Add selected visions if list input valid
             selectedVisions = []
@@ -130,7 +174,7 @@ def register_user():
                     Api.repostVisionList(newUser.id, selectedVisions)
                     session.pop('selectedVisions', None)
 
-            return redirect(url_for('user_profile'))
+            return redirect(url_for('user_profile', userId=newUser.id))
         else:
             assert errorMsg != "", "Error message should exist"
             flash(errorMsg, RegisterError.TAG)
@@ -146,19 +190,28 @@ def apiGetMainPageVisions():
         # TODO: be smarter about when to load user vision list later
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data['visionList'] = Api.getUserVisionList(userInfo['id'])
+            data['visionList'] = Api.getUserVisionList(userInfo['id'],
+                                                       userInfo['id'])
 
         return jsonify(data)
     abort(405)
 
-@app.route('/api/get_user_visions', methods=['GET'])
-def apiGetUserVisions():
+@app.route('/api/user/<int:userId>/visions', methods=['GET'])
+def apiGetUserVisions(userId):
     if request.method == 'GET':
+        data = {}
+        myUserId = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data = { 'visionList' : Api.getUserVisionList(userInfo['id']) }
-            return jsonify(data)
-        abort(403)
+            myUserId = userInfo['id']
+            data['visionList'] = Api.getUserVisionList(userInfo['id'],
+                                                       userInfo['id'])
+        else:
+            data['visionList'] = []
+
+        data['otherVisions'] = Api.getUserVisionList(myUserId, userId)
+
+        return jsonify(data)
     abort(405)
 
 @app.route('/api/user/<int:userId>/move_vision', methods=['POST'])
@@ -178,6 +231,8 @@ def apiMoveUserVision(userId):
             visionId = parameters['visionId']
             srcIndex = parameters['srcIndex']
             destIndex = parameters['destIndex']
+
+            Logger.debug("V:%s src: %s dest: %s" % (visionId, srcIndex, destIndex))
 
             result = Api.moveUserVision(userInfo['id'], visionId,
                                         srcIndex, destIndex)
@@ -290,7 +345,8 @@ def apiAddUserVision(userId):
                 url = SessionManager.getPreviewUrl()
 
             # Create a new vision with the photo
-            visionId, errorMsg = Api.saveVision(userId, url, text, "", "", True)
+            visionId, errorMsg = Api.saveVision(userId, url, text, "", "",
+                                                True)
             vision = Api.getVision(visionId)
 
             if None != vision:
@@ -299,6 +355,33 @@ def apiAddUserVision(userId):
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/vision/<int:visionId>/add_comment', methods=['POST'])
+def apiAddVisionComment(visionId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+
+            parameters = request.json
+            if not ('visionId' in parameters and \
+                    'text' in parameters):
+                abort(406)
+            if visionId == parameters['visionId']:
+                authorId = userInfo['id']
+                text = parameters['text']
+            
+                newComment = Api.addVisionComment(visionId, userInfo['id'],
+                                                  text)
+                if None != newComment:
+                    data = { 'result'    : "success",
+                             'newComment' : newComment.toDictionary() }
+                    return jsonify(data)
+
+            data = { 'result' : "error" }
+            return jsonify(data)
+
         abort(403)
     abort(405)
 
