@@ -12,25 +12,34 @@
 </head>
 
 <body>
-    
-    <div id="headerBar">
-        <div class="logo">
-            <a href="/">Project [AWESOME]</a>
-        </div>
+    <!-- TODO:               
+                2. Responsive
+    -->
+    <div class="navbar navbar-static-top">
+      <div class="navbar-inner">
+        
+        <a class="brand" href="/">Project [AWESOME]</a>
+        
+        <ul class="nav pull-right">
+          
+          <li><a href="{{ url_for('about') }}">About</a></li>
+          <li><a href="/login">Login</a></li>
 
-        <div id="navigationButtons">
-            <span>+ Vision</span>
-            <a href="{{ url_for('about') }}">About</a>
+          {######### User Is Logged In #########}
+          {% if user and user != None %}
+            <li><a href="#">Add Vision</a></li>
+            <li><a href="/profile">{{ user['firstName'] }}</a></li>
+            <li><a href="/logout">Logout</a></li>
+          {% endif %}
+          
+        </ul>
 
-            {% if user and user != None %}
-                <a href="/profile">{{ user['firstName'] }}</a>
-                <a href="/logout">Logout</a>
-            {% endif %}
-        </div>
-
-        {% block nav_extra %}
-        {% endblock %}
+      </div>
     </div>
+
+    {######### Extra Nav #########}
+    {% block nav_extra %}
+    {% endblock %}
 
     <div class="container-fluid">
     {% block content %}
@@ -39,7 +48,7 @@
 
     <div id="footer">
         &copy; 2012 Project Awesome
-        <a href="{{ url_for("terms")}}">Privacy & Terms</a>
+        <a href="{{ url_for("terms")}}">Privacy &amp; Terms</a>
     </div>
 </body>
 

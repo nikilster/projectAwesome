@@ -11,7 +11,14 @@
 body {
   /*background-color: @backgroundColor;*/
 
-  background-image: url('../img/patterns/subtle_dots.png');
+  background-image: url('../img/patterns/creampaper.png');
+}
+.brand {
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  left: 0;
+  text-align: center;
 }
 /*
 	Utility Styles
@@ -32,7 +39,7 @@ body {
   width: 360px;
   margin: 6px;
   padding: 10px;
-  background-color: #feffef;
+  background-color: #fafafa;
   list-style-type: none;
   -webkit-transition: -webkit-transform 0.15s linear;
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
