@@ -601,9 +601,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //If we are on the main page
         // AND the user is not logged in
         // AND vision is not selected
-        if (pageMode == App.Const.PageMode.HOME_GUEST && !this.model.isSelected())
-            this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
-
+        if (pageMode == App.Const.PageMode.HOME_GUEST)
+        {
+            if(!this.model.isSelected())
+                this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
+        }
         //TODO: Add the case when they come to another persons page
         // AND they are not logge din
         // Show the instructions bar (box)  
