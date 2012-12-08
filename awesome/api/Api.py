@@ -161,21 +161,25 @@ class Api:
         users = DataApi.getUsersFromIds(userIds)
         idToUser = dict([(user.id, user) for user in users])
 
+        visionIds = [vision.id for vision in visions]
+        Logger.debug("Vision Ids: " + str(visionIds))
+        comments = DataApi.getVisionCommentsFromVisionIds(visionIds)
+        Logger.debug("Comments: " + str(comments))
+        idToComments = {}
+        for comment in comments:
+            if not comment.visionId in idToComments.keys():
+                idToComments[comment.visionId] = [comment]
+            else:
+                idToComments[comment.visionId].append(comment)
+
         for vision in visions:
             obj = vision.toDictionary()
             obj['name'] = idToUser[vision.userId].fullName
             if vision.pictureId != 0:
                 obj['picture'] = idToPicture[vision.pictureId].toDictionary()
-            obj['comments'] = [{ 'id' : 1, 'authorId' : 1,
-                                'text' : "So I'm rappelling down Mount Vesuvius when suddenly I slip, and I start to fall. Just falling, ahh ahh, I'll never forget the terror. When suddenly I realize \"Holy shit, Hansel, haven't you been smoking Peyote for six straight days, and couldn't some of this maybe be in your head?\""
-                               },
-                               {'id' : 2, 'authorId' : 2,
-                                'text' : 'And?',
-                               },
-                               {'id' : 3, 'authorId' : 1,
-                                'text' : "And it was. I was totally fine. I've never even been to Mount Vesuvius."
-                               }]
-
+            obj['comments'] = []
+            if vision.id in idToComments.keys():
+                obj['comments'] = [c.toDictionary() for c in idToComments[vision.id]]
             visionList.append(obj)
         return visionList
 
@@ -271,5 +275,19 @@ class Api:
     @staticmethod
     def getVision(visionId):
         return DataApi.getVision(visionId)
+
+
+    #
+    # Vision Comment related API
+    #
+    # returns new comment model
+    #
+    @staticmethod
+    def addVisionComment(visionId, authorId, text):
+        text = text.strip()
+        if len(text) > 0:
+            return DataApi.addVisionComment(visionId, authorId, text)
+        else:
+            return DataApi.NO_OBJECT_EXISTS
 
 # $eof

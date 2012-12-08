@@ -223,9 +223,10 @@ class VisionCommentModel(DB.Model):
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                              onupdate=datetime.datetime.utcnow)
+    removed         = DB.Column(DB.Boolean, default=False)
 
-    def __init__(self, userId, authorId, text):
-        self.userId = userId
+    def __init__(self, visionId, authorId, text):
+        self.visionId = visionId
         self.authorId = authorId
         self.text = text
     def __str__(self):

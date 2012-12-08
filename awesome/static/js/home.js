@@ -203,6 +203,9 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         }
         this.set({isSelected: !this.get("isSelected")});
     },
+    addComment: function() {
+        //this.comments().append(new App.Backbone.Model.VisionComment
+    },
     deepClone: function() {
         var cloneModel = this.clone();
         cloneModel.set({ picture: this.picture().clone() });
@@ -342,6 +345,21 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // Add new vision to visionList
         this.visionList().unshift(new App.Backbone.Model.Vision(newVision));
     },
+    addVisionComment: function(newComment) {
+        // Find vision to add to
+        var list = this.activeVisionList();
+        var vision = null;
+        for (var i = 0 ; i < list.length ; i++) {
+            if (list.at(i).visionId() == newComment['visionId']) {
+                vision = list.at(i);
+            }
+        }
+
+        // Add comment to vision
+        if (null != vision) {
+            vision.addComment(newComment);
+        }
+    },
 });
 
 /******************************************************************************
@@ -370,13 +388,16 @@ App.Backbone.View.Vision = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
-                        "repostVision", "removeVision", "gotoUser");
+                        "repostVision", "removeVision", "gotoUser",
+                        "visionCommentInput");
         this.model.bind("change", this.render, this);
 
         this.render();
     },
     events: {
-        "click .MasonryItemInner" : "itemSelect",
+        "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
+        "keyup .AddVisionCommentInput" : "visionCommentInput",
+        "click .MasonryItemInner"      : "itemSelect",
         "mouseenter .MasonryItemInner" : "mouseEnter",
         "mouseleave .MasonryItemInner" : "mouseLeave",
         "click .VisionToolbarRepost"   : "repostVision",
@@ -521,6 +542,14 @@ App.Backbone.View.Vision = Backbone.View.extend({
         App.Var.Router.navigate("/user/" + this.model.userId(),
                                 {trigger: true});
     },
+    visionCommentInput: function(e) {
+        if(e.keyCode == 13) {
+            var text = $.trim($(this.el).find(".AddVisionCommentInput").val());
+            if (text.length > 0) {
+                App.Var.View.addVisionComment(this.model.visionId(), text);
+            }
+        }
+    },
 });
 
 App.Backbone.View.Page = Backbone.View.extend({
@@ -533,6 +562,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "repostVision",
                         "ajaxRepostVisionSuccess",
                         "ajaxRepostVisionError",
+                        "addVisionComment",
+                        "ajaxAddVisionCommentSuccess",
+                        "ajaxAddVisionCommentError",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
                         "showPageLoading",
@@ -605,6 +637,25 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.repostVisionDone(data.repostParentId, data.newVision);
     },
     ajaxRepostVisionError: function(jqXHR, textStatus, errorThrown) {
+        // Do nothing, we already showed an error and don't need to change UI
+    },
+
+    addVisionComment: function(visionId, text) {
+        console.log("VISION " + visionId + " : " + text);
+
+        doAjax("/api/vision/" + visionId + "/add_comment",
+                JSON.stringify({
+                                'visionId' : visionId,
+                                'text' : text,
+                                }),
+                this.ajaxAddVisionCommentSuccess,
+                this.ajaxAddVisionCommentError
+        );
+    },
+    ajaxAddVisionCommentSuccess: function(data, textStatus, jqXHR) {
+        this.model.addVisionComment(data.newComment);
+    },
+    ajaxAddVisionCommentError: function(jqXHR, textStatus, errorThrown) {
         // Do nothing, we already showed an error and don't need to change UI
     },
 

@@ -12,7 +12,8 @@ class UserRelationship:
     SHARED = 2  # target user has shared with user requesting data
 
 def getUserRelationship(userId, targetUserId):
-    assert targetUserId != None and targetUserId > 0, "Invalid target user id: %s" % (str(targetUserId))
+    assert targetUserId != None and targetUserId > 0, \
+           "Invalid target user id: %s" % (str(targetUserId))
     assert userId == None or userId > 0, "Invalid user id: %s" % (str(userId))
 
     # Right now we don't support the mastermind group so you either are your
@@ -249,7 +250,43 @@ class DataApi:
         DB.session.commit()
         return True
 
+    # 
+    # Vision Comment methods
+    #
+    @staticmethod
+    def addVisionComment(visionId, authorId, text):
+        # Get vision user, and make sure the author can write on this vision
+        # TODO: Should this stuff go into API instead?
 
+        vision = DataApi.getVision(visionId)
+        if vision == DataApi.NO_OBJECT_EXISTS:
+            return DataApi.NO_OBJECT_ESISTS
+
+        relationship = getUserRelationship(vision.userId, authorId)
+        addComment = False
+        if UserRelationship.NONE == relationship:
+            # can only add if public vision
+            if VisionPrivacy.PUBLIC == vision.privacy:
+                addComment = True
+        elif UserRelationship.SELF == relationship:
+            # can always write if it is your own vision
+            addComment = True
+
+        if True == addComment:
+            comment = VisionCommentModel(visionId, authorId, text)
+            DB.session.add(comment)
+            DB.session.commit()
+            return comment
+        return DataApi.NO_OBJECT_ESISTS
+
+    @staticmethod
+    def getVisionCommentsFromVisionIds(visionIds):
+        return VisionCommentModel.query \
+                          .filter_by(removed=False) \
+                          .filter(VisionCommentModel.visionId.in_(visionIds)) \
+                          .order_by(VisionCommentModel.id) \
+                          .all()
+   
     # 
     # Picture methods
     #
