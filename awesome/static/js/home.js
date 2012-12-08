@@ -35,10 +35,12 @@ var USER_SELECTED_VISIONS_INPUT = "userSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#exampleVisionBoardInstructions";
 var JOIN_SITE_BUTTON = "#joinSite"; //Triggers form
 
-
+//Overlay Buttons
+var ANIMATION_TIME = 150;
 var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".addVisionNotAuthenticated";
 var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".removeVisionNotAuthenticated";
-
+var REPOST_BUTTON = ".repost";
+var MOVE_ICON = ".move";
 
 //Utility
 var CSS_CLASS_HIDDEN = "CSS_ClASS_HIDDEN";
@@ -152,10 +154,15 @@ var App = {
     Const: {
         PageMode: {
             EMPTY: 0,
-            HOME_GUEST: 1,
+            //Main Page (not logged in)
+            HOME_GUEST: 1, 
+            //Main Page (logged in)
             HOME_USER: 2,
+            //Example vision board (not logged in)
             EXAMPLE_VISION_BOARD: 3,
+            //User Page (logged in)
             USER_PROFILE: 4,
+
             GUEST_PROFILE: 5,
             INVALID: 6, // Keep at end: we use to check validity of pageMode
         },
@@ -449,15 +456,23 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         this.render();
     },
-    events: {
-        "click" : "itemSelect",
-        "mouseenter" : "mouseEnter", //TODO: Fix
-        "mouseleave" : "mouseLeave", //TODO: Fix
-        "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
-        "keyup .AddVisionCommentInput" : "visionCommentInput",
-        "click .VisionToolbarRepost"   : "repostVision",
-        "click .VisionToolbarRemove"   : "removeVision",
-        "click .VisionUserName"        : "gotoUser",
+    //Using variables in events
+    //http://stackoverflow.com/questions/8400450/using-variable-for-selectors-in-events
+    events: function(){
+
+        var _events = {
+
+            "click" : "itemSelect",
+            "mouseenter" : "mouseEnter", //TODO: Fix
+            "mouseleave" : "mouseLeave", //TODO: Fix
+            "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
+            "keyup .AddVisionCommentInput" : "visionCommentInput",
+            "click .VisionUserName"        : "gotoUser"
+        };
+
+        _events["click " + REPOST_BUTTON] = "repostVision";
+
+        return _events;
     },
     render: function() {
         var pageMode = App.Var.Model.pageMode();
@@ -563,32 +578,61 @@ App.Backbone.View.Vision = Backbone.View.extend({
             assert(false, "Invalid page mode in item select");
         }
     },
-    mouseEnter: function() {
-        var pageMode = App.Var.Model.pageMode();
-        if (pageMode == App.Const.PageMode.HOME_GUEST ||
-            (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
-            if (!this.model.isSelected()) {
-                $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).show();
-            } else {
-                //$(this.el).find(".RemoveVisionOverlay").show();
-            }
-        } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD ||
-                   pageMode == App.Const.PageMode.HOME_USER ||
-                   pageMode == App.Const.PageMode.USER_PROFILE) {
-            $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).show();
-        }
+    
+    showElement: function(selector) {
+        $(this.el).find(selector).fadeIn(ANIMATION_TIME);
     },
-    mouseLeave: function() {
+
+    hideElement: function(selector) {
+
+        //Get element
+        var element =  $(this.el).find(selector);
+
+        //Hide
+        if(element.is(":visible"))
+            element.fadeOut(ANIMATION_TIME);
+    },
+
+    mouseEnter: function() {
+        
+        //Get the current state
         var pageMode = App.Var.Model.pageMode();
 
-        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_GUEST ||
-            (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
-            $(this.el).find(ADD_NOT_LOGGED_IN_VISION_SELECTOR).hide();
-        } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD ||
-                   pageMode == App.Const.PageMode.HOME_USER ||
-                   pageMode == App.Const.PageMode.USER_PROFILE) {
-            $(this.el).find(".VisionToolbarConditional").hide();
-        }
+        //If we are on the main page
+        // AND the user is not logged in
+        // AND vision is not selected
+        if (pageMode == App.Const.PageMode.HOME_GUEST && !this.model.isSelected())
+            this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
+
+        //TODO: Add the case when they come to another persons page
+        // AND they are not logge din
+        // Show the instructions bar (box)  
+
+        //Overlay
+        else
+            //Repost
+            this.showElement(REPOST_BUTTON);
+
+        //On your own board show move butotn!
+        if(pageMode == App.Const.PageMode.USER_PROFILE)
+            this.showElement(MOVE_ICON)
+
+
+        //Vision Overlay
+
+    },
+    mouseLeave: function() {
+        
+        //Get current state
+        var pageMode = App.Var.Model.pageMode();
+
+        //Get all of the possible overlays
+        var buttons = [ADD_NOT_LOGGED_IN_VISION_SELECTOR, REPOST_BUTTON, MOVE_ICON];
+        
+        //If a overlay / button is showing, hide it
+        for(var i=0; i<buttons.length; i++)
+            this.hideElement(buttons[i]);
+
     },
     repostVision: function(e) {
         e.preventDefault();
@@ -810,14 +854,14 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render vision list: triggered by set of this.model.visionList
      */
     renderVisionList: function() {
-        console.log("RENDER VISION LIST");
+        
+        if(DEBUG) console.log("rendering vision list");
+
         var masonryContainer = $(CONTENT_DIV).first();
-
         masonryContainer.empty();
+
         this.children = []
-
         this.activeVisionList().each(this.renderVision);
-
         masonryContainer.append(this.children);
 
         // TODO: Don't need to reload once we know heights of images
@@ -1115,16 +1159,18 @@ App.Backbone.View.Page = Backbone.View.extend({
             },
             complete: function(jqXHR, textStatus) {},
             error: function(jqXHR, textStatus, errorThrown) {
+                if(DEBUG) console.log("error getting profile info");
                 App.Var.View.renderProfileError();
             },
             success: function(data, textStatus, jqXHR) {
+                if(DEBUG) console.log("Successfully got Profile!");
                 App.Var.JSON = data;
                 App.Var.View.renderProfile();
             }
         });
     },
     renderProfile: function() {
-        console.log("Render Profile");
+        console.log("Rendering Profile");
         this.hidePageLoading();
 
         this.model.setVisionList(App.Var.JSON.visionList);

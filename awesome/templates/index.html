@@ -215,36 +215,20 @@
 </div>
 
 <!-- //Overlay -->
-<div class="VisionToolbar">
-
-    <!--//Always shown: Already posted to your vision board -->
-    <div class="VisionToolbarButton"
-        style="display: <%= mineDisplay %>;">
-        On my vision board
+<div class="visionOverlay">        
+       
+    <!-- //Repost Vision -->
+    <div class="repost overlay hidden">
+        <button class="btn btn-small btn-primary">Repost</button>
     </div>
 
-    <!-- // On Mouse over - Overlay -->
-    <div class="VisionToolbarConditional" class="hidden">
-        
-        <!-- //Repost Vision -->
-        <div class="VisionToolbarButton VisionToolbarRepost"
-            style="display: <%= repostDisplay %>">
-            Copy vision
-        </div>
-
-        <!-- //Move Vision -->
-        <div class="VisionToolbarButton VisionToolbarMove"
-            style="display: <%= moveDisplay %>">
-            <i class="icon-move"/>
-        </div>
-
-        <!-- //Remove Vision -->
-        <div class="VisionToolbarButton VisionToolbarRemove"
-            style="display: <%= removeDisplay %>">
-            <i class="icon-remove"/>
-        </div>
+    <!-- //Move Vision -->
+    <div class="move overlay hidden">
+        <i class="icon-move"/>
     </div>
+
 </div>
+
 
 <!-- //Add Vision (Not Logged In) -->
 <div class="addVisionNotAuthenticated hidden">
@@ -255,6 +239,7 @@
 <div class="removeVisionNotAuthenticated <%= removeButtonVisibility%>">
     <button class="btn btn-inverse">Remove</button>
 </div>
+
 </script>
 
 <!-- Vision Comments -->

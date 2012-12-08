@@ -24,17 +24,33 @@
         
         <ul class="nav pull-right">
           
-          <li><a href="{{ url_for('about') }}">About</a></li>
-          <li><a href="/login">Login</a></li>
-
-          {######### User Is Logged In #########}
-          {% if user and user != None %}
+          {#------------ User Is Logged In ------------#}
+          {% if user is none or user is not defined%} 
+          
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="/login">Login</a></li>
+          
+          {% else %}
+          {#------------ User Is Logged In ------------#}
+          
+          
             <li><a href="#">Add Vision</a></li>
             <li><a href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
-            <li><a href="{{ url_for('settings')}}">Settings</a></li>
+
+            <li><a href="{{ url_for('about') }}">About</a></li>
+
+            <li class="dropdown">
+                <a id="settingsDropdown" class="dropdown-toggle" data-toggle="dropdown" href="#" >
+                    <i class="icon-cog"></i>
+                    <b class="caret"></b>
                 </a>
-            <li><a href="/logout">Logout</a></li>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="aboutDropdown">
+                    <li><a href="{{ url_for('settings')}}">Settings</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </li>
           {% endif %}
+
           
         </ul>
 

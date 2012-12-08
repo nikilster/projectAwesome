@@ -102,6 +102,16 @@ footer {
   top: 14px;
   right: 14px;
 }
+.overlay {
+  position: absolute;
+  top: 14px;
+}
+.repost {
+  left: 14px;
+}
+.move {
+  right: 14px;
+}
 /*
     Delete
 */
