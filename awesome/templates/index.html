@@ -32,13 +32,13 @@
 {% block nav_extra %}
 
     <!-- Onboarding -->
-    <div class="well" id="instructions">
+    <div class="well" id="Instructions">
       Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds!
       <div>
-        <span id="selectedZero">Get started by choosing (clicking on) 3 pictures!</span>
-        <span id="selectedOne" class="hidden">Good Job! Chose 2 more pictures!</span>
-        <span id="selectedTwo" class="hidden">Nice! Now chose one more!</span>
-        <span id="selectedThree" class="hidden">Awesome! You did it!
+        <span id="SelectedZero">Get started by choosing (clicking on) 3 pictures!</span>
+        <span id="SelectedOne" class="Hidden">Good Job! Chose 2 more pictures!</span>
+        <span id="SelectedTwo" class="Hidden">Nice! Now chose one more!</span>
+        <span id="SelectedThree" class="Hidden">Awesome! You did it!
           <br/>
           <button id="viewExampleVisionBoardButton" class="btn btn-primary">See Your Vision Board</button>
         </span>
@@ -46,16 +46,16 @@
     </div>
 
     <!-- Pass the selected visions to register -->
-    <form id="registerForm" class="hidden" action="{{ url_for("register") }}" method="POST">
+    <form id="RegisterForm" class="Hidden" action="{{ url_for("register") }}" method="POST">
       <input id="userSelectedVisions" type="hidden" name="selectedVisions" value=""/>
     </form>
 
-    <div id="exampleVisionBoardInstructions" class="well hidden">
+    <div id="ExampleVisionBoardInstructions" class="well Hidden">
       Congrats!  Here is your own <a href="{{ url_for('about') }}">Vision Board!</a>
       <br/>
       Click register to save your Vision Board and add more stuff to it.
       <br/>
-      <button id="joinSite" class="btn btn-primary">Register</a>  
+      <button id="JoinSite" class="btn btn-primary">Register</a>  
     </div>
 
 {% endblock %}
@@ -66,9 +66,9 @@
 {% block content %}
 
     <!-- Main Content -->
-    <div id="loadingIndicator" class="hidden"></div>
-    <div id="content" class="center"></div>
-    <div id="exampleVisionBoard"></div>
+    <div id="LloadingIndicator" class="Hidden"></div>
+    <div id="Content" class="Center"></div>
+    <div id="ExampleVisionBoard"></div>
 
 
     <!-- Modal for vision details -->
@@ -213,15 +213,15 @@
 </div>
 
 <!-- //Overlay -->
-<div class="visionOverlay">        
+<div class="VisionOverlay">        
        
     <!-- //Repost Vision -->
-    <div class="repost overlay hidden">
+    <div class="Repost Overlay Hidden">
         <button class="btn btn-small btn-primary">Repost</button>
     </div>
 
     <!-- //Move Vision -->
-    <div class="move overlay hidden">
+    <div class="Move Overlay Hidden">
         <i class="icon-move"/>
     </div>
 
@@ -229,12 +229,12 @@
 
 
 <!-- //Add Vision (Not Logged In) -->
-<div class="addVisionNotAuthenticated hidden">
+<div class="AddVisionNotAuthenticated Hidden">
     <button class="btn btn-success">Add to my Vision Board</button>
 </div>
 
 <!-- //Remove Vision (Not Logged In) -->
-<div class="removeVisionNotAuthenticated <%= removeButtonVisibility%>">
+<div class="RemoveVisionNotAuthenticated <%= removeButtonVisibility%>">
     <button class="btn btn-inverse">Remove</button>
 </div>
 

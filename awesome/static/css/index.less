@@ -30,12 +30,12 @@
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
 @OVERLAY_MARGIN: @VISION_PADDING+4;
 
-.moveCursor
+.NoveCursor
 {
     cursor: move;
 }
 
-.lightShadow
+.LightShadow
 {
      //Shadow and Border
     -webkit-transition: -webkit-transform .15s linear;
@@ -43,13 +43,13 @@
     -moz-box-shadow: 0 3px 6px rgba(0,0,0,.25);
 }
 
-.darkShadow
+.DarkShadow
 {
     -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.5);
     -moz-box-shadow: 0 3px 6px rgba(0,0,0,.5);
 }
 
-.vision
+.Vision
 {
 
     width:@VISION_WIDTH;
@@ -63,7 +63,7 @@
     //To Do: Change this to a div
     list-style-type: none;
 
-    .lightShadow;
+    .LightShadow;
 
     //The Picture
     img 
@@ -83,9 +83,9 @@
 }
 
 /* Selected Vision */
-.visionSelected 
+.VisionSelected 
 {
-   .darkShadow;
+   .DarkShadow;
 }
 
 
@@ -94,7 +94,7 @@
     Both (H + Example)
 */
 
-#instructions, #exampleVisionBoardInstructions
+#Instructions, #ExampleVisionBoardInstructions
 {
     width:@INSTRUCTIONS_WIDTH;
     margin:auto;
@@ -105,7 +105,7 @@
     font-size:@TEXT_SIZE; 
 
     //Shadow
-    .lightShadow;
+    .LightShadow;
 
     button
     {
@@ -118,7 +118,7 @@
 */
 
 //Not logged in - "Add to your vision board"
-.addVisionNotAuthenticated, .removeVisionNotAuthenticated
+.AddVisionNotAuthenticated, .RemoveVisionNotAuthenticated
 {
     position:absolute;
     top:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
@@ -127,18 +127,18 @@
 
 
 //The Overlays!
-.overlay
+.Overlay
 {
     position:absolute;
     top:@OVERLAY_MARGIN;
 }
 
-.repost
+.Repost
 {
     left:@OVERLAY_MARGIN;
 }
 
-.move
+.Move
 {
     right:@OVERLAY_MARGIN;
 }
@@ -211,7 +211,7 @@
     padding:0px 21px 21px 21px;
 }
 
-#content, #TestVisionContainer {
+#Content, #TestVisionContainer {
     overflow: hidden;
 
     // This is added and removed when we move the vision w/ jquery ui sortable

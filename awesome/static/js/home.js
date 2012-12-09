@@ -12,35 +12,35 @@ var DEBUG = true;
 /******************************************************************************
 * DOM Element Constants
 *******************************************************************************/
-var CONTENT_DIV = "#content";  //Main container for the visions
-var EXAMPLE_VISION_BOARD_DIV = "#exampleVisionBoard";
-var LOADING_INDICATOR_DIV = "#loadingIndicator";
+var CONTENT_DIV = "#Content";  //Main container for the visions
+var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
+var LOADING_INDICATOR_DIV = "#LoadingIndicator";
 
-var VISION_CLASS = "vision";
+var VISION_CLASS = "Vision";
 var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
-var CURSOR_CLASS_MOVE = "moveCursor";
-var VISION_SELECTED_CLASS = "visionSelected";
+var CURSOR_CLASS_MOVE = "MoveCursor";
+var VISION_SELECTED_CLASS = "VisionSelected";
 
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
-var INSTRUCTIONS_DIV = "#instructions";
+var INSTRUCTIONS_DIV = "#Instructions";
 //Sync # w/ Spans -> 
-var INSTRUCTIONS_ZERO_VISIONS_SELECTED = "#selectedZero";
-var INSTRUCTIONS_ONE_VISION_SELECTED = "#selectedOne";
-var INSTRUCTIONS_TWO_VISIONS_SELECTED = "#selectedTwo";
-var INSTRUCTIONS_THREE_VISIONS_SELECTED = "#selectedThree";
-var VIEW_EXAMPLE_VISION_BOARD_BUTTON = "#viewExampleVisionBoardButton";
-var REGISTER_FORM = "#registerForm";
-var USER_SELECTED_VISIONS_INPUT = "userSelectedVisions";
-var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#exampleVisionBoardInstructions";
-var JOIN_SITE_BUTTON = "#joinSite"; //Triggers form
+var INSTRUCTIONS_ZERO_VISIONS_SELECTED = "#SelectedZero";
+var INSTRUCTIONS_ONE_VISION_SELECTED = "#SelectedOne";
+var INSTRUCTIONS_TWO_VISIONS_SELECTED = "#SelectedTwo";
+var INSTRUCTIONS_THREE_VISIONS_SELECTED = "#SelectedThree";
+var VIEW_EXAMPLE_VISION_BOARD_BUTTON = "#ViewExampleVisionBoardButton";
+var REGISTER_FORM = "#RegisterForm";
+var USER_SELECTED_VISIONS_INPUT = "UserSelectedVisions";
+var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
+var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 
 //Overlay Buttons
 var ANIMATION_TIME = 150;
-var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".addVisionNotAuthenticated";
-var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".removeVisionNotAuthenticated";
-var REPOST_BUTTON = ".repost";
-var MOVE_ICON = ".move";
+var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".AddVisionNotAuthenticated";
+var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".RemoveVisionNotAuthenticated";
+var REPOST_BUTTON = ".Repost";
+var MOVE_ICON = ".Move";
 
 //Utility
 var CSS_CLASS_HIDDEN = "CSS_ClASS_HIDDEN";
@@ -479,7 +479,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         var selected = false;
         //For the not authenticated
-        var removeButtonVisibility = "hidden";
+        var removeButtonVisibility = "Hidden";
         if ((pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) &&
             this.model.isSelected()) {
@@ -601,8 +601,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //If we are on the main page
         // AND the user is not logged in
         // AND vision is not selected
-        if (pageMode == App.Const.PageMode.HOME_GUEST)
-        {
+        if (pageMode == App.Const.PageMode.HOME_GUEST) {
             if(!this.model.isSelected())
                 this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
         }
@@ -611,14 +610,15 @@ App.Backbone.View.Vision = Backbone.View.extend({
         // Show the instructions bar (box)  
 
         //Overlay
-        else
+        else {
             //Repost
             this.showElement(REPOST_BUTTON);
+        }
 
         //On your own board show move butotn!
-        if(pageMode == App.Const.PageMode.USER_PROFILE)
+        if (pageMode == App.Const.PageMode.USER_PROFILE) {
             this.showElement(MOVE_ICON)
-
+        }
 
         //Vision Overlay
 
@@ -632,8 +632,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var buttons = [ADD_NOT_LOGGED_IN_VISION_SELECTOR, REPOST_BUTTON, MOVE_ICON];
         
         //If a overlay / button is showing, hide it
-        for(var i=0; i<buttons.length; i++)
+        for (var i = 0 ; i < buttons.length ; i++) {
             this.hideElement(buttons[i]);
+        }
 
     },
     repostVision: function(e) {

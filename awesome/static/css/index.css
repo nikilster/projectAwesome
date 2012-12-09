@@ -30,28 +30,28 @@ footer {
 /*
 	Utility Styles
 */
-.hidden {
+.Hidden {
   display: none;
 }
-.center {
+.Center {
   margin: 0 auto;
 }
 /*
     The Styles!
 */
-.moveCursor {
+.NoveCursor {
   cursor: move;
 }
-.lightShadow {
+.LightShadow {
   -webkit-transition: -webkit-transform 0.15s linear;
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
 }
-.darkShadow {
+.DarkShadow {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
-.vision {
+.Vision {
   width: 360px;
   margin: 6px;
   padding: 10px;
@@ -61,15 +61,15 @@ footer {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
 }
-.vision img {
+.Vision img {
   width: 100%;
 }
-.vision .text {
+.Vision .text {
   background-color: #ffffff;
   padding: 0px;
 }
 /* Selected Vision */
-.visionSelected {
+.VisionSelected {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
@@ -77,8 +77,8 @@ footer {
     Instructions
     Both (H + Example)
 */
-#instructions,
-#exampleVisionBoardInstructions {
+#Instructions,
+#ExampleVisionBoardInstructions {
   width: 600px;
   margin: auto;
   margin-bottom: 10px;
@@ -89,27 +89,27 @@ footer {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
 }
-#instructions button,
-#exampleVisionBoardInstructions button {
+#Instructions button,
+#ExampleVisionBoardInstructions button {
   margin-top: 12px;
 }
 /*
     On Hover of Vision
 */
-.addVisionNotAuthenticated,
-.removeVisionNotAuthenticated {
+.AddVisionNotAuthenticated,
+.RemoveVisionNotAuthenticated {
   position: absolute;
   top: 14px;
   right: 14px;
 }
-.overlay {
+.Overlay {
   position: absolute;
   top: 14px;
 }
-.repost {
+.Repost {
   left: 14px;
 }
-.move {
+.Move {
   right: 14px;
 }
 /*
@@ -136,15 +136,15 @@ footer {
   margin-bottom: 20px;
   padding: 0px 21px 21px 21px;
 }
-#content,
+#Content,
 #TestVisionContainer {
   overflow: hidden;
 }
-#content li.MasonryItem,
+#Content li.MasonryItem,
 #TestVisionContainer li.MasonryItem {
   float: left;
 }
-#content li.MasonryBox,
+#Content li.MasonryBox,
 #TestVisionContainer li.MasonryBox {
   width: 285px;
   margin: 7px;
@@ -156,29 +156,29 @@ footer {
   cursor: default;
   list-style-type: none;
 }
-#content .MasonryItemUnselected,
+#Content .MasonryItemUnselected,
 #TestVisionContainer .MasonryItemUnselected {
   border: 1px solid #DDDDDD;
 }
-#content .MasonryItemSelected,
+#Content .MasonryItemSelected,
 #TestVisionContainer .MasonryItemSelected {
   border: 1px solid red;
 }
-#content .MasonryItemPointerCursor,
+#Content .MasonryItemPointerCursor,
 #TestVisionContainer .MasonryItemPointerCursor {
   cursor: pointer;
 }
-#content .MasonryItemMoveCursor,
+#Content .MasonryItemMoveCursor,
 #TestVisionContainer .MasonryItemMoveCursor {
   cursor: move;
 }
-#content .MasonryItemInner,
+#Content .MasonryItemInner,
 #TestVisionContainer .MasonryItemInner {
   padding: 4px;
   position: relative;
   min-height: 48px;
 }
-#content .VisionOverlay,
+#Content .VisionOverlay,
 #TestVisionContainer .VisionOverlay {
   display: none;
   position: absolute;
@@ -189,7 +189,7 @@ footer {
   background-color: rgba(255, 255, 255, 0.5);
   z-index: 1;
 }
-#content .AddVisionOverlayText,
+#Content .AddVisionOverlayText,
 #TestVisionContainer .AddVisionOverlayText {
   position: absolute;
   top: 50%;
@@ -207,7 +207,7 @@ footer {
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
-#content .RemoveVisionOverlayText,
+#Content .RemoveVisionOverlayText,
 #TestVisionContainer .RemoveVisionOverlayText {
   position: absolute;
   top: 50%;
@@ -226,7 +226,7 @@ footer {
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
-#content .VisionUserBlock,
+#Content .VisionUserBlock,
 #TestVisionContainer .VisionUserBlock {
   position: relative;
   padding: 3px;
@@ -234,11 +234,11 @@ footer {
   color: gray;
   z-index: 10;
 }
-#content .VisionUserName,
+#Content .VisionUserName,
 #TestVisionContainer .VisionUserName {
   font-weight: bold;
 }
-#content .VisionComment,
+#Content .VisionComment,
 #TestVisionContainer .VisionComment {
   font-size: 12px;
   line-height: 1.2;
@@ -246,14 +246,14 @@ footer {
   background-color: #FAFAFA;
   margin: 1px;
 }
-#content .VisionToolbar,
+#Content .VisionToolbar,
 #TestVisionContainer .VisionToolbar {
   position: absolute;
   top: 5px;
   right: 5px;
   z-index: 1;
 }
-#content .VisionToolbar .VisionToolbarButton,
+#Content .VisionToolbar .VisionToolbarButton,
 #TestVisionContainer .VisionToolbar .VisionToolbarButton {
   display: inline-block;
   font-size: 10pt;
@@ -266,7 +266,7 @@ footer {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#content .VisionToolbar .VisionToolbarButton:hover,
+#Content .VisionToolbar .VisionToolbarButton:hover,
 #TestVisionContainer .VisionToolbar .VisionToolbarButton:hover {
   background-color: #ffffff;
   cursor: pointer;
