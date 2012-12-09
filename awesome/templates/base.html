@@ -33,8 +33,10 @@
           {% else %}
           {#------------ User Is Logged In ------------#}
           
-          
-            <li><a id="AddVision" href="#">Add Vision</a></li>
+            {######### Extra Nav #########}
+            {% block nav_extra %}
+            {% endblock %}
+         
             <li><a id="NavProfile" href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
 
             <li><a href="{{ url_for('about') }}">About</a></li>
@@ -55,8 +57,8 @@
         </ul>
 
       </div>
-        {######### Extra Nav #########}
-        {% block nav_extra %}
+        {######### Header Information bar #########}
+        {% block header_info %}
         {% endblock %}
     </div>
 

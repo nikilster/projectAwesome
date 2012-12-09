@@ -30,7 +30,11 @@
 
 {# ----------- Extra Navigation ----------- #}
 {% block nav_extra %}
+            <li><a id="AddVision" href="#">Add Vision</a></li>
+{% endblock %}
 
+{# ----------- Header Information ----------- #}
+{% block header_info %}
     <!-- Onboarding -->
     <div class="well" id="Instructions">
       Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds.
