@@ -24,6 +24,7 @@ var VISION_SELECTED_CLASS = "VisionSelected";
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
+var INSTRUCTIONS_PADDING = "#InstructionsPadding";
 //Sync # w/ Spans -> 
 var INSTRUCTIONS_ZERO_VISIONS_SELECTED = "#SelectedZero";
 var INSTRUCTIONS_ONE_VISION_SELECTED = "#SelectedOne";
@@ -1013,12 +1014,15 @@ App.Backbone.View.Page = Backbone.View.extend({
         if (onboarding) {
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
             $(INSTRUCTIONS_DIV).show();
+            $(INSTRUCTIONS_PADDING).show();
         } else {
             $(INSTRUCTIONS_DIV).hide();
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).show();
+            $(INSTRUCTIONS_PADDING).show();
         }
     },
     hideInfoBar: function() {
+        $(INSTRUCTIONS_PADDING).hide();
         $(INSTRUCTIONS_DIV).hide();
     },
 

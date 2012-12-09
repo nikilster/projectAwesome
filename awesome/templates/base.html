@@ -15,7 +15,7 @@
     <!-- TODO:               
                 2. Responsive
     -->
-    <div class="navbar navbar-static-top">
+    <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         
         <!-- TODO: make this an eimage so we can fix side -->
@@ -55,13 +55,12 @@
         </ul>
 
       </div>
+        {######### Extra Nav #########}
+        {% block nav_extra %}
+        {% endblock %}
     </div>
 
-    {######### Extra Nav #########}
-    {% block nav_extra %}
-    {% endblock %}
-
-    <div class="container-fluid">
+    <div id="PageContainer" class="container-fluid">
     {% block content %}
     {% endblock %}
     </div>

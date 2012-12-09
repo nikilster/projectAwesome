@@ -8,8 +8,14 @@
 @BACKGROUND_IMAGE: url('../img/patterns/creampaper.png');
 @LOGO_COLOR: #E391B2;
 @FOOTER_HEIGHT: 40px;
-@FOOTER_MARGIN: 15px;
 @FOOTER_TEXT_COLOR: #999;//#779997;
+
+html, body, #PageContainer { height: 100%; }
+body > #PageContainer { height: auto; min-height: 100%; }
+
+#PageContainer {
+    padding-bottom:40px;
+}
 
 body 
 {
@@ -21,7 +27,7 @@ footer
 {
     width:100%;
     height:@FOOTER_HEIGHT;
-    margin-top:@FOOTER_MARGIN;
+    margin-top:-@FOOTER_HEIGHT;
 
     color:@FOOTER_TEXT_COLOR;
     text-align:center;
@@ -35,6 +41,15 @@ footer
     width: 100%;
     left: 0;
     text-align: center;
+}
+
+/* move content below navbar -- could use margin/padding on content too */
+#NavPadding {
+    height:40px;
+}
+
+#InstructionsPadding {
+    height:90px;
 }
 
 /*

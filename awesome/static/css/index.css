@@ -8,6 +8,18 @@
     
     Base file for styles
 */
+html,
+body,
+#PageContainer {
+  height: 100%;
+}
+body > #PageContainer {
+  height: auto;
+  min-height: 100%;
+}
+#PageContainer {
+  padding-bottom: 40px;
+}
 body {
   /*background-color: @BACKGROUND_COLOR;*/
 
@@ -16,7 +28,7 @@ body {
 footer {
   width: 100%;
   height: 40px;
-  margin-top: 15px;
+  margin-top: -40px;
   color: #999999;
   text-align: center;
 }
@@ -26,6 +38,13 @@ footer {
   width: 100%;
   left: 0;
   text-align: center;
+}
+/* move content below navbar -- could use margin/padding on content too */
+#NavPadding {
+  height: 40px;
+}
+#InstructionsPadding {
+  height: 90px;
 }
 /*
 	Utility Styles
