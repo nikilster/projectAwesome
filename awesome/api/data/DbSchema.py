@@ -234,6 +234,7 @@ class VisionCommentModel(DB.Model):
 
     def toDictionary(self):
         return { 'id' : self.id,
+                 'visionId' : self.visionId,
                  'authorId' : self.authorId,
                  'text' : self.text,
                }

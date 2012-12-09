@@ -268,8 +268,8 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         }
         this.set({isSelected: !this.get("isSelected")});
     },
-    addComment: function() {
-        //this.comments().append(new App.Backbone.Model.VisionComment
+    addComment: function(comment) {
+        this.comments().push(new App.Backbone.Model.VisionComment(comment));
     },
     deepClone: function() {
         var cloneModel = this.clone();
@@ -310,6 +310,24 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     numSelectedVisions: function() {
         return this.selectedVisions().length;
+    },
+    activeVisionList: function() {
+        var pageMode = this.pageMode();
+        if (pageMode == App.Const.PageMode.HOME_GUEST ||
+            pageMode == App.Const.PageMode.HOME_USER) {
+            return this.otherVisions();
+        } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
+            return this.selectedVisions();
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            if (App.Var.Model.currentUserId() == USER.id) {
+                return this.visionList();
+            } else {
+                return this.otherVisions();
+            }
+        } else {
+            assert(false, "Invalid pageMode");
+            return null;
+        }
     },
 
     // Setters
@@ -412,6 +430,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     addVisionComment: function(newComment) {
         // Find vision to add to
+        console.log("NEW COMMENT: " + JSON.stringify(newComment));
         var list = this.activeVisionList();
         var vision = null;
         for (var i = 0 ; i < list.length ; i++) {
@@ -424,6 +443,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         if (null != vision) {
             vision.addComment(newComment);
         }
+
+        // Trigger that height change and we need to re-layout
+        this.trigger("new-comment");
     },
 });
 
@@ -456,6 +478,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                         "repostVision", "removeVision", "gotoUser",
                         "visionCommentInput");
         this.model.bind("change", this.render, this);
+        this.model.comments().bind("add", this.render, this);
 
         this.render();
     },
@@ -676,7 +699,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
-        _.bindAll(this, "activeVisionList",
+        _.bindAll(this, "masonryReload",
                         "showVisionDetails",
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
@@ -737,6 +760,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.selectedVisions().bind("remove", 
                                           this.changeInSelectedVisions,
                                           this);
+        this.model.bind("new-comment", this.masonryReload, this);
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
@@ -843,25 +867,6 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
 
-    activeVisionList: function() {
-        var pageMode = App.Var.Model.pageMode();
-        if (pageMode == App.Const.PageMode.HOME_GUEST ||
-            pageMode == App.Const.PageMode.HOME_USER) {
-            return this.model.otherVisions();
-        } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
-            return this.model.selectedVisions();
-        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            if (App.Var.Model.currentUserId() == USER.id) {
-                return this.model.visionList();
-            } else {
-                return this.model.otherVisions();
-            }
-        } else {
-            assert(false, "Invalid pageMode");
-            return null;
-        }
-    },
-
     /*
      * Render vision list: triggered by set of this.model.visionList
      */
@@ -873,7 +878,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         masonryContainer.empty();
 
         this.children = []
-        this.activeVisionList().each(this.renderVision);
+        this.model.activeVisionList().each(this.renderVision);
         masonryContainer.append(this.children);
 
         // TODO: Don't need to reload once we know heights of images
@@ -903,13 +908,13 @@ App.Backbone.View.Page = Backbone.View.extend({
     sortStart: function(event, ui) {
         console.log("Sort");
         ui.item.removeClass(VISION_CLASS);
-        ui.item.parent().masonry('reload');
+        this.masonryReload();
 
         this.srcIndex = ui.item.index();
     },
     sortStop: function(event, ui) {
         ui.item.addClass(VISION_CLASS);
-        ui.item.parent().masonry('reload');
+        this.masonryReload();
         this.destIndex = ui.item.index();
         if (this.destIndex != this.srcIndex && this.srcIndex >= 0) {
             var visionId = this.model.visionList().at(this.srcIndex).visionId();
@@ -923,13 +928,16 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
     sortChange: function(event, ui) {
-        ui.item.parent().masonry('reload');
+        this.masonryReload();
     },
     ajaxSortSuccess: function(data, textStatus, jqXHR) {
         this.model.moveVision(this.srcIndex, this.destIndex);
     },
     ajaxSortError: function(jqXHR, textStatus, errorThrown) {
         this.renderVisionList();
+    },
+    masonryReload: function() {
+        $(CONTENT_DIV).masonry('reload');
     },
 
     /*
