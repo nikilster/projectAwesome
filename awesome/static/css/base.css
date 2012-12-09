@@ -12,13 +12,17 @@ body > #PageContainer {
   height: auto;
   min-height: 100%;
 }
-#PageContainer {
-  padding-bottom: 40px;
-}
 body {
   /*background-color: @BACKGROUND_COLOR;*/
 
   background-image: url('../img/patterns/creampaper.png');
+}
+#FooterPadding {
+  height: 40px;
+}
+#Content {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 footer {
   width: 100%;
@@ -39,7 +43,7 @@ footer {
   height: 40px;
 }
 #InstructionsPadding {
-  height: 90px;
+  height: 80px;
 }
 /*
 	Utility Styles

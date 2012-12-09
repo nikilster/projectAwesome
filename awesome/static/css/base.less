@@ -13,14 +13,19 @@
 html, body, #PageContainer { height: 100%; }
 body > #PageContainer { height: auto; min-height: 100%; }
 
-#PageContainer {
-    padding-bottom:40px;
-}
-
 body 
 {
     /*background-color: @BACKGROUND_COLOR;*/
     background-image: @BACKGROUND_IMAGE;
+}
+
+#FooterPadding {
+    height:@FOOTER_HEIGHT;
+}
+
+#Content {
+    margin-top:10px;
+    margin-bottom:10px;
 }
 
 footer
@@ -49,7 +54,7 @@ footer
 }
 
 #InstructionsPadding {
-    height:90px;
+    height:80px;
 }
 
 /*
