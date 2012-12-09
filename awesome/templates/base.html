@@ -20,7 +20,7 @@
         
         <!-- TODO: make this an eimage so we can fix side -->
         <!-- Side spacing -->
-        <a class="brand" href="/">Project [AWESOME]</a>
+        <a id="NavHome" class="brand" href="/">Project [AWESOME]</a>
         
         <ul class="nav pull-right">
           
@@ -34,8 +34,8 @@
           {#------------ User Is Logged In ------------#}
           
           
-            <li><a href="#">Add Vision</a></li>
-            <li><a href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
+            <li><a id="AddVision" href="#">Add Vision</a></li>
+            <li><a id="NavProfile" href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
 
             <li><a href="{{ url_for('about') }}">About</a></li>
 

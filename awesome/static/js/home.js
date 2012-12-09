@@ -602,7 +602,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //If we are on the main page
         // AND the user is not logged in
         // AND vision is not selected
-        if (pageMode == App.Const.PageMode.HOME_GUEST) {
+        if (pageMode == App.Const.PageMode.HOME_GUEST ||
+            (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             if(!this.model.isSelected())
                 this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
         }
@@ -1298,7 +1299,8 @@ $(document).ready(function() {
         }
     }
 
-    $("#AddItemButton").click(function() {
+    $("#AddVision").click(function(e) {
+        e.preventDefault();
         $("#AddVisionModal").modal();
         $("#FileUploadInput").val("");
         $("#FileUploadInput").removeAttr("disabled");
