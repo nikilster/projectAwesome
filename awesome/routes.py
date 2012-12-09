@@ -91,6 +91,27 @@ def api_change_info():
         abort(406)
     abort(405)
 
+@app.route('/api/change_picture', methods=['POST'])
+def api_change_picture():
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+
+            if not 'picture' in request.files:
+                abort(406)
+            file = request.files['picture']
+
+            url = Api.changeProfilePicture(userInfo['id'], file)
+
+            user = Api.getUserById(userInfo['id'])
+            assert user, "New user should exist"
+            SessionManager.setUser(user)
+            userInfo = SessionManager.getUser()
+
+            return redirect(url_for('settings'))
+        abort(406)
+    abort(405)
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -210,6 +231,8 @@ def apiGetUserVisions(userId):
             data['visionList'] = []
 
         data['otherVisions'] = Api.getUserVisionList(myUserId, userId)
+        user = Api.getUserById(userId)
+        data['user'] = user.toDictionary();
 
         return jsonify(data)
     abort(405)

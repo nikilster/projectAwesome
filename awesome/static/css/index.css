@@ -39,6 +39,12 @@ footer {
   left: 0;
   text-align: center;
 }
+
+#UserName {
+  font-size: 30px;
+  padding: 15px;
+}
+
 /* move content below navbar -- could use margin/padding on content too */
 #NavPadding {
   height: 40px;

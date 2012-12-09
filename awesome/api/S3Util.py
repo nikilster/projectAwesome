@@ -16,6 +16,19 @@ from .. import app
 from .. import S3_CONN, S3_BUCKET_NAME, S3_HTTPS_HEADER
 
 from ..util.Verifier import Verifier
+from ..util.Logger import Logger
+
+GET_URL_CONNECT_TIMEOUT = 5
+GET_URL_TIMEOUT = 10
+GET_URL_MAX_FILE_SIZE = 5 * 1024 * 1024
+GET_URL_MAX_REDIRECTS = 5
+
+VISION_LARGE_WIDTH = 500
+VISION_MEDIUM_WIDTH = 275
+VISION_SMALL_WIDTH = 150
+VISION_THUMBNAIL_WIDTH = 100
+
+PROFILE_PICTURE_WIDTH = 175
 
 # Dictionary defining supported image types and their associated ContentType
 IMAGE_TYPES = dict({
@@ -25,6 +38,22 @@ IMAGE_TYPES = dict({
     'gif'   : 'image/gif',
     'bmp'   : 'image/x-ms-bmp',   # this one is unofficial
 })
+
+def fileExt(filename):
+    parts = filename.rsplit('.',1)
+    if len(parts) < 2:
+        return None
+    return parts[1].lower()
+
+def contentType(filename):
+    ext = fileExt(filename)
+    if ext and ext in IMAGE_TYPES.keys():
+        return IMAGE_TYPES[ext]
+    return None
+
+def getUniqueUserString(userId):
+    return hex(77685949 ^ int(userId)).rstrip("L").lstrip("0x")
+
 
 # Class to help pass around S3-related vision info
 class S3Vision:
@@ -78,6 +107,112 @@ class S3Vision:
     def smallHeight(self):
         return self._smallHeight
 
+
+
+#
+# ProfilePicture: handles upload of profile picture (including resizing)
+#
+# Input: Takes a file pointer of file that is uploaded
+# 
+# uploadToS3() does upload and passes back url or None
+#
+# TODO: work on refactoring to reduce code duplication later
+#
+class ProfilePicture:
+    def __init__(self, file):
+        self._fp = file
+
+    def filePointer(self):
+        return self._fp
+
+    # This sanitizes the filename for security purposes
+    def filename(self):
+        return secure_filename(self.filePointer().filename)
+
+    def isImage(self):
+        ext = fileExt(self.filename())
+        if ext and ext in IMAGE_TYPES.keys():
+            return True
+        return False 
+
+    def uploadToS3(self, userId):
+        if not file or not self.isImage():
+            return None
+
+        tempFile = "tmp/TmpProfile-" + str(userId)
+        tempResizedFile = "tmp/TmpResized-" + str(userId)
+        self.filePointer().save(tempFile)
+
+        # ensure image is valid
+        image = Image.open(tempFile)
+        if not image:
+            # Error: not recognized as image
+            return None
+
+        origWidth, origHeight = image.size
+        if origWidth <= 0 or origHeight <= 0:
+            # Error image with 0 dimension isn't really an image
+            return None
+
+        # PIL supports several image modes. We want them in RGB
+        if image.mode != "RGB":
+            image.convert("RGB")
+
+        # Resize image as necessary
+        #
+        # For simplicity and performance, use the same image and
+        # continually downsize it.
+        #
+        # If performance is a problem, we might want to downsize with lowest
+        # fidelity beforehand as described here:
+        #
+        # http://stackoverflow.com/questions/273946/how-do-i-resize-an-image-using-pil-and-maintain-its-aspect-ratio
+        #
+        width = origWidth
+        height = origHeight
+        if width != height and \
+           width != PROFILE_PICTURE_WIDTH:
+            if width > height:
+                x1 = 0
+                y1 = 0
+                x2 = width
+                y2 = height
+                x1 = int((x2/2) - floor(float(y2)/float(2)))
+                x2 = int((x2/2) + ceil(float(y2)/float(2)))
+                image = image.crop((x1,y1,x2,y2))
+            else:
+                x1 = 0
+                y1 = 0
+                x2 = width
+                y2 = height
+                y1 = int((y2/2) - floor(float(x2)/float(2)))
+                y2 = int((y2/2) + ceil(float(x2)/float(2)))
+                image = image.crop((x1,y1,x2,y2))
+        width = PROFILE_PICTURE_WIDTH
+        height = PROFILE_PICTURE_WIDTH
+        image.thumbnail((width, height), Image.ANTIALIAS)
+        image.save(tempResizedFile, format='JPEG')
+
+        # upload to S3
+        uniqueUserString = getUniqueUserString(userId)
+        keyName = "profile_picture/" + str(uniqueUserString) + "/profile.jpg"
+
+        s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
+        s3Key = Key(s3Bucket)
+        s3Key.key = keyName
+
+        headers = {'Content-Type' : contentType(self.filename()) }
+
+        try:
+            s3Key.set_contents_from_filename(tempResizedFile, headers)
+        except:
+            return None
+
+        os.remove(tempFile)
+        os.remove(tempResizedFile)
+
+        return S3_HTTPS_HEADER + S3_BUCKET_NAME + "/" + keyName
+
 #
 # ImageFilePreview : handles manual upload of files to a preview image on S3
 #
@@ -98,51 +233,29 @@ class ImageFilePreview:
     def filename(self):
         return secure_filename(self.filePointer().filename)
 
-    def fileExt(self):
-        parts = self.filename().rsplit('.',1)
-        if len(parts) < 2:
-            return None
-        return parts[1].lower()
-
     def isImage(self):
-        ext = self.fileExt()
+        ext = fileExt(self.filename())
         if ext and ext in IMAGE_TYPES.keys():
             return True
         return False 
-
-    def contentType(self):
-        ext = self.fileExt()
-        if ext and ext in IMAGE_TYPES.keys():
-            return IMAGE_TYPES[ext]
-        return None
 
     def uploadForPreview(self, userId):
         t = str(userId)
         md5 = hashlib.md5()
         md5.update(t)
         digest = md5.hexdigest()
-        keyName = "preview/" + str(digest) + "/Preview." + self.fileExt()
+        keyName = "preview/" + str(digest) + "/Preview." + fileExt(self.filename())
 
         s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
         s3Key = Key(s3Bucket)
         s3Key.key = keyName
 
-        headers = {'Content-Type' : self.contentType() }
+        headers = {'Content-Type' : contentType(self.filename()) }
 
         numBytes = s3Key.set_contents_from_file(self.filePointer(), headers)
         if numBytes > 0:
             return S3_HTTPS_HEADER + S3_BUCKET_NAME + "/" + keyName
         return None
-
-GET_URL_CONNECT_TIMEOUT = 5
-GET_URL_TIMEOUT = 10
-GET_URL_MAX_FILE_SIZE = 5 * 1024 * 1024
-GET_URL_MAX_REDIRECTS = 5
-
-VISION_LARGE_WIDTH = 500
-VISION_MEDIUM_WIDTH = 275
-VISION_SMALL_WIDTH = 150
-VISION_THUMBNAIL_WIDTH = 100
 
 #
 # ImageUrlUpload
@@ -263,7 +376,7 @@ class ImageUrlUpload:
         md5 = hashlib.md5()
         md5.update(t)
         uniqueTimeString = md5.hexdigest()
-        uniqueUserString = hex(77685949 ^ int(userId)).rstrip("L").lstrip("0x")
+        uniqueUserString = getUniqueUserString(userId)
         
         uniqueString = uniqueUserString + "_" + uniqueTimeString
 

@@ -30,6 +30,8 @@ class UserModel(DB.Model):
     email           = DB.Column(DB.String(255), unique=True)
     emailConfirmed  = DB.Column(DB.Boolean, default=False)
 
+    picture         = DB.Column(DB.Text)
+
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                             onupdate=datetime.datetime.utcnow)
@@ -45,9 +47,17 @@ class UserModel(DB.Model):
         self.passwordHash = passwordHash
         self.email = email
         self.userName = ""
+        self.picture = "https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"
 
     def __str__(self):
         return '<User %s:%s %s>' % (self.id, self.firstName, self.lastName)
+
+    def toDictionary(self):
+        return {'id' : self.id,
+                'firstName' : self.firstName,
+                'lastName' : self.lastName,
+                'picture' : self.picture,
+               }
 
 #
 # VisionListModel : JSON list of vision ids
@@ -111,20 +121,11 @@ class VisionModel(DB.Model):
         return '<Vision %s>' % str(self.id)
 
     def toDictionary(self):
-        '''
-        picture = {}
-        if self.pictureId > 0:
-            # TODO: This is slow but lets worry about it later
-            model = PictureModel.query.filter_by(id=self.pictureId).first()
-            if model != None:
-                picture = model.toDictionary()
-        '''
         return {'id' : self.id,
                 'userId' : self.userId,
                 'text' : self.text,
                 'parentId' : self.parentId,
                 'rootId' : self.rootId,
-                #'picture' : picture,
                }
 
 #

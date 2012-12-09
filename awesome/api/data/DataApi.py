@@ -81,6 +81,19 @@ class DataApi:
         if None != user:
             if user.passwordHash != passwordHash:
                 user.passwordHash = passwordHash
+                DB.session.add(user)
+                DB.session.commit()
+                return True
+        return False
+
+    @staticmethod
+    def setProfilePicture(userId, url):
+        user = DataApi.getUserById(userId)
+        if None != user:
+            if user.picture != url:
+                user.picture = url
+                DB.session.add(user)
+                DB.session.commit()
                 return True
         return False
 

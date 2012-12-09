@@ -16,7 +16,7 @@ from ..util.Logger import Logger
 from ..Constant import Constant
 
 from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision
+from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
 
 # TMP STUFF
 from data.DbSchema import VisionPrivacy
@@ -123,6 +123,21 @@ class Api:
             change |= DataApi.setUserName(userId, firstName, lastName)
             change |= DataApi.setUserEmail(userId, email)
         return change
+
+    @staticmethod
+    def changeProfilePicture(userId, file):
+        Logger.debug("HERE")
+        image = ProfilePicture(file)
+        url = None
+        if file and image.isImage():
+            Logger.debug("HERE2")
+            url = image.uploadToS3(userId)
+            Logger.debug("HERE3")
+            if url != None:
+                Logger.debug("SET PIC")
+                if True == DataApi.setProfilePicture(userId, url):
+                    return url
+        return None
 
     @staticmethod
     def repostVisionList(userId, visionIds):

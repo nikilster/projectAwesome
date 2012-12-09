@@ -185,7 +185,19 @@ var App = {
  */
 
 App.Backbone.Model.User = Backbone.Model.extend({
-
+    defaults: {
+        id: -1,
+        firstName: "",
+        lastName: "",
+        picture: "",
+    },
+    initialize: function() {
+    },
+    userid: function() { return this.get("id"); },
+    firstName: function() { return this.get("firstName"); },
+    lastName: function() { return this.get("lastName"); },
+    fullName: function() { return this.firstName() + " " + this.lastName(); },
+    picture: function() { return this.get("picture"); },
 });
 
 App.Backbone.Model.Picture = Backbone.Model.extend({
@@ -290,6 +302,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         visionList: new App.Backbone.Model.VisionList(),
         selectedVisions: new App.Backbone.Model.VisionList(),
         otherVisions: new App.Backbone.Model.VisionList(),
+        user: null,
     },
     initialize: function() {
     },
@@ -300,6 +313,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     visionList: function() { return this.get("visionList"); },
     selectedVisions: function() { return this.get("selectedVisions"); },
     otherVisions: function() { return this.get("otherVisions"); },
+    user: function() { return this.get("user"); },
     getSelectedVision: function(visionId) {
         var list = this.selectedVisions().where({id: visionId});
         if (list.length > 0) {
@@ -339,6 +353,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // different users right now
         this.set({pageMode: mode}, {silent: true});
         this.trigger("change:pageMode");
+    },
+    setUser: function(user) {
+        this.set({ user : new App.Backbone.Model.User(user)});
     },
     setCurrentUserId: function(id) {
         var currentUserId = this.currentUserId();
@@ -740,7 +757,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                         // Show user profile
                         "showProfile",
                         "renderProfile",
-                        "renderProfileError");
+                        "renderProfileError",
+                        "showUserInformation",
+                        "hideUserInformation");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -760,6 +779,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.model.selectedVisions().bind("remove", 
                                           this.changeInSelectedVisions,
                                           this);
+        this.model.bind("change:user", this.showUserInformation, this);
         this.model.bind("new-comment", this.masonryReload, this);
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
@@ -1105,6 +1125,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showHome: function() {
         this.showPageLoading();
+        this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).show();
 
@@ -1200,6 +1221,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         if (App.Var.Model.currentUserId() != USER.id) {
             this.model.setOtherVisions(App.Var.JSON.otherVisions);
         }
+        this.model.setUser(App.Var.JSON.user);
     },
     renderProfileError: function() {
         var masonryContainer = $(CONTENT_DIV).first();
@@ -1209,6 +1231,15 @@ App.Backbone.View.Page = Backbone.View.extend({
         var template = _.template($("#ProfileLoadErrorTemplate").html(),
                                   variables);
         $(LOADING_INDICATOR_DIV).html(template).show();
+    },
+    showUserInformation: function() {
+        console.log("SET USER INFO");
+        $("#UserName").html(this.model.user().fullName());
+        $("#UserProfilePicture").attr("src", this.model.user().picture());
+        $("#UserInformation").show();
+    },
+    hideUserInformation: function() {
+        $("#UserInformation").hide();
     },
 });
 

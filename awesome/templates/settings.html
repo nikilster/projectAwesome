@@ -23,24 +23,27 @@ var USER = { id: '{{ user['id'] }}',
 
 {# ------------------------------------------------------------------------- #}
 {% block content %}
-
-        <!-- Title -->
-        <div class="row header">
+        <!-- Content -->
+        <div id="SettingsBox">
             <div class="page-header TextCenter">            
                 <h1 class="title">Settings</h1>
             </div>
-        </div>
 
-        <!-- Content -->
-        <div class="span8 offset2">
+            <div id="ProfilePictureContainer">
+                <img id="ProfilePicture" src="{{ user['picture'] }}"/>
 
-            User information
+                <form action="{{url_for("api_change_picture") }}" method="post" enctype="multipart/form-data">
+                    <input type="file" name="picture"></input><br>
+                    <input type="submit" class="btn btn-primary btn-small"
+                           value="Use new picture"></input>
+                </form>
+            </div>
 
             <form method="POST" class="form-horizontal"
-                action="{{ url_for('api_change_info') }}">
+                action="{{ url_for('api_change_info') }}"
+                style="padding-top: 20px;">
                 <div class="control-group">
                     <label class="control-label" for="firstName">
-                        Name
                     </label>
                     <div class="controls">
                         <input id="FirstNameInput"
@@ -58,7 +61,6 @@ var USER = { id: '{{ user['id'] }}',
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="email">
-                        Email
                     </label>
                     <div class="controls">
                         <input id="EmailInput"
@@ -69,7 +71,7 @@ var USER = { id: '{{ user['id'] }}',
                     </div>
                 </div>
                 <div class="control-group">
-                    <button id="SubmitInput"
+                    <button id="SettingsSubmitInput"
                             type="submit"
                             class="SubmitButton btn btn-primary btn-large"
                             disabled="disabled">
@@ -118,9 +120,9 @@ function toggleSubmit() {
     }
 
     if (true == submitValid) {
-        $("#SubmitInput").removeAttr("disabled");
+        $("#SettingsSubmitInput").removeAttr("disabled");
     } else {
-        $("#SubmitInput").attr("disabled", "disabled");
+        $("#SettingsSubmitInput").attr("disabled", "disabled");
     }
 }
 

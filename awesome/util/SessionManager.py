@@ -23,6 +23,7 @@ class SessionManager:
             'firstName' : user.firstName,
             'lastName'  : user.lastName,
             'email'     : user.email,
+            'picture'   : user.picture,
         }
 
     @staticmethod
