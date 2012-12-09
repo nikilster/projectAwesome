@@ -21,6 +21,8 @@ var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
 var CURSOR_CLASS_MOVE = "MoveCursor";
 var VISION_SELECTED_CLASS = "VisionSelected";
 
+var VISION_COMMENT_CONTAINER = ".VisionCommentContainer";
+
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
@@ -493,6 +495,11 @@ App.Backbone.View.Vision = Backbone.View.extend({
             pictureUrl = this.model.picture().mediumUrl();
         }
 
+        var addCommentVisibility = "";
+        if (!userLoggedIn()) {
+            addCommentVisibility = "Hidden";
+        }
+
         //Default Pointer
         var cursorStyleMove = false;
         var moveDisplay = "none";
@@ -546,6 +553,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          repostDisplay: repostDisplay,
                          mineDisplay: mineDisplay,
                          removeButtonVisibility: removeButtonVisibility,
+                         addCommentVisibility: addCommentVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),
@@ -556,7 +564,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         this.comments = []
         this.model.comments().each(this.renderComment);
-        $(this.el).find(".VisionCommentContainer").append(this.comments);
+        $(this.el).find(VISION_COMMENT_CONTAINER).append(this.comments);
 
         return this;
     },

@@ -204,10 +204,11 @@
         <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
     </div>
     <div class="VisionCommentContainer"></div>
-    <div class="AddVisionComment">
+    <div class="AddVisionComment <%= addCommentVisibility %>">
         <input class="AddVisionCommentInput" type="text"
                placeholder="Write comment"
                style="width:250px; margin-top:5px;"></input>
+    </div>
 </div>
 
 <!-- //Overlay -->
