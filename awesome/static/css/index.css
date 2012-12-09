@@ -25,10 +25,6 @@ body {
 #FooterPadding {
   height: 40px;
 }
-#Content {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
 footer {
   width: 100%;
   height: 40px;
@@ -62,7 +58,11 @@ footer {
 /*
     The Styles!
 */
-.NoveCursor {
+/* add to bootstrap */
+.navbar-inner {
+  z-index: 1 !important;
+}
+.MoveCursor {
   cursor: move;
 }
 .LightShadow {
@@ -100,11 +100,20 @@ footer {
     Instructions
     Both (H + Example)
 */
+.SelectedEmph {
+  color: #02bf0f;
+}
 #Instructions,
 #ExampleVisionBoardInstructions {
   width: 600px;
   margin: auto;
+  padding-top: 15px;
+  line-height: 1.4;
+  margin-top: -5px;
   margin-bottom: 10px;
+  height: 55px;
+  position: relative;
+  z-index: -1 !important;
   text-align: center;
   color: #666666;
   font-size: 18px;
@@ -160,15 +169,17 @@ footer {
   padding: 0px 21px 21px 21px;
 }
 #Content,
-#TestVisionContainer {
+#ExampleVisionBoard {
   overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 #Content li.MasonryItem,
-#TestVisionContainer li.MasonryItem {
+#ExampleVisionBoard li.MasonryItem {
   float: left;
 }
 #Content li.MasonryBox,
-#TestVisionContainer li.MasonryBox {
+#ExampleVisionBoard li.MasonryBox {
   width: 285px;
   margin: 7px;
   border: 0px;
@@ -180,29 +191,29 @@ footer {
   list-style-type: none;
 }
 #Content .MasonryItemUnselected,
-#TestVisionContainer .MasonryItemUnselected {
+#ExampleVisionBoard .MasonryItemUnselected {
   border: 1px solid #DDDDDD;
 }
 #Content .MasonryItemSelected,
-#TestVisionContainer .MasonryItemSelected {
+#ExampleVisionBoard .MasonryItemSelected {
   border: 1px solid red;
 }
 #Content .MasonryItemPointerCursor,
-#TestVisionContainer .MasonryItemPointerCursor {
+#ExampleVisionBoard .MasonryItemPointerCursor {
   cursor: pointer;
 }
 #Content .MasonryItemMoveCursor,
-#TestVisionContainer .MasonryItemMoveCursor {
+#ExampleVisionBoard .MasonryItemMoveCursor {
   cursor: move;
 }
 #Content .MasonryItemInner,
-#TestVisionContainer .MasonryItemInner {
+#ExampleVisionBoard .MasonryItemInner {
   padding: 4px;
   position: relative;
   min-height: 48px;
 }
 #Content .VisionOverlay,
-#TestVisionContainer .VisionOverlay {
+#ExampleVisionBoard .VisionOverlay {
   display: none;
   position: absolute;
   top: 0px;
@@ -213,7 +224,7 @@ footer {
   z-index: 1;
 }
 #Content .AddVisionOverlayText,
-#TestVisionContainer .AddVisionOverlayText {
+#ExampleVisionBoard .AddVisionOverlayText {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -231,7 +242,7 @@ footer {
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 #Content .RemoveVisionOverlayText,
-#TestVisionContainer .RemoveVisionOverlayText {
+#ExampleVisionBoard .RemoveVisionOverlayText {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -250,7 +261,7 @@ footer {
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 #Content .VisionUserBlock,
-#TestVisionContainer .VisionUserBlock {
+#ExampleVisionBoard .VisionUserBlock {
   position: relative;
   padding: 3px;
   font-size: 12px;
@@ -258,11 +269,11 @@ footer {
   z-index: 10;
 }
 #Content .VisionUserName,
-#TestVisionContainer .VisionUserName {
+#ExampleVisionBoard .VisionUserName {
   font-weight: bold;
 }
 #Content .VisionComment,
-#TestVisionContainer .VisionComment {
+#ExampleVisionBoard .VisionComment {
   font-size: 12px;
   line-height: 1.2;
   padding: 5px;
@@ -270,14 +281,14 @@ footer {
   margin: 1px;
 }
 #Content .VisionToolbar,
-#TestVisionContainer .VisionToolbar {
+#ExampleVisionBoard .VisionToolbar {
   position: absolute;
   top: 5px;
   right: 5px;
   z-index: 1;
 }
 #Content .VisionToolbar .VisionToolbarButton,
-#TestVisionContainer .VisionToolbar .VisionToolbarButton {
+#ExampleVisionBoard .VisionToolbar .VisionToolbarButton {
   display: inline-block;
   font-size: 10pt;
   line-height: 1.2;
@@ -290,27 +301,12 @@ footer {
   border-radius: 3px;
 }
 #Content .VisionToolbar .VisionToolbarButton:hover,
-#TestVisionContainer .VisionToolbar .VisionToolbarButton:hover {
+#ExampleVisionBoard .VisionToolbar .VisionToolbarButton:hover {
   background-color: #ffffff;
   cursor: pointer;
   -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
   box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-}
-#TestVisionInfoContainer {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  width: 520px;
-  margin-left: -260px;
-  height: 40px;
-  z-index: -1;
-  background-color: #FCE3ED;
-  padding: 5px 15px;
-  border-bottom: 1px #E391B2 solid;
-  border-left: 1px #E391B2 solid;
-  border-right: 1px #E391B2 solid;
-  display: none;
 }
 #VisionDeleteButton {
   float: right;

@@ -30,7 +30,12 @@
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
 @OVERLAY_MARGIN: @VISION_PADDING+4;
 
-.NoveCursor
+/* add to bootstrap */
+.navbar-inner {
+    z-index: 1 !important;
+}
+
+.MoveCursor
 {
     cursor: move;
 }
@@ -94,11 +99,22 @@
     Both (H + Example)
 */
 
+.SelectedEmph {
+    color: @EMPH_COLOR;
+}
+
 #Instructions, #ExampleVisionBoardInstructions
 {
     width:@INSTRUCTIONS_WIDTH;
     margin:auto;
+    padding-top:15px;
+    line-height:1.4;
+    margin-top: -5px;
     margin-bottom:@INSTRUCTIONS_MARGIN_BOTTOM;
+    height:55px;
+
+    position: relative;
+    z-index: -1 !important;
 
     text-align: center;
     color:@TEXT_COLOR;
@@ -211,8 +227,11 @@
     padding:0px 21px 21px 21px;
 }
 
-#Content, #TestVisionContainer {
+#Content, #ExampleVisionBoard{
     overflow: hidden;
+
+    margin-top:15px;
+    margin-bottom:15px;
 
     // This is added and removed when we move the vision w/ jquery ui sortable
     li.MasonryItem {
@@ -332,17 +351,6 @@
         }
     }
 }
-
-#TestVisionInfoContainer
-{
-    position: absolute; top:100%; left: 50%;
-    width: 520px; margin-left:-260px; height:40px; 
-    z-index:-1; background-color: #FCE3ED; padding:5px 15px;
-    border-bottom: 1px #E391B2 solid;
-    border-left: 1px #E391B2 solid;
-    border-right: 1px #E391B2 solid; display:none;
-}
-
 
 // This button is in the edit vision modal
 #VisionDeleteButton {

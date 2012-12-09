@@ -33,14 +33,13 @@
 
     <!-- Onboarding -->
     <div class="well" id="Instructions">
-      Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds!
+      Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds.
       <div>
-        <span id="SelectedZero">Get started by choosing (clicking on) 3 pictures!</span>
-        <span id="SelectedOne" class="Hidden">Good Job! Chose 2 more pictures!</span>
-        <span id="SelectedTwo" class="Hidden">Nice! Now chose one more!</span>
-        <span id="SelectedThree" class="Hidden">Awesome! You did it!
-          <br/>
-          <button id="ViewExampleVisionBoardButton" class="btn btn-primary">See Your Vision Board</button>
+        <span id="SelectedZero">Get started by choosing 3 visions!</span>
+        <span id="SelectedOne" class="SelectedEmph Hidden">Good Job! Chose 2 more pictures!</span>
+        <span id="SelectedTwo" class="SelectedEmph Hidden">Nice! Now chose one more!</span>
+        <span id="SelectedThree" class="Hidden">
+          <button id="ViewExampleVisionBoardButton" class="btn btn-primary">See Your Vision Board!</button>
         </span>
       </div>
     </div>
@@ -51,11 +50,9 @@
     </form>
 
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
-      Congrats!  Here is your own <a href="{{ url_for('about') }}">Vision Board!</a>
+        Congrats on starting your vision board!
       <br/>
-      Click register to save your Vision Board and add more stuff to it.
-      <br/>
-      <button id="JoinSite" class="btn btn-primary">Register</a>  
+      <button id="JoinSite" class="btn btn-success">Register to save it and start living your dreams!</a>  
     </div>
 
 {% endblock %}
@@ -69,7 +66,7 @@
     <div id="LoadingIndicator" class="Hidden"></div>
     <div id="InstructionsPadding"></div>
     <div id="Content" class="Center"></div>
-    <div id="ExampleVisionBoard"></div>
+    <div id="ExampleVisionBoard" class="Center"></div>
 
 
     <!-- Modal for vision details -->
