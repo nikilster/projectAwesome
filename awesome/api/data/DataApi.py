@@ -279,13 +279,19 @@ class DataApi:
             return comment
         return DataApi.NO_OBJECT_ESISTS
 
+    # TODO: this isn't fast, but will do for now.
     @staticmethod
     def getVisionCommentsFromVisionIds(visionIds):
-        return VisionCommentModel.query \
-                          .filter_by(removed=False) \
-                          .filter(VisionCommentModel.visionId.in_(visionIds)) \
-                          .order_by(VisionCommentModel.id) \
-                          .all()
+        allComments = []
+        for visionId in visionIds:
+            comments = VisionCommentModel.query \
+                             .filter_by(removed=False) \
+                             .filter_by(visionId=visionId) \
+                             .order_by(VisionCommentModel.id.desc()) \
+                             .limit(4)
+            for comment in reversed([c for c in comments]):
+                allComments.append(comment)
+        return allComments
    
     # 
     # Picture methods
