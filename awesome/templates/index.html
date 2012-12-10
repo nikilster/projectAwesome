@@ -249,6 +249,11 @@
 
 <!-- Vision Comments -->
 <script type="text/template" id="VisionCommentTemplate">
+    <img class="VisionCommentProfile" src="<%= picture %>"/>
+    <a class="VisionCommentUserLink" href="/user/<%= authorId %>">
+        <%= name %>
+    </a>
+    <br>
     <%= text %>
 </script>
 

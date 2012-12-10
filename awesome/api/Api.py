@@ -177,15 +177,17 @@ class Api:
         idToUser = dict([(user.id, user) for user in users])
 
         visionIds = [vision.id for vision in visions]
-        Logger.debug("Vision Ids: " + str(visionIds))
         comments = DataApi.getVisionCommentsFromVisionIds(visionIds)
-        Logger.debug("Comments: " + str(comments))
         idToComments = {}
         for comment in comments:
             if not comment.visionId in idToComments.keys():
                 idToComments[comment.visionId] = [comment]
             else:
                 idToComments[comment.visionId].append(comment)
+
+        authorIds = set([comment.authorId for comment in comments])
+        authors = DataApi.getUsersFromIds(authorIds)
+        idToAuthor = dict([(user.id, user) for user in authors])
 
         for vision in visions:
             obj = vision.toDictionary()
@@ -194,7 +196,12 @@ class Api:
                 obj['picture'] = idToPicture[vision.pictureId].toDictionary()
             obj['comments'] = []
             if vision.id in idToComments.keys():
-                obj['comments'] = [c.toDictionary() for c in idToComments[vision.id]]
+                for comment in idToComments[vision.id]:
+                    commentObj = comment.toDictionary()
+                    author = idToAuthor[comment.authorId]
+                    commentObj['name'] = author.fullName
+                    commentObj['picture'] = author.picture
+                    obj['comments'].append(commentObj)
             visionList.append(obj)
         return visionList
 

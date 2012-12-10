@@ -221,12 +221,16 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
         id: -1,
         authorId: -1,
         text: "",
+        name: "",
+        picture: "",
     },
     initialize: function() {
     },
     visionCommentId: function() { return this.get("id"); },
     authorId: function() { return this.get("authorId"); },
     text: function() { return this.get("text"); },
+    name: function() { return this.get("name"); },
+    picture: function() { return this.get("picture"); },
 });
 App.Backbone.Model.VisionCommentList = Backbone.Collection.extend({
     model: App.Backbone.Model.VisionComment
@@ -473,16 +477,29 @@ App.Backbone.Model.Page = Backbone.Model.extend({
 App.Backbone.View.VisionComment = Backbone.View.extend({
     className: "VisionComment",
     initialize: function() {
-        //_.bindAll(this, "");
+        _.bindAll(this, "gotoUser");
         this.render();
     },
+    events: {
+        "click .VisionCommentUserLink" : "gotoUser",
+    },
     render: function() {
-        var variables = { 'text': this.model.text() }
+        var variables = { 'authorId' : this.model.authorId(),
+                          'text': this.model.text(),
+                          'name': this.model.name(),
+                          'picture': this.model.picture()}
         var template = _.template($("#VisionCommentTemplate").html(),
                                   variables);
         $(this.el).html(template);
 
         return this;
+    },
+    gotoUser: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("GOTO USER");
+        App.Var.Router.navigate("/user/" + this.model.authorId(),
+                                {trigger: true});
     },
 });
 

@@ -39,12 +39,6 @@ footer {
   left: 0;
   text-align: center;
 }
-
-#UserName {
-  font-size: 30px;
-  padding: 15px;
-}
-
 /* move content below navbar -- could use margin/padding on content too */
 #NavPadding {
   height: 40px;
@@ -274,13 +268,25 @@ footer {
 #ExampleVisionBoard .VisionUserName {
   font-weight: bold;
 }
+#Content .VisionCommentContainer,
+#ExampleVisionBoard .VisionCommentContainer {
+  z-index: 1;
+}
 #Content .VisionComment,
 #ExampleVisionBoard .VisionComment {
   font-size: 12px;
   line-height: 1.2;
-  padding: 5px;
   background-color: #FAFAFA;
-  margin: 1px;
+  margin: 2px;
+  padding: 2px;
+  overflow: auto;
+}
+#Content .VisionComment .VisionCommentProfile,
+#ExampleVisionBoard .VisionComment .VisionCommentProfile {
+  margin: 3px;
+  width: 30px;
+  height: 30px;
+  float: left;
 }
 #Content .VisionToolbar,
 #ExampleVisionBoard .VisionToolbar {

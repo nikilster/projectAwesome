@@ -397,9 +397,16 @@ def apiAddVisionComment(visionId):
             
                 newComment = Api.addVisionComment(visionId, userInfo['id'],
                                                   text)
+                # Manually putting in name and picture id
+                # TODO: doing this in Api for vision list too!
+                #       ..implement better later!
+                obj = newComment.toDictionary()
+                author = Api.getUserById(authorId)
+                obj['name'] = author.fullName
+                obj['picture'] = author.picture
                 if None != newComment:
                     data = { 'result'    : "success",
-                             'newComment' : newComment.toDictionary() }
+                             'newComment' : obj }
                     return jsonify(data)
 
             data = { 'result' : "error" }
