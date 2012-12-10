@@ -374,9 +374,12 @@ def apiAddUserVision(userId):
                                                 True)
             vision = Api.getVision(visionId)
 
+            objList = []
             if None != vision:
+                objList = Api._visionListToObjectList([vision])
+            if len(objList) == 1:
                 data = { 'result'    : "success",
-                         'newVision' : vision.toDictionary() }
+                         'newVision' : objList[0] }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
