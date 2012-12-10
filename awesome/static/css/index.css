@@ -168,6 +168,29 @@ footer {
   border-left: 1px #E391B2 solid;
   border-right: 1px #E391B2 solid;
 }
+#UserInformation {
+  width: 450px;
+  margin-top: 25px;
+  padding: 10px 10px 10px 190px;
+  overflow: auto;
+  position: relative;
+  height: 155px;
+  background-color: #fafafa;
+  -webkit-transition: -webkit-transform 0.15s linear;
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+#UserInformation #UserProfilePicture {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 155px;
+  height: 155px;
+}
+#UserInformation #UserName {
+  font-size: 30px;
+  line-height: 1.2;
+}
 #ContentContainer {
   margin-bottom: 20px;
   padding: 0px 21px 21px 21px;
