@@ -113,9 +113,11 @@ class DataApi:
 
     @staticmethod
     def getUsersFromIds(userIds):
-        return UserModel.query \
+        if len(userIds) > 0:
+            return UserModel.query \
                         .filter(UserModel.id.in_(userIds)) \
                         .all()
+        return []
 
     # 
     # Vision List methods
@@ -317,10 +319,12 @@ class DataApi:
 
     @staticmethod
     def getPicturesFromIds(pictureIds):
-        return PictureModel.query \
-                           .filter_by(removed=False) \
-                           .filter(PictureModel.id.in_(pictureIds)) \
-                           .all()
+        if len(pictureIds) > 0:
+            return PictureModel.query \
+                            .filter_by(removed=False) \
+                            .filter(PictureModel.id.in_(pictureIds)) \
+                            .all()
+        return []
 
     @staticmethod
     def addPicture(userId, original, uploaded, s3Bucket,
