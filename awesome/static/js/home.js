@@ -34,7 +34,7 @@ var INSTRUCTIONS_TWO_VISIONS_SELECTED = "#SelectedTwo";
 var INSTRUCTIONS_THREE_VISIONS_SELECTED = "#SelectedThree";
 var VIEW_EXAMPLE_VISION_BOARD_BUTTON = "#ViewExampleVisionBoardButton";
 var REGISTER_FORM = "#RegisterForm";
-var USER_SELECTED_VISIONS_INPUT = "UserSelectedVisions";
+var USER_SELECTED_VISIONS_INPUT = "#UserSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
 var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 
@@ -626,8 +626,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         return this;
     },
     renderComment: function(comment, index) {
-        var comment = new App.Backbone.View.VisionComment({ model: comment });
-        this.comments.push(comment.el);
+        if (comment.visionCommentId() > 0) {
+            var c = new App.Backbone.View.VisionComment({ model: comment });
+            this.comments.push(c.el);
+        }
     },
     itemSelect: function(e) {
         var pageMode = App.Var.Model.pageMode();
