@@ -15,5 +15,6 @@ pip install -I MySQL_python==1.2.3
 pip install -I boto==2.6.0
 pip install -I PIL==1.1.7
 pip install -I pycurl==7.19.0
+pip install -I Flask-Mail==0.7.4
 
 # $eof

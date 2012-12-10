@@ -3,6 +3,8 @@ from flask import abort, redirect, url_for, flash, jsonify
 from flask import request, session
 from flask import Response
 from flask import current_app
+from flask.ext.mail import Mail
+from flask.ext.mail import Message
 
 from . import app
 from Constant import Constant
@@ -514,5 +516,36 @@ def terms():
 @app.route('/new_relic/ping', methods=['GET'])
 def new_relic_ping_target():
     return "pong..."
+
+#Mail
+mail = Mail(app)
+app.config.update(
+    DEBUG=True,
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USERNAME = 'projectAwesomer@gmail.com',
+    MAIL_PASSWORD = 'bluesteel!',
+    MAIL_FAIL_SILENTLY = False
+    )
+'''
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+#app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = "projectAwesomer@gmail.com"
+app.config["MAIL_PASSWORD"] = "bluesteel!"
+app.config["DEFAULT_MAIL_SENDER"] = "projectAwesomer@gmail.com"
+'''
+
+
+@app.route('/sendmail', methods=['GET'])
+def sendEmail():
+    msg = Message("I'm Alive!", 
+            sender="projectAwesomer@gmail.com",
+            recipients=['nikilster@gmail.com', 'alex.shye@gmail.com'])
+    msg.body = "Email works!!!"
+    result = mail.send(msg)
+    return "Sent?" + str(result)
 
 # $eof

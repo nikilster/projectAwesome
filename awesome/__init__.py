@@ -1,7 +1,7 @@
 import os, sys
 from flask import Flask
-
 from boto.s3.connection import S3Connection
+from flask.ext.mail import Mail
 
 #Application
 app = Flask(__name__)
