@@ -37,7 +37,12 @@
             {% block nav_extra %}
             {% endblock %}
          
-            <li><a id="NavProfile" href="/user/{{ user['id'] }}">{{ user['firstName'] }}</a></li>
+            <li>
+              <a id="NavProfile" href="/user/{{ user['id'] }}">
+                <img id="NavProfilePicture" src="{{ user['picture'] }}"/>
+                {{ user['firstName'] }}
+              </a>
+            </li>
 
             <li><a href="{{ url_for('about') }}">About</a></li>
 
