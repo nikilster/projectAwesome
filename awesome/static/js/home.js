@@ -848,9 +848,15 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.currentVision = visionModel;
 
         // Note: jQuery text() method escapes html brackets and stuff
-        $("#CurrentVisionText").text(this.currentVision.text());
+        var modal = $("#VisionDetailsModal").first();
 
-        $("#VisionDetailsModal").modal();
+        modal.find("#VisionDetailsName").text(this.currentVision.name());
+        modal.find("#VisionDetailsPicture").attr("src",
+                                     this.currentVision.picture().largeUrl());
+        modal.find("#VisionDetailsText").text(this.currentVision.text());
+        modal.find("#VisionDetailsAddCommentPicture").attr("src",
+                                                           USER['picture']);
+        modal.modal();
     },
     deleteVision: function() {
         if (this.currentVision != null) {

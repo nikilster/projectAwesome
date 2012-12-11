@@ -18,11 +18,13 @@
         var USER = { id: '{{ user['id'] }}',
                      firstName: '{{ user['firstName'] }}',
                      lastName: '{{ user['lastName'] }}',
+                     picture: '{{ user['picture'] }}',
                    }
     {% else %}
        var USER = { id: -1,
-             firstName: "Invalid",
-             lastName: "Name",
+                    firstName: "Invalid",
+                    lastName: "Name",
+                    picture: "",
            }
     {% endif %}
 </script>
@@ -80,16 +82,29 @@
 
     <!-- Modal for vision details -->
     <div id="VisionDetailsModal" class="modal hide fade">
-        <div class="modal-header" style="font-size:18pt">
-            Vision details
-            <div id="VisionDeleteButton" style="float:right; font-size:15px;">
-                Delete
-            </div>
+        <div class="modal-header">
+            <div id="VisionDeleteButton">Delete vision</div>
+            <div id="VisionDetailsName"></div>
         </div>
         <div class="modal-body">
-            <div id="CurrentVisionText"></div>
+            <div id="VisionDetailsPictureContainer">
+            <center>
+                <img id="VisionDetailsPicture"/>
+            </center>
+            </div>
+            <div id="VisionDetailsInfo">
+                <span id="VisionDetailsText"></span>
+            </div>
+            <div id="VisionDetailsCommentsContainer"></div>
 
-            <div class="btn btn-large" data-dismiss="modal">Close</div>
+            <div id="VisionDetailsAddCommentContainer">
+                <img id="VisionDetailsAddCommentPicture"/>
+                <textarea id="VisionDetailsAddComment" type="text"
+                    placeholder="Add comment"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn btn-medium" data-dismiss="modal">Close</div>
         </div>
     </div>
 

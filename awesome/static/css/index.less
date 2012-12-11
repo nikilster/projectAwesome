@@ -446,4 +446,63 @@
     .RoundBorder(4px);
 }
 
+// This overrides the bootstrap modal slide-down animation
+#VisionDetailsModal.fade {
+    -webkit-transition: opacity .2s linear, none;
+    -moz-transition: opacity .2s linear, none;
+    -ms-transition: opacity .2s linear, none;
+    -o-transition: opacity .2s linear, none;
+    transition: opacity .2s linear, none;
+    top: 35%;
+}
+
+#VisionDetailsModal {
+
+    .modal-header {
+        font-size: 18pt;
+
+        #VisionDeleteButton {
+            float: right;
+            font-size: 15px;
+        }
+        #VisionDetailsName {
+        }
+    }
+
+    .modal-body {
+        min-height: 250px;
+        max-height: 600px;
+
+        #VisionDetailsPictureContainer {
+            background-color: #EEEEEE;
+            margin: 15px;
+            max-height: 600px;
+            overflow: hidden;
+
+            #VisionDetailsPicture {
+            }
+        }
+
+        #VisionDetailsInfo {
+            position: relative;
+            padding: 0px 30px;
+        }
+        #VisionDetailsAddCommentContainer {
+            padding: 5px;
+
+            #VisionDetailsAddCommentPicture {
+                width: 45px;
+                height: 45px;
+                background-color: #EEEEEE;
+                margin: 0px 5px 0px 10px;
+            }
+            #VisionDetailsAddComment {
+                margin-top: 12px;
+                width: 400px;
+                height: 40px;
+            }
+        }
+    }
+}
+
 // $eof
