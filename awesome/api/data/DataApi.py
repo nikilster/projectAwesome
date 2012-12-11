@@ -11,16 +11,18 @@ class UserRelationship:
     SELF = 1    # user and target user are same person
     SHARED = 2  # target user has shared with user requesting data
 
-def getUserRelationship(userId, targetUserId):
-    assert targetUserId != None and targetUserId > 0, \
-           "Invalid target user id: %s" % (str(targetUserId))
-    assert userId == None or userId > 0, "Invalid user id: %s" % (str(userId))
+    @staticmethod
+    def getRelationship(userId, targetUserId):
+        assert targetUserId != None and targetUserId > 0, \
+            "Invalid target user id: %s" % (str(targetUserId))
+        assert userId == None or userId > 0, \
+               "Invalid user id: %s" % (str(userId))
 
-    # Right now we don't support the mastermind group so you either are your
-    # self, or you aren't related.
-    if None != userId and userId == targetUserId:
-        return UserRelationship.SELF
-    return UserRelationship.NONE
+        # Right now we don't support the mastermind group so you either are your
+        # self, or you aren't related.
+        if None != userId and userId == targetUserId:
+            return UserRelationship.SELF
+        return UserRelationship.NONE
 
 class DataApi:
     #Returned when we dont have an object for that id
@@ -192,7 +194,7 @@ class DataApi:
 
         visionIds = visionListModel.getVisionIdList()
 
-        relationship = getUserRelationship(userId, targetUserId)
+        relationship = UserRelationship.getRelationship(userId, targetUserId)
 
         visions = []
         if len(visionIds) > 0:
@@ -277,7 +279,7 @@ class DataApi:
         if vision == DataApi.NO_OBJECT_EXISTS:
             return DataApi.NO_OBJECT_ESISTS
 
-        relationship = getUserRelationship(vision.userId, authorId)
+        relationship = UserRelationship.getRelationship(vision.userId, authorId)
         addComment = False
         if UserRelationship.NONE == relationship:
             # can only add if public vision
@@ -295,6 +297,9 @@ class DataApi:
         return DataApi.NO_OBJECT_ESISTS
 
     # TODO: this isn't fast, but will do for now.
+    #
+    # This collects comments in a batch based on vision ids and 
+    # gets the most recent N comments per vision
     @staticmethod
     def getVisionCommentsFromVisionIds(visionIds):
         allComments = []
@@ -304,10 +309,40 @@ class DataApi:
                              .filter_by(visionId=visionId) \
                              .order_by(VisionCommentModel.id.desc()) \
                              .limit(4)
+            # reverse to get in proper order
             for comment in reversed([c for c in comments]):
                 allComments.append(comment)
         return allComments
-   
+
+    # This is meant to get all comments for a vision. It is limited to a big
+    # number for now so properly handling this shouldn't be a problem for now.
+    @staticmethod
+    def getVisionComments(visionId, userId):
+        vision = DataApi.getVision(visionId)
+        if vision == DataApi.NO_OBJECT_EXISTS:
+            return DataApi.NO_OBJECT_ESISTS
+
+        relationship = UserRelationship.getRelationship(vision.userId, userId)
+        viewComments = False
+        if UserRelationship.NONE == relationship:
+            # can only add if public vision
+            if VisionPrivacy.PUBLIC == vision.privacy:
+                viewComments = True
+        elif UserRelationship.SELF == relationship:
+            # can always write if it is your own vision
+            viewComments = True
+        comments = []
+        if viewComments:
+            # get last 100
+            comments = VisionCommentModel.query \
+                                    .filter_by(removed=False) \
+                                    .filter_by(visionId=visionId) \
+                                    .order_by(VisionCommentModel.id.desc()) \
+                                    .limit(100)
+            # reverse to get in proper order
+            comments = [comment for comment in reversed([c for c in comments])]
+        return comments
+  
     # 
     # Picture methods
     #

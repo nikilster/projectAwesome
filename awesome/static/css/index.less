@@ -485,7 +485,42 @@
 
         #VisionDetailsInfo {
             position: relative;
-            padding: 0px 30px;
+            padding: 0px 30px 15px 30px;
+        }
+
+        #VisionDetailsCommentsLoading {
+            padding: 10px;
+            color: gray;
+        }
+
+        #VisionDetailsCommentsContainer {
+            overflow: scroll;
+            max-height: 250px;
+            margin: 5px;
+            padding: 5px;
+
+            .VisionDetailsComment {
+                font-size:12px;
+                line-height:1.2;
+                margin: 2px;
+                padding: 2px; 
+                overflow: auto;
+
+                .VisionDetailsCommentProfile {
+                    margin:6px;
+                    width:40px;
+                    height:40px;
+                    float:left;
+                }
+                .VisionDetailsCommentUserLink {
+                    font-size: 14px;
+                    line-height: 1.5;
+                }
+                .VisionDetailsCommentText {
+                    font-size: 12px;
+                    line-height: 1.2;
+                }
+            }
         }
         #VisionDetailsAddCommentContainer {
             padding: 5px;
@@ -502,6 +537,7 @@
                 height: 40px;
             }
         }
+
     }
 }
 

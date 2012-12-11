@@ -424,7 +424,38 @@ footer {
 }
 #VisionDetailsModal .modal-body #VisionDetailsInfo {
   position: relative;
-  padding: 0px 30px;
+  padding: 0px 30px 15px 30px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsLoading {
+  padding: 10px;
+  color: gray;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer {
+  overflow: scroll;
+  max-height: 250px;
+  margin: 5px;
+  padding: 5px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment {
+  font-size: 12px;
+  line-height: 1.2;
+  margin: 2px;
+  padding: 2px;
+  overflow: auto;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentProfile {
+  margin: 6px;
+  width: 40px;
+  height: 40px;
+  float: left;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentUserLink {
+  font-size: 14px;
+  line-height: 1.5;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentText {
+  font-size: 12px;
+  line-height: 1.2;
 }
 #VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer {
   padding: 5px;

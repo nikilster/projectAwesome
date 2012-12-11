@@ -88,13 +88,14 @@
         </div>
         <div class="modal-body">
             <div id="VisionDetailsPictureContainer">
-            <center>
-                <img id="VisionDetailsPicture"/>
-            </center>
+                <center>
+                    <img id="VisionDetailsPicture"/>
+                </center>
             </div>
             <div id="VisionDetailsInfo">
                 <span id="VisionDetailsText"></span>
             </div>
+            <div id="VisionDetailsCommentsLoading">Loading comments...</div>
             <div id="VisionDetailsCommentsContainer"></div>
 
             <div id="VisionDetailsAddCommentContainer">
@@ -271,6 +272,16 @@
     </a>
     <br>
     <%= text %>
+</script>
+
+<script type="text/template" id="VisionDetailsCommentTemplate">
+    <img class="VisionDetailsCommentProfile" src="<%= picture %>"/>
+    <a class="VisionDetailsCommentUserLink" href="/user/<%= authorId %>">
+        <%= name %>
+    </a>
+    <div class="VisionDetailsCommentText">
+        <%= text %>
+    </div>
 </script>
 
 

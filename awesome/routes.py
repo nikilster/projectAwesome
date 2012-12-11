@@ -420,6 +420,28 @@ def apiAddVisionComment(visionId):
         abort(403)
     abort(405)
 
+@app.route('/api/vision/<int:visionId>/comments', methods=['POST'])
+def apiVisionComments(visionId):
+    if request.method == 'POST':
+        userId = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            userId = userInfo['id']
+
+        parameters = request.json
+        if (not 'visionId' in parameters) or \
+           parameters['visionId'] != visionId:
+            abort(406)
+        
+        comments = Api.getVisionComments(visionId, userId)
+        if None != comments:
+            data = { 'result'    : "success",
+                     'comments' : comments }
+        else:
+            data = { 'result' : "error" }
+        return jsonify(data)
+    abort(405)
+
 '''
     Save
     Used for Bookmarklet

@@ -287,6 +287,9 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     addComment: function(comment) {
         this.comments().push(new App.Backbone.Model.VisionComment(comment));
     },
+    setComments: function(comments) {
+        this.comments().reset(comments);
+    },
     deepClone: function() {
         var cloneModel = this.clone();
         cloneModel.set({ picture: this.picture().clone() });
@@ -503,6 +506,25 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
     },
 });
 
+App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
+    className: "VisionDetailsComment",
+    initialize: function() {
+        //_.bindAll(this, "gotoUser");
+        this.render();
+    },
+    render: function() {
+        var variables = { 'authorId' : this.model.authorId(),
+                          'text': this.model.text(),
+                          'name': this.model.name(),
+                          'picture': this.model.picture()}
+        var template = _.template($("#VisionDetailsCommentTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        return this;
+    },
+});
+
 App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "li",
     className: VISION_CLASS,
@@ -619,8 +641,12 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var template = _.template($("#VisionTemplate").html(), variables);
         $(this.el).html(template);
 
+        // render last 4 comments
         this.comments = []
-        this.model.comments().each(this.renderComment);
+        var commentList = this.model.comments().last(4);
+        for (var i = 0 ; i < commentList.length ; i++) {
+            this.renderComment(commentList[i], i);
+        }
         $(this.el).find(VISION_COMMENT_CONTAINER).append(this.comments);
 
         return this;
@@ -737,6 +763,9 @@ App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "masonryReload",
                         "showVisionDetails",
+                        "ajaxVisionDetailsCommentsSuccess",
+                        "ajaxVisionDetailsCommentsError",
+                        "renderVisionDetailsComment",
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
                         "ajaxDeleteVisionError",
@@ -856,8 +885,46 @@ App.Backbone.View.Page = Backbone.View.extend({
         modal.find("#VisionDetailsText").text(this.currentVision.text());
         modal.find("#VisionDetailsAddCommentPicture").attr("src",
                                                            USER['picture']);
+        modal.find("#VisionDetailsCommentsContainer").empty().hide();
+        modal.find("#VisionDetailsCommentsLoading").show();
         modal.modal();
+
+        doAjax("/api/vision/" + this.currentVision.visionId() + "/comments",
+                JSON.stringify({
+                                'visionId' : this.currentVision.visionId(),
+                                }),
+                this.ajaxVisionDetailsCommentsSuccess,
+                this.ajaxVisionDetailsCommentsError
+        );
     },
+    ajaxVisionDetailsCommentsSuccess: function(data, textStatus, jqXHR) {
+        $("#VisionDetailsCommentsLoading").hide();
+        var container = $("#VisionDetailsCommentsContainer");
+
+        this.currentVision.setComments(data.comments);
+        if (data.comments.length > 0) {
+            this.comments = [];
+            this.currentVision.comments().each(this.renderVisionDetailsComment);
+            container.show();
+            container.append(this.comments);
+            container.scrollTop(container[0].scrollHeight);
+            console.log("ScrollHeight: " + (container[0].scrollHeight));
+            this.comments = [];
+        }
+    },
+    ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
+        // do nothing
+        $("#VisionDetailsCommentsLoading").hide();
+        $("#VisionDetailsCommentsContainer").show();
+    },
+    renderVisionDetailsComment: function(comment, index) {
+        if (comment.visionCommentId() > 0) {
+            var c = new App.Backbone.View.VisionDetailsComment(
+                                                            { model: comment });
+            this.comments.push(c.el);
+        }
+    },
+
     deleteVision: function() {
         if (this.currentVision != null) {
             console.log("DELETE");

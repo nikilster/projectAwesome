@@ -312,4 +312,22 @@ class Api:
         else:
             return DataApi.NO_OBJECT_EXISTS
 
+    @staticmethod
+    def getVisionComments(visionId, userId):
+        comments = DataApi.getVisionComments(visionId, userId)
+
+        objs = []
+        Logger.debug("COMMENTS: " + str(comments))
+        if comments and len(comments) > 0:
+            authorIds = set([comment.authorId for comment in comments])
+            authors = DataApi.getUsersFromIds(authorIds)
+            idToAuthor = dict([(user.id, user) for user in authors])
+
+            for comment in comments:
+                obj = comment.toDictionary()
+                obj['name'] = idToAuthor[comment.authorId].fullName
+                obj['picture'] = idToAuthor[comment.authorId].picture
+                objs.append(obj)
+        return objs
+
 # $eof
