@@ -9,7 +9,8 @@ app.secret_key = '\xaf\xd6\xd9.\x9c\xc8\x16CL\x14#\xe5\x07T\xf8\xe9\xad\xf0\x0e\
 
 from util.Logger import Logger
 
-# This should be the default configuration we want in production
+# This should be the default configuration we want in dev
+# The production setup is through environment variables we set on heroku
 class DEFAULT_CONFIG:
     DEBUG = True
     LOCAL_DB = True
@@ -23,9 +24,13 @@ if os.getenv('PROJECT_AWESOME_FLASK_SETTINGS'):
 Logger.info("DEBUG=" + str(app.config['DEBUG']) +
             "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
 
+# Read LOCAL_DB from environment variable (this is set on heroku for production)
+if os.getenv('LOCAL_DB'):
+    app.config = os.getenv('LOCAL_DB') == "true"
+
 #If we are using the production database
 if app.config['LOCAL_DB'] == False:
-  Logger.info(" ********   Using the Product DB - No not edit or wipe!   ******** ")
+  Logger.info(" ********   Using the Product DB - be careful!   ******** ")
 
 #
 # Configuration for MySQL
