@@ -26,7 +26,7 @@ Logger.info("DEBUG=" + str(app.config['DEBUG']) +
 
 # Read LOCAL_DB from environment variable (this is set on heroku for production)
 if os.getenv('LOCAL_DB'):
-    app.config = os.getenv('LOCAL_DB') == "true"
+    app.config['LOCAL_DB'] = (os.getenv('LOCAL_DB') == "true")
 
 #If we are using the production database
 if app.config['LOCAL_DB'] == False:
