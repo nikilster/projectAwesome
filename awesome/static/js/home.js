@@ -927,11 +927,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         $(VISION_DETAILS_COMMENTS_CONTAINER).show();
     },
     renderVisionDetailsComments: function() {
-        // Make sure details modal is displayed -- especially because we 
-        // rely on it right now for a hack to display comments when added in
-        // the vision details modal
-        if (this.currentVision != null &&
-            $(VISION_DETAILS_MODAL).css("display") != "none") {
+        if (this.currentVision != null) {
             console.log("Render comments in vision details.");
             var container = $(VISION_DETAILS_COMMENTS_CONTAINER).first();
             container.empty();
