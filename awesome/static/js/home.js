@@ -765,6 +765,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "showVisionDetails",
                         "ajaxVisionDetailsCommentsSuccess",
                         "ajaxVisionDetailsCommentsError",
+                        "renderVisionDetailsComments",
                         "renderVisionDetailsComment",
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
@@ -868,6 +869,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     ajaxAddVisionCommentSuccess: function(data, textStatus, jqXHR) {
         this.model.addVisionComment(data.newComment);
+
+        // TODO: this is kind of a hack for now, but it only renders if the
+        //       details modal is displayed so it works.  Later we really want
+        //       a way where the add event from the comment list triggers a
+        //       re-render
+        this.renderVisionDetailsComments();
     },
     ajaxAddVisionCommentError: function(jqXHR, textStatus, errorThrown) {
         // Do nothing, we already showed an error and don't need to change UI
@@ -899,23 +906,41 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     ajaxVisionDetailsCommentsSuccess: function(data, textStatus, jqXHR) {
         $("#VisionDetailsCommentsLoading").hide();
-        var container = $("#VisionDetailsCommentsContainer");
 
         this.currentVision.setComments(data.comments);
-        if (data.comments.length > 0) {
-            this.comments = [];
-            this.currentVision.comments().each(this.renderVisionDetailsComment);
-            container.show();
-            container.append(this.comments);
-            container.scrollTop(container[0].scrollHeight);
-            console.log("ScrollHeight: " + (container[0].scrollHeight));
-            this.comments = [];
-        }
+        this.renderVisionDetailsComments();
+        $("#VisionDetailsAddComment").text("").focus();
+
     },
     ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
         // do nothing
         $("#VisionDetailsCommentsLoading").hide();
         $("#VisionDetailsCommentsContainer").show();
+    },
+    renderVisionDetailsComments: function() {
+        // Make sure details modal is displayed -- especially because we 
+        // rely on it right now for a hack to display comments when added in
+        // the vision details modal
+        if (this.currentVision != null &&
+            $("VisionDetailsModal").css("display") != "none") {
+            console.log("Render comments in vision details.");
+            var container = $("#VisionDetailsCommentsContainer").first();
+            container.empty();
+            var commentList = this.currentVision.comments();
+            if (commentList.length > 0) {
+                this.comments = [];
+                commentList.each(this.renderVisionDetailsComment);
+                container.show();
+                container.append(this.comments);
+
+                // These few lines are a total hack to get the scroll to
+                // work. I tried lots of tricks/hacks with scrollHeight but
+                // nothing worked across browsers better than this so far.
+                container.animate({scrollTop: "1000000px"});
+
+                this.comments = [];
+            }
+        }
     },
     renderVisionDetailsComment: function(comment, index) {
         if (comment.visionCommentId() > 0) {
@@ -1523,6 +1548,20 @@ $(document).ready(function() {
                     console.log("Error");
                 }
         );
+    });
+
+    $("#VisionDetailsAddComment").keydown(function(e) {
+        if(e.keyCode == 13) {
+            e.preventDefault();
+            var text = $.trim($("#VisionDetailsAddComment").val());
+            if (text.length > 0) {
+                console.log("ENTER: " + text);
+                App.Var.View.addVisionComment(
+                            App.Var.View.currentVision.visionId(),
+                            text);
+            }
+        }
+
     });
 });
 
