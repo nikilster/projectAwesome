@@ -19,3 +19,9 @@ class Constant:
     BOOKMARKLET_POST_TEXT       = "text"
     BOOKMARKLET_POST_PAGE_URL   = BOOKMARKLET_PAGE_URL_KEY
     BOOKMARKLET_POST_PAGE_TITLE = BOOKMARKLET_PAGE_TITLE_KEY
+
+    #For Email
+    EMAIL_TO_KEY                = "to"
+    EMAIL_SUBJECT_KEY           = "subject"
+    EMAIL_BODY_HTML_KEY         = "HTMLBody"
+    EMAIL_BODY_TEXT_KEY         = "textBody"

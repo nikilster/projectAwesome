@@ -12,7 +12,7 @@ from util.Logger import Logger
 # This should be the default configuration we want in production
 class DEFAULT_CONFIG:
     DEBUG = True
-    LOCAL_DB = False
+    LOCAL_DB = True
 
 # Get Config
 app.config.from_object(DEFAULT_CONFIG)
