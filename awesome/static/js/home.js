@@ -23,6 +23,15 @@ var VISION_SELECTED_CLASS = "VisionSelected";
 
 var VISION_COMMENT_CONTAINER = ".VisionCommentContainer";
 
+var VISION_DETAILS_MODAL = "#VisionDetailsModal";
+var VISION_DETAILS_COMMENTS_CONTAINER = "#VisionDetailsCommentsContainer";
+var VISION_DETAILS_COMMENTS_LOADING = "#VisionDetailsCommentsLoading";
+var VISION_DETAILS_ADD_COMMENT = "#VisionDetailsAddComment";
+var VISION_DETAILS_NAME = "#VisionDetailsName";
+var VISION_DETAILS_PICTURE = "#VisionDetailsPicture";
+var VISION_DETAILS_TEXT = "#VisionDetailsText";
+var VISION_DETAILS_ADD_COMMENT_PICTURE = "#VisionDetailsAddCommentPicture";
+
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
@@ -884,16 +893,16 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.currentVision = visionModel;
 
         // Note: jQuery text() method escapes html brackets and stuff
-        var modal = $("#VisionDetailsModal").first();
+        var modal = $(VISION_DETAILS_MODAL).first();
 
-        modal.find("#VisionDetailsName").text(this.currentVision.name());
-        modal.find("#VisionDetailsPicture").attr("src",
+        modal.find(VISION_DETAILS_NAME).text(this.currentVision.name());
+        modal.find(VISION_DETAILS_PICTURE).attr("src",
                                      this.currentVision.picture().largeUrl());
-        modal.find("#VisionDetailsText").text(this.currentVision.text());
-        modal.find("#VisionDetailsAddCommentPicture").attr("src",
+        modal.find(VISION_DETAILS_TEXT).text(this.currentVision.text());
+        modal.find(VISION_DETAILS_ADD_COMMENT_PICTURE).attr("src",
                                                            USER['picture']);
-        modal.find("#VisionDetailsCommentsContainer").empty().hide();
-        modal.find("#VisionDetailsCommentsLoading").show();
+        modal.find(VISION_DETAILS_COMMENTS_CONTAINER).empty().hide();
+        modal.find(VISION_DETAILS_COMMENTS_LOADING).show();
         modal.modal();
 
         doAjax("/api/vision/" + this.currentVision.visionId() + "/comments",
@@ -905,26 +914,26 @@ App.Backbone.View.Page = Backbone.View.extend({
         );
     },
     ajaxVisionDetailsCommentsSuccess: function(data, textStatus, jqXHR) {
-        $("#VisionDetailsCommentsLoading").hide();
+        $(VISION_DETAILS_COMMENTS_LOADING).hide();
 
         this.currentVision.setComments(data.comments);
         this.renderVisionDetailsComments();
-        $("#VisionDetailsAddComment").text("").focus();
+        $(VISION_DETAILS_ADD_COMMENT).text("").focus();
 
     },
     ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
         // do nothing
-        $("#VisionDetailsCommentsLoading").hide();
-        $("#VisionDetailsCommentsContainer").show();
+        $(VISION_DETAILS_COMMENTS_LOADING).hide();
+        $(VISION_DETAILS_COMMENTS_CONTAINER).show();
     },
     renderVisionDetailsComments: function() {
         // Make sure details modal is displayed -- especially because we 
         // rely on it right now for a hack to display comments when added in
         // the vision details modal
         if (this.currentVision != null &&
-            $("VisionDetailsModal").css("display") != "none") {
+            $(VISION_DETAILS_MODAL).css("display") != "none") {
             console.log("Render comments in vision details.");
-            var container = $("#VisionDetailsCommentsContainer").first();
+            var container = $(VISION_DETAILS_COMMENTS_CONTAINER).first();
             container.empty();
             var commentList = this.currentVision.comments();
             if (commentList.length > 0) {
@@ -965,7 +974,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     ajaxDeleteVisionSuccess: function(data, textStatus, jqXHR) {
         console.log("REMOVED ID: " + data.removedId);
         this.model.deleteVision(data.removedId);
-        $("#VisionDetailsModal").modal("hide");
+        $(VISION_DETAILS_MODAL).modal("hide");
     },
     ajaxDeleteVisionError: function(jqXHR, textStatus, errorThrown) {
         // Do nothing, we already showed an error and don't need to change UI
@@ -1550,12 +1559,11 @@ $(document).ready(function() {
         );
     });
 
-    $("#VisionDetailsAddComment").keydown(function(e) {
+    $(VISION_DETAILS_ADD_COMMENT).keydown(function(e) {
         if(e.keyCode == 13) {
             e.preventDefault();
-            var text = $.trim($("#VisionDetailsAddComment").val());
+            var text = $.trim($(VISION_DETAILS_ADD_COMMENT).val());
             if (text.length > 0) {
-                console.log("ENTER: " + text);
                 App.Var.View.addVisionComment(
                             App.Var.View.currentVision.visionId(),
                             text);
