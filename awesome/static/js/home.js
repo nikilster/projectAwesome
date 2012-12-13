@@ -14,7 +14,6 @@ var DEBUG = true;
 *******************************************************************************/
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
-var LOADING_INDICATOR_DIV = "#LoadingIndicator";
 
 var VISION_CLASS = "Vision";
 var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
@@ -794,8 +793,6 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "ajaxAddVisionCommentError",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
-                        "showPageLoading",
-                        "hidePageLoading",
                         "showInfoBar",
                         "hideInfoBar",
                         // For onboarding
@@ -1150,21 +1147,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     /*
-     * Show/hide notice of page loading
-     */
-    showPageLoading: function() {
-        var masonryContainer = $(CONTENT_DIV).first();
-        masonryContainer.empty().masonry();
-
-        var variables = {};
-        var template = _.template($("#PageLoadingTemplate").html(), variables);
-        $(LOADING_INDICATOR_DIV).html(template).show();
-    },
-    hidePageLoading: function() {
-        $(LOADING_INDICATOR_DIV).hide();
-    },
-
-    /*
      * Show/hide Add Item button
      */
     showAddItemButton: function() { $("#AddItemButton").show(); },
@@ -1254,10 +1236,9 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render home page
      */
     showHome: function() {
-        this.showPageLoading();
         this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
-        $(CONTENT_DIV).show();
+        $(CONTENT_DIV).empty().masonry().show();
 
         var ajaxUrl = "/api/get_main_page_visions";
 
@@ -1283,7 +1264,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     renderHome: function() {
         console.log("Render Home");
-        this.hidePageLoading();
         if (this.model.visionList().isEmpty()) {
             // TODO: be smarter about when to load and set visionList later
             //       do this first so rendering of other visions has proper
@@ -1296,10 +1276,12 @@ App.Backbone.View.Page = Backbone.View.extend({
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
+        /*
         var variables = {};
         var template = _.template($("#HomePageLoadErrorTemplate").html(),
                                   variables);
         $(LOADING_INDICATOR_DIV).html(template).show();
+        */
     },
 
     /*
@@ -1315,9 +1297,8 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render user profile page
      */
     showProfile: function() {
-        this.showPageLoading();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
-        $(CONTENT_DIV).show();
+        $(CONTENT_DIV).empty().masonry().show();
 
         var ajaxUrl = "/api/user/" + App.Var.Model.currentUserId() + "/visions";
 
@@ -1345,7 +1326,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     renderProfile: function() {
         console.log("Rendering Profile");
-        this.hidePageLoading();
 
         this.model.setVisionList(App.Var.JSON.visionList);
         if (App.Var.Model.currentUserId() != USER.id) {
@@ -1357,10 +1337,12 @@ App.Backbone.View.Page = Backbone.View.extend({
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
+        /*
         var variables = {};
         var template = _.template($("#ProfileLoadErrorTemplate").html(),
                                   variables);
         $(LOADING_INDICATOR_DIV).html(template).show();
+        */
     },
     showUserInformation: function() {
         console.log("SET USER INFO");
