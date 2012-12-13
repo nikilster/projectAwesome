@@ -923,8 +923,6 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         this.currentVision.setComments(data.comments);
         this.renderVisionDetailsComments();
-        $(VISION_DETAILS_ADD_COMMENT).text("").focus();
-
     },
     ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
         // do nothing
@@ -950,6 +948,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 
                 this.comments = [];
             }
+            $(VISION_DETAILS_ADD_COMMENT).val("").focus();
         }
     },
     renderVisionDetailsComment: function(comment, index) {
