@@ -14,7 +14,9 @@ import calendar, datetime
 from util.Logger import Logger
 from api.S3Util import ImageFilePreview
 
-from api.Api import Api
+from api.User import User
+from api.Vision import Vision
+from api.VisionList import VisionList
 from api.FlashMessages import *
 
 
@@ -79,16 +81,14 @@ def api_change_info():
             email = request.form['email']
             desc = request.form['description']
 
-            result = Api.changeUserInfo(userInfo['id'],
-                                        firstName, lastName, email, desc)
-            Logger.debug("RESULT: " + str(result))
+            user = User.getById(userInfo['id'])
+            if user:
+                user.setInfo(firstName, lastName, email)
+                user.setDescription(desc)
 
-            # make sure to update session
-            user = Api.getUserById(userInfo['id'])
-            assert user, "New user should exist"
-            SessionManager.setUser(user)
-            userInfo = SessionManager.getUser()
-
+                # update session
+                SessionManager.setUser(user)
+                userInfo = SessionManager.getUser()
             return render_template('settings.html', user=userInfo)
         abort(406)
     abort(405)
@@ -96,6 +96,7 @@ def api_change_info():
 @app.route('/api/user/<int:userId>/set_description', methods=['POST'])
 def api_user_set_description(userId):
     if request.method == 'POST':
+
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             if userInfo['id'] != userId:
@@ -106,13 +107,12 @@ def api_user_set_description(userId):
                 abort(406)
             description = parameters['description'].strip()
 
-            result = Api.changeUserDescription(userInfo['id'], description)
-
-            if True == result:
-                data = { 'result' : "success",
-                         'description' : description }
-            else:
-                data = { 'result' : "error" }
+            user = User.getById(userInfo['id'])
+            data = { 'result' : "error" }
+            if user:
+                if user.setDescription(description):
+                    data = { 'result' : "success",
+                             'description' : description }
             return jsonify(data)
         abort(403)
     abort(405)
@@ -128,13 +128,12 @@ def api_change_picture():
                 abort(406)
             file = request.files['picture']
 
-            url = Api.changeProfilePicture(userInfo['id'], file)
-
-            user = Api.getUserById(userInfo['id'])
-            assert user, "New user should exist"
-            SessionManager.setUser(user)
-            userInfo = SessionManager.getUser()
-
+            user = User.getById(userInfo['id'])
+            if user:
+                url = user.setProfilePicture(file)
+                if url:
+                    # update session if it worked
+                    SessionManager.setUser(user)
             return redirect(url_for('settings'))
         abort(406)
     abort(405)
@@ -150,11 +149,11 @@ def login():
         email = request.form['email']
         password = request.form['password']
 
-        (user, errorMsg) = Api.loginUser(email, password)
+        (user, errorMsg) = User.getByLogin(email, password)
 
         if user:
             SessionManager.setUser(user)
-            return redirect(url_for('user_profile', userId=user.id))
+            return redirect(url_for('user_profile', userId=user.id()))
         else:
             assert errorMsg != None, "Error msg should exist"
             flash(errorMsg, LoginError.TAG)
@@ -176,7 +175,8 @@ def register():
     elif request.method == 'POST':
         # Keep selected visions in session
         if 'selectedVisions' in request.form:
-            session['selectedVisions'] = str(request.form['selectedVisions'])
+            SessionManager.setSelectedVisions(
+                                        str(request.form['selectedVisions']))
         return render_template('register.html')
     abort(405)
 
@@ -188,41 +188,19 @@ def register_user():
         email = request.form['email']
         password = request.form['password']
         
-        (newUserId, errorMsg) = Api.registerUser(firstName, lastName,
-                                                 email, password)
+        (user, errorMsg) = User.registerNewUser(firstName, lastName,
+                                                email, password)
+        if user:
+            SessionManager.setUser(user)
 
-        Logger.debug("NEW USER ID: " + str(newUserId))
-        if None != newUserId:
-            newUser = Api.getUserById(newUserId)
-            assert newUser, "New user should exist"
+            selectedVisionIds = SessionManager.getSelectedVisions()
+            if selectedVisionIds and len(selectedVisionIds) > 0:
+                Logger.debug("Existing selected visions: " +
+                                                       str(selectedVisionIds));
+                user.repostVisionList(selectedVisionIds)
+                SessionManager.removeSelectedVisions()
 
-            SessionManager.setUser(newUser)
-
-            # Add selected visions if list input valid
-            selectedVisions = []
-            if 'selectedVisions' in session:
-                data = None
-                try:
-                    data = json.loads(session['selectedVisions'])
-                except:
-                    pass
-                if data != None and isinstance(data, list):
-                    ok = True
-                    for item in data:
-                        if not isinstance(item, int):
-                            ok = False
-                            break
-                    if True == ok:
-                        selectedVisions = data
-
-                if len(selectedVisions) > 0:
-                    Logger.debug("Existing selected visions: " +
-                                 str(session['selectedVisions']))
-
-                    Api.repostVisionList(newUser.id, selectedVisions)
-                    session.pop('selectedVisions', None)
-
-            return redirect(url_for('user_profile', userId=newUser.id))
+            return redirect(url_for('user_profile', userId=user.id()))
         else:
             assert errorMsg != "", "Error message should exist"
             flash(errorMsg, RegisterError.TAG)
@@ -232,34 +210,41 @@ def register_user():
 @app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
-        data = { 'otherVisions' : Api.getMainPageVisionList(),
+        mainPageVisions = VisionList.getMainPageVisions()
+
+        data = { 'otherVisions' : mainPageVisions.toDictionaryDeep(),
                  'visionList'   : [] }
 
         # TODO: be smarter about when to load user vision list later
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            data['visionList'] = Api.getUserVisionList(userInfo['id'],
-                                                       userInfo['id'])
+            user = User.getById(userInfo['id'])
+
+            userVisions = VisionList.getUserVisions(user, user)
+            data['visionList'] = userVisions.toDictionaryDeep()
 
         return jsonify(data)
     abort(405)
 
-@app.route('/api/user/<int:userId>/visions', methods=['GET'])
-def apiGetUserVisions(userId):
+@app.route('/api/user/<int:targetUserId>/visions', methods=['GET'])
+def apiGetUserVisions(targetUserId):
     if request.method == 'GET':
-        data = {}
-        myUserId = None
+        data = {'visionList' : [],
+                'otherVisions' : []
+               }
+        user = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            myUserId = userInfo['id']
-            data['visionList'] = Api.getUserVisionList(userInfo['id'],
-                                                       userInfo['id'])
-        else:
-            data['visionList'] = []
+            user = User.getById(userInfo['id'])
+            if user:
+                userVisions = VisionList.getUserVisions(user, user)
+                data['visionList'] = userVisions.toDictionaryDeep();
 
-        data['otherVisions'] = Api.getUserVisionList(myUserId, userId)
-        user = Api.getUserById(userId)
-        data['user'] = user.toDictionary();
+        targetUser = User.getById(targetUserId)
+        if targetUser:
+            targetUserVisions = VisionList.getUserVisions(user, targetUser)
+            data['otherVisions'] = targetUserVisions.toDictionaryDeep()
+        data['user'] = targetUser.toDictionary();
 
         return jsonify(data)
     abort(405)
@@ -284,8 +269,8 @@ def apiMoveUserVision(userId):
 
             Logger.debug("V:%s src: %s dest: %s" % (visionId, srcIndex, destIndex))
 
-            result = Api.moveUserVision(userInfo['id'], visionId,
-                                        srcIndex, destIndex)
+            user = User.getById(userInfo['id'])
+            result = user.moveVision(visionId, srcIndex, destIndex)
 
             if True == result:
                 data = { 'result' : "success" }
@@ -308,14 +293,14 @@ def apiDeleteUserVision(userId):
             if not 'visionId' in parameters:
                 abort(406)
             visionId = parameters['visionId']
-
-            result = Api.deleteUserVision(userInfo['id'], visionId)
-
-            if True == result:
-                data = { 'result'    : "success",
-                         'removedId' : visionId }
-            else:
-                data = { 'result' : "error" }
+            
+            user = User.getById(userInfo['id'])
+            data = { 'result' : "error" }
+            if user:
+                result = user.deleteVision(visionId)
+                if True == result:
+                    data = { 'result'    : "success",
+                            'removedId' : visionId }
             return jsonify(data)
         abort(403)
     abort(405)
@@ -334,14 +319,14 @@ def apiRepostVision(userId):
                 abort(406)
             visionId = parameters['visionId']
 
-            newVision = Api.repostVision(userInfo['id'], visionId)
-
-            if None != newVision:
-                data = { 'result'    : "success",
-                         'repostParentId' : visionId,
-                         'newVision'      : newVision.toDictionary() }
-            else:
-                data = { 'result' : "error" }
+            user = User.getById(userInfo['id'])
+            data = { 'result' : "error" }
+            if user:
+                vision = user.repostVision(visionId)
+                if vision:
+                    data = { 'result'    : "success",
+                             'repostParentId' : visionId,
+                             'newVision'      : vision.toDictionary() }
             return jsonify(data)
         abort(403)
     abort(405)
@@ -358,9 +343,10 @@ def apiFileUpload(userId):
                                        jsonResult=errorResult)
 
             file = request.files['picture']
-            url = Api.previewImage(userInfo['id'], file)
+            user = User.getById(userInfo['id'])
+            url = user.previewImage(file)
 
-            if None != url:
+            if url:
                 SessionManager.setPreviewUrl(url)
                 successResult = ({'result' : 'success',
                                     'url'    : url})
@@ -395,16 +381,17 @@ def apiAddUserVision(userId):
                 url = SessionManager.getPreviewUrl()
 
             # Create a new vision with the photo
-            visionId, errorMsg = Api.saveVision(userId, url, text, "", "",
-                                                True)
-            vision = Api.getVision(visionId)
+            user = User.getById(userId)
+            if user:
+                vision, errorMsg = user.addVision(url, text, True)
 
-            objList = []
-            if None != vision:
-                objList = Api._visionListToObjectList([vision])
-            if len(objList) == 1:
-                data = { 'result'    : "success",
-                         'newVision' : objList[0] }
+                if vision:
+                    objList = []
+                    if None != vision:
+                        objList = VisionList.getWithVision(vision)
+                    if len(objList.visions()) == 1:
+                        data = { 'result'    : "success",
+                                 'newVision' : objList.toDictionaryDeep()[0] }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
@@ -424,24 +411,16 @@ def apiAddVisionComment(visionId):
             if visionId == parameters['visionId']:
                 authorId = userInfo['id']
                 text = parameters['text']
-            
-                newComment = Api.addVisionComment(visionId, userInfo['id'],
-                                                  text)
-                # Manually putting in name and picture id
-                # TODO: doing this in Api for vision list too!
-                #       ..implement better later!
-                obj = newComment.toDictionary()
-                author = Api.getUserById(authorId)
-                obj['name'] = author.fullName
-                obj['picture'] = author.picture
-                if None != newComment:
+                
+                user = User.getById(userInfo['id'])
+                if user:
+                    newComment = user.commentOnVision(visionId, text)
+                if newComment:
                     data = { 'result'    : "success",
-                             'newComment' : obj }
+                             'newComment' : newComment.toDictionaryDeep() }
                     return jsonify(data)
-
             data = { 'result' : "error" }
             return jsonify(data)
-
         abort(403)
     abort(405)
 
@@ -457,13 +436,16 @@ def apiVisionComments(visionId):
         if (not 'visionId' in parameters) or \
            parameters['visionId'] != visionId:
             abort(406)
-        
-        comments = Api.getVisionComments(visionId, userId)
-        if None != comments:
-            data = { 'result'    : "success",
-                     'comments' : comments }
-        else:
-            data = { 'result' : "error" }
+       
+        vision = Vision.getById(visionId)
+        user = User.getById(userId)
+        data = { 'result' : "error" }
+        if vision and user:
+            comments = vision.getComments(user)
+
+            if None != comments:
+                data = { 'result'    : "success",
+                        'comments' : comments }
         return jsonify(data)
     abort(405)
 
@@ -550,13 +532,15 @@ def create():
     userId = SessionManager.getUser()['id']
 
     #Add
-    visionId, message = Api.saveVision(userId, mediaUrl, text,
-                                       pageUrl, pageTitle, False)
+    user = User.getById(userId)
+    if user:
+        # TODO: should we save pageUrl and pageTitle also?
+        vision, message = User.addVision(mediaUrl, text, False)
 
-    #Successful Create!
-    if(visionId != Constant.INVALID_OBJECT_ID):
-        return render_template('successCreatingVision.html', visionId=visionId)
-
+        if vision:
+            #Successful Create!
+            return render_template('successCreatingVision.html',
+                                   visionId=vision.id())
     #Error
     return render_template('errorCreatingVision.html', message=message)
 

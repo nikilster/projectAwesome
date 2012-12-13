@@ -299,7 +299,7 @@ class DataApi:
 
         vision = DataApi.getVision(visionId)
         if vision == DataApi.NO_OBJECT_EXISTS:
-            return DataApi.NO_OBJECT_ESISTS
+            return DataApi.NO_OBJECT_EXISTS
 
         relationship = UserRelationship.getRelationship(vision.userId, authorId)
         addComment = False
@@ -316,7 +316,7 @@ class DataApi:
             DB.session.add(comment)
             DB.session.commit()
             return comment
-        return DataApi.NO_OBJECT_ESISTS
+        return DataApi.NO_OBJECT_EXISTS
 
     # TODO: this isn't fast, but will do for now.
     #

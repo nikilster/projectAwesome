@@ -439,7 +439,7 @@ footer {
   -ms-transition: opacity .2s linear, none;
   -o-transition: opacity .2s linear, none;
   transition: opacity .2s linear, none;
-  top: 35%;
+  top: 300px;
 }
 #VisionDetailsModal .modal-header {
   font-size: 18pt;

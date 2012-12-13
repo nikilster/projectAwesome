@@ -1,0 +1,61 @@
+from data.DataApi import DataApi
+
+from ..util.Verifier import Verifier
+from ..util.PasswordEncrypt import PasswordEncrypt
+from ..util.Logger import Logger
+
+#TODO: Why does (the ..) this work?
+from ..Constant import Constant
+
+from FlashMessages import *
+from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
+
+class VisionComment:
+    #
+    # Static methods to get Comment
+    #
+
+    # This is used internally within API when necessary. Try not to use this.
+    @staticmethod
+    def _getByModel(model):
+        return VisionComment(model)
+
+
+    #
+    # Getter methods
+    #
+    def id(self):
+        return self._model.id
+    def visionId(self):
+        return self._model.visionId
+    def authorId(self):
+        return self._model.authorId
+    def text(self):
+        return self._model.text
+    def removed(self):
+        return self._model.removed
+
+    def toDictionary(self):
+        return { 'id' : self.id(),
+                 'visionId' : self.visionId(),
+                 'authorId' : self.authorId(),
+                 'text' : self.text(),
+               }
+
+    def toDictionaryDeep(self):
+        from User import User
+        obj = self.toDictionary()
+        author = User.getById(self.authorId())
+        if author:
+            obj['name'] = author.fullName()
+            obj['picture'] = author.picture()
+        return obj
+
+    #
+    # Private methods
+    #
+    def __init__(self, model):
+        assert model, "Invalid comment model"
+        self._model = model
+
+# $eof

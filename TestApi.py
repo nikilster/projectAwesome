@@ -9,6 +9,8 @@ import os
 import sys
 
 from awesome.api.Api import Api
+from awesome.api.User import User
+from awesome.api.Vision import Vision
 
 import random
 
@@ -87,17 +89,18 @@ class TestApi:
             password = TestApi.password
 
             #Add
-            (userId, msg)= Api.registerUser(firstName, lastName,
-                                            email, password)
-            if(userId == -1):
-                print "Error adding user: " + firstName + " " + lastName + " " + email
-                print "Skiping adding visions for: " + firstName
+            (user, msg)= User.registerNewUser(firstName, lastName,
+                                                email, password)
+            if None == user:
+                print "Error adding user: " + firstName + " " \
+                                            + lastName + " " + email
+                print "  --> Skipping adding visions for: " + firstName
                 continue
 
             print "Added user: " + firstName + " " + lastName + " " + email
             self.addVisions(userId, TestApi.NUM_VISIONS)
-            print "Added " + str(TestApi.NUM_VISIONS) + " visions for " + firstName + "\n"
-
+            print "Added " + str(TestApi.NUM_VISIONS) + " visions for " \
+                           + firstName + "\n"
 
 
     '''
@@ -105,12 +108,13 @@ class TestApi:
             For User
     '''
     def addVisions(self, userId, numVisionsToAdd):
-
         for i in range(0, numVisionsToAdd):
             text = random.choice(TestApi.texts)
             url = random.choice(TestApi.pictures)
 
             #Add
-            Api.saveVision(userId, url, text, "", "", True)
+            user = User.getById(userId)
+            if user:
+                user.addVision(userId, url, text, True)
 
-
+# $eof
