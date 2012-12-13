@@ -8,6 +8,7 @@ from ..util.Logger import Logger
 from ..Constant import Constant
 
 from VisionComment import VisionComment
+from VisionCommentList import VisionCommentList
 
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
@@ -77,20 +78,11 @@ class Vision:
         if user:
             userId = user.id()
         comments = DataApi.getVisionComments(self.id(), userId)
+        commentList = VisionCommentList.getEmptyList()
+        if comments:
+            commentList = VisionCommentList._getWithModels(comments)
+        return commentList
 
-        objs = []
-        Logger.debug("COMMENTS: " + str(comments))
-        if comments and len(comments) > 0:
-            authorIds = set([comment.authorId for comment in comments])
-            authors = DataApi.getUsersFromIds(authorIds)
-            idToAuthor = dict([(user.id, user) for user in authors])
-
-            for comment in comments:
-                obj = comment.toDictionary()
-                obj['name'] = idToAuthor[comment.authorId].fullName
-                obj['picture'] = idToAuthor[comment.authorId].picture
-                objs.append(obj)
-        return objs
 
     #
     # Private methods
