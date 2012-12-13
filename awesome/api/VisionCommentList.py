@@ -1,6 +1,14 @@
+###############################################################################
+# VisionCommentList
+#
+# This is the abstraction that should be used for getting
+# properties about a list of vision comments.
+###############################################################################
 from data.DataApi import DataApi
 
 from VisionComment import VisionComment
+
+from ..util.Logger import Logger
 
 class VisionCommentList:
     #

@@ -1,16 +1,26 @@
-from data.DataApi import DataApi
+###############################################################################
+# VisionList
+#
+# This is used for getting different types of vision lists, and getting
+# information across all the visions. This class will commonly be used for
+# querying visions in different ways, for transmission to the front-end.
+#
+# *** IMPORTANT NOTE ***
+#   - All methods on visions which affect the user's vision list order should
+#     NOT be here. This is because currently the Vision and VisionList
+#     classes do not know anything about a user's vision list order.
+#
+#   - Check out the User object to create, add, move, repost visions!!!!!!!
+#   - ONLY use this for getting lists of visions (w/o need for user vision
+#     list order)
+#
+###############################################################################
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
-from ..util.Logger import Logger
+from data.DataApi import DataApi
 
 from Vision import Vision
 
-#TODO: Why does (the ..) this work?
-from ..Constant import Constant
-
-from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
+from ..util.Logger import Logger
 
 class VisionList:
     #

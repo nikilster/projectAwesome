@@ -1,19 +1,26 @@
+###############################################################################
+# User
+#
+# This is the user abstraction that should be used for fetching, creating,
+# and getting/setting values related to a user.
+#
+# *** IMPORTANT NOTE ***
+#   - All methods on visions which affect the user's vision list order should
+#     be implemented here. This is because currently the Vision and VisionList
+#     classes do not know anything about a user's vision list order.
+#
+###############################################################################
 from data.DataApi import DataApi
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
-from ..util.Logger import Logger
-
-from ..Constant import Constant
-
 from Vision import Vision
+from VisionList import VisionList
 from VisionComment import VisionComment
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
 
-# TMP STUFF
-from data.DbSchema import VisionPrivacy
-
+from ..util.Verifier import Verifier
+from ..util.PasswordEncrypt import PasswordEncrypt
+from ..util.Logger import Logger
 
 
 # TMP STUFF
@@ -275,6 +282,13 @@ class User:
     def deleteVision(self, visionId):
         return DataApi.deleteUserVision(self.id(), visionId)
 
+    # Returns random vision or None if vision list is empty
+    def randomVision(self):
+        randomModel = DataApi.getRandomUserVision(self.id())
+        if DataApi.NO_OBJECT_EXISTS == randomModel:
+            return None
+        else:
+            return Vision._getByModel(randomModel)
 
     #
     # User actions

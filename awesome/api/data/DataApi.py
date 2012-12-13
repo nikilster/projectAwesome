@@ -6,6 +6,8 @@ from DbSchema import *
 
 from awesome.util.Logger import Logger
 
+import random
+
 class UserRelationship:
     NONE = 0    # either anonymous user, or there is no relationship
     SELF = 1    # user and target user are same person
@@ -151,6 +153,18 @@ class DataApi:
     def getVisionListModelForUser(userId):
         visionList = VisionListModel.query.filter_by(userId=userId).first()
         return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getRandomUserVision(userId):
+        listModel = DataApi.getVisionListModelForUser(userId)
+        if DataApi.NO_OBJECT_EXISTS == listModel:
+            return DataApi.NO_OBJECT_EXISTS
+        visionIds = listModel.getVisionIdList()
+        visionId = random.choice(visionIds)
+        visionModel = DataApi.getVision(visionId)
+        if DataApi.NO_OBJECT_EXISTS == vision:
+            return DataApi.NO_OBJECT_EXISTS
+        return visionModel
 
     # 
     # Vision methods

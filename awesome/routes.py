@@ -445,7 +445,7 @@ def apiVisionComments(visionId):
 
             if None != comments:
                 data = { 'result'    : "success",
-                        'comments' : comments }
+                         'comments'  : comments.toDictionaryDeep() }
         return jsonify(data)
     abort(405)
 

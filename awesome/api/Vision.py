@@ -1,18 +1,23 @@
+###############################################################################
+# Vision
+#
+# This is the Vision abstraction that should be used for getting vision
+# properties about visions.
+#
+# *** IMPORTANT NOTE ***
+#   - All methods on visions which affect the user's vision list order should
+#     NOT be here. This is because currently the Vision and VisionList
+#     classes do not know anything about a user's vision list order.
+#
+#   - Check out the User object to create, add, move, repost visions!!!!!!!
+#
+###############################################################################
 from data.DataApi import DataApi
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
-from ..util.Logger import Logger
-
-#TODO: Why does (the ..) this work?
-from ..Constant import Constant
-
-from VisionComment import VisionComment
 from VisionCommentList import VisionCommentList
+from Picture import Picture
 
-from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
-
+from ..util.Logger import Logger
 
 class Vision:
     #
@@ -62,6 +67,20 @@ class Vision:
     def isRootVision(self):
         return self.id() == self.rootId()
 
+    #
+    # Convenience methods that access DB again
+    #
+
+    # returns Picture object for this Vision, or None
+    def picture(self):
+        return Picture.getById(self.pictureId())
+
+    # returns User object that owns this vision, or None
+    def user(self):
+        # import here to avoid circular imports
+        from User import User
+        return User.getById(self.userId())
+
     # Used for packaging into JSON
     def toDictionary(self):
         return {'id' : self.id(),
@@ -70,6 +89,15 @@ class Vision:
                 'parentId' : self.parentId(),
                 'rootId' : self.rootId(),
                }
+
+    # If accessing many visions, use VisionList instead! It can batch up
+    # DB queries across visions for better performance
+    def toDictionaryDeep(self):
+        obj = self.toDictionary()
+        picture = self.picture()
+        if picture:
+            obj['picture'] = picture.toDictionary()
+        return obj
 
     # Get comments for this vision with privileges of 'user'.
     # If 'user' == None, then act as if public is viewing comments

@@ -1,14 +1,13 @@
+###############################################################################
+# VisionComment
+#
+# This is the VisionComment abstraction that should be used for getting
+# properties about vision comments.
+#
+###############################################################################
 from data.DataApi import DataApi
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
-
-#TODO: Why does (the ..) this work?
-from ..Constant import Constant
-
-from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
 
 class VisionComment:
     #
