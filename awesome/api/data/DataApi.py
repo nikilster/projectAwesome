@@ -77,11 +77,33 @@ class DataApi:
         return False
 
     @staticmethod
+    def setUserDescription(userId, desc):
+        user = DataApi.getUserById(userId)
+
+        if None != user and user.description != desc:
+            user.description = desc
+            DB.session.add(user)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
     def setUserPasswordHash(userId, passwordHash):
         user = DataApi.getUserById(userId)
         if None != user:
             if user.passwordHash != passwordHash:
                 user.passwordHash = passwordHash
+                DB.session.add(user)
+                DB.session.commit()
+                return True
+        return False
+
+    @staticmethod
+    def changeUserDescription(userId, description):
+        user = DataApi.getUserById(userId)
+        if None != user:
+            if user.description != description:
+                user.description = description
                 DB.session.add(user)
                 DB.session.commit()
                 return True
@@ -290,7 +312,7 @@ class DataApi:
 
         vision = DataApi.getVision(visionId)
         if vision == DataApi.NO_OBJECT_EXISTS:
-            return DataApi.NO_OBJECT_ESISTS
+            return DataApi.NO_OBJECT_EXISTS
 
         relationship = UserRelationship.getRelationship(vision.userId, authorId)
         addComment = False
@@ -307,7 +329,7 @@ class DataApi:
             DB.session.add(comment)
             DB.session.commit()
             return comment
-        return DataApi.NO_OBJECT_ESISTS
+        return DataApi.NO_OBJECT_EXISTS
 
     # TODO: this isn't fast, but will do for now.
     #

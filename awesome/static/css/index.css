@@ -78,6 +78,9 @@ footer {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
+.VisionPlaceholder {
+  background-color: #ededed !important;
+}
 .Vision {
   width: 290px;
   margin: 6px;
@@ -138,6 +141,11 @@ footer {
   top: 14px;
   right: 14px;
 }
+.AlreadyHaveVision {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
 .Overlay {
   position: absolute;
   top: 14px;
@@ -172,7 +180,7 @@ footer {
   width: 450px;
   margin-top: 25px;
   padding: 10px 10px 10px 190px;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
   height: 155px;
   background-color: #fafafa;
@@ -190,6 +198,33 @@ footer {
 #UserInformation #UserName {
   font-size: 30px;
   line-height: 1.2;
+}
+#UserInformation #NoUserDescription {
+  font-style: italic;
+  padding: 3px;
+  margin: 3px 0px;
+}
+#UserInformation .NoUserDescriptionNotActive {
+  border: 1px solid #fafafa;
+}
+#UserInformation .NoUserDescriptionActive {
+  border: 1px gray dotted;
+  cursor: pointer;
+}
+#UserInformation #SetUserDescriptionContainer {
+  padding: 10px 30px 10px 0px;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionInput {
+  width: 410px;
+  height: 40px;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionSubmit {
+  float: right;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionLength {
+  float: right;
+  padding: 5px 10px;
+  color: gray;
 }
 #ContentContainer {
   margin-bottom: 20px;
@@ -244,6 +279,7 @@ footer {
   position: absolute;
   top: 0px;
   left: 0px;
+  width: 100%;
   z-index: 1;
 }
 #Content .AddVisionOverlayText,
@@ -303,7 +339,7 @@ footer {
 #ExampleVisionBoard .VisionComment {
   font-size: 12px;
   line-height: 1.2;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   margin: 2px;
   padding: 2px;
   overflow: auto;
@@ -403,7 +439,7 @@ footer {
   -ms-transition: opacity .2s linear, none;
   -o-transition: opacity .2s linear, none;
   transition: opacity .2s linear, none;
-  top: 35%;
+  top: 300px;
 }
 #VisionDetailsModal .modal-header {
   font-size: 18pt;

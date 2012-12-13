@@ -19,12 +19,16 @@
                      firstName: '{{ user['firstName'] }}',
                      lastName: '{{ user['lastName'] }}',
                      picture: '{{ user['picture'] }}',
+                     description: '{{ user['description'] }}',
+                     visionPrivacy: '{{ user['visionPrivacy'] }}',
                    }
     {% else %}
        var USER = { id: -1,
                     firstName: "Invalid",
                     lastName: "Name",
                     picture: "",
+                    description: "",
+                    visionPrivacy: -1,
            }
     {% endif %}
 </script>
@@ -73,9 +77,17 @@
     <div id="UserInformation" class="Center">
       <img id="UserProfilePicture" src="https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"/>
       <div id="UserName"></div>
-      <div id="UserDescription">No description. Click to add one.</div>
+      <div id="UserDescription"></div>
+      <div id="NoUserDescription" class="NoUserDescriptionNotActive"></div>
+      <div id="SetUserDescriptionContainer" class="hide">
+          <textarea id="UserDescriptionInput" type="text"
+                    placeholder="Add description.."></textarea>
+          <button id="UserDescriptionSubmit" class="btn btn-primary">
+            Save description
+          </button>
+          <div id="UserDescriptionLength"></div>
+      </div>
     </div>
-    <div id="LoadingIndicator" class="Hidden"></div>
     <div id="Content" class="Center"></div>
     <div id="ExampleVisionBoard" class="Center"></div>
 
@@ -246,7 +258,9 @@
 
     <!-- //Move Vision -->
     <div class="Move Overlay Hidden">
-        <i class="icon-move"/>
+        <div class="btn btn-small">
+            <i class="icon-move"/>
+        </div>
     </div>
 
 </div>
@@ -255,6 +269,11 @@
 <!-- //Add Vision (Not Logged In) -->
 <div class="AddVisionNotAuthenticated Hidden">
     <button class="btn btn-success">Add to my Vision Board</button>
+</div>
+
+<!-- //Add Vision (Not Logged In) -->
+<div class="AlreadyHaveVision <%= haveVisionVisibility %>">
+    <button class="btn">On my vision board</button>
 </div>
 
 <!-- //Remove Vision (Not Logged In) -->

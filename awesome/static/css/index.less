@@ -54,6 +54,10 @@
     -moz-box-shadow: 0 3px 6px rgba(0,0,0,.5);
 }
 
+.VisionPlaceholder {
+    background-color: darken(@VISION_BACKGROUND, 5%) !important;
+}
+
 .Vision
 {
 
@@ -141,6 +145,13 @@
     right:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
 }
 
+//Logged in - "Already have vision"
+.AlreadyHaveVision
+{
+    position:absolute;
+    top:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
+    right:@ACT_ON_VISION_NOT_AUTHENTICATED_INSET;
+}
 
 //The Overlays!
 .Overlay
@@ -226,12 +237,11 @@
     width: 450px;
     margin-top: 25px;
     padding: 10px 10px 10px 190px;
-    overflow:auto;
+    overflow: hidden;
     position: relative;
     height: 155px;
 
     background-color:@VISION_BACKGROUND;
-
     .LightShadow;
 
     #UserProfilePicture {
@@ -246,6 +256,35 @@
         line-height: 1.2;
     }
     #UserDescription {
+    }
+    #NoUserDescription {
+        font-style: italic;
+        padding: 3px;
+        margin:3px 0px;
+    }
+    .NoUserDescriptionNotActive {
+        border: 1px solid @VISION_BACKGROUND;
+    }
+    .NoUserDescriptionActive {
+        border: 1px gray dotted;
+        cursor: pointer;
+    }
+
+    #SetUserDescriptionContainer {
+        padding: 10px 30px 10px 0px;
+
+        #UserDescriptionInput {
+            width: 410px;
+            height: 40px;
+        }
+        #UserDescriptionSubmit {
+            float: right;
+        }
+        #UserDescriptionLength {
+            float: right;
+            padding: 5px 10px;
+            color: gray;
+        }
     }
 }
 
@@ -300,7 +339,7 @@
         position:absolute;
         top: 0px;
         left: 0px;
-        //width: 100%;
+        width: 100%;
         //height: 100%;
         //background-color: rgba(255,255,255,.5);
         z-index: 1;
@@ -351,7 +390,7 @@
     .VisionComment {
         font-size:12px;
         line-height:1.2;
-        background-color: #FAFAFA;
+        background-color: @VISION_BACKGROUND;
         margin: 2px;
         padding: 2px; 
         overflow: auto;
@@ -453,7 +492,7 @@
     -ms-transition: opacity .2s linear, none;
     -o-transition: opacity .2s linear, none;
     transition: opacity .2s linear, none;
-    top: 35%;
+    top: 300px;
 }
 
 #VisionDetailsModal {

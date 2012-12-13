@@ -14,7 +14,6 @@ var DEBUG = true;
 *******************************************************************************/
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
-var LOADING_INDICATOR_DIV = "#LoadingIndicator";
 
 var VISION_CLASS = "Vision";
 var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
@@ -50,12 +49,16 @@ var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 //Overlay Buttons
 var ANIMATION_TIME = 150;
 var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".AddVisionNotAuthenticated";
+var ADD_EXISTING_VISION_SELECTOR = ".AlreadyHaveVision";
 var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".RemoveVisionNotAuthenticated";
 var REPOST_BUTTON = ".Repost";
 var MOVE_ICON = ".Move";
 
 //Utility
 var CSS_CLASS_HIDDEN = "CSS_CLASS_HIDDEN";
+
+// Constants
+var MAX_USER_DESCRIPTION_LENGTH = 200;
 
 /******************************************************************************
  * Utility functions
@@ -199,14 +202,18 @@ App.Backbone.Model.User = Backbone.Model.extend({
         firstName: "",
         lastName: "",
         picture: "",
+        description: "",
+        visionPrivacy: -1,
     },
     initialize: function() {
     },
-    userid: function() { return this.get("id"); },
+    userId: function() { return this.get("id"); },
     firstName: function() { return this.get("firstName"); },
     lastName: function() { return this.get("lastName"); },
     fullName: function() { return this.firstName() + " " + this.lastName(); },
     picture: function() { return this.get("picture"); },
+    description: function() { return this.get("description"); },
+    visionPrivacy: function() { return this.get("visionPrivacy"); },
 });
 
 App.Backbone.Model.Picture = Backbone.Model.extend({
@@ -596,6 +603,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var mineDisplay = "none";
         var nameDisplay = "none";
 
+        var haveVisionVisibility = "Hidden";
+
         if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             removeDisplay = "inline-block";
 
@@ -606,6 +615,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
             if (App.Var.Model.inVisionList(this.model)) {
                 mineDisplay = "inline-block";
                 selected = true;
+                haveVisionVisibility = "";
             } else {
                 repostDisplay = "inline-block";
             }
@@ -617,6 +627,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                     if (App.Var.Model.inVisionList(this.model)) {
                         mineDisplay = "inline-block";
                         selectedClass = "MasonryItemSelected";
+                        haveVisionVisibility = "";
                     } else {
                         repostDisplay = "inline-block";
                     }
@@ -642,6 +653,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          mineDisplay: mineDisplay,
                          removeButtonVisibility: removeButtonVisibility,
                          addCommentVisibility: addCommentVisibility,
+                         haveVisionVisibility: haveVisionVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),
@@ -706,21 +718,25 @@ App.Backbone.View.Vision = Backbone.View.extend({
         // AND vision is not selected
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
-            if(!this.model.isSelected())
+            if(!this.model.isSelected()) {
                 this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
+            }
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             // don't show anything
         } else {
             //Repost
-            this.showElement(REPOST_BUTTON);
+            if(!App.Var.Model.inVisionList(this.model)) {
+                this.showElement(REPOST_BUTTON);
+            }
         }
         //TODO: Add the case when they come to another persons page
         // AND they are not logge din
         // Show the instructions bar (box)  
 
         //On your own board show move butotn!
-        if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            this.showElement(MOVE_ICON)
+        if (pageMode == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == USER.id) {
+            this.showElement(MOVE_ICON);
         }
 
         //Vision Overlay
@@ -787,8 +803,6 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "ajaxAddVisionCommentError",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
-                        "showPageLoading",
-                        "hidePageLoading",
                         "showInfoBar",
                         "hideInfoBar",
                         // For onboarding
@@ -817,7 +831,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError",
                         "showUserInformation",
-                        "hideUserInformation");
+                        "hideUserInformation",
+                        "setUserDescription");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -918,8 +933,6 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         this.currentVision.setComments(data.comments);
         this.renderVisionDetailsComments();
-        $(VISION_DETAILS_ADD_COMMENT).text("").focus();
-
     },
     ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
         // do nothing
@@ -945,6 +958,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 
                 this.comments = [];
             }
+            $(VISION_DETAILS_ADD_COMMENT).val("").focus();
         }
     },
     renderVisionDetailsComment: function(comment, index) {
@@ -1030,13 +1044,16 @@ App.Backbone.View.Page = Backbone.View.extend({
         }).imagesLoaded(function() {
             $(CONTENT_DIV).masonry('reload');
         });
-        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE) {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == USER.id) {
             masonryContainer.sortable({
                 items: VISION_CLASS_SELECTOR,
-                handle: ".VisionToolbarMove",
+                handle: ".Move",
                 distance: 12,
+                helper: "clone",
                 forcePlaceholderSize: true,
-                tolerance: 'intersect',
+                placeholder: "Vision VisionPlaceholder",
+                tolerance: 'pointer',
                 start: this.sortStart,
                 change: this.sortChange,
                 stop: this.sortStop,
@@ -1048,8 +1065,6 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.children.push(vision.el);
     },
     sortStart: function(event, ui) {
-        console.log("Sort");
-        ui.item.removeClass(VISION_CLASS);
         this.masonryReload();
 
         this.srcIndex = ui.item.index();
@@ -1110,8 +1125,10 @@ App.Backbone.View.Page = Backbone.View.extend({
         exampleVisionBoard.sortable({
             items: VISION_CLASS_SELECTOR,
             distance: 12,
+            helper: "clone",
             forcePlaceholderSize: true,
-            tolerance: 'intersect',
+            placeholder: "Vision VisionPlaceholder",
+            tolerance: 'pointer',
             start: this.selectedVisionsSortStart,
             change: this.selectedVisionsSortChange,
             stop: this.selectedVisionsSortStop,
@@ -1122,13 +1139,13 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.testVisions.push(vision.el);
     },
     selectedVisionsSortStart: function(event, ui) {
-        ui.item.removeClass("MasonryItem");
+        ui.item.removeClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
 
         this.selectedVisionMoveIndex = ui.item.index();
     },
     selectedVisionsSortStop: function(event, ui) {
-        ui.item.addClass("MasonryItem");
+        ui.item.addClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
         var destIndex = ui.item.index();
         if (destIndex != this.selectedVisionMoveIndex &&
@@ -1139,21 +1156,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     selectedVisionsSortChange: function(event, ui) {
         ui.item.parent().masonry('reload');
-    },
-
-    /*
-     * Show/hide notice of page loading
-     */
-    showPageLoading: function() {
-        var masonryContainer = $(CONTENT_DIV).first();
-        masonryContainer.empty().masonry();
-
-        var variables = {};
-        var template = _.template($("#PageLoadingTemplate").html(), variables);
-        $(LOADING_INDICATOR_DIV).html(template).show();
-    },
-    hidePageLoading: function() {
-        $(LOADING_INDICATOR_DIV).hide();
     },
 
     /*
@@ -1246,10 +1248,9 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render home page
      */
     showHome: function() {
-        this.showPageLoading();
         this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
-        $(CONTENT_DIV).show();
+        $(CONTENT_DIV).empty().masonry().show();
 
         var ajaxUrl = "/api/get_main_page_visions";
 
@@ -1275,7 +1276,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     renderHome: function() {
         console.log("Render Home");
-        this.hidePageLoading();
         if (this.model.visionList().isEmpty()) {
             // TODO: be smarter about when to load and set visionList later
             //       do this first so rendering of other visions has proper
@@ -1288,10 +1288,12 @@ App.Backbone.View.Page = Backbone.View.extend({
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
+        /*
         var variables = {};
         var template = _.template($("#HomePageLoadErrorTemplate").html(),
                                   variables);
         $(LOADING_INDICATOR_DIV).html(template).show();
+        */
     },
 
     /*
@@ -1307,9 +1309,8 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render user profile page
      */
     showProfile: function() {
-        this.showPageLoading();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
-        $(CONTENT_DIV).show();
+        $(CONTENT_DIV).empty().masonry().show();
 
         var ajaxUrl = "/api/user/" + App.Var.Model.currentUserId() + "/visions";
 
@@ -1337,7 +1338,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     renderProfile: function() {
         console.log("Rendering Profile");
-        this.hidePageLoading();
 
         this.model.setVisionList(App.Var.JSON.visionList);
         if (App.Var.Model.currentUserId() != USER.id) {
@@ -1349,19 +1349,46 @@ App.Backbone.View.Page = Backbone.View.extend({
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
 
+        /*
         var variables = {};
         var template = _.template($("#ProfileLoadErrorTemplate").html(),
                                   variables);
         $(LOADING_INDICATOR_DIV).html(template).show();
+        */
     },
     showUserInformation: function() {
         console.log("SET USER INFO");
         $("#UserName").html(this.model.user().fullName());
+        var desc = this.model.user().description();
+        if (desc == "") {
+            if (this.model.user().userId() == USER.id) {
+                $("#NoUserDescription").show();
+                $("#UserDescription").empty().hide();
+            } else {
+                $("#NoUserDescription").hide();
+                $("#UserDescription").empty().show();
+            }
+        } else {
+            $("#NoUserDescription").hide();
+            $("#UserDescription").html(desc);
+        }
+        $("#SetUserDescriptionContainer").hide();
+
         $("#UserProfilePicture").attr("src", this.model.user().picture());
         $("#UserInformation").show();
     },
     hideUserInformation: function() {
         $("#UserInformation").hide();
+    },
+    setUserDescription: function(description) {
+        if (description.length > 0 &&
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
+
+            $("#NoUserDescription").hide();
+            $("#SetUserDescriptionContainer").hide();
+            $("#UserDescription").html(description);
+        }
     },
 });
 
@@ -1567,6 +1594,52 @@ $(document).ready(function() {
         }
 
     });
-});
 
+    /*
+     * For entering user description in user info box
+     */
+    function countUserDescriptionChars() {
+        var desc = $.trim($("#UserDescriptionInput").val());
+        var lengthLeft = MAX_USER_DESCRIPTION_LENGTH - desc.length;
+
+        if (lengthLeft >= 0) {
+            $("#UserDescriptionSubmit").removeAttr("disabled");
+        } else {
+            $("#UserDescriptionSubmit").attr("disabled", "disabled");
+        }
+        $("#UserDescriptionLength").html(lengthLeft);
+    }
+    $("#NoUserDescription").mouseenter(function(e) {
+        $(this).removeClass("NoUserDescriptionNotActive");
+        $(this).addClass("NoUserDescriptionActive");
+    });
+    $("#NoUserDescription").mouseleave(function(e) {
+        $(this).removeClass("NoUserDescriptionActive");
+        $(this).addClass("NoUserDescriptionNotActive");
+    });
+    $("#NoUserDescription").click(function(e) {
+        $(this).hide();
+        $("#SetUserDescriptionContainer").show();
+        $("#UserDescriptionInput").text("").focus();
+        countUserDescriptionChars();
+    });
+    $("#UserDescriptionInput").keyup(countUserDescriptionChars)
+    $("#UserDescriptionInput").bind('paste', countUserDescriptionChars);
+    $("#UserDescriptionInput").bind('cut', countUserDescriptionChars);
+    $("#UserDescriptionSubmit").click(function() {
+        console.log("SUBMIT DESC");
+        var desc = $.trim($("#UserDescriptionInput").val());
+        doAjax("/api/user/" + USER['id'] + "/set_description",
+                JSON.stringify({'description' : desc }),
+                // success
+                function(data, textStatus, jqXHR) {
+                    App.Var.View.setUserDescription(data.description);
+                },
+                // error
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error");
+                }
+        );
+    });
+});
 /* $eof */

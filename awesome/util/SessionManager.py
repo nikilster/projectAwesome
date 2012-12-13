@@ -19,11 +19,13 @@ class SessionManager:
     def setUser(user):
         assert SessionManager.__inSession(), "Not in Flask session"
         session['user'] = {
-            'id'        : user.id,
-            'firstName' : user.firstName,
-            'lastName'  : user.lastName,
-            'email'     : user.email,
-            'picture'   : user.picture,
+            'id'        : user.id(),
+            'firstName' : user.firstName(),
+            'lastName'  : user.lastName(),
+            'email'     : user.email(),
+            'picture'   : user.picture(),
+            'description' : user.description(),
+            'visionPrivacy' : user.visionPrivacy(),
         }
 
     @staticmethod
@@ -49,6 +51,37 @@ class SessionManager:
         url = session['previewUrl']
         assert Verifier.urlValid(url), "Invalid preview url"
         return url
+
+    @staticmethod
+    def setSelectedVisions(text):
+        assert SessionManager.__inSession(), "Not in Flask session"
+        session['selectedVisions'] = text
+
+    # Returns list of vision ids that were selected if the data is valid
+    @staticmethod
+    def getSelectedVisions(text):
+        assert SessionManager.__inSession(), "Not in Flask session"
+        if 'selectedVisions' in session:
+            data = None
+            try:
+                data = json.loads(session['selectedVisions'])
+            except:
+                pass
+            if data != None and isinstance(data, list):
+                ok = True
+                for item in data:
+                    if not isinstance(item, int):
+                        ok = False
+                        break
+                if True == ok:
+                    return data
+        return None
+
+    @staticmethod
+    def removeSelectedVisions():
+        assert SessionManager.__inSession(), "Not in Flask session"
+        if 'selectedVisions' in session:
+            session.pop('selectedVisions', None)
 
     @staticmethod
     def __inSession():
