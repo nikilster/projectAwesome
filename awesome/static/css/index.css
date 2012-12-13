@@ -78,6 +78,9 @@ footer {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
+.VisionPlaceholder {
+  background-color: #ededed !important;
+}
 .Vision {
   width: 290px;
   margin: 6px;
@@ -134,6 +137,11 @@ footer {
 */
 .AddVisionNotAuthenticated,
 .RemoveVisionNotAuthenticated {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+.AlreadyHaveVision {
   position: absolute;
   top: 14px;
   right: 14px;
@@ -271,6 +279,7 @@ footer {
   position: absolute;
   top: 0px;
   left: 0px;
+  width: 100%;
   z-index: 1;
 }
 #Content .AddVisionOverlayText,

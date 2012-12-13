@@ -49,6 +49,7 @@ var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 //Overlay Buttons
 var ANIMATION_TIME = 150;
 var ADD_NOT_LOGGED_IN_VISION_SELECTOR = ".AddVisionNotAuthenticated";
+var ADD_EXISTING_VISION_SELECTOR = ".AlreadyHaveVision";
 var REMOVE_NOT_LOGGED_IN_VISION_SELECTOR = ".RemoveVisionNotAuthenticated";
 var REPOST_BUTTON = ".Repost";
 var MOVE_ICON = ".Move";
@@ -602,6 +603,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var mineDisplay = "none";
         var nameDisplay = "none";
 
+        var haveVisionVisibility = "Hidden";
+
         if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             removeDisplay = "inline-block";
 
@@ -612,6 +615,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
             if (App.Var.Model.inVisionList(this.model)) {
                 mineDisplay = "inline-block";
                 selected = true;
+                haveVisionVisibility = "";
             } else {
                 repostDisplay = "inline-block";
             }
@@ -623,6 +627,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                     if (App.Var.Model.inVisionList(this.model)) {
                         mineDisplay = "inline-block";
                         selectedClass = "MasonryItemSelected";
+                        haveVisionVisibility = "";
                     } else {
                         repostDisplay = "inline-block";
                     }
@@ -648,6 +653,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          mineDisplay: mineDisplay,
                          removeButtonVisibility: removeButtonVisibility,
                          addCommentVisibility: addCommentVisibility,
+                         haveVisionVisibility: haveVisionVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),
@@ -712,21 +718,25 @@ App.Backbone.View.Vision = Backbone.View.extend({
         // AND vision is not selected
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
-            if(!this.model.isSelected())
+            if(!this.model.isSelected()) {
                 this.showElement(ADD_NOT_LOGGED_IN_VISION_SELECTOR);  
+            }
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             // don't show anything
         } else {
             //Repost
-            this.showElement(REPOST_BUTTON);
+            if(!App.Var.Model.inVisionList(this.model)) {
+                this.showElement(REPOST_BUTTON);
+            }
         }
         //TODO: Add the case when they come to another persons page
         // AND they are not logge din
         // Show the instructions bar (box)  
 
         //On your own board show move butotn!
-        if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            this.showElement(MOVE_ICON)
+        if (pageMode == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == USER.id) {
+            this.showElement(MOVE_ICON);
         }
 
         //Vision Overlay
@@ -1034,13 +1044,16 @@ App.Backbone.View.Page = Backbone.View.extend({
         }).imagesLoaded(function() {
             $(CONTENT_DIV).masonry('reload');
         });
-        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE) {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == USER.id) {
             masonryContainer.sortable({
                 items: VISION_CLASS_SELECTOR,
-                handle: ".VisionToolbarMove",
+                handle: ".Move",
                 distance: 12,
+                helper: "clone",
                 forcePlaceholderSize: true,
-                tolerance: 'intersect',
+                placeholder: "Vision VisionPlaceholder",
+                tolerance: 'pointer',
                 start: this.sortStart,
                 change: this.sortChange,
                 stop: this.sortStop,
@@ -1052,8 +1065,6 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.children.push(vision.el);
     },
     sortStart: function(event, ui) {
-        console.log("Sort");
-        ui.item.removeClass(VISION_CLASS);
         this.masonryReload();
 
         this.srcIndex = ui.item.index();
@@ -1114,8 +1125,10 @@ App.Backbone.View.Page = Backbone.View.extend({
         exampleVisionBoard.sortable({
             items: VISION_CLASS_SELECTOR,
             distance: 12,
+            helper: "clone",
             forcePlaceholderSize: true,
-            tolerance: 'intersect',
+            placeholder: "Vision VisionPlaceholder",
+            tolerance: 'pointer',
             start: this.selectedVisionsSortStart,
             change: this.selectedVisionsSortChange,
             stop: this.selectedVisionsSortStop,
@@ -1126,13 +1139,13 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.testVisions.push(vision.el);
     },
     selectedVisionsSortStart: function(event, ui) {
-        ui.item.removeClass("MasonryItem");
+        ui.item.removeClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
 
         this.selectedVisionMoveIndex = ui.item.index();
     },
     selectedVisionsSortStop: function(event, ui) {
-        ui.item.addClass("MasonryItem");
+        ui.item.addClass(VISION_CLASS);
         ui.item.parent().masonry('reload');
         var destIndex = ui.item.index();
         if (destIndex != this.selectedVisionMoveIndex &&
