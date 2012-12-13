@@ -1,10 +1,8 @@
 from . import DB
-
 from sqlalchemy.sql import desc
-
 from DbSchema import *
-
 from awesome.util.Logger import Logger
+import random
 
 class UserRelationship:
     NONE = 0    # either anonymous user, or there is no relationship
@@ -33,6 +31,7 @@ class DataApi:
 
     # 
     # User methods
+    # These functions return User Model or None if it is not a valid ID
     #
 
     @staticmethod
@@ -121,14 +120,28 @@ class DataApi:
                         .all()
         return []
 
-    # 
-    # Vision List methods
+    #
+    # Returns the Vision List (Database) Model
     #
 
     @staticmethod
     def getVisionListModelForUser(userId):
         visionList = VisionListModel.query.filter_by(userId=userId).first()
         return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
+
+    #
+    #   Returns the array of vision ids owned by the user
+    #
+    @staticmethod
+    def getVisionIdListForUser(userId):
+        
+        visionListModel = DataApi.getVisionListModelForUser(userId)
+        
+        if visionListModel != None:
+            return visionListModel.getVisionIdList() 
+        else:
+            return DataApi.NO_OBJECT_EXISTS
+
 
     # 
     # Vision methods
@@ -376,5 +389,41 @@ class DataApi:
         DB.session.add(picture)
         DB.session.commit()
         return picture.id
+
+    #Get a random vision for the user
+    #Returns a vision dictionary with an embedded picture dictionary
+    @staticmethod
+    def getRandomVision(userId):
+        visionIdList = DataApi.getVisionIdListForUser(userId)
+        randomId = random.choice(visionIdList)
+        
+        visionModel = DataApi.getVision(randomId)
+        vision = visionModel.toDictionary()
+
+        pictureModel = DataApi.getPicture(visionModel.pictureId)
+        picture = pictureModel.toDictionary()
+
+        #Set Picture
+        vision['picture'] = picture
+
+        return vision
+
+    #Get a random vision per user
+
+    @staticmethod
+    def getUsersAndRandomVision():
+
+        #TODO: Filter by Timezone
+        users = DB.session.query(UserModel.id, UserModel.firstName, UserModel.lastName, UserModel.email)
+
+        userInfo = []
+        #Choose a random vision for each user
+        for user in users:
+            vision = DataApi.getRandomVision(user.id)
+            userInfo.append([user, vision])
+
+        return userInfo
+
+      
 
 # $eof

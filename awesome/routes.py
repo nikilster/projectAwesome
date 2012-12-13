@@ -19,6 +19,7 @@ from api.FlashMessages import *
 
 
 from util.SessionManager import SessionManager
+from util.Notifications import Notifications
 
 @app.route('/', methods=['GET'])
 def index():
@@ -547,4 +548,12 @@ def terms():
 def new_relic_ping_target():
     return "pong..."
     
+# Target URL for New Relic availability monitoring
+@app.route('/testEmail', methods=['GET'])
+def testEmail():
+    notification = Notifications()
+    notification.sendDailyEmails()
+    return "testing emails!"
+    
+
 # $eof

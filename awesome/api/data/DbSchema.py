@@ -75,12 +75,14 @@ class VisionListModel(DB.Model):
     def __init__(self, userId):
         self.userId = userId
         self.visionJson = "[]"
+    
     def __str__(self):
         return '<VisionList %s>' % str(self.id)
 
     # Use these to set and get from the JSON list
     def getVisionIdList(self):
         return json.loads(self.visionJson)
+    
     def setVisionIdList(self, visionList):
         self.visionJson = json.dumps(visionList)
 

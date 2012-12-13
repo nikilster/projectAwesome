@@ -330,4 +330,13 @@ class Api:
                 objs.append(obj)
         return objs
 
+    '''
+        Get Email Content
+
+        Gets the content for daily email
+    '''
+    @staticmethod
+    def getEmailContent():
+        return DataApi.getUsersAndRandomVision()
+
 # $eof
