@@ -1,25 +1,21 @@
-###############################################################################
-# VisionComment
-#
-# This is the VisionComment abstraction that should be used for getting
-# properties about vision comments.
-#
-# *** IMPORTANT NOTE ***
-#   - Pictures are currently _created_ in the Vision class. This is because
-#     for now, we only ever create a picture in the process of creating an
-#     Vision. 
-#
-###############################################################################
 from data.DataApi import DataApi
 
 from ..util.Logger import Logger
 
 class Picture:
+    '''For getting properties about pictures.
+    *** IMPORTANT NOTE ***
+    - Pictures are currently _created_ in the Vision class. This is because
+      for now, we only ever create a picture in the process of creating an
+      Vision. 
+    '''
+
     #
     # Static methods to get a vision
     #
     @staticmethod
     def getById(pictureId):
+        '''Get picture by id, else None'''
         if pictureId > 0:
             model = DataApi.getPicture(pictureId)
             if DataApi.NO_OBJECT_EXISTS != model:
@@ -34,11 +30,11 @@ class Picture:
     def userId(self):
         return self._model.userId
 
-    # original filename: URL (if used bookmarklet) or filename (if uploaded)
     def filename(self):
+        '''URL (if used bookmarklet) or filename (if uploaded)'''
         return self._model.original
-    # True if picture uploaded, and False if from internet (w/ bookmarklet)
     def uploaded(self):
+        '''True if uploaded, False if from internet (w/ bookmarklet)'''
         return self._model.uploaded
 
     def s3Bucket(self):
@@ -84,8 +80,8 @@ class Picture:
         return self._model.removed
 
 
-    # For using to package up JSON
     def toDictionary(self):
+        '''For using to package up JSON.'''
         return { 'id' : self.id(),
                  'largeUrl' : self.largeUrl(),
                  'mediumUrl' : self.mediumUrl(),
@@ -96,6 +92,7 @@ class Picture:
     # Private methods
     #
     def __init__(self, model):
+        '''Private: do not use!'''
         assert model, "Invalid picture model"
         self._model = model
 

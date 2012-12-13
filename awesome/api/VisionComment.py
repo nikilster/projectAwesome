@@ -1,22 +1,17 @@
-###############################################################################
-# VisionComment
-#
-# This is the VisionComment abstraction that should be used for getting
-# properties about vision comments.
-#
-###############################################################################
 from data.DataApi import DataApi
 
 from ..util.Logger import Logger
 
 class VisionComment:
+    '''For getting properties about vision comments.'''
+
     #
     # Static methods to get Comment
     #
 
-    # This is used internally within API when necessary. Try not to use this.
     @staticmethod
     def _getByModel(model):
+        '''This is used internally within API. Try not to use this.'''
         return VisionComment(model)
 
 
@@ -35,6 +30,7 @@ class VisionComment:
         return self._model.removed
 
     def toDictionary(self):
+        '''For packaging in JSON objects.'''
         return { 'id' : self.id(),
                  'visionId' : self.visionId(),
                  'authorId' : self.authorId(),
@@ -42,6 +38,10 @@ class VisionComment:
                }
 
     def toDictionaryDeep(self):
+        '''For packaging in JSON objects.
+        
+        Accesses DB again so don't use if possible.
+        '''
         from User import User
         obj = self.toDictionary()
         author = User.getById(self.authorId())

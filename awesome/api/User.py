@@ -1,15 +1,3 @@
-###############################################################################
-# User
-#
-# This is the user abstraction that should be used for fetching, creating,
-# and getting/setting values related to a user.
-#
-# *** IMPORTANT NOTE ***
-#   - All methods on visions which affect the user's vision list order should
-#     be implemented here. This is because currently the Vision and VisionList
-#     classes do not know anything about a user's vision list order.
-#
-###############################################################################
 from data.DataApi import DataApi
 
 from Vision import Vision
@@ -35,31 +23,41 @@ def getPrivacy():
 ## /end TMP STUFF
 
 
-
 class User:
+    '''For fetching/creating users and getting/setting user-related values.
+
+    *** IMPORTANT NOTE ***
+    All methods on visions which affect the user's vision list order should
+    be implemented here. This is because currently the Vision and VisionList
+    classes do not know anything about a user's vision list order.
+    '''
+
     #
     # Static user get methods
     #
 
-    # Returns User or None
     @staticmethod
     def getById(userId):
+        '''Get user by user id or None '''
         model = DataApi.getUserById(userId)
         if DataApi.NO_OBJECT_EXISTS == model:
             return None
         return User(model)
 
-    # Returns User or None
     @staticmethod
     def getByEmail(email):
+        '''Get user by email or None'''
         model = DataApi.getUserByEmail(email)
         if DataApi.NO_OBJECT_EXISTS == model:
             return None
         return User(model)
 
-    # Returns (User or None, error_msg if first is None)
     @staticmethod
     def getByLogin(email, passwordText):
+        '''Get user with login information.
+
+        Returns (User or None, error_msg if first is None)
+        '''
         email = email.strip().lower()
         passwordText = passwordText.strip()
 
@@ -81,9 +79,12 @@ class User:
         assert errorMsg != None, "Error msg should exist"
         return (None, errorMsg)
 
-    # Returns (User if successful or None, error_msg if not successful)
     @staticmethod
     def registerNewUser(firstName, lastName, email, passwordText):
+        '''Registers and returns new user
+        
+        Returns (User if successful or None, error_msg if not successful)
+        '''
         firstName = firstName.strip()
         lastName = lastName.strip()
         email = email.strip().lower()
@@ -156,8 +157,8 @@ class User:
     def visionPrivacy(self):
         return self._model.visionPrivacy
 
-    # Translate to object when we want to package together JSON
     def toDictionary(self):
+        '''Translate to object when we want to package together JSON'''
         return {'id' : self.id(),
                 'firstName' : self.firstName(),
                 'lastName' : self.lastName(),
@@ -169,9 +170,8 @@ class User:
     #
     # Setters (note: these write to database)
     #
-    # These all return True if set worked, and False if it didn't
-    #
     def setInfo(self, firstName, lastName, email):
+        '''Returns True if something changed, else False'''
         change = False
         if Verifier.nameValid(firstName) and \
            Verifier.nameValid(lastName) and \
@@ -180,14 +180,15 @@ class User:
             change |= DataApi.setUserEmail(self.id(), email)
         return change
 
-    @staticmethod
-    def setUserDescription(description):
+    def setDescription(self, description):
+        '''Returns True if description changed, else False'''
         return DataApi.setUserDescription(self.id(), description.strip())
 
-    # Takes a file input stream, resizes/crops
-    #
-    # Returns url or None
     def setProfilePicture(file):
+        '''Sets profile picture from file input stream
+
+        Returns URL on success, else None
+        '''
         image = ProfilePicture(file)
         url = None
         if file and image.isImage():
@@ -204,19 +205,26 @@ class User:
     #     make sure the users vision list order gets updated also.
     #
 
-    # Return URL if preview image or None if failed
-    # 
-    # Note: The preview file on S3 is unique per user. Files previewed at
-    #       same time in different tabs will overwrite each other.
     def previewImage(self, file):
+        '''Upload file input to S3 for file preview
+
+        Return URL of preview image on success, else None.
+     
+        *** IMPORTANT NOTE ***
+        The preview file on S3 is unique per user. Files previewed at
+        same time in different tabs will overwrite each other.
+        '''
         image = ImageFilePreview(file)
         url = None
         if file and image.isImage():
             url = image.uploadForPreview(self.id())
         return url
 
-    # Returns (Vision or None, error_msg if add vision failed)
     def addVision(self, imageUrl, text, isUploaded):
+        '''Creates new vision
+        
+        Returns (Vision/None, None or error_msg if add vision failed)
+        '''
         #TODO: Save page title and page URL?
 
         if imageUrl == "":
@@ -261,29 +269,29 @@ class User:
         else:
             return [None, "Error retrieving vision"]
 
-    # Returns new Vision if successful, and None if repost fails
     def repostVision(self, visionId):
+        '''Repost a vision and return new vision if successful, else None'''
         newVisionId = DataApi.repostVision(self.id(), visionId)
         if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
             return None
         vision = Vision.getById(newVisionId)
         return vision
 
-    # Convenience function that loops over self.repostVision()
     def repostVisionList(self, visionIds):
+        '''Convenience function that loops over self.repostVision()'''
         for visionId in reversed(visionIds):
             self.repostVision(visionId)
 
-    # Returns True if move worked, False if it failed
     def moveVision(self, visionId, srcIndex, destIndex):
+        '''Returns True if move worked, False if it failed'''
         return DataApi.moveUserVision(self.id(), visionId, srcIndex, destIndex)
 
-    # Returns True if delete worked, False if it failed
     def deleteVision(self, visionId):
+        '''Returns True if delete worked, False if it failed'''
         return DataApi.deleteUserVision(self.id(), visionId)
 
-    # Returns random vision or None if vision list is empty
     def randomVision(self):
+        '''Returns random vision or None if vision list is empty'''
         randomModel = DataApi.getRandomUserVision(self.id())
         if DataApi.NO_OBJECT_EXISTS == randomModel:
             return None
@@ -294,8 +302,8 @@ class User:
     # User actions
     #
 
-    # Returns comment if successful, else returns None
     def commentOnVision(self, visionId, text):
+        '''Returns comment if successful, else returns None'''
         text = text.strip()
         if len(text) > 0:
             commentModel = DataApi.addVisionComment(visionId, self.id(), text)
@@ -310,8 +318,8 @@ class User:
     # Private methods
     #
 
-    # Do NOT call this. Use static factory methods above
     def __init__(self, model):
+        '''IMPORTANT: Do NOT call this. Use static methods above'''
         assert model, "User model is invalid"
         self._model = model
 

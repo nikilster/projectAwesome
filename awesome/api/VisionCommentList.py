@@ -1,9 +1,3 @@
-###############################################################################
-# VisionCommentList
-#
-# This is the abstraction that should be used for getting
-# properties about a list of vision comments.
-###############################################################################
 from data.DataApi import DataApi
 
 from VisionComment import VisionComment
@@ -11,6 +5,8 @@ from VisionComment import VisionComment
 from ..util.Logger import Logger
 
 class VisionCommentList:
+    '''For getting properties about a list of vision comments.'''
+
     #
     # Static methods to get a list of comments
     #
@@ -19,9 +15,9 @@ class VisionCommentList:
     def getEmptyList():
         return VisionCommentList([])
 
-    # Used internally with API
     @staticmethod
     def _getWithModels(models):
+        '''Don't use! Used internally with API'''
         return VisionCommentList(models)
 
     #
@@ -34,6 +30,11 @@ class VisionCommentList:
         return len(self._commentModels)
 
     def toDictionaryDeep(self):
+        '''For packaging JSON objects
+        
+        Deep call accesses DB again for other objects so don't use unless
+        necessary.
+        '''
         objs = []
         commentList = self._commentModels
 
@@ -43,7 +44,7 @@ class VisionCommentList:
             idToAuthor = dict([(user.id, user) for user in authors])
 
             for comment in commentList:
-                obj = comment.toDictionary()
+                obj = VisionComment(comment).toDictionary()
                 obj['name'] = idToAuthor[comment.authorId].fullName
                 obj['picture'] = idToAuthor[comment.authorId].picture
                 objs.append(obj)
@@ -54,6 +55,7 @@ class VisionCommentList:
     #
 
     def __init__(self, commentModels):
+        '''Private: don't use'''
         self._commentModels = commentModels
 
 # $eof
