@@ -57,6 +57,9 @@ var MOVE_ICON = ".Move";
 //Utility
 var CSS_CLASS_HIDDEN = "CSS_CLASS_HIDDEN";
 
+// Constants
+var MAX_USER_DESCRIPTION_LENGTH = 200;
+
 /******************************************************************************
  * Utility functions
  */
@@ -199,14 +202,18 @@ App.Backbone.Model.User = Backbone.Model.extend({
         firstName: "",
         lastName: "",
         picture: "",
+        description: "",
+        visionPrivacy: -1,
     },
     initialize: function() {
     },
-    userid: function() { return this.get("id"); },
+    userId: function() { return this.get("id"); },
     firstName: function() { return this.get("firstName"); },
     lastName: function() { return this.get("lastName"); },
     fullName: function() { return this.firstName() + " " + this.lastName(); },
     picture: function() { return this.get("picture"); },
+    description: function() { return this.get("description"); },
+    visionPrivacy: function() { return this.get("visionPrivacy"); },
 });
 
 App.Backbone.Model.Picture = Backbone.Model.extend({
@@ -817,7 +824,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError",
                         "showUserInformation",
-                        "hideUserInformation");
+                        "hideUserInformation",
+                        "setUserDescription");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -1357,11 +1365,36 @@ App.Backbone.View.Page = Backbone.View.extend({
     showUserInformation: function() {
         console.log("SET USER INFO");
         $("#UserName").html(this.model.user().fullName());
+        var desc = this.model.user().description();
+        if (desc == "") {
+            if (this.model.user().userId() == USER.id) {
+                $("#NoUserDescription").show();
+                $("#UserDescription").empty().hide();
+            } else {
+                $("#NoUserDescription").hide();
+                $("#UserDescription").empty().show();
+            }
+        } else {
+            $("#NoUserDescription").hide();
+            $("#UserDescription").html(desc);
+        }
+        $("#SetUserDescriptionContainer").hide();
+
         $("#UserProfilePicture").attr("src", this.model.user().picture());
         $("#UserInformation").show();
     },
     hideUserInformation: function() {
         $("#UserInformation").hide();
+    },
+    setUserDescription: function(description) {
+        if (description.length > 0 &&
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
+
+            $("#NoUserDescription").hide();
+            $("#SetUserDescriptionContainer").hide();
+            $("#UserDescription").html(description);
+        }
     },
 });
 
@@ -1567,6 +1600,52 @@ $(document).ready(function() {
         }
 
     });
-});
 
+    /*
+     * For entering user description in user info box
+     */
+    function countUserDescriptionChars() {
+        var desc = $.trim($("#UserDescriptionInput").val());
+        var lengthLeft = MAX_USER_DESCRIPTION_LENGTH - desc.length;
+
+        if (lengthLeft >= 0) {
+            $("#UserDescriptionSubmit").removeAttr("disabled");
+        } else {
+            $("#UserDescriptionSubmit").attr("disabled", "disabled");
+        }
+        $("#UserDescriptionLength").html(lengthLeft);
+    }
+    $("#NoUserDescription").mouseenter(function(e) {
+        $(this).removeClass("NoUserDescriptionNotActive");
+        $(this).addClass("NoUserDescriptionActive");
+    });
+    $("#NoUserDescription").mouseleave(function(e) {
+        $(this).removeClass("NoUserDescriptionActive");
+        $(this).addClass("NoUserDescriptionNotActive");
+    });
+    $("#NoUserDescription").click(function(e) {
+        $(this).hide();
+        $("#SetUserDescriptionContainer").show();
+        $("#UserDescriptionInput").text("").focus();
+        countUserDescriptionChars();
+    });
+    $("#UserDescriptionInput").keyup(countUserDescriptionChars)
+    $("#UserDescriptionInput").bind('paste', countUserDescriptionChars);
+    $("#UserDescriptionInput").bind('cut', countUserDescriptionChars);
+    $("#UserDescriptionSubmit").click(function() {
+        console.log("SUBMIT DESC");
+        var desc = $.trim($("#UserDescriptionInput").val());
+        doAjax("/api/user/" + USER['id'] + "/set_description",
+                JSON.stringify({'description' : desc }),
+                // success
+                function(data, textStatus, jqXHR) {
+                    App.Var.View.setUserDescription(data.description);
+                },
+                // error
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error");
+                }
+        );
+    });
+});
 /* $eof */

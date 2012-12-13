@@ -114,7 +114,7 @@ class Api:
             return (None, errorMsg)
 
     @staticmethod
-    def changeUserInfo(userId, firstName, lastName, email):
+    def changeUserInfo(userId, firstName, lastName, email, desc):
         change = False
         if Verifier.userIdValid(userId) and \
            Verifier.nameValid(firstName) and \
@@ -122,22 +122,23 @@ class Api:
            Verifier.emailValid(email):
             change |= DataApi.setUserName(userId, firstName, lastName)
             change |= DataApi.setUserEmail(userId, email)
+            change |= DataApi.setUserDescription(userId, desc.strip())
         return change
 
     @staticmethod
     def changeProfilePicture(userId, file):
-        Logger.debug("HERE")
         image = ProfilePicture(file)
         url = None
         if file and image.isImage():
-            Logger.debug("HERE2")
             url = image.uploadToS3(userId)
-            Logger.debug("HERE3")
             if url != None:
-                Logger.debug("SET PIC")
                 if True == DataApi.setProfilePicture(userId, url):
                     return url
         return None
+    
+    @staticmethod
+    def changeUserDescription(userId, description):
+        return DataApi.changeUserDescription(userId, description)
 
     @staticmethod
     def repostVisionList(userId, visionIds):

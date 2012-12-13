@@ -226,12 +226,11 @@
     width: 450px;
     margin-top: 25px;
     padding: 10px 10px 10px 190px;
-    overflow:auto;
+    overflow: hidden;
     position: relative;
     height: 155px;
 
     background-color:@VISION_BACKGROUND;
-
     .LightShadow;
 
     #UserProfilePicture {
@@ -246,6 +245,35 @@
         line-height: 1.2;
     }
     #UserDescription {
+    }
+    #NoUserDescription {
+        font-style: italic;
+        padding: 3px;
+        margin:3px 0px;
+    }
+    .NoUserDescriptionNotActive {
+        border: 1px solid @VISION_BACKGROUND;
+    }
+    .NoUserDescriptionActive {
+        border: 1px gray dotted;
+        cursor: pointer;
+    }
+
+    #SetUserDescriptionContainer {
+        padding: 10px 30px 10px 0px;
+
+        #UserDescriptionInput {
+            width: 410px;
+            height: 40px;
+        }
+        #UserDescriptionSubmit {
+            float: right;
+        }
+        #UserDescriptionLength {
+            float: right;
+            padding: 5px 10px;
+            color: gray;
+        }
     }
 }
 
@@ -351,7 +379,7 @@
     .VisionComment {
         font-size:12px;
         line-height:1.2;
-        background-color: #FAFAFA;
+        background-color: @VISION_BACKGROUND;
         margin: 2px;
         padding: 2px; 
         overflow: auto;

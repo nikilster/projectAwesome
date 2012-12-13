@@ -172,7 +172,7 @@ footer {
   width: 450px;
   margin-top: 25px;
   padding: 10px 10px 10px 190px;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
   height: 155px;
   background-color: #fafafa;
@@ -190,6 +190,33 @@ footer {
 #UserInformation #UserName {
   font-size: 30px;
   line-height: 1.2;
+}
+#UserInformation #NoUserDescription {
+  font-style: italic;
+  padding: 3px;
+  margin: 3px 0px;
+}
+#UserInformation .NoUserDescriptionNotActive {
+  border: 1px solid #fafafa;
+}
+#UserInformation .NoUserDescriptionActive {
+  border: 1px gray dotted;
+  cursor: pointer;
+}
+#UserInformation #SetUserDescriptionContainer {
+  padding: 10px 30px 10px 0px;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionInput {
+  width: 410px;
+  height: 40px;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionSubmit {
+  float: right;
+}
+#UserInformation #SetUserDescriptionContainer #UserDescriptionLength {
+  float: right;
+  padding: 5px 10px;
+  color: gray;
 }
 #ContentContainer {
   margin-bottom: 20px;
@@ -303,7 +330,7 @@ footer {
 #ExampleVisionBoard .VisionComment {
   font-size: 12px;
   line-height: 1.2;
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   margin: 2px;
   padding: 2px;
   overflow: auto;

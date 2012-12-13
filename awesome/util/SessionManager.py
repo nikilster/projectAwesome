@@ -24,6 +24,8 @@ class SessionManager:
             'lastName'  : user.lastName,
             'email'     : user.email,
             'picture'   : user.picture,
+            'description' : user.description,
+            'visionPrivacy' : user.visionPrivacy,
         }
 
     @staticmethod

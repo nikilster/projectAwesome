@@ -32,6 +32,9 @@ class UserModel(DB.Model):
 
     picture         = DB.Column(DB.Text)
 
+    description     = DB.Column(DB.Text)
+    visionPrivacy   = DB.Column(DB.Integer, default=VisionPrivacy.SHAREABLE)
+
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                             onupdate=datetime.datetime.utcnow)
@@ -48,6 +51,7 @@ class UserModel(DB.Model):
         self.email = email
         self.userName = ""
         self.picture = "https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"
+        self.description = ""
 
     def __str__(self):
         return '<User %s:%s %s>' % (self.id, self.firstName, self.lastName)
@@ -57,6 +61,8 @@ class UserModel(DB.Model):
                 'firstName' : self.firstName,
                 'lastName' : self.lastName,
                 'picture' : self.picture,
+                'description' : self.description,
+                'visionPrivacy' : self.visionPrivacy,
                }
 
 #

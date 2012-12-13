@@ -70,15 +70,17 @@ def api_change_info():
             userInfo = SessionManager.getUser()
             if not ('firstName' in request.form or
                     'lastName' in request.form or
-                    'email' in request.form):
+                    'email' in request.form or
+                    'description' in request.form):
                 abort(406)
 
             firstName = request.form['firstName']
             lastName = request.form['lastName']
             email = request.form['email']
+            desc = request.form['description']
 
             result = Api.changeUserInfo(userInfo['id'],
-                                        firstName, lastName, email)
+                                        firstName, lastName, email, desc)
             Logger.debug("RESULT: " + str(result))
 
             # make sure to update session
@@ -90,6 +92,31 @@ def api_change_info():
             return render_template('settings.html', user=userInfo)
         abort(406)
     abort(405)
+
+@app.route('/api/user/<int:userId>/set_description', methods=['POST'])
+def api_user_set_description(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not 'description' in parameters:
+                abort(406)
+            description = parameters['description'].strip()
+
+            result = Api.changeUserDescription(userInfo['id'], description)
+
+            if True == result:
+                data = { 'result' : "success",
+                         'description' : description }
+            else:
+                data = { 'result' : "error" }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+   
 
 @app.route('/api/change_picture', methods=['POST'])
 def api_change_picture():

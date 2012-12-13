@@ -17,6 +17,8 @@ var USER = { id: '{{ user['id'] }}',
              firstName: '{{ user['firstName'] }}',
              lastName: '{{ user['lastName'] }}',
              email: '{{ user['email'] }}',
+             description: '{{ user['description'] }}',
+             visionPrivacy: '{{ user['visionPrivacy'] }}',
            }
 </script>
 {% endblock %}
@@ -41,7 +43,7 @@ var USER = { id: '{{ user['id'] }}',
 
             <form method="POST" class="form-horizontal"
                 action="{{ url_for('api_change_info') }}"
-                style="padding-top: 20px;">
+                style="padding-top: 20px; overflow: auto;">
                 <div class="control-group">
                     <label class="control-label" for="firstName">
                     </label>
@@ -70,7 +72,25 @@ var USER = { id: '{{ user['id'] }}',
                                type="text" name="email"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group" style="margin-bottom:0px;">
+                    <label class="control-label" for="description">
+                    </label>
+                    <div class="controls">
+                        <textarea id="DescriptionInput"
+                               class="RegisterField"
+                               placeholder="Add a bio or description.."
+                               type="text" name="description"
+                               style="height: 100px;"
+                               />{{ user['description'] }}</textarea>
+
+                    </div>
+                </div>
+                <div id="DescriptionLengthLeft"
+                    style="text-align:right; margin-right: 97px;
+                           padding: 5px 10px; color: gray;">
+                    200
+                </div>
+                <div class="control-group" style="float:right;">
                     <button id="SettingsSubmitInput"
                             type="submit"
                             class="SubmitButton btn btn-primary btn-large"
@@ -86,6 +106,10 @@ var USER = { id: '{{ user['id'] }}',
 {% block js %}
 
 <script type="text/javascript">
+
+// Constants
+var MAX_USER_DESCRIPTION_LENGTH = 200;
+
 function nameValid(firstName) {
     return firstName.length > 0;
 }
@@ -107,19 +131,40 @@ function toggleSubmit() {
     var lastName = $("#LastNameInput").val();
     var email = $("#EmailInput").val();
 
-    var submitValid = false;
+    var change = false;
+    var invalid = false;
 
-    if (firstName != USER['firstName'] && nameValid(firstName)) {
-        submitValid = true;
+    if (firstName != USER['firstName']) {
+        change = true;
+        if (!nameValid(firstName)) {
+            invalid = true;
+        }
     }
-    if (lastName != USER['lastName'] && nameValid(lastName)) {
-        submitValid = true;
+    if (lastName != USER['lastName']) {
+        change = true;
+        if (!nameValid(lastName)) {
+            invalid = true;
+        }
     }
-    if (email != USER['email'] && emailValid(email)) {
-        submitValid = true;
+    if (email != USER['email']) {
+        change = true;
+        if (!emailValid(email)) {
+            invalid = true;
+        }
+    }
+    var desc = $.trim($("#DescriptionInput").val());
+    var descLength = desc.length;
+    var lengthLeft = MAX_USER_DESCRIPTION_LENGTH - descLength;
+    $("#DescriptionLengthLeft").html(lengthLeft);
+    if (desc != USER['description']) {
+        change = true;
+        if (lengthLeft < 0) {
+            invalid = true;
+        }
     }
 
-    if (true == submitValid) {
+    console.log("change: " + change + "  invalid: " + invalid + " desc: " + desc);
+    if (true == change && false == invalid) {
         $("#SettingsSubmitInput").removeAttr("disabled");
     } else {
         $("#SettingsSubmitInput").attr("disabled", "disabled");
@@ -136,6 +181,11 @@ $(document).ready(function() {
     $("#EmailInput").keyup(toggleSubmit);
     $("#EmailInput").bind("paste", toggleSubmit);
     $("#EmailInput").bind("cut", toggleSubmit);
+    $("#DescriptionInput").keyup(toggleSubmit);
+    $("#DescriptionInput").bind("paste", toggleSubmit);
+    $("#DescriptionInput").bind("cut", toggleSubmit);
+
+    toggleSubmit();
 });
 </script>
 
