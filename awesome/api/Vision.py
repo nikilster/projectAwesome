@@ -3,7 +3,7 @@ from data.DataApi import DataApi
 from VisionComment import VisionComment
 from VisionCommentList import VisionCommentList
 from Picture import Picture
-from Privacy import Relationship
+from Privacy import Relationship, VisionPrivacy
 
 from ..util.Logger import Logger
 

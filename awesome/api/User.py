@@ -71,26 +71,7 @@ class User:
 
         Returns (User or None, error_msg if first is None)
         '''
-        email = email.strip().lower()
-        passwordText = passwordText.strip()
-
-        errorMsg = None
-
-        user = User.getByEmail(email)
-
-        if len(email) <= 0:
-            errorMsg = LoginError.EMAIL_REQUIRED
-        elif None == user:
-            errorMsg = LoginError.EMAIL_NOT_FOUND
-        elif len(passwordText) <= 0:
-            errorMsg = LoginError.PASSWORD_REQUIRED
-        elif not PasswordEncrypt.verifyPassword(passwordText,
-                                                user.passwordHash()):
-            errorMsg = LoginError.PASSWORD_INVALID
-        else:
-            return (user, None)
-        assert errorMsg != None, "Error msg should exist"
-        return (None, errorMsg)
+        return User._getByLogin(email, passwordText)
 
     @staticmethod
     def registerNewUser(firstName, lastName, email, passwordText):
@@ -98,51 +79,8 @@ class User:
         
         Returns (User if successful or None, error_msg if not successful)
         '''
-        firstName = firstName.strip()
-        lastName = lastName.strip()
-        email = email.strip().lower()
-        passwordText = passwordText.strip()
+        return User._registerNewUser(firstName, lastName, email, passwordText)
 
-        errorMsg = None
-
-        if len(firstName) <= 0:
-            errorMsg = RegisterError.FIRST_NAME_REQUIRED
-        elif not Verifier.nameValid(firstName):
-            errorMsg = RegisterError.FIRST_NAME_INVALID
-        elif len(lastName) <= 0:
-            errorMsg = RegisterError.LAST_NAME_REQUIRED
-        elif not Verifier.nameValid(lastName):
-            errorMsg = RegisterError.LAST_NAME_INVALID
-        elif len(email) <= 0:
-            errorMsg = RegisterError.EMAIL_REQUIRED
-        elif not Verifier.emailValid(email):
-            errorMsg = RegisterError.EMAIL_INVALID
-        elif len(passwordText) <= 0:
-            errorMsg = RegisterError.PASSWORD_REQUIRED
-        elif not Verifier.passwordValid(passwordText):
-            errorMsg = RegisterError.PASSWORD_INVALID
-        else:
-            user = User.getByEmail(email)
-            if user:
-                errorMsg = RegisterError.EMAIL_TAKEN
-
-        if errorMsg == None:
-            passwordHash = PasswordEncrypt.genHash(passwordText)
-
-            Logger.debug("Name: %s %s, Email: %s, Pass: %s [%s]" % \
-                         (firstName, lastName, email,
-                          passwordText, passwordHash))
-
-            # Just need to add new user here and login
-            userId = DataApi.addUser(firstName, lastName, email, passwordHash)
-
-            user = User.getById(userId)
-            if user:
-                return (user, None)
-            else:
-                return (None, RegisterError.DB_ERROR)
-        else:
-            return (None, errorMsg)
 
     #
     # Getters
@@ -250,43 +188,17 @@ class User:
         Returns (Vision/None, None or error_msg if add vision failed)
         '''
         #TODO: Save page title and page URL?
+        #TODO: allow only text?
 
-        if imageUrl == "":
-            return [None, "No image"]
-        imageUpload = ImageUrlUpload(imageUrl)
-        s3Vision = imageUpload.saveAsVisionImage(self.id())
-
-        if None == s3Vision:
-            return [None, "Invalid image"]
-            
-        pictureId = DataApi.addPicture(self.id(),
-                                       imageUrl, isUploaded,
-                                       s3Vision.s3Bucket(),
-                                       s3Vision.origKey(),
-                                       s3Vision.origWidth(),
-                                       s3Vision.origHeight(),
-                                       s3Vision.largeKey(),
-                                       s3Vision.largeWidth(),
-                                       s3Vision.largeHeight(),
-                                       s3Vision.mediumKey(),
-                                       s3Vision.mediumWidth(),
-                                       s3Vision.mediumHeight(),
-                                       s3Vision.smallKey(),
-                                       s3Vision.smallWidth(),
-                                       s3Vision.smallHeight())
-
-        if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
+        pictureId, errorMsg = self._processAndUploadImageUrl(imageUrl)
+        if pictureId == None:
             return [None, "Error saving picture"]
 
-        parentId = 0
-        rootId = 0
         # TODO: use real privacy later
         visionId = DataApi.addVision(self.id(), text, pictureId,
-                                     parentId, rootId, getPrivacy())
-
+                                     0, 0, getPrivacy())
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [None, "Error creating vision"]
-
         vision = Vision.getById(visionId, self)
         if vision:
             return [vision, "Saved Vision!"]
@@ -342,5 +254,115 @@ class User:
         '''IMPORTANT: Do NOT call this. Use static methods above'''
         assert model, "User model is invalid"
         self._model = model
+
+    @staticmethod
+    def _getByLogin(email, passwordText):
+        '''Get user with login information.
+
+        Returns (User or None, error_msg if first is None)
+        '''
+        email = email.strip().lower()
+        passwordText = passwordText.strip()
+
+        errorMsg = None
+
+        user = User.getByEmail(email)
+
+        if len(email) <= 0:
+            errorMsg = LoginError.EMAIL_REQUIRED
+        elif None == user:
+            errorMsg = LoginError.EMAIL_NOT_FOUND
+        elif len(passwordText) <= 0:
+            errorMsg = LoginError.PASSWORD_REQUIRED
+        elif not PasswordEncrypt.verifyPassword(passwordText,
+                                                user.passwordHash()):
+            errorMsg = LoginError.PASSWORD_INVALID
+        else:
+            return (user, None)
+        assert errorMsg != None, "Error msg should exist"
+        return (None, errorMsg)
+
+    @staticmethod
+    def _registerNewUser(firstName, lastName, email, passwordText):
+        '''Registers and returns new user
+        
+        Returns (User if successful or None, error_msg if not successful)
+        '''
+        firstName = firstName.strip()
+        lastName = lastName.strip()
+        email = email.strip().lower()
+        passwordText = passwordText.strip()
+
+        errorMsg = None
+
+        if len(firstName) <= 0:
+            errorMsg = RegisterError.FIRST_NAME_REQUIRED
+        elif not Verifier.nameValid(firstName):
+            errorMsg = RegisterError.FIRST_NAME_INVALID
+        elif len(lastName) <= 0:
+            errorMsg = RegisterError.LAST_NAME_REQUIRED
+        elif not Verifier.nameValid(lastName):
+            errorMsg = RegisterError.LAST_NAME_INVALID
+        elif len(email) <= 0:
+            errorMsg = RegisterError.EMAIL_REQUIRED
+        elif not Verifier.emailValid(email):
+            errorMsg = RegisterError.EMAIL_INVALID
+        elif len(passwordText) <= 0:
+            errorMsg = RegisterError.PASSWORD_REQUIRED
+        elif not Verifier.passwordValid(passwordText):
+            errorMsg = RegisterError.PASSWORD_INVALID
+        else:
+            user = User.getByEmail(email)
+            if user:
+                errorMsg = RegisterError.EMAIL_TAKEN
+
+        if errorMsg == None:
+            passwordHash = PasswordEncrypt.genHash(passwordText)
+
+            Logger.debug("Name: %s %s, Email: %s, Pass: %s [%s]" % \
+                         (firstName, lastName, email,
+                          passwordText, passwordHash))
+
+            # Just need to add new user here and login
+            userId = DataApi.addUser(firstName, lastName, email, passwordHash)
+
+            user = User.getById(userId)
+            if user:
+                return (user, None)
+            else:
+                return (None, RegisterError.DB_ERROR)
+        else:
+            return (None, errorMsg)
+
+
+    def _processAndUploadImageUrl(self, imageUrl):
+        if imageUrl == "":
+            return [None, "No image"]
+        imageUpload = ImageUrlUpload(imageUrl)
+        s3Vision = imageUpload.saveAsVisionImage(self.id())
+
+        if None == s3Vision:
+            return [None, "Invalid image"]
+            
+        pictureId = DataApi.addPicture(self.id(),
+                                       imageUrl, isUploaded,
+                                       s3Vision.s3Bucket(),
+                                       s3Vision.origKey(),
+                                       s3Vision.origWidth(),
+                                       s3Vision.origHeight(),
+                                       s3Vision.largeKey(),
+                                       s3Vision.largeWidth(),
+                                       s3Vision.largeHeight(),
+                                       s3Vision.mediumKey(),
+                                       s3Vision.mediumWidth(),
+                                       s3Vision.mediumHeight(),
+                                       s3Vision.smallKey(),
+                                       s3Vision.smallWidth(),
+                                       s3Vision.smallHeight())
+
+        if pictureId == DataApi.NO_OBJECT_EXISTS_ID:
+            return [None, "Error saving picture"]
+
+        return [pictureId, "Success"]
 
 # $eof
