@@ -435,14 +435,13 @@ def apiVisionComments(visionId):
             abort(406)
        
         user = User.getById(userId)
-        if user:
-            vision = Vision.getById(visionId, user)
-            data = { 'result' : "error" }
-            if vision:
-                comments = vision.comments(user, 100)
-                if comments:
-                    data = { 'result'    : "success",
-                            'comments'  : comments.toDictionaryDeep() }
+        vision = Vision.getById(visionId, user)
+        data = { 'result' : "error" }
+        if vision:
+            comments = vision.comments(user, 100)
+            if comments:
+                data = { 'result'    : "success",
+                        'comments'  : comments.toDictionaryDeep() }
         return jsonify(data)
     abort(405)
 

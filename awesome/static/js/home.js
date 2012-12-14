@@ -30,8 +30,10 @@ var VISION_DETAILS_NAME = "#VisionDetailsName";
 var VISION_DETAILS_PICTURE = "#VisionDetailsPicture";
 var VISION_DETAILS_TEXT = "#VisionDetailsText";
 var VISION_DETAILS_ADD_COMMENT_PICTURE = "#VisionDetailsAddCommentPicture";
+var VISION_DETAILS_ADD_COMMENT_CONTAINER = "#VisionDetailsAddCommentContainer";
 var VISION_DETAILS_MODAL_BOX = "#VisionDetailsModalBox";
 var VISION_DETAILS_CLOSE = "#VisionDetailsClose";
+var VISION_DELETE_BUTTON = "#VisionDeleteButton";
 
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
@@ -547,7 +549,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "li",
     className: VISION_CLASS,
     initialize: function() {
-        _.bindAll(this, "itemSelect", "renderComment",
+        _.bindAll(this, "showDetails", "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
                         "visionCommentInput");
@@ -561,8 +563,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     events: function(){
 
         var _events = {
-
-            "click" : "itemSelect",
+            "click" : "showDetails",
             "mouseenter" : "mouseEnter", //TODO: Fix
             "mouseleave" : "mouseLeave", //TODO: Fix
             "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
@@ -571,6 +572,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         };
 
         _events["click " + REPOST_BUTTON] = "repostVision";
+        _events["click" + ADD_NOT_LOGGED_IN_VISION_SELECTOR] = "itemSelect";
+        _events["click" + REMOVE_NOT_LOGGED_IN_VISION_SELECTOR] = "itemSelect";
 
         return _events;
     },
@@ -681,19 +684,22 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.comments.push(c.el);
         }
     },
+    showDetails: function(e) {
+        console.log("SHOW DETAILS");
+        this.mouseLeave();
+        var pageMode = App.Var.Model.pageMode();
+        if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
+            App.Var.View.showVisionDetails(this.model);
+        }
+    },
     itemSelect: function(e) {
+        console.log("ITEM SELECT");
+        e.stopImmediatePropagation();
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             this.model.toggleSelected();
-            this.mouseEnter();
-        } else if (pageMode == App.Const.PageMode.HOME_USER ||
-                   pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
-            // Skip
-        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            App.Var.View.showVisionDetails(this.model);
-        } else {
-            assert(false, "Invalid page mode in item select");
+            //this.mouseEnter();
         }
     },
     
@@ -922,6 +928,20 @@ App.Backbone.View.Page = Backbone.View.extend({
                                                            USER['picture']);
         modal.find(VISION_DETAILS_COMMENTS_CONTAINER).empty().hide();
         modal.find(VISION_DETAILS_COMMENTS_LOADING).show();
+        
+        if (userLoggedIn()) {
+            $(VISION_DETAILS_ADD_COMMENT_CONTAINER).show();
+        } else {
+            $(VISION_DETAILS_ADD_COMMENT_CONTAINER).hide();
+        }
+
+        if (userLoggedIn() &&
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
+            $(VISION_DELETE_BUTTON).show();
+        } else {
+            $(VISION_DELETE_BUTTON).hide();
+        }
 
         $("body").addClass("NoScroll");
         modal.fadeIn("slow");
@@ -1239,19 +1259,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     /*
         Hide all of the elements in the array, except for the one at index i
     */
-    hideAllExcept: function(elements, indexToShow)
-    {
-
-        for(var i=0; i<elements.length; i++)
-        {
-            if(i == indexToShow)
-            {
+    hideAllExcept: function(elements, indexToShow) {
+        for(var i=0; i<elements.length; i++) {
+            if(i == indexToShow) {
                 elements[i].show();//(CSS_ClASS_HIDDEN);
-                console.log("showing " + i);
-            }
-            else{
+            } else {
                 elements[i].hide();//addClass(CSS_ClASS_HIDDEN);
-                console.log("hiding" + i);
             }
         }
     },
