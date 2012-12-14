@@ -11,6 +11,17 @@ class Picture:
     '''
 
     #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        LARGE_URL = "largeUrl"
+        MEDIUM_URL = "mediumUrl"
+        SMALL_URL = "smallUrl"
+
+
+    #
     # Static methods to get a vision
     #
     @staticmethod
@@ -82,10 +93,10 @@ class Picture:
 
     def toDictionary(self):
         '''For using to package up JSON.'''
-        return { 'id' : self.id(),
-                 'largeUrl' : self.largeUrl(),
-                 'mediumUrl' : self.mediumUrl(),
-                 'smallUrl' : self.smallUrl(),
+        return { Picture.Key.ID         : self.id(),
+                 Picture.Key.LARGE_URL  : self.largeUrl(),
+                 Picture.Key.MEDIUM_URL : self.mediumUrl(),
+                 Picture.Key.SMALL_URL  : self.smallUrl()
                }
 
     #
