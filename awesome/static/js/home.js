@@ -549,7 +549,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     tagName: "li",
     className: VISION_CLASS,
     initialize: function() {
-        _.bindAll(this, "showDetails", "itemSelect", "renderComment",
+        _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
                         "visionCommentInput");
@@ -563,7 +563,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     events: function(){
 
         var _events = {
-            "click" : "showDetails",
+            "click" : "itemSelect",
             "mouseenter" : "mouseEnter", //TODO: Fix
             "mouseleave" : "mouseLeave", //TODO: Fix
             "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
@@ -572,8 +572,6 @@ App.Backbone.View.Vision = Backbone.View.extend({
         };
 
         _events["click " + REPOST_BUTTON] = "repostVision";
-        _events["click" + ADD_NOT_LOGGED_IN_VISION_SELECTOR] = "itemSelect";
-        _events["click" + REMOVE_NOT_LOGGED_IN_VISION_SELECTOR] = "itemSelect";
 
         return _events;
     },
@@ -684,22 +682,14 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.comments.push(c.el);
         }
     },
-    showDetails: function(e) {
-        console.log("SHOW DETAILS");
-        this.mouseLeave();
-        var pageMode = App.Var.Model.pageMode();
-        if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
-            App.Var.View.showVisionDetails(this.model);
-        }
-    },
     itemSelect: function(e) {
-        console.log("ITEM SELECT");
-        e.stopImmediatePropagation();
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             this.model.toggleSelected();
-            //this.mouseEnter();
+            this.mouseEnter();
+        } else if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
+            App.Var.View.showVisionDetails(this.model);
         }
     },
     
