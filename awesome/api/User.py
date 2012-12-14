@@ -146,7 +146,7 @@ class User:
         '''Returns True if description changed, else False'''
         return DataApi.setUserDescription(self.id(), description.strip())
 
-    def setProfilePicture(file):
+    def setProfilePicture(self, file):
         '''Sets profile picture from file input stream
 
         Returns URL on success, else None
@@ -154,7 +154,7 @@ class User:
         image = ProfilePicture(file)
         url = None
         if file and image.isImage():
-            url = image.uploadToS3(userId)
+            url = image.uploadToS3(self.id())
             if url != None:
                 if True == DataApi.setProfilePicture(self.id(), url):
                     return url

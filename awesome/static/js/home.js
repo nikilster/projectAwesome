@@ -659,6 +659,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),
+                         profile: USER['picture'],
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
