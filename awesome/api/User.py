@@ -132,7 +132,7 @@ class User:
     #
     # Setters (note: these write to database)
     #
-    def setInfo(self, firstName, lastName, email):
+    def setInfo(self, firstName, lastName, email, visionPrivacy):
         '''Returns True if something changed, else False'''
         change = False
         if Verifier.nameValid(firstName) and \
@@ -140,6 +140,7 @@ class User:
            Verifier.emailValid(email):
             change |= DataApi.setUserName(self.id(), firstName, lastName)
             change |= DataApi.setUserEmail(self.id(), email)
+            change |= DataApi.setUserVisionPrivacy(self.id(), visionPrivacy)
         return change
 
     def setDescription(self, description):
@@ -182,7 +183,7 @@ class User:
             url = image.uploadForPreview(self.id())
         return url
 
-    def addVision(self, imageUrl, text, isUploaded):
+    def addVision(self, imageUrl, text, isUploaded, isPublic):
         '''Creates new vision
         
         Returns (Vision/None, None or error_msg if add vision failed)
@@ -194,9 +195,11 @@ class User:
         if pictureId == None:
             return [None, "Error saving picture"]
 
-        # TODO: use real privacy later
-        visionId = DataApi.addVision(self.id(), text, pictureId,
-                                     0, 0, getPrivacy())
+        privacy = VisionPrivacy.PUBLIC
+        if not isPublic:
+            privacy = VisionPrivacy.SHAREABLE
+
+        visionId = DataApi.addVision(self.id(), text, pictureId, 0, 0, privacy)
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [None, "Error creating vision"]
         vision = Vision.getById(visionId, self)

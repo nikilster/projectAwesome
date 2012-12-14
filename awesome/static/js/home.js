@@ -1514,6 +1514,11 @@ $(document).ready(function() {
         $("#FileUploadImageContainer").hide();
         $("#InputText").val("");
         $("#AddVisionSubmit").attr("disabled", "disabled");
+        if (USER['visionPrivacy'] == true) {
+            $("#InputVisionPrivacy").prop("checked", "checked");
+        } else {
+            $("#InputVisionPrivacy").removeProp("checked");
+        }
     });
     $("#FileUploadInput").change(function() {
         var fileName = $("#FileUploadInput").val();
@@ -1574,10 +1579,12 @@ $(document).ready(function() {
         }
 
         var text = $.trim($("#InputText").val());
+        var visionPrivacy = $("#InputVisionPrivacy").is(":checked");
 
         doAjax("/api/user/" + USER['id'] + "/add_vision",
                 JSON.stringify({'useImage' : useImage,
-                                'text' : text}),
+                                'text' : text,
+                                'privacy' : visionPrivacy }),
                 // success
                 function(data, textStatus, jqXHR) {
                     console.log("Success: " + JSON.stringify(data));

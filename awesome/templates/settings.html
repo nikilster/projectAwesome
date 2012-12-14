@@ -81,7 +81,7 @@ var USER = { id: '{{ user['id'] }}',
                                placeholder="Add a bio or description.."
                                type="text" name="description"
                                style="height: 100px;"
-                               />{{ user['description'] }}</textarea>
+                               >{{ user['description'] }}</textarea>
 
                     </div>
                 </div>
@@ -90,6 +90,19 @@ var USER = { id: '{{ user['id'] }}',
                            padding: 5px 10px; color: gray;">
                     200
                 </div>
+                <div class="control-group"
+                     style="margin-top:-15px; margin-bottom: 5px;">
+                    <div class="controls">
+                        <input id="VisionPrivacyInput" type="checkbox"
+                               style="position:relative; top: -3px;"
+                               {% if user['visionPrivacy'] %}
+                               checked
+                               {% endif %}
+                               name="visionPrivacy"/>
+                        New visions default are public.
+                    </div>
+                </div>
+
                 <div class="control-group" style="float:right;">
                     <button id="SettingsSubmitInput"
                             type="submit"
@@ -162,6 +175,9 @@ function toggleSubmit() {
             invalid = true;
         }
     }
+    if ($("#VisionPrivacyInput").is(":checked") != USER['visionPrivacy']) {
+        change = true;
+    }
 
     console.log("change: " + change + "  invalid: " + invalid + " desc: " + desc);
     if (true == change && false == invalid) {
@@ -184,6 +200,7 @@ $(document).ready(function() {
     $("#DescriptionInput").keyup(toggleSubmit);
     $("#DescriptionInput").bind("paste", toggleSubmit);
     $("#DescriptionInput").bind("cut", toggleSubmit);
+    $("#VisionPrivacyInput").change(toggleSubmit);
 
     toggleSubmit();
 });

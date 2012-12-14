@@ -78,10 +78,11 @@ def api_change_info():
             lastName = request.form['lastName']
             email = request.form['email']
             desc = request.form['description']
+            visionPrivacy = 'visionPrivacy' in request.form
 
             user = User.getById(userInfo['id'])
             if user:
-                user.setInfo(firstName, lastName, email)
+                user.setInfo(firstName, lastName, email, visionPrivacy)
                 user.setDescription(desc)
 
                 # update session
@@ -366,6 +367,7 @@ def apiAddUserVision(userId):
                 abort(406)
             useImage = parameters['useImage']
             text = parameters['text'].strip()
+            isPublic = 'privacy' in parameters
 
             # Make sure input OK to create a new vision
             if useImage == False:
@@ -381,7 +383,7 @@ def apiAddUserVision(userId):
             # Create a new vision with the photo
             user = User.getById(userId)
             if user:
-                vision, errorMsg = user.addVision(url, text, True)
+                vision, errorMsg = user.addVision(url, text, True, isPublic)
 
                 if vision:
                     objList = []
@@ -532,7 +534,7 @@ def create():
     user = User.getById(userId)
     if user:
         # TODO: should we save pageUrl and pageTitle also?
-        vision, message = User.addVision(mediaUrl, text, False)
+        vision, message = user.addVision(mediaUrl, text, False, False)
 
         if vision:
             #Successful Create!

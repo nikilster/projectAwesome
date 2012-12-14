@@ -79,6 +79,17 @@ class DataApi:
         return False
 
     @staticmethod
+    def setUserVisionPrivacy(userId, visionPrivacy):
+        user = DataApi.getUserById(userId)
+
+        if None != user and user.visionPrivacy != visionPrivacy:
+            user.visionPrivacy = visionPrivacy
+            DB.session.add(user)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
     def setUserPasswordHash(userId, passwordHash):
         user = DataApi.getUserById(userId)
         if None != user:

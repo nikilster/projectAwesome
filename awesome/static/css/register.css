@@ -104,8 +104,8 @@ footer {
 }
 #ProfilePictureContainer {
   position: absolute;
-  top: 0px:
-    left: 0px;
+  top: 115px;
+  left: -10px;
   width: 175px;
   margin-left: -15px;
 }
