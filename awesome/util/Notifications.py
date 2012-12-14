@@ -8,8 +8,9 @@
 from flask import render_template
 from Emailer import Emailer
 from ..Constant import Constant
-from ..api.Api import Api
 from Logger import Logger
+from awesome.api.data.DataApi import DataApi
+
 import random
 
 class Notifications:
@@ -59,7 +60,7 @@ class Notifications:
     def __getMotivationContent(self):
         
         #Get the info
-        userInfo = Api.getEmailContent()
+        userInfo = DataApi.getUsersAndRandomVision()
 
         #Format
         users = []
@@ -81,7 +82,7 @@ class Notifications:
             vision['text'] = visionData['text']
             vision['id'] = visionData['id']
             vision['pictureId'] = visionData['picture']['id']
-            vision[Notifications.USER_PICTURE_URL] = visionData['picture']['largeUrl']
+            vision[Notifications.USER_PICTURE_URL] = visionData['picture']['original']
 
             #Add vision to user
             user['vision'] = vision
@@ -105,7 +106,7 @@ class Notifications:
             if(Notifications.TEST):
                 email[Constant.EMAIL_TO_KEY] = Notifications.TEST_EMAIL_ADDRESS
             else:
-                email[Constant.EMAIL_TO_KEY]        = info[Notifications.USER_EMAIL]
+                email[Constant.EMAIL_TO_KEY] = info[Notifications.USER_EMAIL]
            
             email[Constant.EMAIL_SUBJECT_KEY]   = self.__subject(info)
             email[Constant.EMAIL_BODY_TEXT_KEY] = self.__textEmail(info)

@@ -336,10 +336,10 @@ class DataApi:
         randomId = random.choice(visionIdList)
         
         visionModel = DataApi.getVision(randomId)
-        vision = visionModel.toDictionary()
+        vision = visionModel.__dict__
 
         pictureModel = DataApi.getPicture(visionModel.pictureId)
-        picture = pictureModel.toDictionary()
+        picture = pictureModel.__dict__
 
         #Set Picture
         vision['picture'] = picture
