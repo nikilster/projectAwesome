@@ -59,7 +59,7 @@ class SessionManager:
 
     # Returns list of vision ids that were selected if the data is valid
     @staticmethod
-    def getSelectedVisions(text):
+    def getSelectedVisions():
         assert SessionManager.__inSession(), "Not in Flask session"
         if 'selectedVisions' in session:
             data = None

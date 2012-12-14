@@ -190,7 +190,7 @@ class User:
         #TODO: Save page title and page URL?
         #TODO: allow only text?
 
-        pictureId, errorMsg = self._processAndUploadImageUrl(imageUrl)
+        pictureId, errorMsg = self._processAndUploadImageUrl(imageUrl, isUploaded)
         if pictureId == None:
             return [None, "Error saving picture"]
 
@@ -335,7 +335,7 @@ class User:
             return (None, errorMsg)
 
 
-    def _processAndUploadImageUrl(self, imageUrl):
+    def _processAndUploadImageUrl(self, imageUrl, isUploaded):
         if imageUrl == "":
             return [None, "No image"]
         imageUpload = ImageUrlUpload(imageUrl)
