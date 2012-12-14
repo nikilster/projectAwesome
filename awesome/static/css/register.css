@@ -52,7 +52,8 @@ footer {
   display: none;
 }
 .Center {
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 .ErrorNotice {
   color: red;

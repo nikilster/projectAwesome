@@ -5,17 +5,9 @@ from sqlalchemy.ext.hybrid import hybrid_property
 import datetime
 import json
 
+from ..Privacy import UserPrivacy, VisionPrivacy
+
 S3_HTTPS_HEADER = 'https://s3.amazonaws.com/'
-
-class UserPrivacy:
-    PRIVATE = 0
-    PUBLIC = 1
-
-class VisionPrivacy:
-    PRIVATE = 0
-    SHAREABLE = 1
-    PUBLIC = 2
-    INVALID = 3
 
 #
 # UserModel
@@ -55,15 +47,6 @@ class UserModel(DB.Model):
 
     def __str__(self):
         return '<User %s:%s %s>' % (self.id, self.firstName, self.lastName)
-
-    def toDictionary(self):
-        return {'id' : self.id,
-                'firstName' : self.firstName,
-                'lastName' : self.lastName,
-                'picture' : self.picture,
-                'description' : self.description,
-                'visionPrivacy' : self.visionPrivacy,
-               }
 
 #
 # VisionListModel : JSON list of vision ids
@@ -128,13 +111,6 @@ class VisionModel(DB.Model):
     def __str__(self):
         return '<Vision %s>' % str(self.id)
 
-    def toDictionary(self):
-        return {'id' : self.id,
-                'userId' : self.userId,
-                'text' : self.text,
-                'parentId' : self.parentId,
-                'rootId' : self.rootId,
-               }
 
 #
 # PictureModel
@@ -211,13 +187,6 @@ class PictureModel(DB.Model):
     def __str__(self):
         return '<Picture %s>' % str(self.id)
 
-    def toDictionary(self):
-        return { 'id' : self.id,
-                 'largeUrl' : self.largeUrl,
-                 'mediumUrl' : self.mediumUrl,
-                 'smallUrl' : self.smallUrl,
-               }
-
 #
 # VisionComment
 #
@@ -240,13 +209,6 @@ class VisionCommentModel(DB.Model):
         self.text = text
     def __str__(self):
         return '<VisionComment %s>' % (str(self.id))
-
-    def toDictionary(self):
-        return { 'id' : self.id,
-                 'visionId' : self.visionId,
-                 'authorId' : self.authorId,
-                 'text' : self.text,
-               }
 
 #
 # FriendModel: Represents a one-way share of information

@@ -30,6 +30,8 @@ var VISION_DETAILS_NAME = "#VisionDetailsName";
 var VISION_DETAILS_PICTURE = "#VisionDetailsPicture";
 var VISION_DETAILS_TEXT = "#VisionDetailsText";
 var VISION_DETAILS_ADD_COMMENT_PICTURE = "#VisionDetailsAddCommentPicture";
+var VISION_DETAILS_MODAL_BOX = "#VisionDetailsModalBox";
+var VISION_DETAILS_CLOSE = "#VisionDetailsClose";
 
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
@@ -657,6 +659,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),
+                         profile: USER['picture'],
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -788,6 +791,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "masonryReload",
                         "showVisionDetails",
+                        "hideVisionDetails",
                         "ajaxVisionDetailsCommentsSuccess",
                         "ajaxVisionDetailsCommentsError",
                         "renderVisionDetailsComments",
@@ -918,7 +922,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                                                            USER['picture']);
         modal.find(VISION_DETAILS_COMMENTS_CONTAINER).empty().hide();
         modal.find(VISION_DETAILS_COMMENTS_LOADING).show();
-        modal.modal();
+
+        $("body").addClass("NoScroll");
+        modal.fadeIn("slow");
 
         doAjax("/api/vision/" + this.currentVision.visionId() + "/comments",
                 JSON.stringify({
@@ -927,6 +933,10 @@ App.Backbone.View.Page = Backbone.View.extend({
                 this.ajaxVisionDetailsCommentsSuccess,
                 this.ajaxVisionDetailsCommentsError
         );
+    },
+    hideVisionDetails: function() {
+        var modal = $(VISION_DETAILS_MODAL).first().fadeOut("fast");
+        $("body").removeClass("NoScroll");
     },
     ajaxVisionDetailsCommentsSuccess: function(data, textStatus, jqXHR) {
         $(VISION_DETAILS_COMMENTS_LOADING).hide();
@@ -958,7 +968,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 
                 this.comments = [];
             }
-            $(VISION_DETAILS_ADD_COMMENT).val("").focus();
+            $(VISION_DETAILS_ADD_COMMENT).val("");
         }
     },
     renderVisionDetailsComment: function(comment, index) {
@@ -984,7 +994,8 @@ App.Backbone.View.Page = Backbone.View.extend({
     ajaxDeleteVisionSuccess: function(data, textStatus, jqXHR) {
         console.log("REMOVED ID: " + data.removedId);
         this.model.deleteVision(data.removedId);
-        $(VISION_DETAILS_MODAL).modal("hide");
+
+        this.hideVisionDetails();
     },
     ajaxDeleteVisionError: function(jqXHR, textStatus, errorThrown) {
         // Do nothing, we already showed an error and don't need to change UI
@@ -1594,6 +1605,16 @@ $(document).ready(function() {
         }
 
     });
+
+
+    // Catch cases for closing the vision details modal
+    // This is if we click on the close button, or we click on the
+    // modal, but not on the inner box.
+    $(VISION_DETAILS_MODAL_BOX).click(function(e) {
+        e.stopPropagation();
+    });
+    $(VISION_DETAILS_MODAL).click(App.Var.View.hideVisionDetails);
+    $(VISION_DETAILS_CLOSE).click(App.Var.View.hideVisionDetails);
 
     /*
      * For entering user description in user info box

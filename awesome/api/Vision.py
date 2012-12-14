@@ -1,33 +1,74 @@
 from data.DataApi import DataApi
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
-from ..util.Logger import Logger
-
-#TODO: Why does (the ..) this work?
-from ..Constant import Constant
-
 from VisionComment import VisionComment
 from VisionCommentList import VisionCommentList
+from Picture import Picture
+from Privacy import Relationship, VisionPrivacy
 
-from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
-
+from ..util.Logger import Logger
 
 class Vision:
+    '''For fetching and getting properties on visions.
+
+    *** IMPORTANT NOTE ***
+    All methods on visions which affect the user's vision list order should
+    NOT be here. This is because currently the Vision and VisionList
+    classes do not know anything about a user's vision list order.
+
+    Check out the User object to create, add, move, repost visions!!!!!!!
+    '''
+
+    #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        USER_ID = 'userId'
+        TEXT = 'text'
+        PARENT_ID = 'parentId'
+        ROOT_ID = 'rootId'
+        # These two aren't always filled 
+        PICTURE = 'picture'
+        NAME = 'name'
+        COMMENTS = 'comments'
+
     #
     # Static methods to get a vision
     #
+
     @staticmethod
-    def getById(visionId):
+    def getById(visionId, inquiringUser):
+        '''Get vision by id with privileges of inquiringUser, else None.
+       
+        If inquiringUser==None, assume public is trying to access this vision.
+        '''
         model = DataApi.getVision(visionId)
         if DataApi.NO_OBJECT_EXISTS == model:
             return None
-        return Vision(model)
+        vision = Vision(model)
 
-    # This is used internally within API when necessary. Try not to use this.
+        # Ensure that user can access this vision
+        relationship = Relationship.get(
+                            inquiringUser.id() if inquiringUser else None,
+                            vision.userId())
+        ok = False
+        if Relationship.NONE == relationship:
+            # if no relationship, vision must be public
+            if VisionPrivacy.PUBLIC == vision.privacy():
+                ok = True
+        elif Relationship.SELF == relationship:
+            # if it is your own vision, you def have access
+            ok = True
+
+        if True == ok:
+            return vision
+        else:
+            return None
+
     @staticmethod
     def _getByModel(model):
+        '''*** DON'T USE THIS: used internally within API for now ***'''
         return Vision(model)
 
     #
@@ -41,13 +82,11 @@ class Vision:
         return self._model.text
     def pictureId(self):
         return self._model.pictureId
-    # This is the parent vision id.
-    # Returns 0 if vision is original (not reposted).
     def parentId(self):
+        '''Returns 0 if vision is original, and parent vision id if reposted'''
         return self._model.parentId
-    # All visions are part of a vision tree based upon re-posting. This
-    # indicates the root vision id of the tree with vision belongs to.
     def rootId(self):
+        '''Returns vision id of root vision in the vision repost tree'''
         return self._model.rootId
     def removed(self):
         return self._model.removed
@@ -62,27 +101,62 @@ class Vision:
     def isRootVision(self):
         return self.id() == self.rootId()
 
-    # Used for packaging into JSON
+    #
+    # Convenience methods that access DB again
+    #
+
+    def picture(self):
+        '''Returns Picture object for this Vision, or None'''
+        return Picture.getById(self.pictureId())
+
+    def user(self):
+        '''Returns User object that owns this vision, or None'''
+        # import here to avoid circular imports
+        from User import User
+        return User.getById(self.userId())
+
+    def comments(self, user, maxComments):
+        '''Get recent comments for this vision with privileges of 'user'.
+
+        If 'user' == None, then act as if public is viewing comments.
+        maxComments should be > 0 and < 1000.
+        '''
+        return VisionCommentList.getFromVision(self, maxComments)
+
+    def addComment(self, user, text):
+        '''Return new comment, or None.
+        
+        Note: Assumes vision is already vetted to be written by user.'''
+        if len(text.strip()) > 0:
+            commentModel = DataApi.addVisionComment(self.id(),
+                                                    user.id(),
+                                                    text)
+            if DataApi.NO_OBJECT_EXISTS == commentModel:
+                return None
+            else:
+                return VisionComment._getByModel(commentModel)
+        return None
+
     def toDictionary(self):
-        return {'id' : self.id(),
-                'userId' : self.userId(),
-                'text' : self.text(),
-                'parentId' : self.parentId(),
-                'rootId' : self.rootId(),
+        '''Used for packaging into JSON'''
+        return {Vision.Key.ID           : self.id(),
+                Vision.Key.USER_ID      : self.userId(),
+                Vision.Key.TEXT         : self.text(),
+                Vision.Key.PARENT_ID    : self.parentId(),
+                Vision.Key.ROOT_ID      : self.rootId(),
                }
 
-    # Get comments for this vision with privileges of 'user'.
-    # If 'user' == None, then act as if public is viewing comments
-    def getComments(self, user):
-        userId = None
-        if user:
-            userId = user.id()
-        comments = DataApi.getVisionComments(self.id(), userId)
-        commentList = VisionCommentList.getEmptyList()
-        if comments:
-            commentList = VisionCommentList._getWithModels(comments)
-        return commentList
+    def toDictionaryDeep(self):
+        '''Used for packaging into JSON
 
+        If accessing many visions, use VisionList instead! It can batch up
+        DB queries across visions for better performance
+        '''
+        obj = self.toDictionary()
+        picture = self.picture()
+        if picture:
+            obj[Vision.Key.PICTURE] = picture.toDictionary()
+        return obj
 
     #
     # Private methods
@@ -91,8 +165,8 @@ class Vision:
         assert model, "Invalid vision model"
         self._model = model
 
-    # try not to used, but used rarely now
     def _getModel(self):
+        '''Try not to use, but used internally in API a little'''
         return self._model
 
 # $eof

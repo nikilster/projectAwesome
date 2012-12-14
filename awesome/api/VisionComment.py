@@ -1,23 +1,30 @@
 from data.DataApi import DataApi
 
-from ..util.Verifier import Verifier
-from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
 
-#TODO: Why does (the ..) this work?
-from ..Constant import Constant
-
-from FlashMessages import *
-from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
-
 class VisionComment:
+    '''For getting properties about vision comments.'''
+
+    #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        VISION_ID = 'visionId'
+        AUTHOR_ID = 'authorId'
+        TEXT = 'text'
+        # These aren't always there
+        NAME = 'name'
+        PICTURE = 'picture'
+
     #
     # Static methods to get Comment
     #
 
-    # This is used internally within API when necessary. Try not to use this.
     @staticmethod
     def _getByModel(model):
+        '''This is used internally within API. Try not to use this.'''
         return VisionComment(model)
 
 
@@ -35,20 +42,32 @@ class VisionComment:
     def removed(self):
         return self._model.removed
 
+    #
+    # Getter methods
+    #
+    def author(self):
+        from User import User
+        return User.getById(self.authorId())
+
     def toDictionary(self):
-        return { 'id' : self.id(),
-                 'visionId' : self.visionId(),
-                 'authorId' : self.authorId(),
-                 'text' : self.text(),
+        '''For packaging in JSON objects.'''
+        return { VisionComment.Key.ID : self.id(),
+                 VisionComment.Key.VISION_ID : self.visionId(),
+                 VisionComment.Key.AUTHOR_ID : self.authorId(),
+                 VisionComment.Key.TEXT : self.text(),
                }
 
     def toDictionaryDeep(self):
+        '''For packaging in JSON objects.
+        
+        Accesses DB again so don't use if possible.
+        '''
         from User import User
         obj = self.toDictionary()
         author = User.getById(self.authorId())
         if author:
-            obj['name'] = author.fullName()
-            obj['picture'] = author.picture()
+            obj[VisionComment.Key.NAME] = author.fullName()
+            obj[VisionComment.Key.PICTURE] = author.picture()
         return obj
 
     #
