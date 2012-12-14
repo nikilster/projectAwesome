@@ -19,6 +19,21 @@ class Vision:
     '''
 
     #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        USER_ID = 'userId'
+        TEXT = 'text'
+        PARENT_ID = 'parentId'
+        ROOT_ID = 'rootId'
+        # These two aren't always filled 
+        PICTURE = 'picture'
+        NAME = 'name'
+        COMMENTS = 'comments'
+
+    #
     # Static methods to get a vision
     #
 
@@ -124,11 +139,11 @@ class Vision:
 
     def toDictionary(self):
         '''Used for packaging into JSON'''
-        return {'id' : self.id(),
-                'userId' : self.userId(),
-                'text' : self.text(),
-                'parentId' : self.parentId(),
-                'rootId' : self.rootId(),
+        return {Vision.Key.ID           : self.id(),
+                Vision.Key.USER_ID      : self.userId(),
+                Vision.Key.TEXT         : self.text(),
+                Vision.Key.PARENT_ID    : self.parentId(),
+                Vision.Key.ROOT_ID      : self.rootId(),
                }
 
     def toDictionaryDeep(self):
@@ -140,7 +155,7 @@ class Vision:
         obj = self.toDictionary()
         picture = self.picture()
         if picture:
-            obj['picture'] = picture.toDictionary()
+            obj[Vision.Key.PICTURE] = picture.toDictionary()
         return obj
 
     #

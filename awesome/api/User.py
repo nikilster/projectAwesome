@@ -33,6 +33,19 @@ class User:
     '''
 
     #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        FIRST_NAME = 'firstName'
+        LAST_NAME = 'lastName'
+        PICTURE = 'picture'
+        DESCRIPTION = 'description'
+        VISION_PRIVACY = 'visionPrivacy'
+
+
+    #
     # Static user get methods
     #
 
@@ -170,12 +183,12 @@ class User:
 
     def toDictionary(self):
         '''Translate to object when we want to package together JSON'''
-        return {'id' : self.id(),
-                'firstName' : self.firstName(),
-                'lastName' : self.lastName(),
-                'picture' : self.picture(),
-                'description' : self.description(),
-                'visionPrivacy' : self.visionPrivacy(),
+        return { User.Key.ID                : self.id(),
+                 User.Key.FIRST_NAME        : self.firstName(),
+                 User.Key.LAST_NAME         : self.lastName(),
+                 User.Key.PICTURE           : self.picture(),
+                 User.Key.DESCRIPTION       : self.description(),
+                 User.Key.VISION_PRIVACY    : self.visionPrivacy(),
                }
 
     #

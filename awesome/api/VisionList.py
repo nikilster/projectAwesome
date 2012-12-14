@@ -132,17 +132,18 @@ class VisionList:
 
         for vision in visions:
             obj = Vision(vision).toDictionary()
-            obj['name'] = idToUser[vision.userId].fullName
+            obj[Vision.Key.NAME] = idToUser[vision.userId].fullName
             if vision.pictureId != 0:
-                obj['picture'] = Picture(idToPicture[vision.pictureId]).toDictionary()
+                picture = Picture(idToPicture[vision.pictureId]).toDictionary()
+                obj[Vision.Key.PICTURE] = picture
             obj['comments'] = []
             if vision.id in idToComments.keys():
                 for comment in idToComments[vision.id]:
                     commentObj = VisionComment(comment).toDictionary()
                     author = idToAuthor[comment.authorId]
-                    commentObj['name'] = author.fullName
-                    commentObj['picture'] = author.picture
-                    obj['comments'].append(commentObj)
+                    commentObj[VisionComment.Key.NAME] = author.fullName
+                    commentObj[VisionComment.Key.PICTURE] = author.picture
+                    obj[Vision.Key.COMMENTS].append(commentObj)
             visionList.append(obj)
         return visionList
 

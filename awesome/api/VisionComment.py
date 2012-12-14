@@ -6,6 +6,19 @@ class VisionComment:
     '''For getting properties about vision comments.'''
 
     #
+    # Constants, enums
+    #
+    class Key:
+        ''' For dictionary use'''
+        ID = 'id'
+        VISION_ID = 'visionId'
+        AUTHOR_ID = 'authorId'
+        TEXT = 'text'
+        # These aren't always there
+        NAME = 'name'
+        PICTURE = 'picture'
+
+    #
     # Static methods to get Comment
     #
 
@@ -38,10 +51,10 @@ class VisionComment:
 
     def toDictionary(self):
         '''For packaging in JSON objects.'''
-        return { 'id' : self.id(),
-                 'visionId' : self.visionId(),
-                 'authorId' : self.authorId(),
-                 'text' : self.text(),
+        return { VisionComment.Key.ID : self.id(),
+                 VisionComment.Key.VISION_ID : self.visionId(),
+                 VisionComment.Key.AUTHOR_ID : self.authorId(),
+                 VisionComment.Key.TEXT : self.text(),
                }
 
     def toDictionaryDeep(self):
@@ -53,8 +66,8 @@ class VisionComment:
         obj = self.toDictionary()
         author = User.getById(self.authorId())
         if author:
-            obj['name'] = author.fullName()
-            obj['picture'] = author.picture()
+            obj[VisionComment.Key.NAME] = author.fullName()
+            obj[VisionComment.Key.PICTURE] = author.picture()
         return obj
 
     #

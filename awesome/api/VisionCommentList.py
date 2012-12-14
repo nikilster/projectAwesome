@@ -54,8 +54,11 @@ class VisionCommentList:
 
             for comment in commentList:
                 obj = VisionComment(comment).toDictionary()
-                obj['name'] = idToAuthor[comment.authorId].fullName
-                obj['picture'] = idToAuthor[comment.authorId].picture
+                author = idToAuthor[comment.authorId]
+
+                obj[VisionComment.Key.NAME] = author.fullName
+                obj[VisionComment.Key.PICTURE] = author.picture
+
                 objs.append(obj)
         return objs
 
