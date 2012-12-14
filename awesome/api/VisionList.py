@@ -41,6 +41,12 @@ class VisionList:
         assert vision, "Invalid vision"
         return VisionList([vision._getModel()])
 
+    #Returns a seleted vision per user
+    #Used for motivation emails
+    @staticmethod
+    def visionPerUser():
+        pass
+
     #
     # Getters
     #

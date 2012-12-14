@@ -98,7 +98,7 @@ class TestApi:
                 continue
 
             print "Added user: " + firstName + " " + lastName + " " + email
-            self.addVisions(userId, TestApi.NUM_VISIONS)
+            self.addVisions(user.id(), TestApi.NUM_VISIONS)
             print "Added " + str(TestApi.NUM_VISIONS) + " visions for " \
                            + firstName + "\n"
 
@@ -115,6 +115,6 @@ class TestApi:
             #Add
             user = User.getById(userId)
             if user:
-                user.addVision(userId, url, text, True)
+                user.addVision(url, text, True)
 
 # $eof

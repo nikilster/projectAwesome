@@ -436,7 +436,8 @@ class DataApi:
     def getUsersAndRandomVision():
 
         #TODO: Filter by Timezone
-        users = DB.session.query(UserModel.id, UserModel.firstName, UserModel.lastName, UserModel.email)
+        #TODO: get SOME
+        users = UserModel.query.all()
 
         userInfo = []
         #Choose a random vision for each user

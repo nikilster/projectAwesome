@@ -1,0 +1,11 @@
+General
+All strings in program should be constants (ie no string in the actual code)
+Every line of code written more than once should be pulled out into a function
+Functions should usually be < 10 lines, MAX 20
+Each function should at minimum have one line comment explaining what it does and input/output (data type) parameters
+
+HTML
+All styles should be written in LESS
+Minimum number of (divs) HTML elements should be used
+In a question between using margin/padding or an HTML element with height - use CSS
+
