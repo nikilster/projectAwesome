@@ -4,23 +4,20 @@ from flask import request, session
 from flask import Response
 from flask import current_app
 
-from . import app
-from Constant import Constant
-import json
-
 import os
 import calendar, datetime
+import json
 
-from util.Logger import Logger
-from api.S3Util import ImageFilePreview
+from . import app
+from Constant import Constant
 
 from api.User import User
 from api.Vision import Vision
 from api.VisionList import VisionList
 from api.FlashMessages import *
 
-
 from util.SessionManager import SessionManager
+from util.Logger import Logger
 
 @app.route('/', methods=['GET'])
 def index():
@@ -437,15 +434,15 @@ def apiVisionComments(visionId):
            parameters['visionId'] != visionId:
             abort(406)
        
-        vision = Vision.getById(visionId)
         user = User.getById(userId)
-        data = { 'result' : "error" }
-        if vision and user:
-            comments = vision.getComments(user)
-
-            if None != comments:
-                data = { 'result'    : "success",
-                         'comments'  : comments.toDictionaryDeep() }
+        if user:
+            vision = Vision.getById(visionId, user)
+            data = { 'result' : "error" }
+            if vision:
+                comments = vision.comments(user, 100)
+                if comments:
+                    data = { 'result'    : "success",
+                            'comments'  : comments.toDictionaryDeep() }
         return jsonify(data)
     abort(405)
 

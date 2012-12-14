@@ -6,27 +6,16 @@ from DbSchema import *
 
 from awesome.util.Logger import Logger
 
-import random
-
-class UserRelationship:
-    NONE = 0    # either anonymous user, or there is no relationship
-    SELF = 1    # user and target user are same person
-    SHARED = 2  # target user has shared with user requesting data
-
-    @staticmethod
-    def getRelationship(userId, targetUserId):
-        assert targetUserId != None and targetUserId > 0, \
-            "Invalid target user id: %s" % (str(targetUserId))
-        assert userId == None or userId > 0, \
-               "Invalid user id: %s" % (str(userId))
-
-        # Right now we don't support the mastermind group so you either are your
-        # self, or you aren't related.
-        if None != userId and userId == targetUserId:
-            return UserRelationship.SELF
-        return UserRelationship.NONE
-
 class DataApi:
+    '''The interface to actual DB storage
+    
+    This should assume input is verified and perform minimum operations for
+    creating, modifying, deleting, etc. data in the DB.
+
+    One of details in implementation is that wheneve we alter a users vision
+    list, we need to keep the VisionListModel consistent.
+    '''
+
     #Returned when we dont have an object for that id
     NO_OBJECT_EXISTS_ID = -1
 
@@ -102,17 +91,6 @@ class DataApi:
         return False
 
     @staticmethod
-    def changeUserDescription(userId, description):
-        user = DataApi.getUserById(userId)
-        if None != user:
-            if user.description != description:
-                user.description = description
-                DB.session.add(user)
-                DB.session.commit()
-                return True
-        return False
-
-    @staticmethod
     def setProfilePicture(userId, url):
         user = DataApi.getUserById(userId)
         if None != user:
@@ -153,18 +131,6 @@ class DataApi:
     def getVisionListModelForUser(userId):
         visionList = VisionListModel.query.filter_by(userId=userId).first()
         return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
-
-    @staticmethod
-    def getRandomUserVision(userId):
-        listModel = DataApi.getVisionListModelForUser(userId)
-        if DataApi.NO_OBJECT_EXISTS == listModel:
-            return DataApi.NO_OBJECT_EXISTS
-        visionIds = listModel.getVisionIdList()
-        visionId = random.choice(visionIds)
-        visionModel = DataApi.getVision(visionId)
-        if DataApi.NO_OBJECT_EXISTS == vision:
-            return DataApi.NO_OBJECT_EXISTS
-        return visionModel
 
     # 
     # Vision methods
@@ -227,12 +193,8 @@ class DataApi:
     def getVisionsForUser(userId, targetUserId):
         visionListModel = DataApi.getVisionListModelForUser(targetUserId)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
-
         visionIds = visionListModel.getVisionIdList()
-
-        relationship = UserRelationship.getRelationship(userId, targetUserId)
-
-        visions = []
+        visionModels = []
         if len(visionIds) > 0:
             all_visions = VisionModel.query \
                                      .filter_by(userId=targetUserId) \
@@ -243,20 +205,9 @@ class DataApi:
             # hash from visionId to vision
             idToVision = dict([(vision.id, vision) for vision in all_visions])
 
-            # use hash and relationship to go from visionIds to ordered
-            # vision list
-            if UserRelationship.NONE == relationship:
-                # Only show public visions
-                visions = [idToVision[visionId] for visionId in visionIds \
-                                if idToVision[visionId].privacy == \
-                                    VisionPrivacy.PUBLIC]
-            elif UserRelationship.SELF == relationship:
-                # Show all visions
-                visions = [idToVision[visionId] for visionId in visionIds]
-            else:
-                assert false, "Invalid user relationship"
+            visionModels = [idToVision[visionId] for visionId in visionIds]
+        return visionModels
 
-        return visions
 
     @staticmethod
     def moveUserVision(userId, visionId, srcIndex, destIndex):
@@ -308,77 +259,28 @@ class DataApi:
     #
     @staticmethod
     def addVisionComment(visionId, authorId, text):
-        # Get vision user, and make sure the author can write on this vision
-        # TODO: Should this stuff go into API instead?
-
         vision = DataApi.getVision(visionId)
         if vision == DataApi.NO_OBJECT_EXISTS:
             return DataApi.NO_OBJECT_EXISTS
 
-        relationship = UserRelationship.getRelationship(vision.userId, authorId)
-        addComment = False
-        if UserRelationship.NONE == relationship:
-            # can only add if public vision
-            if VisionPrivacy.PUBLIC == vision.privacy:
-                addComment = True
-        elif UserRelationship.SELF == relationship:
-            # can always write if it is your own vision
-            addComment = True
+        comment = VisionCommentModel(visionId, authorId, text)
+        DB.session.add(comment)
+        DB.session.commit()
+        return comment
 
-        if True == addComment:
-            comment = VisionCommentModel(visionId, authorId, text)
-            DB.session.add(comment)
-            DB.session.commit()
-            return comment
-        return DataApi.NO_OBJECT_EXISTS
-
-    # TODO: this isn't fast, but will do for now.
-    #
-    # This collects comments in a batch based on vision ids and 
-    # gets the most recent N comments per vision
     @staticmethod
-    def getVisionCommentsFromVisionIds(visionIds):
-        allComments = []
-        for visionId in visionIds:
-            comments = VisionCommentModel.query \
-                             .filter_by(removed=False) \
-                             .filter_by(visionId=visionId) \
-                             .order_by(VisionCommentModel.id.desc()) \
-                             .limit(4)
-            # reverse to get in proper order
-            for comment in reversed([c for c in comments]):
-                allComments.append(comment)
-        return allComments
+    def getVisionComments(visionId, maxComments):
+        assert maxComments > 0 and maxComments < 1000, \
+               "Invalid max comments value"
+        comments = VisionCommentModel.query \
+                                     .filter_by(removed=False) \
+                                     .filter_by(visionId=visionId) \
+                                     .order_by(VisionCommentModel.id.desc()) \
+                                     .limit(maxComments)
 
-    # This is meant to get all comments for a vision. It is limited to a big
-    # number for now so properly handling this shouldn't be a problem for now.
-    @staticmethod
-    def getVisionComments(visionId, userId):
-        vision = DataApi.getVision(visionId)
-        if vision == DataApi.NO_OBJECT_EXISTS:
-            return DataApi.NO_OBJECT_ESISTS
+        # reverse order since we retried them in decreasing id order
+        return [comment for comment in reversed([c for c in comments])]
 
-        relationship = UserRelationship.getRelationship(vision.userId, userId)
-        viewComments = False
-        if UserRelationship.NONE == relationship:
-            # can only add if public vision
-            if VisionPrivacy.PUBLIC == vision.privacy:
-                viewComments = True
-        elif UserRelationship.SELF == relationship:
-            # can always write if it is your own vision
-            viewComments = True
-        comments = []
-        if viewComments:
-            # get last 100
-            comments = VisionCommentModel.query \
-                                    .filter_by(removed=False) \
-                                    .filter_by(visionId=visionId) \
-                                    .order_by(VisionCommentModel.id.desc()) \
-                                    .limit(100)
-            # reverse to get in proper order
-            comments = [comment for comment in reversed([c for c in comments])]
-        return comments
-  
     # 
     # Picture methods
     #

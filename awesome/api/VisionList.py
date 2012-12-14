@@ -3,8 +3,11 @@ from data.DataApi import DataApi
 from Vision import Vision
 from VisionComment import VisionComment
 from Picture import Picture
+from Privacy import Relationship, VisionPrivacy
 
 from ..util.Logger import Logger
+
+import random
 
 class VisionList:
     '''For getting/using different types of vision lists.
@@ -43,7 +46,23 @@ class VisionList:
         if user:
             userId = user.id()
         models = DataApi.getVisionsForUser(userId, targetUser.id())
-        return VisionList(models)
+
+        # determine relationship for filtering viewable visions
+        relationship = Relationship.get(userId, targetUser.id())
+
+        if Relationship.NONE == relationship:
+            # If no relationship, only show public visions
+            filtered = []
+            for model in models:
+                if model.privacy == VisionPrivacy.PUBLIC:
+                    filtered.append(model)
+            return VisionList(filtered)
+        elif Relationship.SELF == relationship:
+            # Show all visions
+            return VisionList(models)
+        else:
+            assert False, "Invalid relationship value"
+            return None
 
     @staticmethod
     def getWithVision(vision):
@@ -60,7 +79,18 @@ class VisionList:
     #
     def visions(self):
         '''Returns array of visions.'''
-        return [Vision(model) for model in self._visionModels]
+        return self._visions
+
+    #
+    # Utility methods
+    #
+    def length(self):
+        return len(self.visions())
+
+    def randomVision(self):
+        if self.length() > 0:
+            return random.choice(self.visions())
+        return None
 
     def toDictionaryDeep(self):
         '''For packaging to JSON output.
@@ -70,7 +100,7 @@ class VisionList:
         visions, it is good to use VisionList instead of the
         toDictionaryDeep calls in other objects.
         '''
-        visions = self._visionModels
+        visions = [vision._model for vision in self.visions()]
         visionList = []
 
         pictureIds = set([vision.pictureId for vision in visions])
@@ -83,8 +113,12 @@ class VisionList:
         users = DataApi.getUsersFromIds(userIds)
         idToUser = dict([(user.id, user) for user in users])
 
+        # TODO: this isn't fast, but will do for now.
         visionIds = [vision.id for vision in visions]
-        comments = DataApi.getVisionCommentsFromVisionIds(visionIds)
+        comments = list()
+        for visionId in visionIds:
+            comments.extend(DataApi.getVisionComments(visionId, 4))
+
         idToComments = {}
         for comment in comments:
             if not comment.visionId in idToComments.keys():
@@ -117,6 +151,6 @@ class VisionList:
     #
     def __init__(self, visionModels):
         '''Private: do not use.'''
-        self._visionModels = visionModels
+        self._visions = [Vision(model) for model in visionModels]
 
 # $eof

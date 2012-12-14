@@ -1,7 +1,9 @@
 from data.DataApi import DataApi
 
+from VisionComment import VisionComment
 from VisionCommentList import VisionCommentList
 from Picture import Picture
+from Privacy import Relationship
 
 from ..util.Logger import Logger
 
@@ -21,12 +23,33 @@ class Vision:
     #
 
     @staticmethod
-    def getById(visionId):
-        '''Get vision by id, else None'''
+    def getById(visionId, inquiringUser):
+        '''Get vision by id with privileges of inquiringUser, else None.
+       
+        If inquiringUser==None, assume public is trying to access this vision.
+        '''
         model = DataApi.getVision(visionId)
         if DataApi.NO_OBJECT_EXISTS == model:
             return None
-        return Vision(model)
+        vision = Vision(model)
+
+        # Ensure that user can access this vision
+        relationship = Relationship.get(
+                            inquiringUser.id() if inquiringUser else None,
+                            vision.userId())
+        ok = False
+        if Relationship.NONE == relationship:
+            # if no relationship, vision must be public
+            if VisionPrivacy.PUBLIC == vision.privacy():
+                ok = True
+        elif Relationship.SELF == relationship:
+            # if it is your own vision, you def have access
+            ok = True
+
+        if True == ok:
+            return vision
+        else:
+            return None
 
     @staticmethod
     def _getByModel(model):
@@ -77,6 +100,28 @@ class Vision:
         from User import User
         return User.getById(self.userId())
 
+    def comments(self, user, maxComments):
+        '''Get recent comments for this vision with privileges of 'user'.
+
+        If 'user' == None, then act as if public is viewing comments.
+        maxComments should be > 0 and < 1000.
+        '''
+        return VisionCommentList.getFromVision(self, maxComments)
+
+    def addComment(self, user, text):
+        '''Return new comment, or None.
+        
+        Note: Assumes vision is already vetted to be written by user.'''
+        if len(text.strip()) > 0:
+            commentModel = DataApi.addVisionComment(self.id(),
+                                                    user.id(),
+                                                    text)
+            if DataApi.NO_OBJECT_EXISTS == commentModel:
+                return None
+            else:
+                return VisionComment._getByModel(commentModel)
+        return None
+
     def toDictionary(self):
         '''Used for packaging into JSON'''
         return {'id' : self.id(),
@@ -97,21 +142,6 @@ class Vision:
         if picture:
             obj['picture'] = picture.toDictionary()
         return obj
-
-    def getComments(self, user):
-        '''Get comments for this vision with privileges of 'user'.
-
-        If 'user' == None, then act as if public is viewing comments
-        '''
-        userId = None
-        if user:
-            userId = user.id()
-        comments = DataApi.getVisionComments(self.id(), userId)
-        commentList = VisionCommentList.getEmptyList()
-        if comments:
-            commentList = VisionCommentList._getWithModels(comments)
-        return commentList
-
 
     #
     # Private methods

@@ -5,17 +5,9 @@ from sqlalchemy.ext.hybrid import hybrid_property
 import datetime
 import json
 
+from ..Privacy import UserPrivacy, VisionPrivacy
+
 S3_HTTPS_HEADER = 'https://s3.amazonaws.com/'
-
-class UserPrivacy:
-    PRIVATE = 0
-    PUBLIC = 1
-
-class VisionPrivacy:
-    PRIVATE = 0
-    SHAREABLE = 1
-    PUBLIC = 2
-    INVALID = 3
 
 #
 # UserModel

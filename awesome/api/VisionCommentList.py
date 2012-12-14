@@ -12,6 +12,15 @@ class VisionCommentList:
     #
 
     @staticmethod
+    def getFromVision(vision, maxComments):
+        '''Get comment list from vision with max number, else None.
+
+        NOTE: This assumes the user is vetted to access this vision.
+        '''
+        models  = DataApi.getVisionComments(vision.id(), maxComments)
+        return VisionCommentList._getWithModels(models)
+
+    @staticmethod
     def getEmptyList():
         return VisionCommentList([])
 

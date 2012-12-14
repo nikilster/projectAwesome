@@ -12,7 +12,7 @@ from ..util.Logger import Logger
 
 
 # TMP STUFF
-from data.DbSchema import VisionPrivacy
+from Privacy import VisionPrivacy
 # for now randomly generated privacy
 # TODO: actually get from front-end later
 import random
@@ -157,6 +157,17 @@ class User:
     def visionPrivacy(self):
         return self._model.visionPrivacy
 
+    #
+    # Convenience methods
+    #
+    def sameUser(self, user):
+        '''Returns T if user is same is user passed as parameter.'''
+        return self.id() == user.id()
+
+    def visionList(self, inquiringUser):
+        '''Gets VisionList with respect to privacy of inquiringUser, or None'''
+        return VisionList.getUserVisions(inquiringUser, self)
+
     def toDictionary(self):
         '''Translate to object when we want to package together JSON'''
         return {'id' : self.id(),
@@ -263,7 +274,7 @@ class User:
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [None, "Error creating vision"]
 
-        vision = Vision.getById(visionId)
+        vision = Vision.getById(visionId, self)
         if vision:
             return [vision, "Saved Vision!"]
         else:
@@ -274,7 +285,7 @@ class User:
         newVisionId = DataApi.repostVision(self.id(), visionId)
         if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
             return None
-        vision = Vision.getById(newVisionId)
+        vision = Vision.getById(newVisionId, self)
         return vision
 
     def repostVisionList(self, visionIds):
@@ -291,12 +302,13 @@ class User:
         return DataApi.deleteUserVision(self.id(), visionId)
 
     def randomVision(self):
-        '''Returns random vision or None if vision list is empty'''
-        randomModel = DataApi.getRandomUserVision(self.id())
-        if DataApi.NO_OBJECT_EXISTS == randomModel:
-            return None
-        else:
-            return Vision._getByModel(randomModel)
+        '''Returns random vision or None if vision list is empty.
+        
+        *** IMPORTANT NOTE ***
+        Does NOT take privacy into account. This is only used for email for now.
+        '''
+        visionList = self.visionList(self)
+        return visionList.randomVision()
 
     #
     # User actions
@@ -304,15 +316,10 @@ class User:
 
     def commentOnVision(self, visionId, text):
         '''Returns comment if successful, else returns None'''
-        text = text.strip()
-        if len(text) > 0:
-            commentModel = DataApi.addVisionComment(visionId, self.id(), text)
-            if DataApi.NO_OBJECT_EXISTS == commentModel:
-                return None
-            else:
-                return VisionComment._getByModel(commentModel)
-        else:
-            return None
+        vision = Vision.getById(visionId, self)
+        if vision:
+            return vision.addComment(self, text)
+        return None
 
     #
     # Private methods

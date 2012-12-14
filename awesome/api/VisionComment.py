@@ -29,6 +29,13 @@ class VisionComment:
     def removed(self):
         return self._model.removed
 
+    #
+    # Getter methods
+    #
+    def author(self):
+        from User import User
+        return User.getById(self.authorId())
+
     def toDictionary(self):
         '''For packaging in JSON objects.'''
         return { 'id' : self.id(),
