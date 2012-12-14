@@ -24,7 +24,6 @@ var VISION_COMMENT_CONTAINER = ".VisionCommentContainer";
 
 var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 var VISION_DETAILS_COMMENTS_CONTAINER = "#VisionDetailsCommentsContainer";
-var VISION_DETAILS_COMMENTS_LOADING = "#VisionDetailsCommentsLoading";
 var VISION_DETAILS_ADD_COMMENT = "#VisionDetailsAddComment";
 var VISION_DETAILS_NAME = "#VisionDetailsName";
 var VISION_DETAILS_PICTURE = "#VisionDetailsPicture";
@@ -917,7 +916,6 @@ App.Backbone.View.Page = Backbone.View.extend({
         modal.find(VISION_DETAILS_ADD_COMMENT_PICTURE).attr("src",
                                                            USER['picture']);
         modal.find(VISION_DETAILS_COMMENTS_CONTAINER).empty().hide();
-        modal.find(VISION_DETAILS_COMMENTS_LOADING).show();
         
         if (userLoggedIn()) {
             $(VISION_DETAILS_ADD_COMMENT_CONTAINER).show();
@@ -949,14 +947,11 @@ App.Backbone.View.Page = Backbone.View.extend({
         $("body").removeClass("NoScroll");
     },
     ajaxVisionDetailsCommentsSuccess: function(data, textStatus, jqXHR) {
-        $(VISION_DETAILS_COMMENTS_LOADING).hide();
-
         this.currentVision.setComments(data.comments);
         this.renderVisionDetailsComments();
     },
     ajaxVisionDetailsCommentsError: function(jqXHR, textStatus, errorThrown) {
         // do nothing
-        $(VISION_DETAILS_COMMENTS_LOADING).hide();
         $(VISION_DETAILS_COMMENTS_CONTAINER).show();
     },
     renderVisionDetailsComments: function() {
