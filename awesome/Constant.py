@@ -20,6 +20,10 @@ class Constant:
     BOOKMARKLET_POST_PAGE_URL   = BOOKMARKLET_PAGE_URL_KEY
     BOOKMARKLET_POST_PAGE_TITLE = BOOKMARKLET_PAGE_TITLE_KEY
 
+
+    #DB Schema (For translating db models)
+    USER_FIRST_NAME             = "firstName"
+
     #For Email
     EMAIL_TO_KEY                = "to"
     EMAIL_SUBJECT_KEY           = "subject"

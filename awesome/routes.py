@@ -17,6 +17,7 @@ from api.VisionList import VisionList
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
+from util.Notifications import Notifications
 from util.Logger import Logger
 
 @app.route('/', methods=['GET'])
@@ -554,4 +555,12 @@ def terms():
 def new_relic_ping_target():
     return "pong..."
     
+# Target URL for New Relic availability monitoring
+@app.route('/testEmail', methods=['GET'])
+def testEmail():
+    notification = Notifications()
+    notification.sendDailyEmails()
+    return "testing emails!"
+    
+
 # $eof

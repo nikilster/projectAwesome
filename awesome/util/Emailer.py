@@ -5,18 +5,18 @@
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from Constant import Constant
+from ..Constant import Constant
 
 class Emailer:
 
 	#TODO: Move this outside
 	#Sendgrid Login credentials
-	username = 'projectAwesomer'
+	username = 'projectAwesomer' #For Gmail: 'projectAwesomer@gmail.com'
 	password = "bluesteel!"
 
 	#Config Options
 	EMAIL_FROM = "projectAwesomer@gmail.com"
-	SMTP_SERVER = 'smtp.sendgrid.net'
+	SMTP_SERVER = 'smtp.sendgrid.net' #For Gmail: 'smtp.gmail.com' 
 	PORT = 587
 
 	#Keys
@@ -32,6 +32,9 @@ class Emailer:
 
 		# Open a connection to the SendGrid mail server
 		s = smtplib.SMTP(Emailer.SMTP_SERVER, Emailer.PORT)
+		
+		#For Gmail
+		#s.starttls()
 
 		# Authenticate
 		s.login(Emailer.username, Emailer.password)
@@ -39,7 +42,6 @@ class Emailer:
 		#Create each email
 		for email in emailInfo:
 
-			print email
 			#Create Message
 			message = self.__createMessage(email)
 
@@ -60,8 +62,9 @@ class Emailer:
 		message['From'] 	= Emailer.EMAIL_FROM
 
 		# Record the MIME types of both parts - text/plain and text/html.
-		textPart = MIMEText(email[Constant.EMAIL_BODY_TEXT_KEY], 'plain')
-		HTMLPart = MIMEText(email[Constant.EMAIL_BODY_HTML_KEY], 'html')
+		#http://stackoverflow.com/questions/5910104/python-how-to-send-utf-8-e-mail
+		textPart = MIMEText(email[Constant.EMAIL_BODY_TEXT_KEY], 'plain', "utf-8")
+		HTMLPart = MIMEText(email[Constant.EMAIL_BODY_HTML_KEY], 'html', "utf-8")
 
 		# Attach parts into message container.
 		message.attach(textPart)
