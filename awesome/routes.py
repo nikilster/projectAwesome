@@ -424,6 +424,39 @@ def apiAddVisionComment(visionId):
         abort(403)
     abort(405)
 
+@app.route('/api/vision/<int:visionId>/edit', methods=['POST'])
+def apiVisionEdit(visionId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+
+            parameters = request.json
+            if not ('visionId' in parameters and
+                    'text' in parameters and
+                    'isPublic' in parameters):
+                abort(406)
+            if visionId != parameters['visionId']:
+                abort(406)
+            text = parameters['text']
+            isPublic = parameters['isPublic']
+       
+            user = User.getById(userInfo['id'])
+            vision = Vision.getById(visionId, user)
+            if (vision == None) or vision.userId() != userInfo['id']:
+                abort(406)
+
+            change = vision.edit(text, isPublic);
+
+            data = { 'result' : "error" }
+            if change:
+                data = { 'result'    : "success",
+                         'text'      : text,
+                         'isPublic'  : isPublic,
+                       }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
 @app.route('/api/vision/<int:visionId>/comments', methods=['POST'])
 def apiVisionComments(visionId):
     if request.method == 'POST':

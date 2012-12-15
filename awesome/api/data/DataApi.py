@@ -166,6 +166,30 @@ class DataApi:
         return vision if None != vision else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
+    def visionHasComments(visionId):
+        comment = VisionCommentModel.query.filter_by(visionId=visionId) \
+                                          .filter_by(removed=False).first()
+        return True if None != comment else False
+
+    @staticmethod
+    def editVision(visionId, text, privacy):
+        vision = DataApi.getVision(visionId)
+        if DataApi.NO_OBJECT_EXISTS == vision:
+            return False
+        change = False
+        if text != vision.text:
+            vision.text = text
+            change = True
+        if privacy != vision.privacy:
+            vision.privacy = privacy
+            change = True
+        if change:
+            DB.session.add(vision)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
     def addVision(userId, text, pictureId, parentId, rootId, privacy):
         # get vision list
         visionListModel = DataApi.getVisionListModelForUser(userId)

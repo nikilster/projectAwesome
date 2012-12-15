@@ -27,6 +27,9 @@ var VISION_DETAILS_COMMENTS_CONTAINER = "#VisionDetailsCommentsContainer";
 var VISION_DETAILS_ADD_COMMENT = "#VisionDetailsAddComment";
 var VISION_DETAILS_NAME = "#VisionDetailsName";
 var VISION_DETAILS_PICTURE = "#VisionDetailsPicture";
+var VISION_DETAILS_TEXT_CONTAINER = "#VisionDetailsTextContainer";
+var VISION_DETAILS_EDIT_TEXT = "#VisionDetailsEditText";
+var VISION_DETAILS_EDIT_FORM = "#VisionDetailsEditForm";
 var VISION_DETAILS_TEXT = "#VisionDetailsText";
 var VISION_DETAILS_ADD_COMMENT_PICTURE = "#VisionDetailsAddCommentPicture";
 var VISION_DETAILS_ADD_COMMENT_CONTAINER = "#VisionDetailsAddCommentContainer";
@@ -184,6 +187,10 @@ var App = {
             GUEST_PROFILE: 5,
             INVALID: 6, // Keep at end: we use to check validity of pageMode
         },
+        VisionPrivacy: {
+            PRIVATE: 1,
+            PUBLIC: 2,
+        },
         MAX_SELECTED_VISIONS: 10,
     },
     // Variables in app
@@ -263,6 +270,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         userId: -1,
         text: "",
         name: "",
+        privacy: -1,
         picture: null,
         comments: null,
         isSelected: false,
@@ -289,6 +297,13 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     isSelected: function() { return this.get("isSelected"); },
     comments: function() { return this.get("comments"); },
 
+    isPublic: function() {
+        var privacy = this.get("privacy");
+        assert(privacy == App.Const.VisionPrivacy.PRIVATE ||
+               privacy == App.Const.VisionPrivacy.PUBLIC, "Invalid privacy");
+        return privacy == App.Const.VisionPrivacy.PUBLIC;
+    },
+
     // Setters
     toggleSelected: function() {
         if (!this.isSelected()) {
@@ -308,6 +323,15 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     },
     setComments: function(comments) {
         this.comments().reset(comments);
+    },
+    edit: function(text, isPublic) {
+        var privacy = App.Const.VisionPrivacy.PRIVATE;
+        if (isPublic) {
+            privacy = App.Const.VisionPrivacy.PUBLIC;
+        }
+        this.set({ 'text' : text,
+                   'privacy' : privacy,
+                 });
     },
     deepClone: function() {
         var cloneModel = this.clone();
@@ -562,10 +586,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
     events: function(){
 
         var _events = {
-            "click" : "itemSelect",
+            "click .VisionPicture" : "itemSelect",
             "mouseenter" : "mouseEnter", //TODO: Fix
             "mouseleave" : "mouseLeave", //TODO: Fix
-            "click .AddVisionCommentInput" : function(e) { e.stopPropagation(); },
             "keyup .AddVisionCommentInput" : "visionCommentInput",
             "click .VisionUserName"        : "gotoUser"
         };
@@ -789,6 +812,10 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "hideVisionDetails",
                         "ajaxVisionDetailsCommentsSuccess",
                         "ajaxVisionDetailsCommentsError",
+                        "toggleVisionDetailsEditSubmit",
+                        "visionDetailsEditSubmit",
+                        "ajaxVisionDetailsEditSuccess",
+                        "ajaxVisionDetailsEditError",
                         "renderVisionDetailsComments",
                         "renderVisionDetailsComment",
                         "deleteVision",
@@ -857,6 +884,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
         this.currentVision = null;
+    },
+    currentVisionEditable: function() {
+        return userLoggedIn() && this.currentVision.userId() == USER['id'];
     },
     repostVision: function(visionModel) {
         assert(visionModel != null, "Vision model to repost is null");
@@ -931,6 +961,17 @@ App.Backbone.View.Page = Backbone.View.extend({
             $(VISION_DELETE_BUTTON).hide();
         }
 
+        // Edit info form
+        $("#VisionDetailsTextInput").val(this.currentVision.text());
+        if (this.currentVision.isPublic()) {
+            $("#VisionDetailsPrivacyInput").prop("checked", "checked");
+        } else {
+            $("#VisionDetailsPrivacyInput").removeProp("checked");
+        }
+        this.toggleVisionDetailsEditSubmit();
+        $(VISION_DETAILS_EDIT_FORM).hide();
+        $(VISION_DETAILS_TEXT_CONTAINER).show();
+
         $("body").addClass("NoScroll");
         modal.fadeIn("slow");
 
@@ -982,6 +1023,58 @@ App.Backbone.View.Page = Backbone.View.extend({
                                                             { model: comment });
             this.comments.push(c.el);
         }
+    },
+    toggleVisionDetailsEditSubmit: function(e) {
+        var text = $.trim($("#VisionDetailsTextInput").val());
+        var textLength = text.length;
+        var textLengthLeft = MAX_USER_DESCRIPTION_LENGTH - textLength;
+        var isPublic = $("#VisionDetailsPrivacyInput").is(":checked");
+        var change = false;
+        var invalid = false;
+        if (text != this.currentVision.text()) {
+            change = true;
+            if (textLength <= 0 || textLengthLeft < 0) {
+                invalid = true;
+            }
+        }
+        if (isPublic != this.currentVision.isPublic()) {
+            change = true;
+        }
+        $("#VisionDetailsTextLengthLeft").html(textLengthLeft);
+        if (true == change && false == invalid) {
+            $("#VisionDetailsEditSubmit").removeAttr("disabled");
+        } else {
+            $("#VisionDetailsEditSubmit").attr("disabled", "disabled");
+        }
+    },
+    visionDetailsEditSubmit: function() {
+        assert (this.currentVision != null, "Invalid current vision");
+
+        console.log("EDIT");
+        var text = $.trim($("#VisionDetailsTextInput").val());
+        var isPublic = $("#VisionDetailsPrivacyInput").is(":checked");
+
+        doAjax("/api/vision/" + this.currentVision.visionId() + "/edit",
+                JSON.stringify({
+                                'visionId' : this.currentVision.visionId(),
+                                'text'     : text,
+                                'isPublic' : isPublic,
+                                }),
+                this.ajaxVisionDetailsEditSuccess,
+                this.ajaxVisionDetailsEditError
+              );
+    },
+    ajaxVisionDetailsEditSuccess: function(data, textStatus, jqXHR) {
+        if (this.currentVision) {
+            this.currentVision.edit(data.text, data.isPublic);
+            $(VISION_DETAILS_TEXT).html(data.text);
+            this.toggleVisionDetailsEditSubmit();
+            $(VISION_DETAILS_EDIT_FORM).hide();
+            $(VISION_DETAILS_TEXT_CONTAINER).show();
+        }
+    },
+    ajaxVisionDetailsEditError: function(jqXHR, textStatus, errorThrown) {
+        // Do nothing, we already showed an error and don't need to change UI
     },
 
     deleteVision: function() {
@@ -1081,6 +1174,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.children.push(vision.el);
     },
     sortStart: function(event, ui) {
+        ui.item.removeClass(VISION_CLASS);
         this.masonryReload();
 
         this.srcIndex = ui.item.index();
@@ -1610,7 +1704,28 @@ $(document).ready(function() {
         }
 
     });
+    $(VISION_DETAILS_TEXT_CONTAINER).mouseenter(function() {
+        if (App.Var.View.currentVisionEditable()) {
+            $(VISION_DETAILS_EDIT_TEXT).show();
+        }
+    });
+    $(VISION_DETAILS_TEXT_CONTAINER).mouseleave(function() {
+        if (App.Var.View.currentVisionEditable()) {
+            $(VISION_DETAILS_EDIT_TEXT).hide();
+        }
+    });
+    $(VISION_DETAILS_EDIT_TEXT).click(function() {
+        if (App.Var.View.currentVisionEditable()) {
+            $(VISION_DETAILS_TEXT_CONTAINER).hide();
+            $(VISION_DETAILS_EDIT_FORM).show();
+        }
+    });
+    $("#VisionDetailsPrivacyInput").change(App.Var.View.toggleVisionDetailsEditSubmit);
+    $("#VisionDetailsTextInput").keyup(App.Var.View.toggleVisionDetailsEditSubmit);
+    $("#VisionDetailsTextInput").bind("cut", App.Var.View.toggleVisionDetailsEditSubmit);
+    $("#VisionDetailsTextInput").bind("paste", App.Var.View.toggleVisionDetailsEditSubmit);
 
+    $("#VisionDetailsEditSubmit").click(App.Var.View.visionDetailsEditSubmit);
 
     // Catch cases for closing the vision details modal
     // This is if we click on the close button, or we click on the

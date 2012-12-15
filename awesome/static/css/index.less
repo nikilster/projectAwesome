@@ -35,11 +35,6 @@
     z-index: 1 !important;
 }
 
-.MoveCursor
-{
-    cursor: move;
-}
-
 .LightShadow
 {
      //Shadow and Border
@@ -313,26 +308,10 @@
         overflow: hidden;
         cursor: default;
         list-style-type: none;
-
     }
 
-    .MasonryItemUnselected {
-        border: 1px solid #DDDDDD;
-    }
-    .MasonryItemSelected {
-        border: 1px solid red;
-    }
-    .MasonryItemPointerCursor {
-        cursor: pointer;
-    }
-    .MasonryItemMoveCursor {
-        cursor: move;
-    }
-
-    .MasonryItemInner {
-        padding: 4px;
-        position:relative;
-        min-height:48px;
+    .VisionPicture:hover {
+        .CursorPointer;
     }
 
     .VisionOverlay {
@@ -391,7 +370,7 @@
         font-size:12px;
         line-height:1.2;
         margin: 2px;
-        padding: 2px 2px 2px 40px; 
+        padding: 3px 3px 3px 40px; 
         position: relative;
         min-height: 30px;
 
@@ -587,9 +566,47 @@
             }
         }
 
-        #VisionDetailsInfo {
-            position: relative;
-            padding: 0px 30px 15px 30px;
+        #VisionDetailsInfoContainer {
+            margin: 0px 30px 15px 30px;
+
+            #VisionDetailsTextContainer {
+                position: relative;
+
+                #VisionDetailsEditText {
+                    position: absolute;
+                    top: -5px;
+                    right: 0px;
+                    z-index: 1;
+                }
+            }
+            #VisionDetailsEditForm {
+                overflow: hidden;
+
+                #VisionDetailsTextInputBox {
+                    float: left;
+                    width: 335px;
+
+                    #VisionDetailsTextInput {
+                        width: 320px;
+                        margin-bottom: 0px;
+                    }
+                    #VisionDetailsTextLengthLeft {
+                        color: gray;
+                        float: right;
+                        font-size: 12px;
+                    }
+                }
+                #VisionDetailsPrivacyBox {
+                    margin: 0px 0px 0px 15px;
+                    width: 90px;
+                    font-size: 11px;
+                    float: left;
+                }
+                #VisionDetailsEditSubmit {
+                    float: left;
+                    margin: 4px 0px 0px 15px;
+                }
+            }
         }
 
         #VisionDetailsCommentsLoading {

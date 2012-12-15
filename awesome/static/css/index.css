@@ -44,8 +44,12 @@ footer {
   height: 40px;
 }
 #NavProfilePicture {
+  vertical-align: top;
   width: 25px;
   height: 25px;
+  position: relative;
+  top: -2px;
+  margin: 0px 3px;
 }
 #InstructionsPadding {
   height: 80px;
@@ -60,15 +64,18 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
+.CursorDefault {
+  cursor: default;
+}
+.CursorPointer {
+  cursor: pointer;
+}
 /*
     The Styles!
 */
 /* add to bootstrap */
 .navbar-inner {
   z-index: 1 !important;
-}
-.MoveCursor {
-  cursor: move;
 }
 .LightShadow {
   -webkit-transition: -webkit-transform 0.15s linear;
@@ -253,27 +260,9 @@ footer {
   cursor: default;
   list-style-type: none;
 }
-#Content .MasonryItemUnselected,
-#ExampleVisionBoard .MasonryItemUnselected {
-  border: 1px solid #DDDDDD;
-}
-#Content .MasonryItemSelected,
-#ExampleVisionBoard .MasonryItemSelected {
-  border: 1px solid red;
-}
-#Content .MasonryItemPointerCursor,
-#ExampleVisionBoard .MasonryItemPointerCursor {
+#Content .VisionPicture:hover,
+#ExampleVisionBoard .VisionPicture:hover {
   cursor: pointer;
-}
-#Content .MasonryItemMoveCursor,
-#ExampleVisionBoard .MasonryItemMoveCursor {
-  cursor: move;
-}
-#Content .MasonryItemInner,
-#ExampleVisionBoard .MasonryItemInner {
-  padding: 4px;
-  position: relative;
-  min-height: 48px;
 }
 #Content .VisionOverlay,
 #ExampleVisionBoard .VisionOverlay {
@@ -341,7 +330,7 @@ footer {
   font-size: 12px;
   line-height: 1.2;
   margin: 2px;
-  padding: 2px 2px 2px 40px;
+  padding: 3px 3px 3px 40px;
   position: relative;
   min-height: 30px;
 }
@@ -524,9 +513,43 @@ footer {
   max-height: 600px;
   overflow: hidden;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfo {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer {
+  margin: 0px 30px 15px 30px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer {
   position: relative;
-  padding: 0px 30px 15px 30px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer #VisionDetailsEditText {
+  position: absolute;
+  top: -5px;
+  right: 0px;
+  z-index: 1;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm {
+  overflow: hidden;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox {
+  float: left;
+  width: 335px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox #VisionDetailsTextInput {
+  width: 320px;
+  margin-bottom: 0px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox #VisionDetailsTextLengthLeft {
+  color: gray;
+  float: right;
+  font-size: 12px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox {
+  margin: 0px 0px 0px 15px;
+  width: 90px;
+  font-size: 11px;
+  float: left;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsEditSubmit {
+  float: left;
+  margin: 4px 0px 0px 15px;
 }
 #VisionDetailsModal .modal-body #VisionDetailsCommentsLoading {
   padding: 10px;

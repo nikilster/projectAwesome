@@ -28,6 +28,7 @@ class Vision:
         TEXT = 'text'
         PARENT_ID = 'parentId'
         ROOT_ID = 'rootId'
+        PRIVACY = 'privacy'
         # These two aren't always filled 
         PICTURE = 'picture'
         NAME = 'name'
@@ -100,7 +101,9 @@ class Vision:
         return 0 == self.parentId()
     def isRootVision(self):
         return self.id() == self.rootId()
-
+    def isPublic(self):
+        return self.privacy() == VisionPrivacy.PUBLIC
+    
     #
     # Convenience methods that access DB again
     #
@@ -123,6 +126,27 @@ class Vision:
         '''
         return VisionCommentList.getFromVision(self, maxComments)
 
+
+    def edit(self, text, isPublic):
+        '''Set new text and/or privacy value'''
+
+        # Make sure text is valid
+        text = text.strip()
+        if len(text) < 0 or len(text) > 200:
+            return False
+
+        # Make sure to maintain privacy! If already private, can't change to
+        # public!
+        if False == self.isPublic() and \
+           True == isPublic and \
+           DataApi.visionHasComments(self.id()):
+            return False
+        # ok, now we can make the change
+        privacy = VisionPrivacy.SHAREABLE
+        if isPublic:
+            privacy = VisionPrivacy.PUBLIC
+        return DataApi.editVision(self.id(), text, privacy)
+
     def addComment(self, user, text):
         '''Return new comment, or None.
         
@@ -144,6 +168,7 @@ class Vision:
                 Vision.Key.TEXT         : self.text(),
                 Vision.Key.PARENT_ID    : self.parentId(),
                 Vision.Key.ROOT_ID      : self.rootId(),
+                Vision.Key.PRIVACY      : self.privacy(),
                }
 
     def toDictionaryDeep(self):

@@ -105,15 +105,37 @@
                     <img id="VisionDetailsPicture"/>
                 </center>
             </div>
-            <div id="VisionDetailsInfo">
-                <span id="VisionDetailsText"></span>
+            <div id="VisionDetailsInfoContainer">
+                <div id="VisionDetailsTextContainer">
+                    <div id="VisionDetailsEditText" class="hide btn btn-small">
+                        Edit
+                    </div>
+                    <span id="VisionDetailsText"></span>
+                </div>
+                <div id="VisionDetailsEditForm" class="hide">
+                    <div id="VisionDetailsTextInputBox">
+                        <textarea id="VisionDetailsTextInput"></textarea>
+                        <div id="VisionDetailsTextLengthLeft"></div>
+                    </div>
+                    <div id="VisionDetailsPrivacyBox">
+                        <input id="VisionDetailsPrivacyInput" type="checkbox"
+                                style="position:relative; top: -3px;"
+                                name="visionPrivacy"/>
+                        Publicly share
+                    </div>
+                    <div id="VisionDetailsEditSubmit"
+                         class="btn btn-small btn-primary"
+                         disabled="disabled">
+                       Submit
+                    </div>
+                </div>
             </div>
             <div id="VisionDetailsCommentsContainer"></div>
 
             <div id="VisionDetailsAddCommentContainer">
                 <img id="VisionDetailsAddCommentPicture"/>
                 <textarea id="VisionDetailsAddComment" type="text"
-                    placeholder="Add comment"></textarea>
+                    placeholder="Write a comment..."></textarea>
             </div>
         </div>
         <div class="modal-footer">
@@ -231,11 +253,8 @@
 <!-- HTML dynamically generated for a vision -->
 <script type="text/template" id="VisionTemplate">
 
-<!--//A Vision -->
-
-<!-- //Vision Content-->     
 <!-- //Image -->
-<img src="<%= pictureUrl %>" alt="<%= text %>"/>
+<img class="VisionPicture" src="<%= pictureUrl %>" alt="<%= text %>"/>
 
 <!-- //Description -->
 <div class="text">
@@ -251,7 +270,7 @@
     <div class="AddVisionComment <%= addCommentVisibility %>">
         <img class="AddVisionCommentProfile" src="<%= profile %>"/>
         <input class="AddVisionCommentInput" type="text"
-               placeholder="Write comment"></input>
+               placeholder="Write a comment..."></input>
     </div>
 </div>
 
