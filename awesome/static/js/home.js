@@ -15,12 +15,29 @@ var DEBUG = true;
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
 
+var USER_INFORMATION = "#UserInformation";
+var SET_USER_DESCRIPTION_CONTAINER = "#SetUserDescriptionContainer";
+var USER_DESCRIPTION_INPUT = "#UserDescriptionInput";
+
+
+var USER_DESCRIPTION_SUBMIT = "#UserDescriptionSubmit";
+var USER_DESCRIPTION_LENGTH = "#UserDescriptionLength";
+
+var USER_PROFILE_PICTURE = "#UserProfilePicture";
+
+var USER_DESCRIPTION = "#UserDescription";
+var NO_USER_DESCRIPTION = "#NoUserDescription";
+
 var VISION_CLASS = "Vision";
 var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
 var CURSOR_CLASS_MOVE = "MoveCursor";
 var VISION_SELECTED_CLASS = "VisionSelected";
 
+var VISION_USER_NAME = ".VisionUserName";
+var VISION_PICTURE = ".VisionPicture";
+
 var VISION_COMMENT_CONTAINER = ".VisionCommentContainer";
+var VISION_ADD_COMMENT_INPUT = ".AddVisionCommentInput";
 
 var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 var VISION_DETAILS_COMMENTS_CONTAINER = "#VisionDetailsCommentsContainer";
@@ -35,6 +52,11 @@ var VISION_DETAILS_ADD_COMMENT_PICTURE = "#VisionDetailsAddCommentPicture";
 var VISION_DETAILS_ADD_COMMENT_CONTAINER = "#VisionDetailsAddCommentContainer";
 var VISION_DETAILS_MODAL_BOX = "#VisionDetailsModalBox";
 var VISION_DETAILS_CLOSE = "#VisionDetailsClose";
+
+var VISION_DETAILS_TEXT_INPUT = "#VisionDetailsTextInput";
+var VISION_DETAILS_PRIVACY_INPUT = "#VisionDetailsPrivacyInput";
+var VISION_DETAILS_EDIT_SUBMIT = "#VisionDetailsEditSubmit";
+
 var VISION_DELETE_BUTTON = "#VisionDeleteButton";
 
 //Instructions
@@ -584,17 +606,14 @@ App.Backbone.View.Vision = Backbone.View.extend({
     //Using variables in events
     //http://stackoverflow.com/questions/8400450/using-variable-for-selectors-in-events
     events: function(){
-
         var _events = {
-            "click .VisionPicture" : "itemSelect",
-            "mouseenter" : "mouseEnter", //TODO: Fix
-            "mouseleave" : "mouseLeave", //TODO: Fix
-            "keyup .AddVisionCommentInput" : "visionCommentInput",
-            "click .VisionUserName"        : "gotoUser"
+            "mouseenter" : "mouseEnter",
+            "mouseleave" : "mouseLeave",
         };
-
+        _events["click " + VISION_USER_NAME] = "gotoUser";
         _events["click " + REPOST_BUTTON] = "repostVision";
-
+        _events["keyup " + VISION_ADD_COMMENT_INPUT] = "visionCommentInput";
+        _events["click " + VISION_PICTURE] = "itemSelect";
         return _events;
     },
     render: function() {
@@ -797,7 +816,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     },
     visionCommentInput: function(e) {
         if(e.keyCode == 13) {
-            var text = $.trim($(this.el).find(".AddVisionCommentInput").val());
+            var text = $.trim($(this.el).find(VISION_ADD_COMMENT_INPUT).val());
             if (text.length > 0) {
                 App.Var.View.addVisionComment(this.model.visionId(), text);
             }
@@ -962,11 +981,11 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
 
         // Edit info form
-        $("#VisionDetailsTextInput").val(this.currentVision.text());
+        $(VISION_DETAILS_TEXT_INPUT).val(this.currentVision.text());
         if (this.currentVision.isPublic()) {
-            $("#VisionDetailsPrivacyInput").prop("checked", "checked");
+            $(VISION_DETAILS_PRIVACY_INPUT).prop("checked", "checked");
         } else {
-            $("#VisionDetailsPrivacyInput").removeProp("checked");
+            $(VISION_DETAILS_PRIVACY_INPUT).removeProp("checked");
         }
         this.toggleVisionDetailsEditSubmit();
         $(VISION_DETAILS_EDIT_FORM).hide();
@@ -1025,9 +1044,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
     toggleVisionDetailsEditSubmit: function(e) {
-        var text = $.trim($("#VisionDetailsTextInput").val());
+        var text = $.trim($(VISION_DETAILS_TEXT_INPUT).val());
         var textLength = text.length;
-        var isPublic = $("#VisionDetailsPrivacyInput").is(":checked");
+        var isPublic = $(VISION_DETAILS_PRIVACY_INPUT).is(":checked");
         var change = false;
         var invalid = false;
         if (text != this.currentVision.text()) {
@@ -1040,17 +1059,17 @@ App.Backbone.View.Page = Backbone.View.extend({
             change = true;
         }
         if (true == change && false == invalid) {
-            $("#VisionDetailsEditSubmit").removeAttr("disabled");
+            $(VISION_DETAILS_EDIT_SUBMIT).removeAttr("disabled");
         } else {
-            $("#VisionDetailsEditSubmit").attr("disabled", "disabled");
+            $(VISION_DETAILS_EDIT_SUBMIT).attr("disabled", "disabled");
         }
     },
     visionDetailsEditSubmit: function() {
         assert (this.currentVision != null, "Invalid current vision");
 
         console.log("EDIT");
-        var text = $.trim($("#VisionDetailsTextInput").val());
-        var isPublic = $("#VisionDetailsPrivacyInput").is(":checked");
+        var text = $.trim($(VISION_DETAILS_TEXT_INPUT).val());
+        var isPublic = $(VISION_DETAILS_PRIVACY_INPUT).is(":checked");
 
         doAjax("/api/vision/" + this.currentVision.visionId() + "/edit",
                 JSON.stringify({
@@ -1463,32 +1482,32 @@ App.Backbone.View.Page = Backbone.View.extend({
         var desc = this.model.user().description();
         if (desc == "") {
             if (this.model.user().userId() == USER.id) {
-                $("#NoUserDescription").show();
-                $("#UserDescription").empty().hide();
+                $(NO_USER_DESCRIPTION).show();
+                $(USER_DESCRIPTION).empty().hide();
             } else {
-                $("#NoUserDescription").hide();
-                $("#UserDescription").empty().show();
+                $(NO_USER_DESCRIPTION).hide();
+                $(USER_DESCRIPTION).empty().show();
             }
         } else {
-            $("#NoUserDescription").hide();
-            $("#UserDescription").html(desc);
+            $(NO_USER_DESCRIPTION).hide();
+            $(USER_DESCRIPTION).html(desc);
         }
-        $("#SetUserDescriptionContainer").hide();
+        $(SET_USER_DESCRIPTION_CONTAINER).hide();
 
-        $("#UserProfilePicture").attr("src", this.model.user().picture());
-        $("#UserInformation").show();
+        $(USER_PROFILE_PICTURE).attr("src", this.model.user().picture());
+        $(USER_INFORMATION).show();
     },
     hideUserInformation: function() {
-        $("#UserInformation").hide();
+        $(USER_INFORMATION).hide();
     },
     setUserDescription: function(description) {
         if (description.length > 0 &&
             App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
             App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
 
-            $("#NoUserDescription").hide();
-            $("#SetUserDescriptionContainer").hide();
-            $("#UserDescription").html(description);
+            $(NO_USER_DESCRIPTION).hide();
+            $(SET_USER_DESCRIPTION_CONTAINER).hide();
+            $(USER_DESCRIPTION).html(description);
         }
     },
 });
@@ -1542,10 +1561,6 @@ $(document).ready(function() {
         e.preventDefault();
         App.Var.Router.navigate("/", {trigger: true});
     });
-    $("#BackToMainPageButton").click(function(e) {
-        e.preventDefault();
-        App.Var.Router.navigate("/", {trigger: true});
-    });
     $("#NavProfile").click(function(e) {
         e.preventDefault();
         App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
@@ -1568,7 +1583,7 @@ $(document).ready(function() {
         $(REGISTER_FORM).first().submit();
     });
 
-    $("#VisionDeleteButton").click(function() {
+    $(VISION_DELETE_BUTTON).click(function() {
         App.Var.View.deleteVision();
     });
 
@@ -1718,12 +1733,12 @@ $(document).ready(function() {
             $(VISION_DETAILS_EDIT_FORM).show();
         }
     });
-    $("#VisionDetailsPrivacyInput").change(App.Var.View.toggleVisionDetailsEditSubmit);
-    $("#VisionDetailsTextInput").keyup(App.Var.View.toggleVisionDetailsEditSubmit);
-    $("#VisionDetailsTextInput").bind("cut", App.Var.View.toggleVisionDetailsEditSubmit);
-    $("#VisionDetailsTextInput").bind("paste", App.Var.View.toggleVisionDetailsEditSubmit);
+    $(VISION_DETAILS_PRIVACY_INPUT).change(App.Var.View.toggleVisionDetailsEditSubmit);
+    $(VISION_DETAILS_TEXT_INPUT).keyup(App.Var.View.toggleVisionDetailsEditSubmit);
+    $(VISION_DETAILS_TEXT_INPUT).bind("cut", App.Var.View.toggleVisionDetailsEditSubmit);
+    $(VISION_DETAILS_TEXT_INPUT).bind("paste", App.Var.View.toggleVisionDetailsEditSubmit);
 
-    $("#VisionDetailsEditSubmit").click(App.Var.View.visionDetailsEditSubmit);
+    $(VISION_DETAILS_EDIT_SUBMIT).click(App.Var.View.visionDetailsEditSubmit);
 
     // Catch cases for closing the vision details modal
     // This is if we click on the close button, or we click on the
@@ -1738,36 +1753,36 @@ $(document).ready(function() {
      * For entering user description in user info box
      */
     function countUserDescriptionChars() {
-        var desc = $.trim($("#UserDescriptionInput").val());
+        var desc = $.trim($(USER_DESCRIPTION_INPUT).val());
         var lengthLeft = MAX_USER_DESCRIPTION_LENGTH - desc.length;
 
         if (lengthLeft >= 0) {
-            $("#UserDescriptionSubmit").removeAttr("disabled");
+            $(USER_DESCRIPTION_SUBMIT).removeAttr("disabled");
         } else {
-            $("#UserDescriptionSubmit").attr("disabled", "disabled");
+            $(USER_DESCRIPTION_SUBMIT).attr("disabled", "disabled");
         }
-        $("#UserDescriptionLength").html(lengthLeft);
+        $(USER_DESCRIPTION_LENGTH).html(lengthLeft);
     }
-    $("#NoUserDescription").mouseenter(function(e) {
+    $(NO_USER_DESCRIPTION).mouseenter(function(e) {
         $(this).removeClass("NoUserDescriptionNotActive");
         $(this).addClass("NoUserDescriptionActive");
     });
-    $("#NoUserDescription").mouseleave(function(e) {
+    $(NO_USER_DESCRIPTION).mouseleave(function(e) {
         $(this).removeClass("NoUserDescriptionActive");
         $(this).addClass("NoUserDescriptionNotActive");
     });
-    $("#NoUserDescription").click(function(e) {
+    $(NO_USER_DESCRIPTION).click(function(e) {
         $(this).hide();
-        $("#SetUserDescriptionContainer").show();
-        $("#UserDescriptionInput").text("").focus();
+        $(SET_USER_DESCRIPTION_CONTAINER).show();
+        $(USER_DESCRIPTION_INPUT).text("").focus();
         countUserDescriptionChars();
     });
-    $("#UserDescriptionInput").keyup(countUserDescriptionChars)
-    $("#UserDescriptionInput").bind('paste', countUserDescriptionChars);
-    $("#UserDescriptionInput").bind('cut', countUserDescriptionChars);
-    $("#UserDescriptionSubmit").click(function() {
+    $(USER_DESCRIPTION_INPUT).keyup(countUserDescriptionChars)
+    $(USER_DESCRIPTION_INPUT).bind('paste', countUserDescriptionChars);
+    $(USER_DESCRIPTION_INPUT).bind('cut', countUserDescriptionChars);
+    $(USER_DESCRIPTION_SUBMIT).click(function() {
         console.log("SUBMIT DESC");
-        var desc = $.trim($("#UserDescriptionInput").val());
+        var desc = $.trim($(USER_DESCRIPTION_INPUT).val());
         doAjax("/api/user/" + USER['id'] + "/set_description",
                 JSON.stringify({'description' : desc }),
                 // success
