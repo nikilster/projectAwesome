@@ -1027,20 +1027,18 @@ App.Backbone.View.Page = Backbone.View.extend({
     toggleVisionDetailsEditSubmit: function(e) {
         var text = $.trim($("#VisionDetailsTextInput").val());
         var textLength = text.length;
-        var textLengthLeft = MAX_USER_DESCRIPTION_LENGTH - textLength;
         var isPublic = $("#VisionDetailsPrivacyInput").is(":checked");
         var change = false;
         var invalid = false;
         if (text != this.currentVision.text()) {
             change = true;
-            if (textLength <= 0 || textLengthLeft < 0) {
+            if (textLength <= 0) {
                 invalid = true;
             }
         }
         if (isPublic != this.currentVision.isPublic()) {
             change = true;
         }
-        $("#VisionDetailsTextLengthLeft").html(textLengthLeft);
         if (true == change && false == invalid) {
             $("#VisionDetailsEditSubmit").removeAttr("disabled");
         } else {

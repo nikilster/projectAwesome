@@ -528,18 +528,10 @@ footer {
 #VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm {
   overflow: hidden;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput {
   float: left;
-  width: 335px;
-}
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox #VisionDetailsTextInput {
   width: 320px;
   margin-bottom: 0px;
-}
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInputBox #VisionDetailsTextLengthLeft {
-  color: gray;
-  float: right;
-  font-size: 12px;
 }
 #VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox {
   margin: 0px 0px 0px 15px;
