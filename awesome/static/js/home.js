@@ -993,7 +993,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             if(!this.model.isSelected()) {
-                this.showElement(this.sel.);  
+                this.showElement(this.sel.ADD_EXAMPLE_VISION);  
             }
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             // don't show anything
