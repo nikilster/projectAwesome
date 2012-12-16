@@ -110,6 +110,9 @@ def api_user_set_description(userId):
             data = { 'result' : "error" }
             if user:
                 if user.setDescription(description):
+                    # update session if it worked
+                    SessionManager.setUser(user)
+
                     data = { 'result' : "success",
                              'description' : description }
             return jsonify(data)

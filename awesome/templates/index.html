@@ -75,18 +75,6 @@
     <!-- Main Content -->
     <div id="InstructionsPadding"></div>
     <div id="UserInformation" class="Center">
-      <img id="UserProfilePicture" src="https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"/>
-      <div id="UserName"></div>
-      <div id="UserDescription"></div>
-      <div id="NoUserDescription" class="NoUserDescriptionNotActive"></div>
-      <div id="SetUserDescriptionContainer" class="hide">
-          <textarea id="UserDescriptionInput" type="text"
-                    placeholder="Add description.."></textarea>
-          <button id="UserDescriptionSubmit" class="btn btn-primary">
-            Save description
-          </button>
-          <div id="UserDescriptionLength"></div>
-      </div>
     </div>
     <div id="Content" class="Center"></div>
     <div id="ExampleVisionBoard" class="Center"></div>
@@ -333,6 +321,24 @@
             <div id="VisionDetailsClose" class="btn btn-medium">Close</div>
         </div>
     </div>
+</script>
+
+<script type="text/template" id="UserInformationTemplate">
+      <img id="UserProfilePicture" src="<%= picture %>"/>
+      <div id="UserName"><%= name %></div>
+      <div id="UserDescription" class="<%= descDisplay %>"><%= desc %></div>
+      <div id="NoUserDescription"
+           class="<%= noDescDisplay%> NoUserDescriptionNotActive">
+        Click to add description...
+      </div>
+      <div id="SetUserDescriptionContainer" class="hide">
+          <textarea id="UserDescriptionInput" type="text"
+                    placeholder="Add description.."><%= desc %></textarea>
+          <button id="UserDescriptionSubmit" class="btn btn-primary">
+            Save description
+          </button>
+          <div id="UserDescriptionLength"></div>
+      </div>
 </script>
 
 {% endblock %}

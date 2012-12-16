@@ -15,19 +15,9 @@ var DEBUG = true;
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
 
-var USER_INFORMATION = "#UserInformation";
-var SET_USER_DESCRIPTION_CONTAINER = "#SetUserDescriptionContainer";
-var USER_DESCRIPTION_INPUT = "#UserDescriptionInput";
-
 var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 
-var USER_DESCRIPTION_SUBMIT = "#UserDescriptionSubmit";
-var USER_DESCRIPTION_LENGTH = "#UserDescriptionLength";
-
-var USER_PROFILE_PICTURE = "#UserProfilePicture";
-
-var USER_DESCRIPTION = "#UserDescription";
-var NO_USER_DESCRIPTION = "#NoUserDescription";
+var USER_INFORMATION = "#UserInformation";
 
 var VISION_CLASS = "Vision";
 var VISION_CLASS_SELECTOR = "." + VISION_CLASS;
@@ -50,8 +40,6 @@ var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 //Utility
 var CSS_CLASS_HIDDEN = "CSS_CLASS_HIDDEN";
 
-// Constants
-var MAX_USER_DESCRIPTION_LENGTH = 200;
 
 /******************************************************************************
  * Utility functions
@@ -533,6 +521,107 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
         console.log("GOTO USER");
         App.Var.Router.navigate("/user/" + this.model.authorId(),
                                 {trigger: true});
+    },
+});
+
+App.Backbone.View.UserInformation = Backbone.View.extend({
+    tagName: "div",
+    sel: {
+        SET_DESCRIPTION: "#SetUserDescriptionContainer",
+        INPUT : "#UserDescriptionInput",
+        SUBMIT : "#UserDescriptionSubmit",
+        LENGTH: "#UserDescriptionLength",
+        DESCRIPTION : "#UserDescription",
+        NO_DESCRIPTION : "#NoUserDescription",
+    },
+    constant: {
+        MAX_USER_DESCRIPTION_LENGTH : 200,
+    },
+    initialize: function() {
+        _.bindAll(this, "countDesc", "onMouseEnter", "onMouseLeave", "onClick",
+                        "submitDesc", "setUserDescription");
+        this.render();
+    },
+    events: function() {
+        var _events = {};
+        _events["mouseenter " + this.sel.NO_DESCRIPTION] = "onMouseEnter";
+        _events["mouseleave " + this.sel.NO_DESCRIPTION] = "onMouseLeave";
+        _events["click " + this.sel.NO_DESCRIPTION] = "onClick";
+        _events["keyup " + this.sel.INPUT] = "countDesc";
+        _events["cut " + this.sel.INPUT] = "countDesc";
+        _events["paste " + this.sel.INPUT] = "countDesc";
+        _events["click " + this.sel.SUBMIT] = "submitDesc";
+        return _events;
+    },
+    render: function() {
+        var desc = this.model.description();
+        var descDisplay = "";
+        var noDescDisplay = "hide";
+        if (desc == "" && this.model.userId() == USER.id) {
+            descDisplay = "hide";
+            noDescDisplay = "";
+        }
+
+        var variables = { 
+            name: this.model.fullName(),
+            desc: desc,
+            descDisplay: descDisplay,
+            noDescDisplay: noDescDisplay,
+            picture: this.model.picture(),
+        };
+        var template = _.template($("#UserInformationTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        return this;
+    },
+    onMouseEnter: function() {
+        $(this.el).find(this.sel.NO_DESCRIPTION).removeClass("NoUserDescriptionNotActive");
+        $(this.el).find(this.sel.NO_DESCRIPTION).addClass("NoUserDescriptionActive");
+    },
+    onMouseLeave: function() {
+        $(this.el).find(this.sel.NO_DESCRIPTION).removeClass("NoUserDescriptionActive");
+        $(this.el).find(this.sel.NO_DESCRIPTION).addClass("NoUserDescriptionNotActive");
+    },
+    onClick: function() {
+        $(this.el).find(this.sel.NO_DESCRIPTION).hide();
+        $(this.el).find(this.sel.SET_DESCRIPTION).show();
+        $(this.el).find(this.sel.INPUT).text("").focus();
+        this.countDesc();
+    },
+    countDesc: function() {
+        var desc = $.trim($(this.el).find(this.sel.INPUT).val());
+        var left = this.constant.MAX_USER_DESCRIPTION_LENGTH - desc.length;
+
+        if (left >= 0) {
+            $(this.el).find(this.sel.SUBMIT).removeAttr("disabled");
+        } else {
+            $(this.el).find(this.sel.SUBMIT).attr("disabled", "disabled");
+        }
+        $(this.el).find(this.sel.LENGTH).html(left);
+    },
+    submitDesc: function() {
+        console.log("SUBMIT DESC");
+        var desc = $.trim($(this.sel.INPUT).val());
+        doAjax("/api/user/" + USER['id'] + "/set_description",
+                JSON.stringify({'description' : desc }),
+                // success
+                this.setUserDescription,
+                // error
+                function(jqXHR, textStatus, errorThrown) {
+                    console.log("Error");
+                }
+        );
+    },
+    setUserDescription: function(data, textStatus, jqXHR) {
+        var description = data.description;
+        if (description.length > 0 &&
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
+            $(this.el).find(this.sel.NO_DESCRIPTION).hide();
+            $(this.el).find(this.sel.SET_DESCRIPTION).hide();
+            $(this.el).find(this.sel.DESCRIPTION).html(description).show();
+        }
     },
 });
 
@@ -1104,8 +1193,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError",
                         "showUserInformation",
-                        "hideUserInformation",
-                        "setUserDescription");
+                        "hideUserInformation");
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -1488,13 +1576,6 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderHomeError: function() {
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
-
-        /*
-        var variables = {};
-        var template = _.template($("#HomePageLoadErrorTemplate").html(),
-                                  variables);
-        $(LOADING_INDICATOR_DIV).html(template).show();
-        */
     },
 
     /*
@@ -1549,47 +1630,16 @@ App.Backbone.View.Page = Backbone.View.extend({
     renderProfileError: function() {
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty().masonry();
-
-        /*
-        var variables = {};
-        var template = _.template($("#ProfileLoadErrorTemplate").html(),
-                                  variables);
-        $(LOADING_INDICATOR_DIV).html(template).show();
-        */
     },
     showUserInformation: function() {
         console.log("SET USER INFO");
-        $("#UserName").html(this.model.user().fullName());
-        var desc = this.model.user().description();
-        if (desc == "") {
-            if (this.model.user().userId() == USER.id) {
-                $(NO_USER_DESCRIPTION).show();
-                $(USER_DESCRIPTION).empty().hide();
-            } else {
-                $(NO_USER_DESCRIPTION).hide();
-                $(USER_DESCRIPTION).empty().show();
-            }
-        } else {
-            $(NO_USER_DESCRIPTION).hide();
-            $(USER_DESCRIPTION).html(desc);
-        }
-        $(SET_USER_DESCRIPTION_CONTAINER).hide();
 
-        $(USER_PROFILE_PICTURE).attr("src", this.model.user().picture());
-        $(USER_INFORMATION).show();
+        this.userInformation = new App.Backbone.View.UserInformation(
+                                                 {model: this.model.user()});
+        $(USER_INFORMATION).empty().append(this.userInformation.el).show();
     },
     hideUserInformation: function() {
         $(USER_INFORMATION).hide();
-    },
-    setUserDescription: function(description) {
-        if (description.length > 0 &&
-            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
-            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
-
-            $(NO_USER_DESCRIPTION).hide();
-            $(SET_USER_DESCRIPTION_CONTAINER).hide();
-            $(USER_DESCRIPTION).html(description);
-        }
     },
 });
 
@@ -1775,53 +1825,6 @@ $(document).ready(function() {
                     console.log("Success: " + JSON.stringify(data));
                     App.Var.Model.addVision(data.newVision);
                     $("#AddVisionModal").modal("hide");
-                },
-                // error
-                function(jqXHR, textStatus, errorThrown) {
-                    console.log("Error");
-                }
-        );
-    });
-
-    /*
-     * For entering user description in user info box
-     */
-    function countUserDescriptionChars() {
-        var desc = $.trim($(USER_DESCRIPTION_INPUT).val());
-        var lengthLeft = MAX_USER_DESCRIPTION_LENGTH - desc.length;
-
-        if (lengthLeft >= 0) {
-            $(USER_DESCRIPTION_SUBMIT).removeAttr("disabled");
-        } else {
-            $(USER_DESCRIPTION_SUBMIT).attr("disabled", "disabled");
-        }
-        $(USER_DESCRIPTION_LENGTH).html(lengthLeft);
-    }
-    $(NO_USER_DESCRIPTION).mouseenter(function(e) {
-        $(this).removeClass("NoUserDescriptionNotActive");
-        $(this).addClass("NoUserDescriptionActive");
-    });
-    $(NO_USER_DESCRIPTION).mouseleave(function(e) {
-        $(this).removeClass("NoUserDescriptionActive");
-        $(this).addClass("NoUserDescriptionNotActive");
-    });
-    $(NO_USER_DESCRIPTION).click(function(e) {
-        $(this).hide();
-        $(SET_USER_DESCRIPTION_CONTAINER).show();
-        $(USER_DESCRIPTION_INPUT).text("").focus();
-        countUserDescriptionChars();
-    });
-    $(USER_DESCRIPTION_INPUT).keyup(countUserDescriptionChars)
-    $(USER_DESCRIPTION_INPUT).bind('paste', countUserDescriptionChars);
-    $(USER_DESCRIPTION_INPUT).bind('cut', countUserDescriptionChars);
-    $(USER_DESCRIPTION_SUBMIT).click(function() {
-        console.log("SUBMIT DESC");
-        var desc = $.trim($(USER_DESCRIPTION_INPUT).val());
-        doAjax("/api/user/" + USER['id'] + "/set_description",
-                JSON.stringify({'description' : desc }),
-                // success
-                function(data, textStatus, jqXHR) {
-                    App.Var.View.setUserDescription(data.description);
                 },
                 // error
                 function(jqXHR, textStatus, errorThrown) {
