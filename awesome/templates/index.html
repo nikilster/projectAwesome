@@ -94,51 +94,6 @@
 
     <!-- Modal for vision details -->
     <div id="VisionDetailsModal" class="hide">
-        <div id="VisionDetailsModalBox">
-        <div class="modal-header">
-            <div id="VisionDeleteButton">Delete vision</div>
-            <div id="VisionDetailsName"></div>
-        </div>
-        <div class="modal-body">
-            <div id="VisionDetailsPictureContainer">
-                <center>
-                    <img id="VisionDetailsPicture"/>
-                </center>
-            </div>
-            <div id="VisionDetailsInfoContainer">
-                <div id="VisionDetailsTextContainer">
-                    <div id="VisionDetailsEditText" class="hide btn btn-small">
-                        Edit
-                    </div>
-                    <span id="VisionDetailsText"></span>
-                </div>
-                <div id="VisionDetailsEditForm" class="hide">
-                    <textarea id="VisionDetailsTextInput"></textarea>
-                    <div id="VisionDetailsPrivacyBox">
-                        <input id="VisionDetailsPrivacyInput" type="checkbox"
-                                style="position:relative; top: -3px;"
-                                name="visionPrivacy"/>
-                        Publicly share
-                    </div>
-                    <div id="VisionDetailsEditSubmit"
-                         class="btn btn-small btn-primary"
-                         disabled="disabled">
-                       Submit
-                    </div>
-                </div>
-            </div>
-            <div id="VisionDetailsCommentsContainer"></div>
-
-            <div id="VisionDetailsAddCommentContainer">
-                <img id="VisionDetailsAddCommentPicture"/>
-                <textarea id="VisionDetailsAddComment" type="text"
-                    placeholder="Write a comment..."></textarea>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div id="VisionDetailsClose" class="btn btn-medium">Close</div>
-        </div>
-        </div>
     </div>
 
     <!-- Modal for Add Vision -->
@@ -326,6 +281,59 @@
     </div>
 </script>
 
+<script type="text/template" id="VisionDetailsModalTemplate">
+    <div id="VisionDetailsModalBox">
+        <div class="modal-header">
+            <div id="VisionDeleteButton"
+                 class="<%= deleteVisibility %>">
+                Delete vision
+            </div>
+            <div id="VisionDetailsName"><%= name %></div>
+        </div>
+        <div class="modal-body">
+            <div id="VisionDetailsPictureContainer">
+                <center>
+                    <img id="VisionDetailsPicture" src="<%= picture %>"/>
+                </center>
+            </div>
+            <div id="VisionDetailsInfoContainer">
+                <div id="VisionDetailsTextContainer">
+                    <div id="VisionDetailsEditText" class="hide btn btn-small">
+                        Edit
+                    </div>
+                    <span id="VisionDetailsText"><%= text %></span>
+                </div>
+                <div id="VisionDetailsEditForm" class="hide">
+                    <textarea id="VisionDetailsTextInput"><%= text %></textarea>
+                    <div id="VisionDetailsPrivacyBox">
+                        <input id="VisionDetailsPrivacyInput" type="checkbox"
+                                style="position:relative; top: -3px;"
+                                name="visionPrivacy"
+                                <%= isPublic %> />
+                        Publicly share
+                    </div>
+                    <div id="VisionDetailsEditSubmit"
+                         class="btn btn-small btn-primary"
+                         disabled="disabled">
+                       Submit
+                    </div>
+                </div>
+            </div>
+            <div id="VisionDetailsCommentsContainer"></div>
+
+            <div id="VisionDetailsAddCommentContainer"
+                 class="<%= addCommentVisibility %>">
+                <img id="VisionDetailsAddCommentPicture"
+                     src="<%= userPicture %>"/>
+                <textarea id="VisionDetailsAddComment" type="text"
+                    placeholder="Write a comment..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div id="VisionDetailsClose" class="btn btn-medium">Close</div>
+        </div>
+    </div>
+</script>
 
 {% endblock %}
 
