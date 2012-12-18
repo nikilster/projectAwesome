@@ -9,7 +9,9 @@ from flask import render_template
 from Emailer import Emailer
 from ..Constant import Constant
 from Logger import Logger
-from awesome.api.data.DataApi import DataApi
+from awesome.api.User import User
+from awesome.api.Vision import Vision
+from awesome.api.Picture import Picture
 
 import random
 
@@ -18,11 +20,14 @@ class Notifications:
     TEST = True
     TEST_EMAIL_ADDRESS = "nikilster@gmail.com"
 
-    USER_EMAIL = 'email'
-    USER_FIRST_NAME = 'firstName'
-    USER_LAST_NAME = 'lastName'
-    USER_ID = 'userId'
-    USER_PICTURE_URL = "motivationUrl"
+    class UserKey:
+        RANDOM_VISION = 'randomVision'
+
+    #USER_EMAIL = 'email'
+    #USER_FIRST_NAME = 'firstName'
+    #USER_LAST_NAME = 'lastName'
+    #USER_ID = 'userId'
+    #USER_PICTURE_URL = "motivationUrl"
 
     '''
         Send Motivational Emails Daily
@@ -31,6 +36,13 @@ class Notifications:
         
         #Get motivatinal picture for each user
         userInfo = self.__getMotivationContent()
+
+        '''
+        for user in userInfo:
+            print str(user[User.Key.FIRST_NAME]) + " " + \
+                  str(user[User.Key.LAST_NAME]) + \
+                  "  --  " + str(user[Notifications.UserKey.RANDOM_VISION])
+        '''
 
         #Render Templates
         emailInfo = self.__generateEmails(userInfo)
@@ -58,7 +70,19 @@ class Notifications:
     # 
     #Get Data
     def __getMotivationContent(self):
-        
+        users = User.getAllUsers()
+        data = []
+        for user in users:
+            obj = user.toDictionaryFull()
+            vision = user.randomVision()
+            if vision:
+                obj[Notifications.UserKey.RANDOM_VISION] = vision.toDictionaryDeep()
+            else:
+                obj[Notifications.UserKey.RANDOM_VISION] = None
+            data.append(obj)
+        return data
+
+        ''' 
         #Get the info
         userInfo = DataApi.getUsersAndRandomVision()
 
@@ -91,8 +115,9 @@ class Notifications:
             users.append(user)
 
             Logger.debug(user)
-            
+
         return users
+        '''
     
     #Generate the Daily Emails  
     def __generateEmails(self, emailInfo):
@@ -106,13 +131,16 @@ class Notifications:
             if(Notifications.TEST):
                 email[Constant.EMAIL_TO_KEY] = Notifications.TEST_EMAIL_ADDRESS
             else:
-                email[Constant.EMAIL_TO_KEY] = info[Notifications.USER_EMAIL]
+                email[Constant.EMAIL_TO_KEY] = info[User.Key.EMAIL]
            
             email[Constant.EMAIL_SUBJECT_KEY]   = self.__subject(info)
             email[Constant.EMAIL_BODY_TEXT_KEY] = self.__textEmail(info)
             email[Constant.EMAIL_BODY_HTML_KEY] = self.__HTMLEmail(info)
 
             emails.append(email)
+            
+            if(Notifications.TEST):
+                break
 
         return emails
 
@@ -124,19 +152,24 @@ class Notifications:
 
     def __textEmail(self, userInfo):
 
-        return "Hi " + userInfo[Notifications.USER_FIRST_NAME] + "!"
+        return "Hi " + userInfo[User.Key.FIRST_NAME] + "!"
 
     def __HTMLEmail(self, userInfo):
         
-        title = "Motivation for " + userInfo[Notifications.USER_FIRST_NAME]
+        title = "Motivation for " + userInfo[User.Key.FIRST_NAME]
         motivation = self.__motivation()
         (quote, quoteAttribution) = self.__quote()
-        
+
+        vision = userInfo[Notifications.UserKey.RANDOM_VISION]
+        pictureUrl = ""
+        if vision:
+            picture = vision[Vision.Key.PICTURE]
+            pictureUrl = picture[Picture.Key.LARGE_URL]
         return render_template("email/dailyInlined.html", 
-                    firstName = userInfo[Notifications.USER_FIRST_NAME],
+                    firstName = userInfo[User.Key.FIRST_NAME],
                     title = title,
                     motivation = motivation,
-                    pictureUrl = userInfo['vision'][Notifications.USER_PICTURE_URL],
+                    pictureUrl = pictureUrl,
                     quote = quote,
                     quoteAttribution = quoteAttribution)
 

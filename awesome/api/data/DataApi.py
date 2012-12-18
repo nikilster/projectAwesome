@@ -429,21 +429,4 @@ class DataApi:
 
         return vision
 
-    #Get a random vision per user
-
-    @staticmethod
-    def getUsersAndRandomVision():
-        '''Gets all users and a random vision for each.'''
-        #TODO: Filter by Timezone
-        #TODO: get SOME
-        users = UserModel.query.all()
-
-        userInfo = []
-        #Choose a random vision for each user
-        for user in users:
-            vision = DataApi.getRandomVision(user.id)
-            userInfo.append([user, vision])
-
-        return userInfo
-
 # $eof

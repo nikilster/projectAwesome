@@ -592,6 +592,12 @@ def terms():
 @app.route('/new_relic/ping', methods=['GET'])
 def new_relic_ping_target():
     return "pong..."
+
+# Test request context for simulating a flask request context
+@app.route('/test_request_context', methods=['GET'])
+def test_request_context():
+    abort(404)
+
     
 # Target URL for New Relic availability monitoring
 @app.route('/testEmail', methods=['GET'])

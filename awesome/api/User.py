@@ -31,7 +31,8 @@ class User:
         PICTURE = 'picture'
         DESCRIPTION = 'description'
         VISION_PRIVACY = 'visionPrivacy'
-
+        # Only if calling toDictionaryFull.
+        EMAIL = 'email'
 
     #
     # Static user get methods
@@ -131,6 +132,14 @@ class User:
                  User.Key.DESCRIPTION       : self.description(),
                  User.Key.VISION_PRIVACY    : self.visionPrivacy(),
                }
+
+    def toDictionaryFull(self):
+        '''Like toDictionary() but with all user information.
+        
+        Avoid using when you don't want private info to leak (e.g. email).'''
+        obj = self.toDictionary()
+        obj[User.Key.EMAIL] = self.email()
+        return obj
 
     #
     # Setters (note: these write to database)
