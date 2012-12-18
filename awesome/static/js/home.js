@@ -472,7 +472,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     addVisionComment: function(newComment) {
         // Find vision to add to
-        console.log("NEW COMMENT: " + JSON.stringify(newComment));
+        if (DEBUG) console.log("NEW COMMENT: " + JSON.stringify(newComment));
         var list = this.activeVisionList();
         var vision = null;
         for (var i = 0 ; i < list.length ; i++) {
@@ -518,7 +518,7 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
     gotoUser: function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log("GOTO USER");
+        if (DEBUG) console.log("GOTO USER");
         App.Var.Router.navigate("/user/" + this.model.authorId(),
                                 {trigger: true});
     },
@@ -601,7 +601,7 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         $(this.el).find(this.sel.LENGTH).html(left);
     },
     submitDesc: function() {
-        console.log("SUBMIT DESC");
+        if (DEBUG) console.log("SUBMIT DESC");
         var desc = $.trim($(this.sel.INPUT).val());
         doAjax("/api/user/" + USER['id'] + "/set_description",
                 JSON.stringify({'description' : desc }),
@@ -781,7 +781,7 @@ App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
     },
     renderComments: function() {
         if (this.model != null) {
-            console.log("Render comments in vision details.");
+            if (DEBUG) console.log("Render comments in vision details.");
             var container = $(this.el).find(this.sel.COMMENTS_CONTAINER).first();
             container.empty();
             var commentList = this.model.comments();
@@ -811,7 +811,7 @@ App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
     editSubmit: function() {
         assert (this.model != null, "Invalid current vision");
 
-        console.log("EDIT");
+        if (DEBUG) console.log("EDIT");
         var text = $.trim($(this.el).find(this.sel.TEXT_INPUT).val());
         var isPublic = $(this.el).find(this.sel.PRIVACY_INPUT).is(":checked");
 
@@ -840,7 +840,7 @@ App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
 
     deleteVision: function() {
         if (this.model!= null) {
-            console.log("DELETE");
+            if (DEBUG) console.log("DELETE");
             doAjax("/api/user/" + USER['id'] + "/delete_vision",
                    JSON.stringify({
                                     'visionId' : this.model.visionId(),
@@ -851,7 +851,7 @@ App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
         }
     },
     ajaxDeleteVisionSuccess: function(data, textStatus, jqXHR) {
-        console.log("REMOVED ID: " + data.removedId);
+        if (DEBUG) console.log("REMOVED ID: " + data.removedId);
         App.Var.Model.deleteVision(data.removedId);
         App.Var.View.hideVisionDetails();
     },
@@ -1242,7 +1242,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     addVisionComment: function(visionId, text) {
-        console.log("VISION " + visionId + " : " + text);
+        if (DEBUG) console.log("VISION " + visionId + " : " + text);
 
         doAjax("/api/vision/" + visionId + "/add_comment",
                 JSON.stringify({
@@ -1289,7 +1289,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Changing page mode triggered by set of this.model.pageMode
      */
     changePageMode: function() {
-        console.log("CHANGE MODE: " + this.model.pageMode());
+        if (DEBUG) console.log("CHANGE MODE: " + this.model.pageMode());
 
         var pageMode = this.model.pageMode();
 
@@ -1513,7 +1513,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             visionIds.push(this.model.selectedVisions().at(i).visionId());
         }
         $(USER_SELECTED_VISIONS_INPUT).first().attr("value", JSON.stringify(visionIds));
-        console.log("VISION LIST: " + JSON.stringify(visionIds));
+        if (DEBUG) console.log("VISION LIST: " + JSON.stringify(visionIds));
 
         // If we are in test vision mode, we need to re-render vision
         if (App.Var.Model.pageMode() == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
@@ -1564,7 +1564,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         });
     },
     renderHome: function() {
-        console.log("Render Home");
+        if (DEBUG) console.log("Render Home");
         if (this.model.visionList().isEmpty()) {
             // TODO: be smarter about when to load and set visionList later
             //       do this first so rendering of other visions has proper
@@ -1619,7 +1619,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         });
     },
     renderProfile: function() {
-        console.log("Rendering Profile");
+        if (DEBUG) console.log("Rendering Profile");
 
         this.model.setVisionList(App.Var.JSON.visionList);
         if (App.Var.Model.currentUserId() != USER.id) {
@@ -1632,7 +1632,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         masonryContainer.empty().masonry();
     },
     showUserInformation: function() {
-        console.log("SET USER INFO");
+        if (DEBUG) console.log("SET USER INFO");
 
         this.userInformation = new App.Backbone.View.UserInformation(
                                                  {model: this.model.user()});
@@ -1759,7 +1759,7 @@ $(document).ready(function() {
         var fileName = $("#FileUploadInput").val();
         if (fileName != "") {
             // Show user we are processing file
-            console.log("UPLOAD: " + fileName);
+            if (DEBUG) console.log("UPLOAD: " + fileName);
 
             // Submit!
             $("#FileUploadForm").submit();
@@ -1776,12 +1776,12 @@ $(document).ready(function() {
         // Re-enable the file upload input
         $("#FileUploadInput").removeAttr("disabled");
 
-        console.log("File uploaded!");
+        if (DEBUG) console.log("File uploaded!");
         var jsonText = $("#FileUploadTarget").contents().find("body").html();
         var result  = eval('(' + jsonText+ ')');
         if (result && result.result == "success") {
             // Show image uploaded
-            console.log("url: " + result.url);
+            if (DEBUG) console.log("url: " + result.url);
             // Append unique string to end of url to smash image caching
             var t  = new Date().getTime();
             var url = $.trim(result.url) + "?" + t.toString();
@@ -1793,7 +1793,7 @@ $(document).ready(function() {
             $("#FileUploadImageContainer").show();
         } else {
             // Clear the file upload image feedback
-            console.log("UPLOAD ERROR");
+            if (DEBUG) console.log("UPLOAD ERROR");
             $("#FileUploadInvalid").show();
             $("#FileUploadNoPreview").hide();
             $("#FileUploadLoading").hide();
@@ -1822,7 +1822,7 @@ $(document).ready(function() {
                                 'privacy' : visionPrivacy }),
                 // success
                 function(data, textStatus, jqXHR) {
-                    console.log("Success: " + JSON.stringify(data));
+                    if (DEBUG) console.log("Success: " + JSON.stringify(data));
                     App.Var.Model.addVision(data.newVision);
                     $("#AddVisionModal").modal("hide");
                 },
