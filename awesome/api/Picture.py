@@ -33,6 +33,12 @@ class Picture:
                 return Picture(model)
         return None
 
+    @staticmethod
+    def getByIds(pictureIds):
+        '''Get list of Pictures from picture ids.'''
+        models = DataApi.getPicturesFromIds(pictureIds)
+        return [Picture(model) for model in models]
+
     #
     # Getters
     #

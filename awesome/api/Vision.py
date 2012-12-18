@@ -67,11 +67,6 @@ class Vision:
         else:
             return None
 
-    @staticmethod
-    def _getByModel(model):
-        '''*** DON'T USE THIS: used internally within API for now ***'''
-        return Vision(model)
-
     #
     # Getter methods
     #
@@ -93,6 +88,9 @@ class Vision:
         return self._model.removed
     def privacy(self):
         return self._model.privacy
+    def model(self):
+        ''' Get internal DB model'''
+        return self._model
 
     #
     # Convenience methods
@@ -118,7 +116,7 @@ class Vision:
         from User import User
         return User.getById(self.userId())
 
-    def comments(self, user, maxComments):
+    def comments(self, maxComments):
         '''Get recent comments for this vision with privileges of 'user'.
 
         If 'user' == None, then act as if public is viewing comments.
@@ -152,8 +150,8 @@ class Vision:
         
         Note: Assumes vision is already vetted to be written by user.'''
         if len(text.strip()) > 0:
-            commentModel = DataApi.addVisionComment(self.id(),
-                                                    user.id(),
+            commentModel = DataApi.addVisionComment(self.model(),
+                                                    user.model(),
                                                     text)
             if DataApi.NO_OBJECT_EXISTS == commentModel:
                 return None
@@ -190,8 +188,9 @@ class Vision:
         assert model, "Invalid vision model"
         self._model = model
 
-    def _getModel(self):
-        '''Try not to use, but used internally in API a little'''
-        return self._model
+    @staticmethod
+    def _getByModel(model):
+        '''*** DON'T USE THIS: used internally within API for now ***'''
+        return Vision(model)
 
 # $eof

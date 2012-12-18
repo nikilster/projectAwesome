@@ -11,18 +11,6 @@ from ..util.PasswordEncrypt import PasswordEncrypt
 from ..util.Logger import Logger
 
 
-# TMP STUFF
-from Privacy import VisionPrivacy
-# for now randomly generated privacy
-# TODO: actually get from front-end later
-import random
-def getPrivacy():
-    if random.randint(0,1) == 0:
-        return VisionPrivacy.SHAREABLE
-    return VisionPrivacy.PUBLIC
-## /end TMP STUFF
-
-
 class User:
     '''For fetching/creating users and getting/setting user-related values.
 
@@ -81,6 +69,18 @@ class User:
         '''
         return User._registerNewUser(firstName, lastName, email, passwordText)
 
+    @staticmethod
+    def getByUserIds(userIds):
+        '''Gets a list of Users from a list of userIds'''
+        models = DataApi.getUsersFromIds(userIds)
+        return [User(model) for model in models]
+
+    @staticmethod
+    def getAllUsers():
+        '''Gets a list of Users from a list of userIds'''
+        models = DataApi.getAllUsers()
+        return [User(model) for model in models]
+
 
     #
     # Getters
@@ -107,6 +107,9 @@ class User:
         return self._model.userPrivacy
     def visionPrivacy(self):
         return self._model.visionPrivacy
+    def model(self):
+        ''' Get internal DB model'''
+        return self._model
 
     #
     # Convenience methods
@@ -138,14 +141,14 @@ class User:
         if Verifier.nameValid(firstName) and \
            Verifier.nameValid(lastName) and \
            Verifier.emailValid(email):
-            change |= DataApi.setUserName(self.id(), firstName, lastName)
-            change |= DataApi.setUserEmail(self.id(), email)
-            change |= DataApi.setUserVisionPrivacy(self.id(), visionPrivacy)
+            change |= DataApi.setUserName(self.model(), firstName, lastName)
+            change |= DataApi.setUserEmail(self.model(), email)
+            change |= DataApi.setUserVisionPrivacy(self.model(), visionPrivacy)
         return change
 
     def setDescription(self, description):
         '''Returns True if description changed, else False'''
-        return DataApi.setUserDescription(self.id(), description.strip())
+        return DataApi.setUserDescription(self.model(), description.strip())
 
     def setProfilePicture(self, file):
         '''Sets profile picture from file input stream
@@ -157,7 +160,7 @@ class User:
         if file and image.isImage():
             url = image.uploadToS3(self.id())
             if url != None:
-                if True == DataApi.setProfilePicture(self.id(), url):
+                if True == DataApi.setProfilePicture(self.model(), url):
                     return url
         return None
 
@@ -199,7 +202,8 @@ class User:
         if not isPublic:
             privacy = VisionPrivacy.SHAREABLE
 
-        visionId = DataApi.addVision(self.id(), text, pictureId, 0, 0, privacy)
+        visionId = DataApi.addVision(self.model(), text, pictureId,
+                                     0, 0, privacy)
         if visionId == DataApi.NO_OBJECT_EXISTS_ID:
             return [None, "Error creating vision"]
         vision = Vision.getById(visionId, self)
@@ -210,7 +214,8 @@ class User:
 
     def repostVision(self, visionId):
         '''Repost a vision and return new vision if successful, else None'''
-        newVisionId = DataApi.repostVision(self.id(), visionId)
+        #TODO: add proper vision privacy to reposts
+        newVisionId = DataApi.repostVision(self.model(), visionId, False)
         if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
             return None
         vision = Vision.getById(newVisionId, self)
@@ -223,11 +228,12 @@ class User:
 
     def moveVision(self, visionId, srcIndex, destIndex):
         '''Returns True if move worked, False if it failed'''
-        return DataApi.moveUserVision(self.id(), visionId, srcIndex, destIndex)
+        return DataApi.moveUserVision(self.model(), visionId,
+                                      srcIndex, destIndex)
 
     def deleteVision(self, visionId):
         '''Returns True if delete worked, False if it failed'''
-        return DataApi.deleteUserVision(self.id(), visionId)
+        return DataApi.deleteUserVision(self.model(), visionId)
 
     def randomVision(self):
         '''Returns random vision or None if vision list is empty.
@@ -347,7 +353,7 @@ class User:
         if None == s3Vision:
             return [None, "Invalid image"]
             
-        pictureId = DataApi.addPicture(self.id(),
+        pictureId = DataApi.addPicture(self.model(),
                                        imageUrl, isUploaded,
                                        s3Vision.s3Bucket(),
                                        s3Vision.origKey(),

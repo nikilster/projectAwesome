@@ -2,6 +2,7 @@ from data.DataApi import DataApi
 
 from Vision import Vision
 from VisionComment import VisionComment
+from VisionCommentList import VisionCommentList
 from Picture import Picture
 from Privacy import Relationship, VisionPrivacy
 
@@ -45,7 +46,7 @@ class VisionList:
         userId = None
         if user:
             userId = user.id()
-        models = DataApi.getVisionsForUser(userId, targetUser.id())
+        models = DataApi.getVisionsForUser(targetUser.model())
 
         # determine relationship for filtering viewable visions
         relationship = Relationship.get(userId, targetUser.id())
@@ -72,7 +73,7 @@ class VisionList:
         vision
         '''
         assert vision, "Invalid vision"
-        return VisionList([vision._getModel()])
+        return VisionList([vision.model()])
 
     #Returns a seleted vision per user
     #Used for motivation emails
@@ -106,52 +107,53 @@ class VisionList:
         visions, it is good to use VisionList instead of the
         toDictionaryDeep calls in other objects.
         '''
-        visions = [vision._model for vision in self.visions()]
-        visionList = []
+        from User import User
 
-        pictureIds = set([vision.pictureId for vision in visions])
+        retObj = []
+
+        pictureIds = set([vision.pictureId() for vision in self.visions()])
         pictureIds.discard(0)
-        pictures = DataApi.getPicturesFromIds(pictureIds)
-        idToPicture = dict([(picture.id, picture) for picture in pictures])
+        pictures = Picture.getByIds(pictureIds)
+        idToPicture = dict([(picture.id(), picture) for picture in pictures])
         idToPicture[0] = ""
 
-        userIds = set([vision.userId for vision in visions])
-        users = DataApi.getUsersFromIds(userIds)
-        idToUser = dict([(user.id, user) for user in users])
+        userIds = set([vision.userId() for vision in self.visions()])
+        users = User.getByUserIds(userIds)
+        idToUser = dict([(user.id(), user) for user in users])
 
         # TODO: this isn't fast, but will do for now.
-        visionIds = [vision.id for vision in visions]
-        comments = list()
-        for visionId in visionIds:
-            comments.extend(DataApi.getVisionComments(visionId, 4))
+        commentList = VisionCommentList.getEmptyList()
+        for vision in self.visions():
+            commentList.extend(vision.comments(4))
 
         idToComments = {}
-        for comment in comments:
-            if not comment.visionId in idToComments.keys():
-                idToComments[comment.visionId] = [comment]
+        for comment in commentList.comments():
+            if not comment.visionId() in idToComments.keys():
+                idToComments[comment.visionId()] = [comment]
             else:
-                idToComments[comment.visionId].append(comment)
+                idToComments[comment.visionId()].append(comment)
 
-        authorIds = set([comment.authorId for comment in comments])
-        authors = DataApi.getUsersFromIds(authorIds)
-        idToAuthor = dict([(user.id, user) for user in authors])
+        authorIds = set([comment.authorId() for comment in commentList.comments()])
+        authors = User.getByUserIds(authorIds)
+        idToAuthor = dict([(author.id(), author) for author in authors])
 
-        for vision in visions:
-            obj = Vision(vision).toDictionary()
-            obj[Vision.Key.NAME] = idToUser[vision.userId].fullName
+        for vision in self.visions():
+            obj = vision.toDictionary()
+            obj[Vision.Key.NAME] = idToUser[vision.userId()].fullName()
             if vision.pictureId != 0:
-                picture = Picture(idToPicture[vision.pictureId]).toDictionary()
+                picture = idToPicture[vision.pictureId()].toDictionary()
                 obj[Vision.Key.PICTURE] = picture
             obj['comments'] = []
-            if vision.id in idToComments.keys():
-                for comment in idToComments[vision.id]:
-                    commentObj = VisionComment(comment).toDictionary()
-                    author = idToAuthor[comment.authorId]
-                    commentObj[VisionComment.Key.NAME] = author.fullName
-                    commentObj[VisionComment.Key.PICTURE] = author.picture
+            if vision.id() in idToComments.keys():
+                for comment in idToComments[vision.id()]:
+                    commentObj = comment.toDictionary()
+                    author = idToAuthor[comment.authorId()]
+                    commentObj[VisionComment.Key.NAME] = author.fullName()
+                    commentObj[VisionComment.Key.PICTURE] = author.picture()
                     obj[Vision.Key.COMMENTS].append(commentObj)
-            visionList.append(obj)
-        return visionList
+            retObj.append(obj)
+        return retObj
+
 
     #
     # Private

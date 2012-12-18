@@ -20,99 +20,102 @@ class DataApi:
     #Returned when the object does not exist
     NO_OBJECT_EXISTS = None
 
+
     # 
     # User methods
-    # These functions return User Model or None if it is not a valid ID
     #
 
     @staticmethod
     def getUserById(userId):
+        '''Get user model by user id, else, NO_OBJECT_EXISTS'''
         user = UserModel.query.filter_by(id=userId).first()
         return user if None != user else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
     def getUserByEmail(email):
+        '''Get user model by email address, else, NO_OBJECT_EXISTS'''
         user = UserModel.query.filter_by(email=email).first()
         return user if None != user else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
-    def setUserName(userId, firstName, lastName):
-        user = DataApi.getUserById(userId)
-        if None != user:
-            change = False
-            if user.firstName != firstName:
-                user.firstName = firstName
-                change = True
-            if user.lastName != lastName:
-                user.lastName = lastName
-                change = True
+    def setUserName(userModel, firstName, lastName):
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        change = False
+        if userModel.firstName != firstName:
+            userModel.firstName = firstName
+            change = True
+        if userModel.lastName != lastName:
+            userModel.lastName = lastName
+            change = True
 
-            if change == True:
-                DB.session.add(user)
+        if change == True:
+            DB.session.add(userModel)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
+    def setUserEmail(userModel, email):
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        if email != userModel.email:
+            # there shouldn't be another user with this email address
+            userByEmail = DataApi.getUserByEmail(email)
+            if DataApi.NO_OBJECT_EXISTS != userByEmail:
+                userModel.email = email
+                DB.session.add(userModel)
                 DB.session.commit()
                 return True
         return False
 
     @staticmethod
-    def setUserEmail(userId, email):
-        user = DataApi.getUserById(userId)
-        userByEmail = DataApi.getUserByEmail(email)
-
-        # we should find the user, and there shouldn't be another user with
-        # the email address they want to use
-        if None != user and None == userByEmail:
-            user.email = email
-            DB.session.add(user)
+    def setUserVisionPrivacy(userModel, visionPrivacy):
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        if userModel.visionPrivacy != visionPrivacy:
+            userModel.visionPrivacy = visionPrivacy
+            DB.session.add(userModel)
             DB.session.commit()
             return True
         return False
 
     @staticmethod
-    def setUserDescription(userId, desc):
-        user = DataApi.getUserById(userId)
-
-        if None != user and user.description != desc:
-            user.description = desc
-            DB.session.add(user)
-            DB.session.commit()
-            return True
-        return False
-
-    @staticmethod
-    def setUserVisionPrivacy(userId, visionPrivacy):
-        user = DataApi.getUserById(userId)
-
-        if None != user and user.visionPrivacy != visionPrivacy:
-            user.visionPrivacy = visionPrivacy
-            DB.session.add(user)
+    def setUserDescription(userModel, desc):
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        if userModel.description != desc:
+            userModel.description = desc
+            DB.session.add(userModel)
             DB.session.commit()
             return True
         return False
 
     @staticmethod
     def setUserPasswordHash(userId, passwordHash):
-        user = DataApi.getUserById(userId)
-        if None != user:
-            if user.passwordHash != passwordHash:
-                user.passwordHash = passwordHash
-                DB.session.add(user)
-                DB.session.commit()
-                return True
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        if userModel.passwordHash != passwordHash:
+            userModel.passwordHash = passwordHash
+            DB.session.add(userModel)
+            DB.session.commit()
+            return True
         return False
 
     @staticmethod
     def setProfilePicture(userId, url):
-        user = DataApi.getUserById(userId)
-        if None != user:
-            if user.picture != url:
-                user.picture = url
-                DB.session.add(user)
-                DB.session.commit()
-                return True
+        '''Returns True if a change was made, and False otherwise.'''
+        assert userModel, "Invalid user model"
+        if user.picture != url:
+            user.picture = url
+            DB.session.add(user)
+            DB.session.commit()
+            return True
         return False
 
     @staticmethod
     def addUser(firstName, lastName, email, passwordHash):
+        '''Creates a new user and returns the new user id.'''
         # new UserModel
         user = UserModel(firstName, lastName, email, passwordHash)
         DB.session.add(user)
@@ -127,29 +130,37 @@ class DataApi:
 
     @staticmethod
     def getUsersFromIds(userIds):
+        '''Gets user models from a list of user ids'''
         if len(userIds) > 0:
             return UserModel.query \
                         .filter(UserModel.id.in_(userIds)) \
                         .all()
         return []
 
+    @staticmethod
+    def getAllUsers():
+        '''Gets all user models'''
+        return UserModel.query.all();
+
     #
-    # Returns the Vision List (Database) Model
+    # VisionListModel-related DB methods
     #
 
     @staticmethod
-    def getVisionListModelForUser(userId):
-        visionList = VisionListModel.query.filter_by(userId=userId).first()
+    def getVisionListModelForUser(userModel):
+        '''Returns the VisionListModel for a user id, or NO_OBJECT_EXISTS.'''
+        assert userModel, "Invalid user model"
+        visionList = VisionListModel.query \
+                                    .filter_by(userId=userModel.id). \
+                                    first()
         return visionList if None != visionList else DataApi.NO_OBJECT_EXISTS
 
-    #
-    #   Returns the array of vision ids owned by the user
-    #
+
     @staticmethod
-    def getVisionIdListForUser(userId):
-        
-        visionListModel = DataApi.getVisionListModelForUser(userId)
-        
+    def getVisionIdListForUser(userModel):
+        '''Returns list of vision ids for a user, or NO_OBJECT_EXISTS.'''
+        assert userModel, "Invalid user model"
+        visionListModel = DataApi.getVisionListModelForUser(userModel)
         if visionListModel != None:
             return visionListModel.getVisionIdList() 
         else:
@@ -162,44 +173,54 @@ class DataApi:
 
     @staticmethod
     def getVision(visionId):
+        '''Get vision from vision id, or NO_OBJECT_EXISTS.'''
         vision = VisionModel.query.filter_by(id=visionId).first()
         return vision if None != vision else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
-    def visionHasComments(visionId):
-        comment = VisionCommentModel.query.filter_by(visionId=visionId) \
-                                          .filter_by(removed=False).first()
+    def visionHasComments(visionModel):
+        '''Returns True if vision has some comments, False otherwise.'''
+        assert visionModel != DataApi.NO_OBJECT_EXISTS, "Invalid vision modal"
+        comment = VisionCommentModel.query.filter_by(visionId=visionModel.id) \
+                                          .filter_by(removed=False) \
+                                          .first()
         return True if None != comment else False
 
     @staticmethod
-    def editVision(visionId, text, privacy):
-        vision = DataApi.getVision(visionId)
-        if DataApi.NO_OBJECT_EXISTS == vision:
-            return False
+    def editVision(visionModel, text, privacy):
+        '''Returns true if text or privacy changed.'''
+        assert visionModel != DataApi.NO_OBJECT_EXISTS, "Invalid vision modal"
         change = False
-        if text != vision.text:
-            vision.text = text
+        if text != visionModel.text:
+            visionModel.text = text
             change = True
-        if privacy != vision.privacy:
-            vision.privacy = privacy
+        if privacy != visionModel.privacy:
+            visionModel.privacy = privacy
             change = True
         if change:
-            DB.session.add(vision)
+            DB.session.add(visionModel)
             DB.session.commit()
             return True
         return False
 
     @staticmethod
-    def addVision(userId, text, pictureId, parentId, rootId, privacy):
+    def addVision(userModel, text, pictureId, parentId, rootId, privacy):
+        '''Adds new vision to beginning of a user's vision list.
+
+        Returns the new vision id.
+        '''
+        assert userModel, "Invalid user model"
+
         # get vision list
-        visionListModel = DataApi.getVisionListModelForUser(userId)
+        userId = userModel.id
+        visionListModel = DataApi.getVisionListModelForUser(userModel)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
 
         vision = VisionModel(userId, text, pictureId, parentId, rootId, privacy)
         DB.session.add(vision)
         DB.session.flush() # flush so vision.id is valid
 
-        # if rootId == 0, root really should be self
+        # if rootId == 0, root should be self
         if rootId == 0:
             vision.rootId = vision.id
             DB.session.add(vision)
@@ -217,20 +238,30 @@ class DataApi:
         return vision.id
 
     @staticmethod
-    def repostVision(userId, visionId):
+    def repostVision(userModel, visionId, isPublic):
+        '''Reposts a vision to user's vision list.
+
+        Returns new vision id if successful, NO_OBJECT_EXISTS_ID otherwise.
+        '''
+        assert userModel, "Invalid user model"
+
         vision = DataApi.getVision(visionId)
         if DataApi.NO_OBJECT_EXISTS == vision:
             return DataApi.NO_OBJECT_EXISTS_ID
-        return DataApi.addVision(userId,
+
+        privacy = VisionPrivacy.SHAREABLE
+        if isPublic:
+            privacy = VisionPrivacy.PUBLIC
+        return DataApi.addVision(userModel,
                                  vision.text,
                                  vision.pictureId,
                                  vision.id,
                                  vision.rootId,
-                                 # TODO: use user default for this later
-                                 VisionPrivacy.PUBLIC)
+                                 privacy)
     
     @staticmethod
     def getMainPageVisions():
+        '''Get first 100 original vision models (where parentId == 0)'''
         return VisionModel.query.filter_by(parentId=0) \
                                 .filter_by(privacy=VisionPrivacy.PUBLIC) \
                                 .filter_by(removed=False) \
@@ -238,14 +269,14 @@ class DataApi:
                                 .limit(100)
 
     @staticmethod
-    def getVisionsForUser(userId, targetUserId):
-        visionListModel = DataApi.getVisionListModelForUser(targetUserId)
-        assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
-        visionIds = visionListModel.getVisionIdList()
+    def getVisionsForUser(userModel):
+        '''Get vision models for a user's vision list.'''
+        visionIds = DataApi.getVisionIdListForUser(userModel)
+        assert DataApi.NO_OBJECT_EXISTS != visionIds, "Invalid vision list"
         visionModels = []
         if len(visionIds) > 0:
             all_visions = VisionModel.query \
-                                     .filter_by(userId=targetUserId) \
+                                     .filter_by(userId=userModel.id) \
                                      .filter_by(removed=False) \
                                      .filter(VisionModel.id.in_(visionIds)) \
                                      .all()
@@ -258,8 +289,13 @@ class DataApi:
 
 
     @staticmethod
-    def moveUserVision(userId, visionId, srcIndex, destIndex):
-        visionListModel = DataApi.getVisionListModelForUser(userId)
+    def moveUserVision(userModel, visionId, srcIndex, destIndex):
+        '''Move a vision in a user's vision list order.
+        
+        Returns True if move was made, False otherwise.
+        '''
+        assert userModel, "Invalid user model."
+        visionListModel = DataApi.getVisionListModelForUser(userModel)
         if DataApi.NO_OBJECT_EXISTS == visionListModel:
             return False
         
@@ -280,22 +316,29 @@ class DataApi:
         return True
 
     @staticmethod
-    def deleteUserVision(userId, visionId):
-        vision = DataApi.getVision(visionId)
-        visionListModel = DataApi.getVisionListModelForUser(userId)
+    def deleteUserVision(userModel, visionId):
+        '''Returns True of remove is successful, False otherwise.'''
+        assert userModel, "Invalid user model"
+        visionModel = DataApi.getVision(visionId)
+        if visionModel == DataApi.NO_OBJECT_EXISTS:
+            return False
+        if visionModel.removed == True:
+            return False
+
+        visionListModel = DataApi.getVisionListModelForUser(userModel)
         visionIds = visionListModel.getVisionIdList()
 
-        if vision.userId != userId:
+        if visionModel.userId != userModel.id:
             return False
-        if not (visionId in visionIds):
+        if not (visionModel.id in visionIds):
             return False
 
         # mark the vision as removed
-        vision.removed = True
-        DB.session.add(vision)
+        visionModel.removed = True
+        DB.session.add(visionModel)
 
         # now remove from vision list
-        visionIds.remove(visionId)
+        visionIds.remove(visionModel.id)
         visionListModel.setVisionIdList(visionIds)
         DB.session.add(visionListModel)
 
@@ -306,23 +349,23 @@ class DataApi:
     # Vision Comment methods
     #
     @staticmethod
-    def addVisionComment(visionId, authorId, text):
-        vision = DataApi.getVision(visionId)
-        if vision == DataApi.NO_OBJECT_EXISTS:
-            return DataApi.NO_OBJECT_EXISTS
-
-        comment = VisionCommentModel(visionId, authorId, text)
+    def addVisionComment(visionModel, authorModel, text):
+        '''Returns new VisionCommentModel.'''
+        assert visionModel, "Invalid vision model"
+        assert authorModel, "Invalid user model"
+        comment = VisionCommentModel(visionModel.id, authorModel.id, text)
         DB.session.add(comment)
         DB.session.commit()
         return comment
 
     @staticmethod
-    def getVisionComments(visionId, maxComments):
+    def getVisionComments(visionModel, maxComments):
+        '''Returns up to maxComments number of recent VisionCommentModels'''
         assert maxComments > 0 and maxComments < 1000, \
                "Invalid max comments value"
         comments = VisionCommentModel.query \
                                      .filter_by(removed=False) \
-                                     .filter_by(visionId=visionId) \
+                                     .filter_by(visionId=visionModel.id) \
                                      .order_by(VisionCommentModel.id.desc()) \
                                      .limit(maxComments)
 
@@ -335,11 +378,13 @@ class DataApi:
 
     @staticmethod
     def getPicture(pictureId):
+        '''Returns PictureModel or NO_OBJECT_EXISTS.'''
         picture = PictureModel.query.filter_by(id=pictureId).first()
         return picture if None != picture else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
     def getPicturesFromIds(pictureIds):
+        '''Returns PictureModels for the given list of picture ids.'''
         if len(pictureIds) > 0:
             return PictureModel.query \
                             .filter_by(removed=False) \
@@ -348,13 +393,15 @@ class DataApi:
         return []
 
     @staticmethod
-    def addPicture(userId, original, uploaded, s3Bucket,
+    def addPicture(userModel, original, uploaded, s3Bucket,
                            origKey, origWidth, origHeight,
                            largeKey, largeWidth, largeHeight,
                            mediumKey, mediumWidth, mediumHeight,
                            smallKey, smallWidth, smallHeight):
+        '''Returns new picture id'''
+        assert userModel, "Invalid user model."
         # new PictureModel
-        picture = PictureModel(userId, original, uploaded, s3Bucket,
+        picture = PictureModel(userModel.id, original, uploaded, s3Bucket,
                                 origKey, origWidth, origHeight,
                                 largeKey, largeWidth, largeHeight,
                                 mediumKey, mediumWidth, mediumHeight,
@@ -366,8 +413,9 @@ class DataApi:
     #Get a random vision for the user
     #Returns a vision dictionary with an embedded picture dictionary
     @staticmethod
-    def getRandomVision(userId):
-        visionIdList = DataApi.getVisionIdListForUser(userId)
+    def getRandomVision(userModel):
+        '''Gets random vision for a user.'''
+        visionIdList = DataApi.getVisionIdListForUser(userModel)
         randomId = random.choice(visionIdList)
         
         visionModel = DataApi.getVision(randomId)
@@ -385,7 +433,7 @@ class DataApi:
 
     @staticmethod
     def getUsersAndRandomVision():
-
+        '''Gets all users and a random vision for each.'''
         #TODO: Filter by Timezone
         #TODO: get SOME
         users = UserModel.query.all()
@@ -397,7 +445,5 @@ class DataApi:
             userInfo.append([user, vision])
 
         return userInfo
-
-      
 
 # $eof

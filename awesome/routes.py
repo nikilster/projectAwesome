@@ -477,7 +477,7 @@ def apiVisionComments(visionId):
         vision = Vision.getById(visionId, user)
         data = { 'result' : "error" }
         if vision:
-            comments = vision.comments(user, 100)
+            comments = vision.comments(100)
             if comments:
                 data = { 'result'    : "success",
                         'comments'  : comments.toDictionaryDeep() }

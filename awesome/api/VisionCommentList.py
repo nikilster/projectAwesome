@@ -17,12 +17,12 @@ class VisionCommentList:
 
         NOTE: This assumes the user is vetted to access this vision.
         '''
-        models  = DataApi.getVisionComments(vision.id(), maxComments)
+        models  = DataApi.getVisionComments(vision.model(), maxComments)
         return VisionCommentList._getWithModels(models)
 
     @staticmethod
     def getEmptyList():
-        return VisionCommentList([])
+        return VisionCommentList(list())
 
     @staticmethod
     def _getWithModels(models):
@@ -61,6 +61,10 @@ class VisionCommentList:
 
                 objs.append(obj)
         return objs
+
+    def extend(self, commentList):
+        '''Appends commentList parameter to this vision comment list'''
+        self._commentModels.extend(commentList._commentModels)
 
     #
     # Private
