@@ -17,4 +17,9 @@ pip install -I PIL==1.1.7
 pip install -I pycurl==7.19.0
 pip install -I Flask-Mail==0.7.4
 
+# These are used for asset-generating scripts so not needed in requirements.txt
+pip install -I Flask-Assets==0.8
+pip install -I jsmin==2.0.2
+pip install -I cssmin==0.1.4
+
 # $eof

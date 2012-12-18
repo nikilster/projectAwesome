@@ -4,3 +4,5 @@ dump.rdb
 *.pyc
 *.DS_Store
 *.swp
+awesome/static/.webassets-cache
+awesome/static/gen
