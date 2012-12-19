@@ -81,6 +81,10 @@ def main(argv=None):
         print "---- Upload images to S3 ----"
         print "  Copying bootstrap images"
         os.system("cp -R awesome/static/opt/bootstrap/img awesome/static/gen/img")
+        print "  Copying img folder"
+        os.system("cp -R awesome/static/img/* awesome/static/gen/img")
+
+        print "  Transfer to S3"
         os.system("s3put --bucket project-awesome-static --prefix " +
                         staticDir + " awesome/static/gen/img")
         print ""
