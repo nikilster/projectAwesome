@@ -23,7 +23,7 @@ GET_URL_TIMEOUT = 10
 GET_URL_MAX_FILE_SIZE = 5 * 1024 * 1024
 GET_URL_MAX_REDIRECTS = 5
 
-VISION_LARGE_WIDTH = 500
+VISION_LARGE_WIDTH = 600
 VISION_MEDIUM_WIDTH = 275
 VISION_SMALL_WIDTH = 150
 VISION_THUMBNAIL_WIDTH = 100
@@ -50,9 +50,6 @@ def contentType(filename):
     if ext and ext in IMAGE_TYPES.keys():
         return IMAGE_TYPES[ext]
     return None
-
-def getUniqueUserString(userId):
-    return hex(77685949 ^ int(userId)).rstrip("L").lstrip("0x")
 
 
 # Class to help pass around S3-related vision info
@@ -194,8 +191,7 @@ class ProfilePicture:
         image.save(tempResizedFile, format='JPEG')
 
         # upload to S3
-        uniqueUserString = getUniqueUserString(userId)
-        keyName = "profile_picture/" + str(uniqueUserString) + "/profile.jpg"
+        keyName = "profile_picture/" + str(userId) + "/profile.jpg"
 
         s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
         s3Key = Key(s3Bucket)
@@ -240,11 +236,7 @@ class ImageFilePreview:
         return False 
 
     def uploadForPreview(self, userId):
-        t = str(userId)
-        md5 = hashlib.md5()
-        md5.update(t)
-        digest = md5.hexdigest()
-        keyName = "preview/" + str(digest) + "/Preview." + fileExt(self.filename())
+        keyName = "preview/" + str(userId) + "/Preview." + fileExt(self.filename())
 
         s3Bucket = S3_CONN.get_bucket(S3_BUCKET_NAME)
         s3Key = Key(s3Bucket)
@@ -376,9 +368,8 @@ class ImageUrlUpload:
         md5 = hashlib.md5()
         md5.update(t)
         uniqueTimeString = md5.hexdigest()
-        uniqueUserString = getUniqueUserString(userId)
         
-        uniqueString = uniqueUserString + "_" + uniqueTimeString
+        uniqueString = str(userId) + "_" + uniqueTimeString
 
         keyBase = "visions/%s/%s" % (uniqueUserString, uniqueTimeString)
         keyOrigName   = keyBase + "_o.jpg"
