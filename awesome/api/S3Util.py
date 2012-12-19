@@ -369,9 +369,7 @@ class ImageUrlUpload:
         md5.update(t)
         uniqueTimeString = md5.hexdigest()
         
-        uniqueString = str(userId) + "_" + uniqueTimeString
-
-        keyBase = "visions/%s/%s" % (uniqueUserString, uniqueTimeString)
+        keyBase = "visions/%s/%s" % (str(userId), uniqueTimeString)
         keyOrigName   = keyBase + "_o.jpg"
         keyLargeName  = keyBase + "_l.jpg"
         keyMediumName = keyBase + "_m.jpg"
