@@ -685,9 +685,8 @@ App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
         this.render();
     },
     events: function(){
-        var _events = {
-            "click" : "closeModal",
-        };
+        var _events = {};
+
         _events["click " + this.sel.EDIT_SUBMIT] = "editSubmit";
 
         _events["click " + this.sel.DELETE_BUTTON] = "deleteVision";
@@ -1836,6 +1835,10 @@ $(document).ready(function() {
                     console.log("Error");
                 }
         );
+    });
+
+    $("#VisionDetailsModal").click(function() {
+        App.Var.View.hideVisionDetails();
     });
 });
 /* $eof */
