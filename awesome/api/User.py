@@ -3,6 +3,7 @@ from data.DataApi import DataApi
 from Vision import Vision
 from VisionList import VisionList
 from VisionComment import VisionComment
+from Privacy import VisionPrivacy
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
 

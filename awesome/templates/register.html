@@ -7,7 +7,11 @@ Register
 
 {# ------------------------------------------------------------------------- #}
 {% block css %}
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    {% else %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/register.css') }}"/>
+    {% endif %}
 {% endblock %}
 
 {# ------------------------------------------------------------------------- #}
@@ -72,7 +76,11 @@ Register
 {# ------------------------------------------------------------------------- #}
 {% block js %}
 
+    {% if config['PROD'] %}
+<script type="text/javascript" src="{{ s3_asset('js/base.min.js') }}"></script>
+    {% else %}
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery.placeholder.js') }}"></script>
+    {% endif %}
 
 <script>
 $("#FirstNameInput").focus();

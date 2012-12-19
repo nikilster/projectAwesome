@@ -8,7 +8,6 @@
 import os
 import sys
 
-from awesome.api.Api import Api
 from awesome.api.User import User
 from awesome.api.Vision import Vision
 
@@ -115,6 +114,6 @@ class TestApi:
             #Add
             user = User.getById(userId)
             if user:
-                user.addVision(url, text, True)
+                user.addVision(url, text, True, random.choice([True, False]))
 
 # $eof

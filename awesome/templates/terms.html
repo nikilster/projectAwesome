@@ -7,7 +7,11 @@ Privacy &amp; Terms of Service
 
 {# ------------------------------------------------------------------------- #}
 {% block css %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/register.css') }}"/>
+    {% endif %}
 {% endblock %}
 
 {# ------------------------------------------------------------------------- #}
@@ -33,6 +37,12 @@ Privacy &amp; Terms of Service
 
 {# ------------------------------------------------------------------------- #}
 {% block js %}
+
+    {% if config['PROD'] %}
+<script type="text/javascript" src="{{ s3_asset('js/base.min.js') }}"></script>
+    {% else %}
+    {% endif %}
+
 {% endblock %}
 
 {# $eof #}

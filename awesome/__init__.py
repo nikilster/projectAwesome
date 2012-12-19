@@ -12,6 +12,7 @@ from util.Logger import Logger
 # This should be the default configuration we want in dev
 # The production setup is through environment variables we set on heroku
 class DEFAULT_CONFIG:
+    PROD = False
     DEBUG = True
     LOCAL_DB = True
 
@@ -20,17 +21,30 @@ app.config.from_object(DEFAULT_CONFIG)
 if os.getenv('PROJECT_AWESOME_FLASK_SETTINGS'):
     app.config.from_envvar('PROJECT_AWESOME_FLASK_SETTINGS')
 
-# Print current status of the config variables
-Logger.info("DEBUG=" + str(app.config['DEBUG']) +
-            "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
-
-# Read LOCAL_DB from environment variable (this is set on heroku for production)
+# Read LOCAL_DB and PROD from environment variable 
+# (this is set on heroku for production)
 if os.getenv('LOCAL_DB'):
     app.config['LOCAL_DB'] = (os.getenv('LOCAL_DB') == "true")
+if os.getenv('PROD'):
+    app.config['PROD'] = (os.getenv('PROD') == "true")
 
 #If we are using the production database
 if app.config['LOCAL_DB'] == False:
   Logger.info(" ********   Using the Product DB - be careful!   ******** ")
+
+# Print current status of the config variables
+Logger.info("PROD=" + str(app.config['PROD']) +
+            "  DEBUG=" + str(app.config['DEBUG']) +
+            "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
+
+#
+# Add methods to Jinja2 context
+#
+def s3_asset(filename):
+    assert app.config['PROD'], "Should be in production mode"
+    return 'https://s3.amazonaws.com/project-awesome-static/gen/' + filename
+app.jinja_env.globals.update(s3_asset=s3_asset)
+
 
 #
 # Configuration for MySQL

@@ -25,9 +25,9 @@ def index():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', user=userInfo)
+            return render_template('index.html', user=userInfo, config=app.config)
         else:
-            return render_template('index.html', user=None)
+            return render_template('index.html', user=None, config=app.config)
     abort(405)
 
 @app.route('/view_board', methods=['GET'])
@@ -39,9 +39,9 @@ def user_profile(userId):
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', user=userInfo)
+            return render_template('index.html', user=userInfo, config=app.config)
         else:
-            return render_template('index.html', user=None)
+            return render_template('index.html', user=None, config=app.config)
     abort(405)
 
 @app.route('/about', methods=['GET'])
@@ -60,7 +60,7 @@ def settings():
             userInfo = SessionManager.getUser()
             return render_template('settings.html', user=userInfo)
         else:
-            return render_template('index.html', user=None)
+            return render_template('index.html', user=None, config=app.config)
     abort(405)
 
 @app.route('/api/change_info', methods=['POST'])

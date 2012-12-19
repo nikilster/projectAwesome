@@ -7,7 +7,13 @@
   
 {# -----------CSS----------- #}
 {% block css %}
+
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/home.min.css') }}"/>
+    {% else %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}"/>
+    {% endif %}
+
 {% endblock %}
 
 
@@ -163,6 +169,9 @@
 {# ------------JS------------ #}
 {% block js %}
 
+    {% if config['PROD'] %}
+<script type="text/javascript" src="{{ s3_asset('js/home.min.js') }}"></script>
+    {% else %}
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery-ui-1.8.20/js/jquery-ui-1.8.15.custom.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery.masonry.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='opt/underscore.js') }}"></script>
@@ -171,6 +180,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='opt/date.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}"></script>
+    {% endif %}
     
 <script type="text/template" id="PageLoadingTemplate">
 <div style="text-align:center;">
