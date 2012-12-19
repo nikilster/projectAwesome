@@ -35,7 +35,7 @@ def main(argv=None):
     try:
         opts, args = getopt.getopt(argv[1:],
                                    "acjih",
-                                   ["all", "css", "js", "img"])
+                                   ["all", "css", "js", "img", "help"])
     except getopt.error, msg:
         Usage(msg)
 

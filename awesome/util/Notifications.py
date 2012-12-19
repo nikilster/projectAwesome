@@ -18,7 +18,7 @@ import random
 class Notifications:
     
     TEST = True
-    TEST_EMAIL_ADDRESS = "nikilster@gmail.com"
+    TEST_EMAIL_ADDRESS = "alex.shye@gmail.com"
 
     class UserKey:
         RANDOM_VISION = 'randomVision'
@@ -28,6 +28,10 @@ class Notifications:
     #USER_LAST_NAME = 'lastName'
     #USER_ID = 'userId'
     #USER_PICTURE_URL = "motivationUrl"
+
+
+    def __init__(self, test=True):
+        self.TEST = test
 
     '''
         Send Motivational Emails Daily
@@ -76,10 +80,14 @@ class Notifications:
             obj = user.toDictionaryFull()
             vision = user.randomVision()
             if vision:
-                obj[Notifications.UserKey.RANDOM_VISION] = vision.toDictionaryDeep()
+                visionObj = vision.toDictionaryDeep()
+                obj[Notifications.UserKey.RANDOM_VISION] = visionObj
+                data.append(obj)
             else:
-                obj[Notifications.UserKey.RANDOM_VISION] = None
-            data.append(obj)
+                # For now, ignore users without any visions
+                # !!!!! FIX THIS LATER SINCE WE SHOULD SEND THEM SOMETHING !!!!
+                #obj[Notifications.UserKey.RANDOM_VISION] = None
+                pass
         return data
 
         ''' 
