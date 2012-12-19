@@ -64,11 +64,47 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
+.CenterContent {
+  width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .CursorDefault {
   cursor: default;
 }
 .CursorPointer {
   cursor: pointer;
+}
+.Title {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1.4;
+  text-align: center;
+  color: black;
+  margin-top: 15px;
+}
+.Subtitle {
+  font-size: 20px;
+  line-height: 1.4;
+  text-align: center;
+  color: #777;
+}
+.SectionHeading {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1.4;
+  color: black;
+  margin: 15px 0px;
+}
+.SectionText {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #777;
+  margin: 10px 0px;
+}
+.Video {
+  text-align: center;
+  margin: 10px 0px;
 }
 /*
     The Styles!
