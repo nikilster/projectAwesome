@@ -35,14 +35,14 @@ Register
             {% endwith %}
 
             <form action="{{ url_for('register_user') }}" method="POST"
-                  class="form-horizontal">
+                  class="form-vertical">
                 <div class="control-group">
                     <div class="controls">
                         <input id="FirstNameInput"
                                class="RegisterField InputSmall"
                                placeholder="First Name"
                                type="text" name="firstName"/>
-                       <input class="RegisterField InputSmall"
+                       <input class="RegisterField InputSmall InputSmallRight"
                                placeholder="Last Name"
                                type="text" name="lastName"/>
                     </div>

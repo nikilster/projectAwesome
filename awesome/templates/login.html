@@ -35,10 +35,10 @@ Register
                     {% endif %}
                 {% endwith %}
 
-                <form action="{{ url_for('login') }}" class="form-horizontal" method="POST">
+                <form action="{{ url_for('login') }}"
+                      class="form-vertical" method="POST">
                   
                   <div class="control-group">
-                    <label class="control-label" for="email">Email</label>
                     <div class="controls">
                       <input id="EmailInput" class="RegisterField InputLarge"
                              placeholder="Email"
@@ -47,7 +47,6 @@ Register
                   </div>
 
                   <div class="control-group">
-                    <label class="control-label" for="password">Password</label>
                     <div class="controls">
                       <input class="RegisterField InputLarge"
                              placeholder="Password"
