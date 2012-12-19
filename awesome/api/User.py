@@ -205,7 +205,11 @@ class User:
         Returns (Vision/None, None or error_msg if add vision failed)
         '''
         #TODO: Save page title and page URL?
-        #TODO: allow only text?
+
+        if imageUrl == "":
+            return [None, "No image"]
+        if len(text.strip()) <= 0:
+            return [None, "No text"]
 
         pictureId, errorMsg = self._processAndUploadImageUrl(imageUrl, isUploaded)
         if pictureId == None:

@@ -1725,17 +1725,9 @@ $(document).ready(function() {
     function toggleAddVisionSubmit() {
         var enable = false;
         var fileName = $("#FileUploadInput").val();
-        if (fileName != "") {
-            enable = true;
-        }
-        /* Should we allow text w/o image?
         var text = $.trim($("#InputText").val());
-        if (text != "") {
-            console.log("TEXT: " + text);
-            enable = true;
-        }
-        */
-        if (enable == true) {
+
+        if (fileName != "" && text != "") {
             $("#AddVisionSubmit").removeAttr("disabled");
         } else {
             $("#AddVisionSubmit").attr("disabled", "disabled");
@@ -1806,11 +1798,10 @@ $(document).ready(function() {
         }
         toggleAddVisionSubmit();
     });
-    /*
     $("#InputText").keyup(toggleAddVisionSubmit);
     $("#InputText").bind('paste',toggleAddVisionSubmit);
     $("#InputText").bind('cut',toggleAddVisionSubmit);
-    */
+
     $("#AddVisionSubmit").click(function() {
         var useImage = false;
         if ($("#FileUploadInput").val() != "") {

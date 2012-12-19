@@ -364,11 +364,14 @@ def apiAddUserVision(userId):
 
             parameters = request.json
             if not 'useImage' in parameters or \
-               not 'text'     in parameters:
+               not 'text'     in parameters or \
+               not 'privacy'  in parameters:
                 abort(406)
             useImage = parameters['useImage']
             text = parameters['text'].strip()
-            isPublic = 'privacy' in parameters
+            isPublic = parameters['privacy']
+
+            Logger.debug("IsPublic: " + str(isPublic))
 
             # Make sure input OK to create a new vision
             if useImage == False:
