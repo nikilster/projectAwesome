@@ -32,6 +32,9 @@ class UserModel(DB.Model):
                                             onupdate=datetime.datetime.utcnow)
     privacy         = DB.Column(DB.Integer, default=UserPrivacy.PRIVATE)
 
+    # Bitmask used for binary values in settings (e.g., send daily email)
+    flags           = DB.Column(DB.Integer, default=0)
+
     @hybrid_property
     def fullName(self):
         return self.firstName + " " + self.lastName
@@ -44,6 +47,7 @@ class UserModel(DB.Model):
         self.userName = ""
         self.picture = "https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"
         self.description = ""
+        self.flags = 0
 
     def __str__(self):
         return '<User %s:%s %s>' % (self.id, self.firstName, self.lastName)
@@ -211,7 +215,30 @@ class VisionCommentModel(DB.Model):
         return '<VisionComment %s>' % (str(self.id))
 
 #
+# FollowModel: Represents a follow from follower -> user
+#
+# Meaning follower is following the shared data of user
+#
+class FollowModel(DB.Model):
+    __tablename__   = 'follow'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    followerId      = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
+
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
+                                             onupdate=datetime.datetime.utcnow)
+
+    def __init__(self, followerId, userId):
+        self.followerId = followerId
+        self.userId = userId
+    def __str__(self):
+        return '<Follow %s:%s>' % (str(self.followerId), str(self.userId))
+
+#
 # FriendModel: Represents a one-way share of information
+#
+# This is for our inner-circle, master-mind group type functionality
 #
 class FriendModel(DB.Model):
     __tablename__   = 'friend'
