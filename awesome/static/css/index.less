@@ -24,10 +24,12 @@
 @VISION_COMMENT_LINE_HEIGHT: 1.4;
 
 //Instructions
-@INSTRUCTIONS_WIDTH: 600px;
+@INSTRUCTIONS_WIDTH: 575px;
+@INSTRUCTIONS_HEIGHT: 45px;
 @INSTRUCTIONS_MARGIN_BOTTOM: 10px;
 @TEXT_COLOR: #666;
-@TEXT_SIZE: 18px;
+@INSTRUCTIONS_TAGLINE_SIZE: 18px;
+@INSTRUCTIONS_TEXT_SIZE: 15px;
 @BUTTON_MARGIN_TOP: 12px;
 
 //On Hover
@@ -106,8 +108,8 @@
     Both (H + Example)
 */
 
-.SelectedEmph {
-    color: @EMPH_COLOR;
+#InstructionsPadding {
+    height:@INSTRUCTIONS_HEIGHT+24;
 }
 
 #Instructions, #ExampleVisionBoardInstructions
@@ -118,21 +120,33 @@
     line-height:1.4;
     margin-top: -5px;
     margin-bottom:@INSTRUCTIONS_MARGIN_BOTTOM;
-    height:55px;
+    height:@INSTRUCTIONS_HEIGHT;
 
     position: relative;
     z-index: -1 !important;
 
-    text-align: center;
+    font-size:@INSTRUCTIONS_TEXT_SIZE; 
     color:@TEXT_COLOR;
-    font-size:@TEXT_SIZE; 
 
     //Shadow
     .LightShadow;
 
-    button
+    .Tagline {
+        font-size: @INSTRUCTIONS_TAGLINE_SIZE;
+        line-height: 1.5;
+        font-weight: bold;
+    }
+    .InstructionsNote {
+        margin-left: 20px;
+    }
+
+    #ViewExampleVisionBoardButton, #RegularRegisterButton, #JoinSite
     {
-        margin-top:@BUTTON_MARGIN_TOP;
+        font-size: 16px;
+        line-height: 1.2;
+        padding: 10px 15px;
+        float: right;
+        font-weight: normal;
     }
 }
 

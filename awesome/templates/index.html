@@ -48,14 +48,31 @@
 {# ----------- Header Information ----------- #}
 {% block header_info %}
     <!-- Onboarding -->
-    <div class="well" id="Instructions">
-      Create your own inspirational <a href="{{ url_for('about') }}">Vision Board</a> in under 30 seconds.
-      <div>
-        <span id="SelectedZero">Get started by choosing 3 visions!</span>
-        <span id="SelectedOne" class="SelectedEmph Hidden">Good Job! Chose 2 more pictures!</span>
-        <span id="SelectedTwo" class="SelectedEmph Hidden">Nice! Now chose one more!</span>
+    <div id="Instructions" class="well">
+      <a href="{{ url_for('register') }}"
+         id="RegularRegisterButton"
+         class="btn btn-primary">
+        Register
+      </a>
+      <button id="ViewExampleVisionBoardButton"
+              class="Hidden btn btn-danger">
+        >> See Your Vision Board!
+      </button>
+
+      <div class="Tagline">
+        Create, share, and
+        <a href="{{ url_for('about') }}">live your visions</a>.
+      </div>
+      <div class="InstructionsNote">
+        <span id="SelectedZero">Get started by browsing and choosing 3 visions!</span>
+        <span id="SelectedOne" class="Hidden">
+          <b>Good Job!</b> Chose 2 more pictures!
+        </span>
+        <span id="SelectedTwo" class="Hidden">
+          <b>Nice!</b> Now chose one more!
+        </span>
         <span id="SelectedThree" class="Hidden">
-          <button id="ViewExampleVisionBoardButton" class="btn btn-primary">See Your Vision Board!</button>
+          <b>Done!</b> Add more or view your vision board!
         </span>
       </div>
     </div>
@@ -66,9 +83,13 @@
     </form>
 
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
+      <button id="JoinSite" class="btn btn-success">Start with these visions!</button>  
+      <div class="Tagline">
         Congrats on starting your vision board!
-      <br/>
-      <button id="JoinSite" class="btn btn-success">Register to save it and start living your dreams!</a>  
+      </div>
+      <div class="InstructionsNote">
+        Save these visions and get started living them!
+      </div>
     </div>
 
 {% endblock %}
@@ -80,7 +101,7 @@
 
     <!-- Main Content -->
     <div id="InstructionsPadding"></div>
-    <div id="UserInformation" class="Center">
+    <div id="UserInformation" class="Center Hidden">
     </div>
     <div id="Content" class="Center"></div>
     <div id="ExampleVisionBoard" class="Center"></div>
@@ -253,15 +274,16 @@
     <button class="btn btn-success">Add to my Vision Board</button>
 </div>
 
-<!-- //Add Vision (Not Logged In) -->
-<div class="AlreadyHaveVision <%= haveVisionVisibility %>">
-    <button class="btn btn-small disabled">On my vision board</button>
-</div>
-
 <!-- //Remove Vision (Not Logged In) -->
 <div class="RemoveVisionNotAuthenticated <%= removeButtonVisibility%>">
     <button class="btn btn-inverse">Remove</button>
 </div>
+
+<!-- //Already have vision (Logged In) -->
+<div class="AlreadyHaveVision <%= haveVisionVisibility %>">
+    <button class="btn btn-small disabled">On my vision board</button>
+</div>
+
 
 </script>
 

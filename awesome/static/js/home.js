@@ -1498,12 +1498,18 @@ App.Backbone.View.Page = Backbone.View.extend({
                             $(INSTRUCTIONS_THREE_VISIONS_SELECTED)];
 
         //User has selected somewhere from 0 to NUM_VISION_REQUIRED_FOR_USER Selected
-        if (length >=0 && length <= NUM_VISION_REQUIRED_FOR_USER) 
+        if (length >=0 && length < NUM_VISION_REQUIRED_FOR_USER) {
             this.hideAllExcept(instructions,length);
+            $("#ViewExampleVisionBoardButton").hide();
+            $("#RegularRegisterButton").show();
+        }
 
         //User has selected more
-        else if(length > NUM_VISION_REQUIRED_FOR_USER)
+        else if(length >= NUM_VISION_REQUIRED_FOR_USER) {
             this.hideAllExcept(instructions, NUM_VISION_REQUIRED_FOR_USER);
+            $("#RegularRegisterButton").hide();
+            $("#ViewExampleVisionBoardButton").show();
+        }
 
         //Should never have < 0 visions selected!
         else
@@ -1531,7 +1537,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     hideAllExcept: function(elements, indexToShow) {
         for(var i=0; i<elements.length; i++) {
             if(i == indexToShow) {
-                elements[i].show();//(CSS_ClASS_HIDDEN);
+                elements[i].fadeIn("fast");//(CSS_ClASS_HIDDEN);
             } else {
                 elements[i].hide();//addClass(CSS_ClASS_HIDDEN);
             }
