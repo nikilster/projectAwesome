@@ -50,7 +50,7 @@ def about():
         userInfo = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-        return render_template('about.html', user=userInfo)
+        return render_template('about.html', user=userInfo, config=app.config)
     abort(405)
 
 @app.route('/settings', methods=['GET'])
@@ -58,7 +58,7 @@ def settings():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('settings.html', user=userInfo)
+            return render_template('settings.html', user=userInfo, config=app.config)
         else:
             return render_template('index.html', user=None, config=app.config)
     abort(405)
@@ -88,7 +88,7 @@ def api_change_info():
                 # update session
                 SessionManager.setUser(user)
                 userInfo = SessionManager.getUser()
-            return render_template('settings.html', user=userInfo)
+            return render_template('settings.html', user=userInfo, config=app.config)
         abort(406)
     abort(405)
 
@@ -146,7 +146,7 @@ def login():
         if SessionManager.userLoggedIn():
             return redirect(url_for('index'))
         else:
-            return render_template('login.html')
+            return render_template('login.html', config=app.config)
     elif request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -173,13 +173,13 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('register.html', config=app.config)
     elif request.method == 'POST':
         # Keep selected visions in session
         if 'selectedVisions' in request.form:
             SessionManager.setSelectedVisions(
                                         str(request.form['selectedVisions']))
-        return render_template('register.html')
+        return render_template('register.html', config=app.config)
     abort(405)
 
 @app.route('/register_user', methods=['POST'])
@@ -497,7 +497,7 @@ def bookmarkletCreate():
     #Check login
     #TODO: Pass the referring url to the login function so we can return here!
     if not SessionManager.userLoggedIn():
-        return render_template('login.html')
+        return redirect(url_for('login'))
 
     #Get Parameters
     '''
@@ -561,7 +561,7 @@ def create():
     #Question: Do we really need to check the login again here?
     #Check Login
     if not SessionManager.userLoggedIn():
-        return render_template('login.html')
+        return redirect(url_for('login'))
 
     #Get the user id
     userId = SessionManager.getUser()['id']
@@ -585,7 +585,7 @@ def terms():
         userInfo = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-        return render_template('terms.html', user=userInfo)
+        return render_template('terms.html', user=userInfo, config=app.config)
     abort(405)
 
 # Target URL for New Relic availability monitoring
