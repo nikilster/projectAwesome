@@ -137,13 +137,13 @@ class Vision:
         # public!
         if False == self.isPublic() and \
            True == isPublic and \
-           DataApi.visionHasComments(self.id()):
+           DataApi.visionHasComments(self.model()):
             return False
         # ok, now we can make the change
         privacy = VisionPrivacy.SHAREABLE
         if isPublic:
             privacy = VisionPrivacy.PUBLIC
-        return DataApi.editVision(self.id(), text, privacy)
+        return DataApi.editVision(self.model(), text, privacy)
 
     def addComment(self, user, text):
         '''Return new comment, or None.

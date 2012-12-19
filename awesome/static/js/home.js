@@ -971,6 +971,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var nameDisplay = "none";
 
         var haveVisionVisibility = "Hidden";
+        var visionPrivateVisibility = "Hidden";
 
         if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             removeDisplay = "inline-block";
@@ -999,6 +1000,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
                         repostDisplay = "inline-block";
                     }
                 }
+                if (!this.model.isPublic()) {
+                    visionPrivateVisibility = "";
+                }
             }
             cursorClass = "MasonryItemPointerCursor";
         }
@@ -1021,6 +1025,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          removeButtonVisibility: removeButtonVisibility,
                          addCommentVisibility: addCommentVisibility,
                          haveVisionVisibility: haveVisionVisibility,
+                         visionPrivateVisibility: visionPrivateVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
                          userId: this.model.userId(),

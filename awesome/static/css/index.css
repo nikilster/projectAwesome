@@ -156,10 +156,15 @@ footer {
   top: 16px;
   right: 16px;
 }
-.AlreadyHaveVision {
+.VisionIsPrivate {
   position: absolute;
   top: 16px;
   right: 16px;
+}
+.AlreadyHaveVision {
+  position: absolute;
+  top: 16px;
+  left: 16px;
 }
 .Overlay {
   position: absolute;
