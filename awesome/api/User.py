@@ -120,6 +120,9 @@ class User:
         '''Returns T if user is same is user passed as parameter.'''
         return self.id() == user.id()
 
+    def visionDefaultIsPublic(self):
+        return VisionPrivacy.PUBLIC == self.visionPrivacy()
+
     def visionList(self, inquiringUser):
         '''Gets VisionList with respect to privacy of inquiringUser, or None'''
         return VisionList.getUserVisions(inquiringUser, self)
@@ -225,7 +228,9 @@ class User:
     def repostVision(self, visionId):
         '''Repost a vision and return new vision if successful, else None'''
         #TODO: add proper vision privacy to reposts
-        newVisionId = DataApi.repostVision(self.model(), visionId, False)
+        newVisionId = DataApi.repostVision(self.model(),
+                                           visionId,
+                                           self.visionDefaultIsPublic())
         if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
             return None
         vision = Vision.getById(newVisionId, self)
