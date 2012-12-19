@@ -92,9 +92,9 @@ footer {
   background-color: #ededed !important;
 }
 .Vision {
-  width: 290px;
+  width: 275px;
   margin: 6px;
-  padding: 10px;
+  padding: 12px;
   background-color: #fafafa;
   list-style-type: none;
   -webkit-transition: -webkit-transform 0.15s linear;
@@ -151,23 +151,23 @@ footer {
 .AddVisionNotAuthenticated,
 .RemoveVisionNotAuthenticated {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
 }
 .AlreadyHaveVision {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 16px;
+  right: 16px;
 }
 .Overlay {
   position: absolute;
-  top: 14px;
+  top: 16px;
 }
 .Repost {
-  left: 14px;
+  left: 16px;
 }
 .Move {
-  right: 14px;
+  right: 16px;
 }
 /*
     Delete
@@ -371,7 +371,7 @@ footer {
 }
 #Content .AddVisionComment .AddVisionCommentInput,
 #ExampleVisionBoard .AddVisionComment .AddVisionCommentInput {
-  width: 233px;
+  width: 220px;
   margin-top: 7px;
 }
 #Content .VisionToolbar,
