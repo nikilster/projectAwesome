@@ -103,12 +103,12 @@ class DataApi:
         return False
 
     @staticmethod
-    def setProfilePicture(userId, url):
+    def setProfilePicture(userModel, url):
         '''Returns True if a change was made, and False otherwise.'''
         assert userModel, "Invalid user model"
-        if user.picture != url:
-            user.picture = url
-            DB.session.add(user)
+        if userModel.picture != url:
+            userModel.picture = url
+            DB.session.add(userModel)
             DB.session.commit()
             return True
         return False
