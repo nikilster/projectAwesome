@@ -108,6 +108,8 @@ footer {
 .Vision .text {
   background-color: #ffffff;
   padding: 3px;
+  font-size: 14px;
+  line-height: 1.4;
 }
 /* Selected Vision */
 .VisionSelected {
@@ -334,7 +336,7 @@ footer {
 #Content .VisionComment,
 #ExampleVisionBoard .VisionComment {
   font-size: 12px;
-  line-height: 1.2;
+  line-height: 1.4;
   margin: 2px;
   padding: 3px 3px 3px 40px;
   position: relative;
@@ -354,8 +356,8 @@ footer {
 #ExampleVisionBoard .AddVisionComment {
   font-size: 12px;
   line-height: 1.2;
-  margin: 2px;
-  padding: 0px 2px 2px 40px;
+  margin: 0px 2px;
+  padding: 0px 2px 0px 40px;
   position: relative;
   min-height: 30px;
 }
@@ -371,8 +373,12 @@ footer {
 }
 #Content .AddVisionComment .AddVisionCommentInput,
 #ExampleVisionBoard .AddVisionComment .AddVisionCommentInput {
-  width: 220px;
-  margin-top: 7px;
+  width: 215px;
+  margin-top: 9px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  font-size: 12px;
+  line-height: 1.4;
 }
 #Content .VisionToolbar,
 #ExampleVisionBoard .VisionToolbar {

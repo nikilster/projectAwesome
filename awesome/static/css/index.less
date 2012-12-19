@@ -18,6 +18,10 @@
 @PICTURE_WIDTH: 100%;
 @TEXT_BACKGROUND: white;
 @TEXT_PADDING: 3px;
+@VISION_TEXT_SIZE: 14px;
+@VISION_LINE_HEIGHT: 1.4;
+@VISION_COMMENT_TEXT_SIZE: 12px;
+@VISION_COMMENT_LINE_HEIGHT: 1.4;
 
 //Instructions
 @INSTRUCTIONS_WIDTH: 600px;
@@ -84,6 +88,8 @@
     {
         background-color:@TEXT_BACKGROUND;
         padding:@TEXT_PADDING;
+        font-size: @VISION_TEXT_SIZE;
+        line-height: @VISION_LINE_HEIGHT;
     }
 
 }
@@ -369,8 +375,8 @@
         z-index: 1;
     }
     .VisionComment {
-        font-size:12px;
-        line-height:1.2;
+        font-size: @VISION_COMMENT_TEXT_SIZE;
+        line-height: @VISION_COMMENT_LINE_HEIGHT;
         margin: 2px;
         padding: 3px 3px 3px 40px; 
         position: relative;
@@ -389,8 +395,8 @@
     .AddVisionComment {
         font-size:12px;
         line-height:1.2;
-        margin: 2px;
-        padding: 0px 2px 2px 40px; 
+        margin: 0px 2px;
+        padding: 0px 2px 0px 40px; 
         position: relative;
         min-height: 30px;
 
@@ -404,8 +410,12 @@
             float:left;
         }
         .AddVisionCommentInput {
-           width:220px;
-           margin-top: 7px;
+           width:215px;
+           margin-top: 9px;
+           margin-bottom: 0px;
+           padding-bottom: 0px;
+           font-size: @VISION_COMMENT_TEXT_SIZE;
+           line-height: @VISION_COMMENT_LINE_HEIGHT;
         }
     }
 
