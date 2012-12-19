@@ -6,7 +6,6 @@ from flask import current_app
 
 import os
 import calendar, datetime
-import json
 
 from . import app
 from Constant import Constant
@@ -197,11 +196,10 @@ def register_user():
 
             selectedVisionIds = SessionManager.getSelectedVisions()
             if selectedVisionIds and len(selectedVisionIds) > 0:
-                Logger.debug("Existing selected visions: " +
-                                                       str(selectedVisionIds));
+                #Logger.debug("Existing selected visions: " +
+                #                                       str(selectedVisionIds));
                 user.repostVisionList(selectedVisionIds)
                 SessionManager.removeSelectedVisions()
-
             return redirect(url_for('user_profile', userId=user.id()))
         else:
             assert errorMsg != "", "Error message should exist"
