@@ -20,6 +20,27 @@ JS_home = Bundle(
     'opt/underscore.js',
     'opt/backbone.js',
     'opt/date.js',
+
+    'js/Global.js',
+
+    # Order seems to matter between models and collections
+    'js/models/User.js',
+    'js/models/Picture.js',
+    'js/models/VisionComment.js',
+    'js/collections/VisionCommentList.js',
+    'js/models/Vision.js',
+    'js/collections/VisionList.js',
+    'js/models/Page.js',
+
+    'js/views/UserInformation.js',
+    'js/views/VisionComment.js',
+    'js/views/VisionDetailsComment.js',
+    'js/views/VisionDetailsModal.js',
+    'js/views/Vision.js',
+    'js/views/Page.js',
+
+    'js/routers/Router.js',
+
     'js/home.js',
     filters='jsmin',
     output='gen/js/home.min.js'
