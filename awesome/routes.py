@@ -595,11 +595,16 @@ def new_relic_ping_target():
     return "pong..."
 
 # Target URL for New Relic availability monitoring
-@app.route('/testEmail', methods=['GET'])
-def testEmail():
-    notification = Notifications()
-    notification.sendDailyEmails()
-    return "testing emails!"
-    
+@app.route('/test/daily_email', methods=['GET'])
+def test_daily_email():
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+            if user and user.email() == "alex.shye@gmail.com":
+                notification = Notifications()
+                return notification.testDailyEmail()
+    return "Hello."
 
 # $eof

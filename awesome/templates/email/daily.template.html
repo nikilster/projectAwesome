@@ -329,6 +329,16 @@
 			#monkeyRewards img{
 				max-width:190px;
 			}
+
+			body {
+				/*@editable*/ color:#505050;
+				/*@editable*/ font-family:Arial;
+				/*@editable*/ font-size:14px;
+				/*@editable*/ line-height:150%;
+				/*@editable*/ text-align:left;
+			}
+
+
 			.blueGradient
 			{
 				background: #7abcff; /* Old browsers */
@@ -343,17 +353,37 @@
 			.header
 			{
 				height:60px;
-				background-color:#7abcff;;
-				color:white;
+				/*background-color:#7abcff;*/
+				/*color:white;*/
+				background-color:#DDD;
+                color: #555555;
 				padding-top:25px;
+                border-bottom: 1px solid #DDD;
 			}
+
+            .bodyContent .sectionTitle {
+				font-size: 20px;
+                font-weight: bold;
+                color: rgb(119,119,119);
+                padding: 5px;
+                margin: 5px 5px 5px 30px;
+            }
+
+            .bodyContent .challenge {
+              margin: 0px 5px 5px 35px;
+			  padding: 10px;
+              font-size: 14pt;
+              line-height: 1.2;
+              font-style: italic;
+              font-family: times, serif;
+            }
 
 			.pictureBox 
 			{
-		  
-		  	position:relative;
+		  	  position:relative;
 			  margin: auto;
 			  margin-top:10px;
+              margin-bottom: 25px;
 
 			  width: 400px;
 			  background-color: #fafafa;
@@ -368,16 +398,23 @@
 			{
 				width:100%;
 			}
+            
+            .bodyContent .pictureText
+            {
+                padding: 10px;
+                font-size: 12pt;
+                line-height: 1.2;
+            }
 
 			.quoteBox
 			{
-				margin-top:10px;
-				padding:20px;
+				margin-top: 0px 10px;
+				padding:0px 30px;
 			}
 
 			.quoteBox .quote
 			{
-				font-size:22px;
+				font-size:16px;
 				font-weight:400;
 				color:#888;
 			}
@@ -387,8 +424,22 @@
 				text-align:right;
 				margin-top:20px;
 				color:#AAA;
-
 			}
+
+            .bodyContent .farewell{
+				font-size: 20px;
+                font-weight: bold;
+                color: rgb(119,119,119);
+                padding: 5px;
+                margin: 50px 5px 5px 30px;
+            }
+
+            .psNote {
+				font-size: 11px;
+                color: rgb(119,119,119);
+                padding: 5px;
+                margin: 30px 5px 5px 30px;
+            }
 
 			.footerContent .legal {
 				font-size:10px;
@@ -443,7 +494,7 @@
                                         <tr>
                                             <td class="headerContent">
                                             	<div class="header">
-                                            		{{ motivation }}
+                                            		{{ greeting }}
                                             	</div>
                                             	<!-- // Begin Module: Standard Header Image \\ -->
                                             	<!--<img src="https://s3.amazonaws.com/project-awesome-img/visions/4a164bc/76d80e9562c9d7549bf6a70b7218e211_m.jpg" style="max-width:600px;" id="headerImage campaign-icon" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext />-->
@@ -466,16 +517,36 @@
                                                 <table border="0" cellpadding="20" cellspacing="0" width="100%">
                                                     <tr>
                                                         <td valign="top">
-
+                                                            {% if visionPictureUrl != "" %}
+                                                            <div class="sectionTitle">
+                                                            Your daily vision
+                                                            </div>
                                                         	<div class="pictureBox">
-                                                        		<img src="{{ pictureUrl }}"/>
+                                                        		<img src="{{ visionPictureUrl }}"/>
+                                                                <div class="pictureText">
+                                                                    {{ visionText }}
+                                                                </div>
                                                         	</div>
+                                                            <div class="challenge">
+                                                               {{ challenge }}
+                                                            </div>
+                                                            {% endif %}
 
+                                                            <div class="sectionTitle">
+                                                            Quotable
+                                                            </div>
                                                             <div class="quoteBox">
                                                             	<div class="quote">
                                                                "{{ quote }}"</div>
                                                                 <div class="attribution">- {{ quoteAttribution  }} </div>
                                                             	</div>
+                                                            </div>
+
+                                                            <div class="farewell">
+                                                                {{ farewell }}
+                                                            </div>
+                                                            <div class="psNote">
+                                                            P.S. Can't see pictures? Enable images in your email client and we promise your daily visions will look <a href="http://youtu.be/NQ-8IuUkJJc?t=1m19s">at least 3 times better</a>.
                                                             </div>
 														</td>
                                                     </tr>

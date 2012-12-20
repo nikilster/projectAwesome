@@ -14,6 +14,7 @@ The is meant to be tied to a cron job that sends the daily email to all users.
 Usage: %(prog)s [OPTIONS]
 
     Options flags.
+            -t, --test          Send single test email.
             -d, --do-it         Actually sends email to all users.
                                 (If this isn't set, we just send a test email)
 
@@ -32,21 +33,27 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:],
-                                   "dh",
-                                   ["do-it", "help"])
+                                   "tdh",
+                                   ["test", "do-it", "help"])
     except getopt.error, msg:
         Usage(msg)
 
     # Process options
+    do_test = False
     do_it = False
     for o, a in opts:
         if o in ("-d", "--do-it"):
             do_it = True
+        elif o in ("-t", "--test"):
+            do_test = True
         elif o in ("-h", "--help"):
             Usage()
         else:
             Usage("ERROR: Invalid option: " + o)
 
+    # One of these should be True
+    if do_test == False and do_it == False:
+        Usage("Need to do test email or real user email")
 
     # Create fake Flask request context and push onto context stack.
     # The request context is needed for render_template to work.

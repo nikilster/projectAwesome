@@ -8,7 +8,7 @@
    {{ title }}
   </title>
  </head>
- <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="width: 100%; -webkit-text-size-adjust: none; margin: 0; padding: 0; background-color: #FAFAFA">
+ <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="width: 100%; -webkit-text-size-adjust: none; margin: 0; padding: 0; color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; background-color: #FAFAFA">
   <center>
    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable" style="height: 100%; margin: 0; padding: 0; width: 100%; background-color: #FAFAFA">
     <tr>
@@ -47,8 +47,8 @@
          <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader" style="background-color: #FFF; border-bottom: 0">
           <tr>
            <td class="headerContent" style="border-collapse: collapse; color: #202020; font-family: Arial; font-size: 34px; font-weight: bold; line-height: 100%; padding: 0; text-align: center; vertical-align: middle">
-            <div class="header" style="height: 60px; background-color: #7abcff; padding-top: 25px">
-             {{ motivation }}
+            <div class="header" style="height: 60px; background-color: #DDD; color: #555; padding-top: 25px; border-bottom: 1px solid #DDD">
+             {{ greeting }}
             </div>
             <!-- // Begin Module: Standard Header Image \\ -->
             <!--&lt;img src="https://s3.amazonaws.com/project-awesome-img/visions/4a164bc/76d80e9562c9d7549bf6a70b7218e211_m.jpg" style="max-width:600px;" id="headerImage campaign-icon" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext  /&gt;-->
@@ -69,16 +69,40 @@
             <table border="0" cellpadding="20" cellspacing="0" width="100%">
              <tr>
               <td valign="top" style="border-collapse: collapse">
-               <div class="pictureBox" style="position: relative; margin: auto; margin-top: 10px; width: 400px; background-color: #fafafa; padding: 10px; -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
-                <img src="{{ pictureUrl }}" style="border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: inline; width: 100%" />
+               {% if visionPictureUrl != "" %}
+               <div class="sectionTitle" style="color: rgb(119, 119, 119); font-family: Arial; font-size: 20px; line-height: 150%; text-align: left; font-weight: bold; padding: 5px; margin: 5px 5px 5px 30px">
+                Your daily vision
                </div>
-               <div class="quoteBox" style="margin-top: 10px; padding: 20px; color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
-                <div class="quote" style="color: #888; font-family: Arial; font-size: 22px; line-height: 150%; text-align: left; font-weight: 400">
+               <div class="pictureBox" style="position: relative; margin: auto; margin-top: 10px; margin-bottom: 25px; width: 400px; background-color: #fafafa; padding: 10px; -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
+                <img src="{{ visionPictureUrl }}" style="border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: inline; width: 100%" />
+                <div class="pictureText" style="color: #505050; font-family: Arial; font-size: 12pt; line-height: 1.2; text-align: left; padding: 10px">
+                 {{ visionText }}
+                </div>
+               </div>
+               <div class="challenge" style="color: #505050; font-family: times, serif; font-size: 14pt; line-height: 1.2; text-align: left; margin: 0 5px 5px 35px; padding: 10px; font-style: italic">
+                {{ challenge }}
+               </div>
+               {% endif %}
+               <div class="sectionTitle" style="color: rgb(119, 119, 119); font-family: Arial; font-size: 20px; line-height: 150%; text-align: left; font-weight: bold; padding: 5px; margin: 5px 5px 5px 30px">
+                Quotable
+               </div>
+               <div class="quoteBox" style="margin-top: 0 10px; padding: 0 30px; color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
+                <div class="quote" style="color: #888; font-family: Arial; font-size: 16px; line-height: 150%; text-align: left; font-weight: 400">
                  "{{ quote }}"
                 </div>
                 <div class="attribution" style="color: #AAA; font-family: Arial; font-size: 14px; line-height: 150%; text-align: right; margin-top: 20px">
                  - {{ quoteAttribution  }}
                 </div>
+               </div>
+               <div class="farewell" style="color: rgb(119, 119, 119); font-family: Arial; font-size: 20px; line-height: 150%; text-align: left; font-weight: bold; padding: 5px; margin: 50px 5px 5px 30px">
+                {{ farewell }}
+               </div>
+               <div class="psNote" style="font-size: 14px; color: #505050; padding: 5px; margin: 30px 5px 5px 30px; font-family: Arial; line-height: 150%; text-align: left">
+                P.S. Can't see pictures? Enable images in your email client and we promise your daily visions will look
+                <a href="http://youtu.be/NQ-8IuUkJJc?t=1m19s">
+                 at least 3 times better
+                </a>
+                .
                </div>
               </td>
              </tr>
