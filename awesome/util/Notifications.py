@@ -258,7 +258,7 @@ class Notifications:
         ("You can't wait for inspiration. You have to go after it with a club.",
          "Jack London (1876-1916, author, journalist, social activist)"),
         ("The question isn't who is going to let me; it's who is going to stop me",
-         "Howard Roarck of The Fountainhead, a novel by Ayn Rand (1905-1982, writer, philosopher)"),
+         "Howard Roark of The Fountainhead, a novel by Ayn Rand (1905-1982, writer, philosopher)"),
         ("If you are not willing to risk the unusual, you will have to settle for the ordinary.",
          "Jim Rohn (1930-2009, entrepreneur, author, speaker)"),
         ("Those who are willing to take action and take risks succeed. The others fade quickly.",
