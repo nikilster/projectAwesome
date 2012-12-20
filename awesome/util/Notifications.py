@@ -173,7 +173,7 @@ class Notifications:
         if vision:
             picture = vision[Vision.Key.PICTURE]
             pictureUrl = picture[Picture.Key.LARGE_URL]
-        return render_template("email/dailyInlined.html", 
+        return render_template("email/daily.html", 
                     firstName = userInfo[User.Key.FIRST_NAME],
                     title = title,
                     motivation = motivation,
