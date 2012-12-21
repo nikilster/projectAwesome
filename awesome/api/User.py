@@ -271,7 +271,14 @@ class User:
         '''Returns comment if successful, else returns None'''
         vision = Vision.getById(visionId, self)
         if vision:
-            return vision.addComment(self, text)
+            comment = vision.addComment(self, text)
+            if comment:
+                # If comment is on someone else's vision, email them
+                if vision.userId() != self.id():
+                    from ..util.Notifications import Notifications
+                    notifications = Notifications(test=False)
+                    notifications.sendCommentEmail(self, vision, comment)
+            return comment
         return None
 
     #

@@ -11,6 +11,7 @@ from ..Constant import Constant
 from Logger import Logger
 from awesome.api.User import User
 from awesome.api.Vision import Vision
+from awesome.api.VisionComment import VisionComment
 from awesome.api.Picture import Picture
 
 import random
@@ -75,6 +76,29 @@ class Notifications:
     def sendFollowEmail(self):
         pass
 
+    def sendCommentEmail(self, authorUser, vision, comment):
+        if authorUser and vision and comment:
+            visionUser = User.getById(vision.userId())
+            if visionUser:
+                emailAddress = visionUser.email()
+                emailSubject = authorUser.fullName() + " wrote on your vision"
+                emailText = emailSubject
+                # These emails only work in production right now
+                # TODO: need better way of testing these things
+                baseUrl = "http://project-awesome.herokuapp.com/user/"
+                emailHtml = render_template("email/comment.html", 
+                    userFirstName = visionUser.firstName(),
+                    authorFullName = authorUser.fullName(),
+                    userVisionBoardUrl = baseUrl + str(visionUser.id()),
+                    authorVisionBoardUrl = baseUrl + str(authorUser.id()))
+                email = {
+                    Constant.EMAIL_TO_KEY : emailAddress,
+                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+                }
+                emailer = Emailer()
+                emailer.sendBatch([email])
 
 
     #
