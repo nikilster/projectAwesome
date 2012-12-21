@@ -28,8 +28,8 @@ var App = {
             INVALID: 6, // Keep at end: we use to check validity of pageMode
         },
         VisionPrivacy: {
-            PRIVATE: 1,
-            PUBLIC: 2,
+            PRIVATE: 0,
+            PUBLIC: 1,
         },
         MAX_SELECTED_VISIONS: 10,
     },
