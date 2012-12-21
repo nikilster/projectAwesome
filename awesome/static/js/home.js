@@ -218,6 +218,8 @@ $(document).ready(function() {
         var text = $.trim($("#InputText").val());
         var visionPrivacy = $("#InputVisionPrivacy").is(":checked");
 
+        $("#AddVisionSubmit").attr("disabled", "disabled");
+
         doAjax("/api/user/" + USER['id'] + "/add_vision",
                 JSON.stringify({'useImage' : useImage,
                                 'text' : text,
@@ -231,6 +233,7 @@ $(document).ready(function() {
                 // error
                 function(jqXHR, textStatus, errorThrown) {
                     console.log("Error");
+                    $("#AddVisionSubmit").removeAttr("disabled");
                 }
         );
     });
