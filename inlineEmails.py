@@ -53,10 +53,16 @@ def main(argv=None):
     if not os.path.isdir(templateDir):
         Usage("Can't find email templates in : " + templatesDir)
 
-    print "\nLooking for template emails..."
 
+    print "\nLooking for template emails..."
     files = glob.glob(templateDir + "*.template.html")
-    
+
+     # Getting email.css
+    print "\nGetting CSS..."
+    cssFile = open(os.path.join(templateDir, "css/email.css"), "r")
+    css = cssFile.read();
+    cssFile.close()
+   
     for name in files:
         print "    Found: " + name
         output = name.replace(".template.html", ".html")
@@ -66,7 +72,7 @@ def main(argv=None):
             origEmail = inputFile.read()
             inputFile.close()
 
-            inliner = Pynliner().from_string(origEmail)
+            inliner = Pynliner().from_string(origEmail).with_cssString(css)
             inlinedEmail = inliner.run()
             prettyEmail = BeautifulSoup(inlinedEmail).prettify()
 

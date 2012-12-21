@@ -198,9 +198,9 @@ class Notifications:
 
     def __greeting(self):
         greetings = [ "You can do it!",
-                       "Have a great day!",
                        "Good morning!",
                        "Daily awesomeness",
+                       "With love, from us to you.",
                        "Let's go!",
                        "Hey there, good looking ;)",
                        "How's it going?",
@@ -212,19 +212,20 @@ class Notifications:
         return random.choice(greetings)
 
     def __farewell(self):
-        farewells = [ "Have an awesome day!",
-                      "Have a great day!",
-                      "Bye bye...",
-                      "Til tomorrow!",
-                      "Sayanora.",
-                      "Hasta la vista, baby.",
-                      "Adios.",
-                      "Be well, fellow citizen."
-                      "Stay cool...",
-                      "And.. we're out.",
+        # We tack a comma onto these for now.. so leave empty at end.
+        farewells = [ "Have an awesome day",
+                      "Have a great day",
+                      "Bye bye",
+                      "Til tomorrow",
+                      "Sayanora",
+                      "Hasta la vista, baby",
+                      "Adios",
+                      "Be well, fellow citizen"
+                      "Stay cool",
+                      "And.. we're out",
                       "See ya later, alligator",
                       "C U L8R",
-                      "Ciao!",
+                      "Ciao",
                     ]
         return random.choice(farewells)
 
