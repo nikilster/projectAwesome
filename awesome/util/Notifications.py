@@ -181,6 +181,7 @@ class Notifications:
         vision = userInfo[Notifications.UserKey.RANDOM_VISION]
         visionText = vision[Vision.Key.TEXT]
         visionPictureUrl = ""
+        visionBoardUrl = "http://project-awesome.herokuapp.com/user/" + str(userInfo[User.Key.ID])
         if vision:
             picture = vision[Vision.Key.PICTURE]
             visionPictureUrl = picture[Picture.Key.LARGE_URL]
@@ -190,6 +191,7 @@ class Notifications:
                     greeting = greeting,
                     challenge = challenge,
                     farewell = farewell,
+                    visionBoardUrl = visionBoardUrl,
                     visionPictureUrl = visionPictureUrl,
                     visionText = visionText,
                     quote = quote,
