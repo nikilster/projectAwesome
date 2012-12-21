@@ -249,7 +249,7 @@ class DataApi:
         if DataApi.NO_OBJECT_EXISTS == vision:
             return DataApi.NO_OBJECT_EXISTS_ID
 
-        privacy = VisionPrivacy.SHAREABLE
+        privacy = VisionPrivacy.PRIVATE
         if isPublic:
             privacy = VisionPrivacy.PUBLIC
         return DataApi.addVision(userModel,

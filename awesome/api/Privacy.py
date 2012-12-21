@@ -8,9 +8,8 @@ class UserPrivacy:
 class VisionPrivacy:
     '''Enum for vision privacy policies'''
     PRIVATE = 0
-    SHAREABLE = 1
-    PUBLIC = 2
-    INVALID = 3
+    PUBLIC = 1
+    INVALID = 2
 
 class Relationship:
     '''Define and get relationship between users'''

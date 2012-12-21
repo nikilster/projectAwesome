@@ -217,7 +217,7 @@ class User:
 
         privacy = VisionPrivacy.PUBLIC
         if not isPublic:
-            privacy = VisionPrivacy.SHAREABLE
+            privacy = VisionPrivacy.PRIVATE
 
         visionId = DataApi.addVision(self.model(), text, pictureId,
                                      0, 0, privacy)

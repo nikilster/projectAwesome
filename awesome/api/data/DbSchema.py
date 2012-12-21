@@ -25,15 +25,16 @@ class UserModel(DB.Model):
     picture         = DB.Column(DB.Text)
 
     description     = DB.Column(DB.Text)
-    visionPrivacy   = DB.Column(DB.Integer, default=VisionPrivacy.SHAREABLE)
+    visionPrivacy   = DB.Column(DB.Integer, default=VisionPrivacy.PUBLIC)
 
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                             onupdate=datetime.datetime.utcnow)
-    privacy         = DB.Column(DB.Integer, default=UserPrivacy.PRIVATE)
+    privacy         = DB.Column(DB.Integer, default=UserPrivacy.PUBLIC)
 
-    # Bitmask used for binary values in settings (e.g., send daily email)
-    flags           = DB.Column(DB.Integer, default=0)
+    utcOffset       = DB.Column(DB.Integer, default=0)
+
+    dailyEmail      = DB.Column(DB.Boolean, default=True)
 
     @hybrid_property
     def fullName(self):
@@ -99,8 +100,7 @@ class VisionModel(DB.Model):
     modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
                                              onupdate=datetime.datetime.utcnow)
 
-    # for future use
-    privacy         = DB.Column(DB.Integer, default=VisionPrivacy.SHAREABLE)
+    privacy         = DB.Column(DB.Integer, default=VisionPrivacy.PRIVATE)
 
     def __init__(self, userId, text, pictureId,
                  parentId, rootId,
@@ -213,6 +213,39 @@ class VisionCommentModel(DB.Model):
         self.text = text
     def __str__(self):
         return '<VisionComment %s>' % (str(self.id))
+
+#
+# VisionCommentLike
+#
+class VisionLikeModel(DB.Model):
+    __tablename__   = 'vision_like'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    visionId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, visionId, userId):
+        self.visionId = visionId
+        self.userId = userId
+    def __str__(self):
+        return '<VisionLike %s:%s>' % (str(self.visionId), str(self.userId))
+
+#
+# VisionCommentLike
+#
+class VisionCommentLikeModel(DB.Model):
+    __tablename__   = 'vision_comment_like'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    visionCommentId = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, visionCommentId, userId):
+        self.visionCommentId = visionCommentId
+        self.userId = userId
+    def __str__(self):
+        return '<VisionCommentLike %s:%s>' % (str(self.visionCommentId),
+                                              str(self.userId))
 
 #
 # FollowModel: Represents a follow from follower -> user
