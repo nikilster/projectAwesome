@@ -1,0 +1,35 @@
+<html>
+ <head>
+  <title>
+   You have a message!
+  </title>
+ </head>
+ <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
+  <p>
+   Hi {{ userFirstName }}!
+  </p>
+  <p>
+   <a href="{{authorVisionBoardUrl}}">
+    {{ authorFullName }}
+   </a>
+   has left a comment on
+   <a href="{{ visionUserVisionBoardUrl }}">
+    {{ visionUserFullName }}
+   </a>
+   's 
+   vision.
+  </p>
+  <p>
+   Go to their
+   <a href="{{ visionUserVisionBoardUrl }}">
+    vision board
+   </a>
+   to check it out!
+  </p>
+  <p>
+   Cheers,
+   <br />
+   - The Project Awesome Team
+  </p>
+ </body>
+</html>

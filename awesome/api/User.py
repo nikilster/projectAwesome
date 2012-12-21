@@ -3,6 +3,7 @@ from data.DataApi import DataApi
 from Vision import Vision
 from VisionList import VisionList
 from VisionComment import VisionComment
+from VisionCommentList import VisionCommentList
 from Privacy import VisionPrivacy
 from FlashMessages import *
 from S3Util import ImageFilePreview, ImageUrlUpload, S3Vision, ProfilePicture
@@ -269,15 +270,30 @@ class User:
 
     def commentOnVision(self, visionId, text):
         '''Returns comment if successful, else returns None'''
+        from ..util.Notifications import Notifications
+        notifications = Notifications(test=False)
+
         vision = Vision.getById(visionId, self)
         if vision:
             comment = vision.addComment(self, text)
             if comment:
                 # If comment is on someone else's vision, email them
                 if vision.userId() != self.id():
-                    from ..util.Notifications import Notifications
-                    notifications = Notifications(test=False)
                     notifications.sendCommentEmail(self, vision, comment)
+                # send comment notifications for others that have commented
+                # that are not the vision user or the author user
+                # TODO: figure out better heuristic for how far to go back
+                commentList = vision.comments(50)
+                userIdSet = set()
+                for comment in commentList.comments():
+                    if comment.authorId() != self.id() and \
+                       comment.authorId() != vision.userId():
+                        userIdSet.add(comment.authorId())
+                otherCommenters = User.getByUserIds(userIdSet)
+                for otherCommenter in otherCommenters:
+                    notifications.sendCommentNotificationEmail(
+                                        otherCommenter, self, vision, comment)
+
             return comment
         return None
 

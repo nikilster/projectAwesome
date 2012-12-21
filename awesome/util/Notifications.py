@@ -100,6 +100,33 @@ class Notifications:
                 emailer = Emailer()
                 emailer.sendBatch([email])
 
+    def sendCommentNotificationEmail(self, userToEmail, authorUser,
+                                           vision, comment):
+        if userToEmail and authorUser and vision and comment:
+            visionUser = User.getById(vision.userId())
+            if visionUser:
+                emailAddress = userToEmail.email()
+                emailSubject = authorUser.fullName() + " wrote on " + \
+                               visionUser.fullName() + "\'s vision"
+                emailText = emailSubject
+                # These emails only work in production right now
+                # TODO: need better way of testing these things
+                baseUrl = "http://project-awesome.herokuapp.com/user/"
+                emailHtml = render_template("email/commentNotification.html",
+                    userFirstName = userToEmail.firstName(),
+                    authorFullName = authorUser.fullName(),
+                    visionUserFullName = visionUser.fullName(),
+                    authorVisionBoardUrl = baseUrl + str(authorUser.id()),
+                    visionUserVisionBoardUrl = baseUrl + str(visionUser.id()))
+                email = {
+                    Constant.EMAIL_TO_KEY : emailAddress,
+                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+                }
+                emailer = Emailer()
+                emailer.sendBatch([email])
+
 
     #
     #   Helper Functions
