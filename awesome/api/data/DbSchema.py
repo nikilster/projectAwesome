@@ -48,7 +48,6 @@ class UserModel(DB.Model):
         self.userName = ""
         self.picture = "https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg"
         self.description = ""
-        self.flags = 0
 
     def __str__(self):
         return '<User %s:%s %s>' % (self.id, self.firstName, self.lastName)
