@@ -34,20 +34,10 @@ class Notifications:
     def __init__(self, test=True):
         self.TEST = test
 
-    '''
-        Send Motivational Emails Daily
-    '''
     def sendDailyEmails(self):
-        
+        ''' Send daily motivational emails, and return number of emails sent '''
         #Get motivatinal picture for each user
         userInfo = self.__getMotivationContent()
-
-        '''
-        for user in userInfo:
-            print str(user[User.Key.FIRST_NAME]) + " " + \
-                  str(user[User.Key.LAST_NAME]) + \
-                  "  --  " + str(user[Notifications.UserKey.RANDOM_VISION])
-        '''
 
         #Render Templates
         emailInfo = self.__generateEmails(userInfo)
@@ -57,6 +47,8 @@ class Notifications:
         emailer.sendBatch(emailInfo)
 
         #Write to log
+
+        return len(emailInfo)
 
     def testDailyEmail(self):
         #Get motivatinal picture for each user
@@ -195,7 +187,7 @@ class Notifications:
         for info in emailInfo:
             
             email = {}
-            if(Notifications.TEST):
+            if self.TEST:
                 email[Constant.EMAIL_TO_KEY] = Notifications.TEST_EMAIL_ADDRESS
             else:
                 email[Constant.EMAIL_TO_KEY] = info[User.Key.EMAIL]
@@ -206,7 +198,7 @@ class Notifications:
 
             emails.append(email)
             
-            if(Notifications.TEST):
+            if self.TEST:
                 break
 
         return emails

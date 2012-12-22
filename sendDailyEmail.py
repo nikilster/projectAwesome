@@ -54,20 +54,23 @@ def main(argv=None):
     # One of these should be True
     if do_test == False and do_it == False:
         Usage("Need to do test email or real user email")
+    
+    if do_it:
+        # Create fake Flask request context and push onto context stack.
+        # The request context is needed for render_template to work.
+        ctx = app.test_request_context()
+        ctx.push()
 
-    # Create fake Flask request context and push onto context stack.
-    # The request context is needed for render_template to work.
-    ctx = app.test_request_context()
-    ctx.push()
+        # Now do whatever work we want in the request context
+        notification = Notifications(test = not do_it)
+        numEmails = notification.sendDailyEmails()
 
-    # Now do whatever work we want in the request context
-    notification = Notifications(test = not do_it)
-    notification.sendDailyEmails()
+        # Pop the request context
+        ctx.pop()
 
-    # Pop the request context
-    ctx.pop()
+        print "\n *** Sent " + str(numEmails) + " emails  ***\n"
 
-    if not do_it:
+    else:
         print "\n *** Sent test email ***\n"
 
 
