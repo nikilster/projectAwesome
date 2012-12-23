@@ -150,7 +150,8 @@ App.Backbone.View.Page = Backbone.View.extend({
         var modal = $(VISION_DETAILS_MODAL).first();
 
 
-        this.visionDetails = new App.Backbone.View.VisionDetailsModal({model: this.currentVision});
+        this.visionDetails = new App.Backbone.View.VisionDetails(
+                                                {model: this.currentVision});
         modal.empty().append(this.visionDetails.el);
         $("body").addClass("NoScroll");
         modal.fadeIn("slow");

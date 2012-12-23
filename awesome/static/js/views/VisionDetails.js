@@ -1,4 +1,4 @@
-App.Backbone.View.VisionDetailsModal = Backbone.View.extend({
+App.Backbone.View.VisionDetails = Backbone.View.extend({
     tagName: "div",
     sel: {
         COMMENTS_CONTAINER : "#VisionDetailsCommentsContainer",

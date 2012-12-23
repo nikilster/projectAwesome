@@ -35,7 +35,7 @@ JS_home = Bundle(
     'js/views/UserInformation.js',
     'js/views/VisionComment.js',
     'js/views/VisionDetailsComment.js',
-    'js/views/VisionDetailsModal.js',
+    'js/views/VisionDetails.js',
     'js/views/Vision.js',
     'js/views/Page.js',
 
