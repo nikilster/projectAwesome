@@ -24,13 +24,6 @@ class Notifications:
     class UserKey:
         RANDOM_VISION = 'randomVision'
 
-    #USER_EMAIL = 'email'
-    #USER_FIRST_NAME = 'firstName'
-    #USER_LAST_NAME = 'lastName'
-    #USER_ID = 'userId'
-    #USER_PICTURE_URL = "motivationUrl"
-
-
     def __init__(self, test=True):
         self.TEST = test
 
@@ -62,11 +55,34 @@ class Notifications:
     def sendWelcomeEmail(self):
         pass
 
-    def sendRepinEmail(self):
-        pass
+    # These emails only work in production right now
+    # TODO: need better way of testing these things
+    def sendRepostEmail(self, user, origVision):
+        if user and origVision:
+            origUser = User.getById(origVision.userId())
+            if origUser:
+                emailAddress = origUser.email()
+                emailSubject = user.fullName() + " reposted your vision"
+                emailText = emailSubject
+                baseUrl = "http://project-awesome.herokuapp.com/user/"
+                emailHtml = render_template("email/repost.html",
+                    origUserFirstName = origUser.firstName(),
+                    userFullName = user.fullName(),
+                    userVisionBoardUrl = baseUrl + str(user.id()))
+                email = {
+                    Constant.EMAIL_TO_KEY : emailAddress,
+                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+                }
+                emailer = Emailer()
+                emailer.sendBatch([email])
 
     def sendFollowEmail(self):
         pass
+
+    # These emails only work in production right now
+    # TODO: need better way of testing these things
 
     def sendCommentEmail(self, authorUser, vision, comment):
         if authorUser and vision and comment:
@@ -75,8 +91,6 @@ class Notifications:
                 emailAddress = visionUser.email()
                 emailSubject = authorUser.fullName() + " wrote on your vision"
                 emailText = emailSubject
-                # These emails only work in production right now
-                # TODO: need better way of testing these things
                 baseUrl = "http://project-awesome.herokuapp.com/user/"
                 emailHtml = render_template("email/comment.html", 
                     userFirstName = visionUser.firstName(),
@@ -92,6 +106,8 @@ class Notifications:
                 emailer = Emailer()
                 emailer.sendBatch([email])
 
+    # These emails only work in production right now
+    # TODO: need better way of testing these things
     def sendCommentNotificationEmail(self, userToEmail, authorUser,
                                            vision, comment):
         if userToEmail and authorUser and vision and comment:
@@ -101,8 +117,6 @@ class Notifications:
                 emailSubject = authorUser.fullName() + " wrote on " + \
                                visionUser.fullName() + "\'s vision"
                 emailText = emailSubject
-                # These emails only work in production right now
-                # TODO: need better way of testing these things
                 baseUrl = "http://project-awesome.herokuapp.com/user/"
                 emailHtml = render_template("email/commentNotification.html",
                     userFirstName = userToEmail.firstName(),

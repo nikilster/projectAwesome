@@ -322,11 +322,13 @@ def apiRepostVision(userId):
             user = User.getById(userInfo['id'])
             data = { 'result' : "error" }
             if user:
-                vision = user.repostVision(visionId)
+                vision = Vision.getById(visionId, user)
                 if vision:
-                    data = { 'result'    : "success",
-                             'repostParentId' : visionId,
-                             'newVision'      : vision.toDictionary() }
+                    newVision = user.repostVision(vision)
+                    if newVision:
+                        data = { 'result'    : "success",
+                                 'repostParentId' : visionId,
+                                 'newVision'      : newVision.toDictionary() }
             return jsonify(data)
         abort(403)
     abort(405)

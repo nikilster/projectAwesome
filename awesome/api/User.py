@@ -230,21 +230,29 @@ class User:
         else:
             return [None, "Error retrieving vision"]
 
-    def repostVision(self, visionId):
+    def repostVision(self, vision):
         '''Repost a vision and return new vision if successful, else None'''
-        #TODO: add proper vision privacy to reposts
+        from ..util.Notifications import Notifications
+        assert vision, "Invalid vision"
+
+        notifications = Notifications(test=False)
         newVisionId = DataApi.repostVision(self.model(),
-                                           visionId,
-                                           self.visionDefaultIsPublic())
-        if DataApi.NO_OBJECT_EXISTS_ID == newVisionId:
-            return None
-        vision = Vision.getById(newVisionId, self)
-        return vision
+                                            vision.model(),
+                                            self.visionDefaultIsPublic())
+        if DataApi.NO_OBJECT_EXISTS_ID != newVisionId:
+            newVision = Vision.getById(newVisionId, self)
+            if newVision:
+                notifications.sendRepostEmail(self, vision)
+                return newVision
+        return None
 
     def repostVisionList(self, visionIds):
         '''Convenience function that loops over self.repostVision()'''
         for visionId in reversed(visionIds):
-            self.repostVision(visionId)
+            # TODO: Speed up later by grabbing list of visions
+            vision = Vision.getById(visionId, self)
+            if vision:
+                self.repostVision(vision)
 
     def moveVision(self, visionId, srcIndex, destIndex):
         '''Returns True if move worked, False if it failed'''

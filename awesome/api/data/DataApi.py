@@ -238,25 +238,22 @@ class DataApi:
         return vision.id
 
     @staticmethod
-    def repostVision(userModel, visionId, isPublic):
+    def repostVision(userModel, visionModel, isPublic):
         '''Reposts a vision to user's vision list.
 
         Returns new vision id if successful, NO_OBJECT_EXISTS_ID otherwise.
         '''
         assert userModel, "Invalid user model"
-
-        vision = DataApi.getVision(visionId)
-        if DataApi.NO_OBJECT_EXISTS == vision:
-            return DataApi.NO_OBJECT_EXISTS_ID
+        assert visionModel, "Invalid vision model"
 
         privacy = VisionPrivacy.PRIVATE
         if isPublic:
             privacy = VisionPrivacy.PUBLIC
         return DataApi.addVision(userModel,
-                                 vision.text,
-                                 vision.pictureId,
-                                 vision.id,
-                                 vision.rootId,
+                                 visionModel.text,
+                                 visionModel.pictureId,
+                                 visionModel.id,
+                                 visionModel.rootId,
                                  privacy)
     
     @staticmethod
