@@ -35,6 +35,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     activeVisionList: function() {
         var pageMode = this.pageMode();
+        if (pageMode == App.Const.PageMode.VISION_DETAILS) {
+            pageMode = this.get("lastPageMode");
+        }
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             pageMode == App.Const.PageMode.HOME_USER) {
             return this.otherVisions();
@@ -160,23 +163,25 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     addVisionComment: function(newComment) {
         // Find vision to add to
         if (DEBUG) console.log("NEW COMMENT: " + JSON.stringify(newComment));
-        var list = this.activeVisionList();
+
         var vision = null;
-        for (var i = 0 ; i < list.length ; i++) {
-            if (list.at(i).visionId() == newComment['visionId']) {
-                vision = list.at(i);
-            }
-        }
-
-        // Add comment to vision
-        if (null != vision) {
+        if (this.pageMode() == App.Const.PageMode.VISION_PAGE) {
+            var vision = this.currentVision();
             vision.addComment(newComment);
+        } else {
+            var list = this.activeVisionList();
+            for (var i = 0 ; i < list.length ; i++) {
+                if (list.at(i).visionId() == newComment['visionId']) {
+                    vision = list.at(i);
+                }
+            }
+            if (null != vision) {
+                vision.addComment(newComment);
+            }
+            // Trigger that height change and we need to re-layout
+            this.trigger("new-comment");
         }
-
-        // Trigger that height change and we need to re-layout
-        this.trigger("new-comment");
     },
-
 
     // THIS IS ONLY USED FOR MAKING SURE WE DON'T RE-RENDER FROM COMING BACK
     // AFTER VISION DETAILS RIGHT NOW

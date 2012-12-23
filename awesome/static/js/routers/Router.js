@@ -33,7 +33,12 @@ App.Backbone.Router = Backbone.Router.extend({
     if (App.Var.Model.currentVision() != null) {
       App.Var.Model.setPageMode(App.Const.PageMode.VISION_DETAILS);
     } else {
-      assert(false, "No current vision set");
+        if (userLoggedIn()) {
+            currentVisionId = visionId;
+            App.Var.Model.setPageMode(App.Const.PageMode.VISION_PAGE);
+        } else {
+            window.location("/login");
+        }
     }
   },
 });

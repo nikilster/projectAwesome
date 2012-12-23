@@ -4,6 +4,7 @@
 
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
+var VISION_INFORMATION_DIV = "#VisionInformation";
 
 var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 
@@ -69,7 +70,12 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "renderProfile",
                         "renderProfileError",
                         "showUserInformation",
-                        "hideUserInformation");
+                        "hideUserInformation",
+                        // Show vision page
+                        "showVisionPage",
+                        "showVisionPageSuccess",
+                        "showVisionPageError"
+                        );
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -164,6 +170,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             var modal = $(VISION_DETAILS_MODAL).first().fadeOut("fast");
             $("body").removeClass("NoScroll");
         }
+        $(VISION_INFORMATION_DIV).hide();
     },
 
     /*
@@ -198,6 +205,8 @@ App.Backbone.View.Page = Backbone.View.extend({
             assert(null != this.model.currentVision(),
                    "Invalid current vision");
             this.showVisionDetails();
+        } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
+            this.showVisionPage();
         } else {
             assert(false, "Invalid page mode in changePageMode");
         }
@@ -537,6 +546,65 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     hideUserInformation: function() {
         $(USER_INFORMATION).hide();
+    },
+
+    /*
+     * Render vision page (when we go directly to a vision)
+     */
+    showVisionPage: function() {
+        this.hideInfoBar();
+        this.hideVisionDetailsModal();
+        $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
+        $(CONTENT_DIV).empty().masonry().hide();
+        $(VISION_INFORMATION_DIV).show();
+
+        var ajaxUrl = "/api/vision/" + currentVisionId;
+
+        $.ajax({
+            type: "GET",
+            cache: false,
+            contentType : "application/json",
+            url: ajaxUrl,
+            beforeSend: function(jqXHR, settings) {
+                if (jqXHR.overrideMimeType) {
+                    jqXHR.overrideMimeType("application/json");
+                }
+            },
+            complete: function(jqXHR, textStatus) {},
+            error: function(jqXHR, textStatus, errorThrown) {
+                if(DEBUG) console.log("error getting vision info");
+                App.Var.View.showVisionPageError();
+            },
+            success: function(data, textStatus, jqXHR) {
+                if(DEBUG) console.log("Successfully got vision!");
+                App.Var.JSON = data;
+                App.Var.View.showVisionPageSuccess();
+            }
+        });
+    },
+    showVisionPageSuccess: function() {
+        var vision = new App.Backbone.Model.Vision(App.Var.JSON.vision);
+        this.model.setCurrentVision(vision);
+        this.currentVision = new App.Backbone.View.VisionDetails(
+                                         {model: this.model.currentVision()});
+        $(VISION_INFORMATION_DIV).empty().append(this.currentVision.el);
+
+
+        /*
+        if (DEBUG) console.log("Rendering Profile");
+
+        this.model.setVisionList(App.Var.JSON.visionList);
+        if (App.Var.Model.currentUserId() != USER.id) {
+            this.model.setOtherVisions(App.Var.JSON.otherVisions);
+        }
+        this.model.setUser(App.Var.JSON.user);
+        */
+    },
+    showVisionPageError: function() {
+        /*
+        var masonryContainer = $(CONTENT_DIV).first();
+        masonryContainer.empty().masonry();
+        */
     },
 });
 

@@ -34,8 +34,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "ignoreClick",
                         "closeModal"
         );
-        //this.model.bind("change", this.render, this);
-        //this.model.comments().bind("add", this.render, this);
+        this.model.comments().bind("add", this.renderComments, this);
         this.render();
     },
     events: function(){
@@ -65,13 +64,16 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         var addCommentVisibility = "hide";
         var deleteVisibility = "hide";
         var isPublic = "";
+        var closeVisibility = "";
         if (userLoggedIn()) {
             addCommentVisibility = "";
 
-            if (pageMode == App.Const.PageMode.USER_PROFILE &&
+            if (pageMode == App.Const.PageMode.VISION_DETAILS &&
                 App.Var.Model.loggedInUserId() ==
                     App.Var.Model.currentUserId()) {
                 deleteVisibility = "";
+            } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
+                closeVisibility = "hide";
             }
             if (this.model.isPublic()) {    
                 isPublic = "checked";
@@ -85,6 +87,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             addCommentVisibility: addCommentVisibility,
             deleteVisibility: deleteVisibility,
             isPublic: isPublic,
+            closeVisibility: closeVisibility,
         }
         var template = _.template($("#VisionDetailsModalTemplate").html(),
                                   variables);
@@ -224,7 +227,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             var text = $.trim($(this.sel.ADD_COMMENT).val());
             if (text.length > 0) {
                 App.Var.View.addVisionComment(
-                            App.Var.View.currentVision.visionId(),
+                            App.Var.Model.currentVision().visionId(),
                             text);
             }
         }

@@ -43,6 +43,37 @@ def user_profile(userId):
             return render_template('index.html', user=None, config=app.config)
     abort(405)
 
+@app.route('/vision/<int:visionId>', methods=['GET'])
+def vision_page(visionId):
+    if request.method == 'GET':
+        userInfo = None
+        visionInfo = dict()
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('index.html',
+                                user=userInfo,
+                                config=app.config)
+        return redirect(url_for('login'))
+    abort(405)
+
+@app.route('/api/vision/<int:visionId>', methods=['GET'])
+def apiVisionInformation(visionId):
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+            if user:
+                vision = Vision.getById(visionId, user)
+                if vision:
+                    visionUser = User.getById(vision.userId())
+                    if visionUser:
+                        obj = vision.toDictionaryDeep()
+                        obj['name'] = visionUser.fullName()
+                        data = {"vision" : obj }
+                        return jsonify(data)
+        abort(403)
+    abort(405)
+
 @app.route('/about', methods=['GET'])
 def about():
     if request.method == 'GET':

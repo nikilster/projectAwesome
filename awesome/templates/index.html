@@ -48,7 +48,7 @@
 {# ----------- Header Information ----------- #}
 {% block header_info %}
     <!-- Onboarding -->
-    <div id="Instructions" class="well">
+    <div id="Instructions" class="well Hidden">
       <a href="{{ url_for('register') }}"
          id="RegularRegisterButton"
          class="btn btn-primary">
@@ -105,7 +105,7 @@
     </div>
     <div id="Content" class="Center"></div>
     <div id="ExampleVisionBoard" class="Center"></div>
-
+    <div id="VisionInformation" class="hide">Vision</div>
 
     <!-- Modal for vision details -->
     <div id="VisionDetailsModal" class="hide">
@@ -374,7 +374,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <div id="VisionDetailsClose" class="btn btn-medium">Close</div>
+            <div id="VisionDetailsClose"
+                 class="btn btn-medium <%=closeVisibility %>">Close</div>
         </div>
     </div>
 </script>
