@@ -23,9 +23,13 @@ var App = {
             EXAMPLE_VISION_BOARD: 3,
             //User Page (logged in)
             USER_PROFILE: 4,
+            //Vision details modal
+            VISION_DETAILS: 5,
+            //Vision details full page (if we came directly here)
+            VISION_PAGE: 6,
 
-            GUEST_PROFILE: 5,
-            INVALID: 6, // Keep at end: we use to check validity of pageMode
+            GUEST_PROFILE: 7,
+            INVALID: 8, // Keep at end: we use to check validity of pageMode
         },
         VisionPrivacy: {
             PRIVATE: 0,

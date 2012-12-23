@@ -2,12 +2,14 @@
 App.Backbone.Model.Page = Backbone.Model.extend({
     defaults: {
         pageMode: App.Const.PageMode.EMPTY,
+        lastPageMode: App.Const.PageMode.EMPTY,
         loggedInUserId: USER['id'],
         currentUserId: USER['id'],
         visionList: new App.Backbone.Model.VisionList(),
         selectedVisions: new App.Backbone.Model.VisionList(),
         otherVisions: new App.Backbone.Model.VisionList(),
         user: null,
+        currentVision: null,
     },
     initialize: function() {
     },
@@ -19,6 +21,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     selectedVisions: function() { return this.get("selectedVisions"); },
     otherVisions: function() { return this.get("otherVisions"); },
     user: function() { return this.get("user"); },
+    currentVision: function() { return this.get("currentVision"); },
     getSelectedVision: function(visionId) {
         var list = this.selectedVisions().where({id: visionId});
         if (list.length > 0) {
@@ -56,11 +59,15 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // Always trigger view to change
         // This is there because we are using USER_PROFILE mode for
         // different users right now
+        this.set({lastPageMode: this.pageMode()}, {silent: true});
         this.set({pageMode: mode}, {silent: true});
         this.trigger("change:pageMode");
     },
     setUser: function(user) {
         this.set({ user : new App.Backbone.Model.User(user)});
+    },
+    setCurrentVision: function(model) {
+        return this.set({currentVision: model}, {silent : true});
     },
     setCurrentUserId: function(id) {
         var currentUserId = this.currentUserId();
@@ -169,5 +176,13 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // Trigger that height change and we need to re-layout
         this.trigger("new-comment");
     },
+
+
+    // THIS IS ONLY USED FOR MAKING SURE WE DON'T RE-RENDER FROM COMING BACK
+    // AFTER VISION DETAILS RIGHT NOW
+    cameFromVisionDetails: function() {
+        return this.get("lastPageMode") == App.Const.PageMode.VISION_DETAILS;
+    },
 });
 
+// $eof

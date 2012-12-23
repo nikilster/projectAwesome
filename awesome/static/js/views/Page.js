@@ -30,6 +30,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                         // Vision details modal
                         "showVisionDetails",
                         "hideVisionDetails",
+                        "hideVisionDetailsModal",
 
                         "repostVision",
                         "ajaxRepostVisionSuccess",
@@ -93,7 +94,6 @@ App.Backbone.View.Page = Backbone.View.extend({
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
-        this.currentVision = null;
         this.visionDetails = null;
     },
     repostVision: function(visionModel) {
@@ -144,21 +144,26 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     showVisionDetails: function(visionModel) {
-        this.currentVision = visionModel;
+        assert(null != this.model.currentVision(), "Invalid current vision");
 
         // Note: jQuery text() method escapes html brackets and stuff
         var modal = $(VISION_DETAILS_MODAL).first();
 
-
         this.visionDetails = new App.Backbone.View.VisionDetails(
-                                                {model: this.currentVision});
+                                         {model: this.model.currentVision()});
         modal.empty().append(this.visionDetails.el);
         $("body").addClass("NoScroll");
         modal.fadeIn("slow");
     },
     hideVisionDetails: function() {
-        var modal = $(VISION_DETAILS_MODAL).first().fadeOut("fast");
-        $("body").removeClass("NoScroll");
+        this.hideVisionDetailsModal();
+        window.history.back();
+    },
+    hideVisionDetailsModal: function() {
+        if ($(VISION_DETAILS_MODAL).css("display") != "none") {
+            var modal = $(VISION_DETAILS_MODAL).first().fadeOut("fast");
+            $("body").removeClass("NoScroll");
+        }
     },
 
     /*
@@ -189,6 +194,10 @@ App.Backbone.View.Page = Backbone.View.extend({
                 this.hideAddItemButton();
             }
             this.showProfile();
+        } else if (pageMode == App.Const.PageMode.VISION_DETAILS) {
+            assert(null != this.model.currentVision(),
+                   "Invalid current vision");
+            this.showVisionDetails();
         } else {
             assert(false, "Invalid page mode in changePageMode");
         }
@@ -419,6 +428,9 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render home page
      */
     showHome: function() {
+        this.hideVisionDetailsModal();
+        if (this.model.cameFromVisionDetails()) { return; }
+
         this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();
@@ -473,6 +485,9 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render user profile page
      */
     showProfile: function() {
+        this.hideVisionDetailsModal();
+        if (this.model.cameFromVisionDetails()) { return; }
+
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();
 

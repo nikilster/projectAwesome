@@ -162,7 +162,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
             this.model.toggleSelected();
             this.mouseEnter();
         } else if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
-            App.Var.View.showVisionDetails(this.model);
+            //App.Var.View.showVisionDetails(this.model);
+            App.Var.Model.setCurrentVision(this.model);
+            App.Var.Router.navigate("/vision/" + this.model.visionId(),
+                                    {trigger: true});
         }
     },
     
