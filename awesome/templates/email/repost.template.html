@@ -4,15 +4,21 @@
 </head>
 <body>
     <p>
-    Hi {{ origUserFirstName }}!
+    Hi {{ origUser.firstName() }}!
     </p>
     <p>
-    <a href="{{ userVisionBoardUrl }}">{{ userFullName }}</a>
-    has reposted one of your visions.
+    <a href="{{ full_url_for('user_profile', userId=user.id()) }}">
+        {{ user.fullName() }}
+    </a>
+    has
+    <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+    reposted one of your visions</a>.
     </p>
     <p>
-    Go to their <a href="{{ userVisionBoardUrl }}">vision board</a> to learn
-    more about them!
+    Go to their
+    <a href="{{ full_url_for('user_profile', userId=user.id()) }}">
+    vision board</a>
+    to learn more about them!
     </p>
     <p>
     Cheers,<br>

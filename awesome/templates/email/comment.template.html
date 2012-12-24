@@ -4,15 +4,25 @@
 </head>
 <body>
     <p>
-    Hi {{ userFirstName }}!
+    Hi {{ user.firstName() }}!
     </p>
     <p>
-    <a href="{{authorVisionBoardUrl}}">{{ authorFullName }}</a>
-    has left a comment on your vision.
+        <a href="{{ full_url_for('user_profile', userId=author.id()) }}">
+            {{ author.fullName() }}
+        </a>
+        has left a comment on
+        <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+            your vision:
+        </a>
     </p>
     <p>
-    Go to your <a href="{{ userVisionBoardUrl }}">vision board</a> to check
-    it out!
+    <i>{{ comment.text() }}</i>
+    </p>
+    <p>
+    Go to your 
+        <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+            your vision.
+        </a> and write back!
     </p>
     <p>
     Cheers,<br>

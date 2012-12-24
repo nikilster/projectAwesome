@@ -6,21 +6,28 @@
  </head>
  <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
   <p>
-   Hi {{ userFirstName }}!
+   Hi {{ user.firstName() }}!
   </p>
   <p>
-   <a href="{{authorVisionBoardUrl}}">
-    {{ authorFullName }}
+   <a href="{{ full_url_for('user_profile', userId=author.id()) }}">
+    {{ author.fullName() }}
    </a>
-   has left a comment on your vision.
+   has left a comment on
+   <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+    your vision:
+   </a>
+  </p>
+  <p>
+   <i>
+    {{ comment.text() }}
+   </i>
   </p>
   <p>
    Go to your
-   <a href="{{ userVisionBoardUrl }}">
-    vision board
+   <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+    your vision.
    </a>
-   to check
-    it out!
+   and write back!
   </p>
   <p>
    Cheers,

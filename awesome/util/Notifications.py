@@ -57,18 +57,18 @@ class Notifications:
 
     # These emails only work in production right now
     # TODO: need better way of testing these things
-    def sendRepostEmail(self, user, origVision):
+    def sendRepostEmail(self, user, origVision, newVision):
         if user and origVision:
             origUser = User.getById(origVision.userId())
             if origUser:
                 emailAddress = origUser.email()
                 emailSubject = user.fullName() + " reposted your vision"
                 emailText = emailSubject
-                baseUrl = "http://project-awesome.herokuapp.com/user/"
                 emailHtml = render_template("email/repost.html",
-                    origUserFirstName = origUser.firstName(),
-                    userFullName = user.fullName(),
-                    userVisionBoardUrl = baseUrl + str(user.id()))
+                                            origUser = origUser,
+                                            origVision = origVision,
+                                            user = user,
+                                            vision = newVision)
                 email = {
                     Constant.EMAIL_TO_KEY : emailAddress,
                     Constant.EMAIL_SUBJECT_KEY : emailSubject,
@@ -91,12 +91,11 @@ class Notifications:
                 emailAddress = visionUser.email()
                 emailSubject = authorUser.fullName() + " wrote on your vision"
                 emailText = emailSubject
-                baseUrl = "http://project-awesome.herokuapp.com/user/"
                 emailHtml = render_template("email/comment.html", 
-                    userFirstName = visionUser.firstName(),
-                    authorFullName = authorUser.fullName(),
-                    userVisionBoardUrl = baseUrl + str(visionUser.id()),
-                    authorVisionBoardUrl = baseUrl + str(authorUser.id()))
+                                            author = authorUser,
+                                            user = visionUser,
+                                            vision = vision,
+                                            comment = comment)
                 email = {
                     Constant.EMAIL_TO_KEY : emailAddress,
                     Constant.EMAIL_SUBJECT_KEY : emailSubject,
@@ -114,16 +113,19 @@ class Notifications:
             visionUser = User.getById(vision.userId())
             if visionUser:
                 emailAddress = userToEmail.email()
-                emailSubject = authorUser.fullName() + " wrote on " + \
-                               visionUser.fullName() + "\'s vision"
+                if authorUser.id() == visionUser.id():
+                    emailSubject = authorUser.fullName() + \
+                                   " responded on their vision"
+                else:
+                    emailSubject = authorUser.fullName() + " responded on " + \
+                                visionUser.fullName() + "\'s vision"
                 emailText = emailSubject
-                baseUrl = "http://project-awesome.herokuapp.com/user/"
                 emailHtml = render_template("email/commentNotification.html",
-                    userFirstName = userToEmail.firstName(),
-                    authorFullName = authorUser.fullName(),
-                    visionUserFullName = visionUser.fullName(),
-                    authorVisionBoardUrl = baseUrl + str(authorUser.id()),
-                    visionUserVisionBoardUrl = baseUrl + str(visionUser.id()))
+                                            userToEmail=userToEmail,
+                                            authorUser=authorUser,
+                                            visionUser=visionUser,
+                                            vision=vision,
+                                            comment=comment)
                 email = {
                     Constant.EMAIL_TO_KEY : emailAddress,
                     Constant.EMAIL_SUBJECT_KEY : emailSubject,

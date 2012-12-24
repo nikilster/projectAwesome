@@ -242,7 +242,7 @@ class User:
         if DataApi.NO_OBJECT_EXISTS_ID != newVisionId:
             newVision = Vision.getById(newVisionId, self)
             if newVision:
-                notifications.sendRepostEmail(self, vision)
+                notifications.sendRepostEmail(self, vision, newVision)
                 return newVision
         return None
 

@@ -6,22 +6,28 @@
  </head>
  <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
   <p>
-   Hi {{ userFirstName }}!
+   Hi {{ userToEmail.firstName() }}!
   </p>
   <p>
-   <a href="{{authorVisionBoardUrl}}">
-    {{ authorFullName }}
+   <a href="{{full_url_for('user_profile', userId=authorUser.id()) }}">
+    {{ authorUser.fullName() }}
    </a>
    has left a comment on
-   <a href="{{ visionUserVisionBoardUrl }}">{{ visionUserFullName }}</a>'s 
-   vision.
+   {% if authorUser.id() == visionUser.id() %}
+   their own vision:
+   {% else %}
+   <a href="{{ full_url_for('user_profile', userId=visionUser.id()) }}">
+       {{ visionUser.fullName() }}</a>'s 
+   vision:
+   {% endif %}
   </p>
   <p>
-   Go to their
-   <a href="{{ visionUserVisionBoardUrl }}">
-    vision board
+  <i>{{ comment.text() }}</i>
+  </p>
+  <p>
+   <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+   Check out the vision, and respond!
    </a>
-   to check it out!
   </p>
   <p>
    Cheers,
