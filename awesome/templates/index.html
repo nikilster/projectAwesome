@@ -332,7 +332,10 @@
                  class="<%= deleteVisibility %>">
                 Delete vision
             </div>
-            <div id="VisionDetailsName"><%= name %></div>
+            <a href="/user/<%= userId %>" 
+               id="VisionDetailsName" <%= urlTarget %>>
+                <%= name %>
+            </a>
         </div>
         <div class="modal-body">
             <div id="VisionDetailsPictureContainer">

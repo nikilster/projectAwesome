@@ -61,10 +61,13 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
     render: function() {
         var pageMode = App.Var.Model.pageMode();
 
+        var userId = this.model.userId();
         var addCommentVisibility = "hide";
         var deleteVisibility = "hide";
         var isPublic = "";
         var closeVisibility = "";
+        // All links from vision details modal view should go to new page
+        var urlTarget = " target=\"_blank\""
         if (userLoggedIn()) {
             addCommentVisibility = "";
 
@@ -74,12 +77,14 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 deleteVisibility = "";
             } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
                 closeVisibility = "hide";
+                urlTarget = ""
             }
             if (this.model.isPublic()) {    
                 isPublic = "checked";
             };
         }
         var variables = {
+            userId: userId,
             name : this.model.name(),
             picture : this.model.picture().largeUrl(),
             text : this.model.text(),
@@ -88,6 +93,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             deleteVisibility: deleteVisibility,
             isPublic: isPublic,
             closeVisibility: closeVisibility,
+            urlTarget: urlTarget,
         }
         var template = _.template($("#VisionDetailsModalTemplate").html(),
                                   variables);
