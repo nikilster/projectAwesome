@@ -37,12 +37,22 @@ Logger.info("PROD=" + str(app.config['PROD']) +
             "  DEBUG=" + str(app.config['DEBUG']) +
             "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
 
+SITE_DOMAIN = "http://project-awesome.herokuapp.com"
+if app.config['PROD'] == False:
+    SITE_DOMAIN = "http://127.0.0.1:5000"
+
 #
-# Add methods to Jinja2 context
+# Add methods to Jinja2 context for creating URLs
 #
+def full_url_for(*args, **kwargs):
+    '''Wrapper for url_for that prepends the domain to the path'''
+    path = url_for(*args, **kwargs)
+    return SITE_DOMAIN + path
 def s3_asset(filename):
+    '''Creates a URL to a file on S3'''
     assert app.config['PROD'], "Should be in production mode"
     return 'https://s3.amazonaws.com/project-awesome-static/gen/' + filename
+app.jinja_env.globals.update(full_url_for=full_url_for)
 app.jinja_env.globals.update(s3_asset=s3_asset)
 
 
