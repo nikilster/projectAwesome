@@ -235,14 +235,18 @@ class User:
         from ..util.Notifications import Notifications
         assert vision, "Invalid vision"
 
+        isPublic = self.visionDefaultIsPublic()
         notifications = Notifications(test=False)
         newVisionId = DataApi.repostVision(self.model(),
-                                            vision.model(),
-                                            self.visionDefaultIsPublic())
+                                           vision.model(),
+                                           isPublic)
         if DataApi.NO_OBJECT_EXISTS_ID != newVisionId:
             newVision = Vision.getById(newVisionId, self)
             if newVision:
-                notifications.sendRepostEmail(self, vision, newVision)
+                # Only let original user know if this vision is posted
+                # publicly
+                if isPublic:
+                    notifications.sendRepostEmail(self, vision, newVision)
                 return newVision
         return None
 
