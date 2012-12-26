@@ -33,6 +33,7 @@ class Vision:
         PICTURE = 'picture'
         NAME = 'name'
         COMMENTS = 'comments'
+        PARENT = 'parent'
 
     #
     # Static methods to get a vision
@@ -179,6 +180,14 @@ class Vision:
         picture = self.picture()
         if picture:
             obj[Vision.Key.PICTURE] = picture.toDictionary()
+        if not self.isOriginalVision():
+            parentVision = Vision.getById(self.parentId(), self)
+            # Parent vision MUST be public
+            if parentVision and parentVision.isPublic():
+                from User import User
+                parentUser = User.getById(parentVision.userId())
+                if parentUser:
+                    obj[Vision.Key.PARENT] = parentUser.toDictionary()
         return obj
 
     #

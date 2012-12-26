@@ -251,16 +251,20 @@
 </div>
 
 <div class="VisionUserBlock"
-         style="display: <%= nameDisplay %>;">
-        Shared by
-        <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
-    </div>
-    <div class="VisionCommentContainer"></div>
-    <div class="AddVisionComment <%= addCommentVisibility %>">
-        <img class="AddVisionCommentProfile" src="<%= profile %>"/>
-        <input class="AddVisionCommentInput" type="text"
-               placeholder="Write a comment..."></input>
-    </div>
+     style="display: <%= nameDisplay %>;">
+    Shared by
+    <a class="VisionUserName" href="user/<%= userId %>"><%= name %></a>
+    <span class="<%= parentUserVisibility %>">via
+        <a class="VisionUserName" href="user/<% parentUserId %>">
+            <%= parentUserName %>
+        </a>
+    </span>
+</div>
+<div class="VisionCommentContainer"></div>
+<div class="AddVisionComment <%= addCommentVisibility %>">
+    <img class="AddVisionCommentProfile" src="<%= profile %>"/>
+    <input class="AddVisionCommentInput" type="text"
+           placeholder="Write a comment..."></input>
 </div>
 
 <!-- //Overlay -->
@@ -336,6 +340,14 @@
                id="VisionDetailsName" <%= urlTarget %>>
                 <%= name %>
             </a>
+            <span class="<%= parentUserVisibility %>">
+            via
+            <a href="/user/<%= parentUserId %>" 
+               id="VisionDetailsName" <%= urlTarget %>>
+                <%= parentUserName %>
+            </a>
+            <span>
+
         </div>
         <div class="modal-body">
             <div id="VisionDetailsPictureContainer">

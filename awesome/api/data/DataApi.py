@@ -284,6 +284,22 @@ class DataApi:
             visionModels = [idToVision[visionId] for visionId in visionIds]
         return visionModels
 
+    @staticmethod
+    def getVisionsById(visionIds):
+        '''Get vision models from a list of vision ids.'''
+        visionModels = []
+        if len(visionIds) > 0:
+            all_visions = VisionModel.query \
+                                     .filter_by(removed=False) \
+                                     .filter(VisionModel.id.in_(visionIds)) \
+                                     .all()
+
+            # hash from visionId to vision
+            idToVision = dict([(vision.id, vision) for vision in all_visions])
+
+            visionModels = [idToVision[visionId] for visionId in visionIds]
+        return visionModels
+
 
     @staticmethod
     def moveUserVision(userModel, visionId, srcIndex, destIndex):

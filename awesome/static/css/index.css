@@ -604,7 +604,7 @@ footer {
 }
 #VisionDetailsModal .modal-header,
 #VisionInformation .modal-header {
-  font-size: 18pt;
+  font-size: 14pt;
 }
 #VisionDetailsModal .modal-header #VisionDeleteButton,
 #VisionInformation .modal-header #VisionDeleteButton {

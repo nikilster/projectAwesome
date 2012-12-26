@@ -66,6 +66,15 @@ class VisionList:
             return None
 
     @staticmethod
+    def getByIds(visionIds):
+        '''Note that this assumes we have access to all these visions.
+
+        MUST do privacy checks before calling.
+        '''
+        models = DataApi.getVisionsById(visionIds)
+        return VisionList(models)
+
+    @staticmethod
     def getWithVision(vision):
         '''Create a vision list with a single vision.
 
@@ -75,11 +84,6 @@ class VisionList:
         assert vision, "Invalid vision"
         return VisionList([vision.model()])
 
-    #Returns a seleted vision per user
-    #Used for motivation emails
-    @staticmethod
-    def visionPerUser():
-        pass
 
     #
     # Getters
@@ -117,8 +121,14 @@ class VisionList:
         idToPicture = dict([(picture.id(), picture) for picture in pictures])
         idToPicture[0] = ""
 
+        parentVisionIds = set([vision.parentId() for vision in self.visions()])
+        parentVisionIds.discard(0)
+        parentVisions = VisionList.getByIds(parentVisionIds)
+        idToParentVisions = dict([(v.id(), v) for v in parentVisions.visions()])
+        parentUserIds = set([parent.userId() for parent in parentVisions.visions()])
+
         userIds = set([vision.userId() for vision in self.visions()])
-        users = User.getByUserIds(userIds)
+        users = User.getByUserIds(userIds.union(parentUserIds))
         idToUser = dict([(user.id(), user) for user in users])
 
         # TODO: this isn't fast, but will do for now.
@@ -143,7 +153,7 @@ class VisionList:
             if vision.pictureId != 0:
                 picture = idToPicture[vision.pictureId()].toDictionary()
                 obj[Vision.Key.PICTURE] = picture
-            obj['comments'] = []
+            obj[Vision.Key.COMMENTS] = []
             if vision.id() in idToComments.keys():
                 for comment in idToComments[vision.id()]:
                     commentObj = comment.toDictionary()
@@ -151,6 +161,12 @@ class VisionList:
                     commentObj[VisionComment.Key.NAME] = author.fullName()
                     commentObj[VisionComment.Key.PICTURE] = author.picture()
                     obj[Vision.Key.COMMENTS].append(commentObj)
+            if not vision.isOriginalVision():
+                if vision.parentId() in idToParentVisions:
+                    parentVision = idToParentVisions[vision.parentId()]
+                    if parentVision.userId() in idToUser:
+                        parentUser = idToUser[parentVision.userId()]
+                        obj[Vision.Key.PARENT] = parentUser.toDictionary()
             retObj.append(obj)
         return retObj
 

@@ -68,6 +68,12 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         var closeVisibility = "";
         // All links from vision details modal view should go to new page
         var urlTarget = " target=\"_blank\""
+
+
+        var parentUserVisibility = "Hidden";
+        var parentUserId = "";
+        var parentUserName = "";
+
         if (userLoggedIn()) {
             addCommentVisibility = "";
 
@@ -82,6 +88,11 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             if (this.model.isPublic()) {    
                 isPublic = "checked";
             };
+            if (this.model.hasParent()) {
+                var parentUserVisibility = "";
+                parentUserId = this.model.parentUser().userId();
+                parentUserName = this.model.parentUser().fullName();
+            }
         }
         var variables = {
             userId: userId,
@@ -94,6 +105,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             isPublic: isPublic,
             closeVisibility: closeVisibility,
             urlTarget: urlTarget,
+            parentUserVisibility: parentUserVisibility,
+            parentUserId: parentUserId,
+            parentUserName: parentUserName,
         }
         var template = _.template($("#VisionDetailsModalTemplate").html(),
                                   variables);

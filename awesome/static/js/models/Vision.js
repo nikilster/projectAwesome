@@ -10,11 +10,13 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         picture: null,
         comments: null,
         isSelected: false,
+        parentUser: null,
     },
     initialize: function() {
         this.set({
             picture: new App.Backbone.Model.Picture(this.get("picture")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
+            parentUser: new App.Backbone.Model.User(this.get("parent")),
         });
 
         if (null != App.Var.Model &&
@@ -32,6 +34,14 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
     comments: function() { return this.get("comments"); },
+
+    hasParent: function() {
+        return this.parentId() != 0 && this.parentId() != -1;
+    },
+    parentUser: function() {
+        assert (this.hasParent(), "Should have parent user");
+        return this.get("parentUser");
+    },
 
     isPublic: function() {
         var privacy = this.get("privacy");

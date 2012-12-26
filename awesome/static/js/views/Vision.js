@@ -77,6 +77,15 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var haveVisionVisibility = "Hidden";
         var visionPrivateVisibility = "Hidden";
 
+        var parentUserVisibility = "Hidden";
+        var parentUserId = "";
+        var parentUserName = "";
+        if (this.model.hasParent()) {
+            var parentUserVisibility = "";
+            parentUserId = this.model.parentUser().userId();
+            parentUserName = this.model.parentUser().fullName();
+        }
+
         if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             removeDisplay = "inline-block";
 
@@ -132,6 +141,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          visionPrivateVisibility: visionPrivateVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
+                         parentUserVisibility: parentUserVisibility,
+                         parentUserId: parentUserId,
+                         parentUserName: parentUserName,
                          userId: this.model.userId(),
                          profile: USER['picture'],
                         };
