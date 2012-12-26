@@ -321,7 +321,8 @@
 
 <script type="text/template" id="VisionDetailsCommentTemplate">
     <img class="VisionDetailsCommentProfile" src="<%= picture %>"/>
-    <a class="VisionDetailsCommentUserLink" href="/user/<%= authorId %>">
+    <a class="VisionDetailsCommentUserLink"
+       href="/user/<%= authorId %>" <%= urlTarget %>>
         <%= name %>
     </a>
     <div class="VisionDetailsCommentText">

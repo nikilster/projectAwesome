@@ -94,6 +94,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 parentUserName = this.model.parentUser().fullName();
             }
         }
+        // This is stored to be used when rendering comments
+        this.urlTarget = urlTarget;
+
         var variables = {
             userId: userId,
             name : this.model.name(),
@@ -180,7 +183,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
     renderComment: function(comment, index) {
         if (comment.visionCommentId() > 0) {
             var c = new App.Backbone.View.VisionDetailsComment(
-                                                            { model: comment });
+                                           { model: comment,
+                                             urlTarget: this.urlTarget });
             this.comments.push(c.el);
         }
     },
