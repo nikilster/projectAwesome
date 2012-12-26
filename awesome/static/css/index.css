@@ -78,26 +78,53 @@ footer {
   line-height: 1.4;
   text-align: center;
   color: black;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 .Subtitle {
   font-size: 20px;
   line-height: 1.4;
   text-align: center;
-  color: #777;
+  color: #555555;
 }
 .SectionHeading {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: bold;
   line-height: 1.4;
   color: black;
-  margin: 15px 0px;
+  margin: 35px 0px 20px 0px;
 }
 .SectionText {
   font-size: 15px;
   line-height: 1.4;
-  color: #777;
-  margin: 10px 0px;
+  color: #555555;
+  margin: 15px 0px;
+}
+.QuoteBlock {
+  position: relative;
+  padding: 5px 60px 20px 60px;
+  text-align: left;
+}
+.QuoteBlock .Quote {
+  font-family: times, serif;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.3;
+}
+.QuoteBlock .Quote:before {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 50px;
+  background-image: url('https://s3.amazonaws.com/project-awesome-static/gen/img/quote-icon.png');
+  z-index: 1;
+  content: "";
+}
+.QuoteBlock .AboutQuoteAttribution {
+  font-family: "Helvetica Neue", Helvetica, Arial, san-serif;
+  font-size: 15px;
+  line-height: 1.3;
+  text-align: right;
 }
 .Video {
   text-align: center;
@@ -544,7 +571,16 @@ footer {
   z-index: 5000;
   background-color: rgba(255, 255, 255, 0.8);
 }
-#VisionDetailsModal #VisionDetailsModalBox {
+#VisionInformation {
+  width: 530px;
+  background-color: white;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#VisionDetailsModal #VisionDetailsModalBox,
+#VisionInformation #VisionDetailsModalBox {
   width: 530px;
   background-color: white;
   margin-top: 20px;
@@ -566,64 +602,78 @@ footer {
   margin-left: auto;
   margin-right: auto;
 }
-#VisionDetailsModal .modal-header {
+#VisionDetailsModal .modal-header,
+#VisionInformation .modal-header {
   font-size: 18pt;
 }
-#VisionDetailsModal .modal-header #VisionDeleteButton {
+#VisionDetailsModal .modal-header #VisionDeleteButton,
+#VisionInformation .modal-header #VisionDeleteButton {
   float: right;
   font-size: 15px;
 }
-#VisionDetailsModal .modal-body {
+#VisionDetailsModal .modal-body,
+#VisionInformation .modal-body {
   min-height: 250px;
   max-height: 1000000px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsPictureContainer {
+#VisionDetailsModal .modal-body #VisionDetailsPictureContainer,
+#VisionInformation .modal-body #VisionDetailsPictureContainer {
   background-color: #EEEEEE;
   margin: 15px;
   max-height: 600px;
   overflow: hidden;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer,
+#VisionInformation .modal-body #VisionDetailsInfoContainer {
   margin: 0px 30px 15px 30px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer {
   position: relative;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer #VisionDetailsEditText {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer #VisionDetailsEditText,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsTextContainer #VisionDetailsEditText {
   position: absolute;
   top: -5px;
   right: 0px;
   z-index: 1;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm {
   overflow: hidden;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput {
   float: left;
   width: 320px;
   margin-bottom: 0px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox {
   margin: 0px 0px 0px 15px;
   width: 90px;
   font-size: 11px;
   float: left;
 }
-#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsEditSubmit {
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsEditSubmit,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsEditSubmit {
   float: left;
   margin: 4px 0px 0px 15px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsLoading {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsLoading,
+#VisionInformation .modal-body #VisionDetailsCommentsLoading {
   padding: 10px;
   color: gray;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer {
   max-height: 250px;
   overflow: scroll;
   margin: 5px;
   padding: 5px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment {
   font-size: 12px;
   line-height: 1.2;
   margin: 2px;
@@ -631,7 +681,8 @@ footer {
   position: relative;
   min-height: 45px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentProfile {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentProfile,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentProfile {
   position: absolute;
   top: 2px;
   left: 2px;
@@ -639,15 +690,18 @@ footer {
   width: 40px;
   height: 40px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentUserLink {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentUserLink,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentUserLink {
   font-size: 14px;
   line-height: 1.5;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentText {
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentText,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentText {
   font-size: 12px;
   line-height: 1.2;
 }
-#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer {
+#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer,
+#VisionInformation .modal-body #VisionDetailsAddCommentContainer {
   font-size: 12px;
   line-height: 1.2;
   margin: 2px 12px;
@@ -655,7 +709,8 @@ footer {
   position: relative;
   min-height: 45px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddCommentPicture {
+#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddCommentPicture,
+#VisionInformation .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddCommentPicture {
   position: absolute;
   top: 2px;
   left: 2px;
@@ -664,7 +719,8 @@ footer {
   height: 40px;
   background-color: #EEEEEE;
 }
-#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddComment {
+#VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddComment,
+#VisionInformation .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddComment {
   width: 400px;
   height: 40px;
 }

@@ -23,6 +23,8 @@
 @VISION_COMMENT_TEXT_SIZE: 12px;
 @VISION_COMMENT_LINE_HEIGHT: 1.4;
 
+@VISION_DETAILS_WIDTH: 530px;
+
 //Instructions
 @INSTRUCTIONS_WIDTH: 575px;
 @INSTRUCTIONS_HEIGHT: 45px;
@@ -551,9 +553,21 @@
     padding: 0px !important;
     z-index: 5000;
     background-color: fadeout(white, 20%);
+}
+
+#VisionInformation {
+    width: @VISION_DETAILS_WIDTH;
+    background-color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    .Center;
+}
+
+#VisionDetailsModal, #VisionInformation {
 
     #VisionDetailsModalBox {
-        width: 530px;
+        width: @VISION_DETAILS_WIDTH;
         background-color: white;
         margin-top: 20px;
         margin-bottom: 20px;

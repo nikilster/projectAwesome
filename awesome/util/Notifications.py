@@ -333,8 +333,14 @@ class Notifications:
          "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
         ("Don't fear failure. Not failure, but low aim, is the crime. In great attempts it is glorious even to fail.",
          "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
+        ("There are no limits. There are only plateaus, and you must not stay there, you must go beyond them.",
+         "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
         ("I hope you live a life you're proud of. If you find you're not, I hope you have the strength to start all over again.",
          "F. Scott Fitzgerald (1896-1940, author)"),
+        ("Reflect upon your present blessings - of which every man has many - not on your past misfortunes, of which all men have some.",
+         "Charles Dickens (1812-1870, novelist)"),
+        ("Every piece of the universe, even the tiniest snow crystal, matters somehow. I have a place in the pattern, and so do you.",
+         "T.A. Barron (born 1952, writer)"),
         ]
         return random.choice(quotes)
 
