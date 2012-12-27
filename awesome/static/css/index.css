@@ -8,6 +8,11 @@
     
     Base file for styles
 */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  body {
+    width: 675px !important;
+  }
+}
 html,
 body,
 #PageContainer {
