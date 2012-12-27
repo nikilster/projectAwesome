@@ -8,6 +8,21 @@
     
     Base file for styles
 */
+@media only screen and (max-width: 850px) {
+  #NavHome {
+    float: left;
+    text-align: left;
+    margin-left: 20px;
+  }
+}
+@media only screen and (max-width: 700px) {
+  body {
+    min-width: 675px;
+  }
+  .navbar {
+    min-width: 675px;
+  }
+}
 html,
 body,
 #PageContainer {
@@ -277,7 +292,7 @@ footer {
   border-right: 1px #E391B2 solid;
 }
 #UserInformation {
-  width: 450px;
+  width: 410px;
   margin-top: 25px;
   padding: 10px 10px 10px 190px;
   overflow: hidden;

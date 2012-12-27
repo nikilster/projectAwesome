@@ -3,6 +3,21 @@
     
     Base file for styles
 */
+@media only screen and (max-width: 850px) {
+  #NavHome {
+    float: left;
+    text-align: left;
+    margin-left: 20px;
+  }
+}
+@media only screen and (max-width: 700px) {
+  body {
+    min-width: 675px;
+  }
+  .navbar {
+    min-width: 675px;
+  }
+}
 html,
 body,
 #PageContainer {
