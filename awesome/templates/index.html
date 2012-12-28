@@ -337,6 +337,23 @@
     </a>
 </script>
 
+<script type="text/template" id="VisionPreviewTemplate">
+    <a href="/vision/<%= visionId %>" <%= target %>>
+    <img class="VisionPreviewPicture" src="<%= picture %>"/>
+    </a>
+</script>
+
+<script type="text/template" id="VisionDetailsRootUserTemplate">
+    <div id="VisionDetailsSectionTitle">
+        Originally posted by
+        <a href="/user/<%= userId %>" <%= target %>>
+            <%= name %>
+        </a>
+    </div>
+    <div id="VisionDetailsRootUserVisions">
+    </div>
+</script>
+
 <script type="text/template" id="VisionDetailsModalTemplate">
     <div id="VisionDetailsModalBox">
         <div class="modal-header">
@@ -393,12 +410,16 @@
                 <textarea id="VisionDetailsAddComment" type="text"
                     placeholder="Write a comment..."></textarea>
             </div>
-            <div id="VisionDetailsRepostUsersContainer" class="Hidden">
+            <div id="VisionDetailsRepostUsersContainer"
+                 class="VisionDetailsSection Hidden">
                 <div id="VisionDetailsSectionTitle">
                     Others who reposted this vision
                 </div>
                 <div id="VisionDetailsRepostUsers">
                 </div>
+            </div>
+            <div id="VisionDetailsRootUserContainer"
+                 class="VisionDetailsSection">
             </div>
         </div>
         <div class="modal-footer">

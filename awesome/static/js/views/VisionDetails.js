@@ -18,6 +18,58 @@ App.Backbone.View.VisionDetailsRepostUser = Backbone.View.extend({
     },
 });
 
+App.Backbone.View.VisionPreview = Backbone.View.extend({
+    tagName: "div",
+    className: "VisionPreview",
+    initialize: function() {
+        this.urlTarget = this.options.urlTarget;
+        this.render();
+    },
+    render: function() {
+        var variables = { target: this.urlTarget,
+                          visionId: this.model.visionId(),
+                          picture: this.model.picture().smallUrl()
+                        };
+        var template = _.template($("#VisionPreviewTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        return this;
+    },
+});
+
+App.Backbone.View.VisionDetailsRootUserBox = Backbone.View.extend({
+    tagName: "div",
+    initialize: function() {
+        this.urlTarget = this.options.urlTarget;
+        this.visions = this.options.visions;
+
+        this.render();
+    },
+    render: function() {
+        var variables = { name : this.model.fullName(),
+                          userId: this.model.userId(),
+                          picture: this.model.picture(),
+                          target: this.urlTarget };
+        var template = _.template($("#VisionDetailsRootUserTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        var visionViews = []
+        for (var i = 0 ; i < this.visions.length ; i++) {
+            var vision = this.visions.at(i);
+            var view = new App.Backbone.View.VisionPreview(
+                                        { model: vision,
+                                          urlTarget: this.urlTarget });
+            visionViews.push(view.el);
+        }
+        var container = $(this.el).find("#VisionDetailsRootUserVisions");
+        container.empty().append(visionViews);
+        
+        return this;
+    },
+});
+
 App.Backbone.View.VisionDetails = Backbone.View.extend({
     tagName: "div",
     sel: {
@@ -42,6 +94,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "ajaxCommentsError",
                         "renderComments",
                         "renderComment",
+                        "renderRootUserBox",
                         "editSubmit",
                         "ajaxEditSuccess",
                         "ajaxEditError",
@@ -177,6 +230,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         this.renderComments();
 
         console.log("REPOST USERS: " + JSON.stringify(data.repostUsers));
+        console.log("ORIG USER: " + JSON.stringify(data.rootUser));
+        console.log("ORIG VISIONS: " + JSON.stringify(data.rootUserVisions));
         var reposts = data.repostUsers;
         if (reposts.length > 0) {
             var repostChildren = [];
@@ -190,10 +245,23 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             $(this.el).find(this.sel.REPOST_USERS).append(repostChildren);
             $(this.el).find(this.sel.REPOST_USERS_CONTAINER).show();
         }
+
+        if (!(typeof data.rootUser === 'undefined')) {
+            var user = new App.Backbone.Model.User(data.rootUser);
+            var visions = new App.Backbone.Model.VisionList(data.rootUserVisions);
+            this.renderRootUserBox(user, visions);
+        }
     },
     ajaxCommentsError: function(jqXHR, textStatus, errorThrown) {
         // still show comment container
         $(this.el).find(this.sel.COMMENTS_CONTAINER).show();
+    },
+    renderRootUserBox: function(user, visions) {
+        var view = new App.Backbone.View.VisionDetailsRootUserBox(
+                                                { model: user,
+                                                  urlTarget: this.urlTarget,
+                                                  visions: visions});
+        $(this.el).find("#VisionDetailsRootUserContainer").empty().append(view.el);
     },
     renderComments: function() {
         if (this.model != null) {

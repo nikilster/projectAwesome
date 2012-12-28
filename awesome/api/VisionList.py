@@ -104,6 +104,10 @@ class VisionList:
     def length(self):
         return len(self.visions())
 
+    def limitLength(self, limit):
+        if limit > 0 and self.length() > limit:
+            self._visions = self._visions[0:limit]
+
     def randomVision(self):
         if self.length() > 0:
             return random.choice(self.visions())

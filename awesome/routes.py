@@ -545,6 +545,19 @@ def apiVisionComments(visionId):
             for repostUser in repostUsers:
                 repostObjs.append(repostUser.toDictionary())
 
+            # Get original user
+            rootUserObj = None
+            visionListObj = None
+            rootVision = vision.rootVision(user)
+            if rootVision:
+                rootUser = User.getById(rootVision.userId())
+                if rootUser:
+                    rootUserObj = rootUser.toDictionary()
+                    visions = rootUser.visionList(user)
+                    if visions and visions.length() > 0:
+                        visions.limitLength(6)
+                        visionListObj = visions.toDictionary(
+                                              options=[Vision.Options.PICTURE])
             # Get comments
             commentObjs = []
             comments = vision.comments(100)
@@ -556,6 +569,9 @@ def apiVisionComments(visionId):
             data = {'result' : 'success',
                     Vision.Key.COMMENTS : commentObjs,
                     Vision.Key.REPOST_USERS  : repostObjs }
+            if rootUserObj and visionListObj:
+                data['rootUser'] = rootUserObj
+                data['rootUserVisions'] = visionListObj
         return jsonify(data)
     abort(405)
 

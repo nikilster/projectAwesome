@@ -134,6 +134,18 @@ class Vision:
         '''
         return VisionCommentList.getFromVision(self, maxComments)
 
+    def parentVision(self, inquiringUser):
+        '''Returns root vision, else None'''
+        if not self.isOriginalVision():
+            return Vision.getById(self.parentId(), inquiringUser)
+        return None
+
+    def rootVision(self, inquiringUser):
+        '''Returns root vision, else None'''
+        if not self.isRootVision():
+            return Vision.getById(self.rootId(), inquiringUser)
+        return None
+
     def reposts(self):
         '''Get last 5 public vision reposts'''
         from VisionList import VisionList
