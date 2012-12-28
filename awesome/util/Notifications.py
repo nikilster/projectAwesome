@@ -147,7 +147,8 @@ class Notifications:
             obj = user.toDictionaryFull()
             vision = user.randomVision()
             if vision:
-                visionObj = vision.toDictionaryDeep()
+                visionObj = vision.toDictionary(
+                                            options=[Vision.Options.PICTURE])
                 obj[Notifications.UserKey.RANDOM_VISION] = visionObj
                 data.append(obj)
             else:

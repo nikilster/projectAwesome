@@ -13,6 +13,7 @@ from Constant import Constant
 from api.User import User
 from api.Vision import Vision
 from api.VisionList import VisionList
+from api.VisionComment import VisionComment
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
@@ -67,7 +68,9 @@ def apiVisionInformation(visionId):
                 if vision:
                     visionUser = User.getById(vision.userId())
                     if visionUser:
-                        obj = vision.toDictionaryDeep()
+                        obj = vision.toDictionary(
+                                        options=[Vision.Options.PICTURE,
+                                                 Vision.Options.PARENT_USER])
                         obj['name'] = visionUser.fullName()
                         data = {"vision" : obj }
                         return jsonify(data)
@@ -243,7 +246,10 @@ def apiGetMainPageVisions():
     if request.method == 'GET':
         mainPageVisions = VisionList.getMainPageVisions()
 
-        data = { 'otherVisions' : mainPageVisions.toDictionaryDeep(),
+        data = { 'otherVisions' : mainPageVisions.toDictionary(
+                                        options=[Vision.Options.PICTURE,
+                                                 Vision.Options.PARENT_USER,
+                                                 Vision.Options.COMMENTS]),
                  'visionList'   : [] }
 
         # TODO: be smarter about when to load user vision list later
@@ -252,7 +258,7 @@ def apiGetMainPageVisions():
             user = User.getById(userInfo['id'])
 
             userVisions = VisionList.getUserVisions(user, user)
-            data['visionList'] = userVisions.toDictionaryDeep()
+            data['visionList'] = userVisions.toDictionary()
 
         return jsonify(data)
     abort(405)
@@ -264,18 +270,35 @@ def apiGetUserVisions(targetUserId):
                 'otherVisions' : []
                }
         user = None
+        userVisions = None
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             user = User.getById(userInfo['id'])
             if user:
                 userVisions = VisionList.getUserVisions(user, user)
-                data['visionList'] = userVisions.toDictionaryDeep();
+                if targetUserId == user.id():
+                    data['visionList'] = userVisions.toDictionary(
+                                           options=[Vision.Options.PICTURE,
+                                                    Vision.Options.PARENT_USER,
+                                                    Vision.Options.COMMENTS])
+                else:
+                    data['visionList'] = userVisions.toDictionary()
 
-        targetUser = User.getById(targetUserId)
-        if targetUser:
-            targetUserVisions = VisionList.getUserVisions(user, targetUser)
-            data['otherVisions'] = targetUserVisions.toDictionaryDeep()
-        data['user'] = targetUser.toDictionary();
+        targetUser = None
+        targetUserVisions = None
+        if SessionManager.userLoggedIn() and targetUserId == userInfo['id']:
+            targetUser = user
+            targetUserVisions = userVisions
+        else:
+            targetUser = User.getById(targetUserId)
+            if targetUser:
+                targetUserVisions = VisionList.getUserVisions(user, targetUser)
+        if targetUser and targetUserVisions:
+            data['otherVisions'] = targetUserVisions.toDictionary(
+                                        options=[Vision.Options.PICTURE,
+                                                 Vision.Options.PARENT_USER,
+                                                 Vision.Options.COMMENTS])
+            data['user'] = targetUser.toDictionary();
 
         return jsonify(data)
     abort(405)
@@ -428,7 +451,10 @@ def apiAddUserVision(userId):
                         objList = VisionList.getWithVision(vision)
                     if len(objList.visions()) == 1:
                         data = { 'result'    : "success",
-                                 'newVision' : objList.toDictionaryDeep()[0] }
+                                 'newVision' : objList.toDictionary(
+                                        options=[Vision.Options.PICTURE,
+                                                 Vision.Options.PARENT_USER,
+                                                 Vision.Options.COMMENTS])[0] }
             else:
                 data = { 'result' : "error" }
             return jsonify(data)
@@ -454,7 +480,9 @@ def apiAddVisionComment(visionId):
                     newComment = user.commentOnVision(visionId, text)
                 if newComment:
                     data = { 'result'    : "success",
-                             'newComment' : newComment.toDictionaryDeep() }
+                             'newComment' : newComment.toDictionary(
+                                        options=[VisionComment.Options.AUTHOR])
+                           }
                     return jsonify(data)
             data = { 'result' : "error" }
             return jsonify(data)
@@ -511,10 +539,23 @@ def apiVisionComments(visionId):
         vision = Vision.getById(visionId, user)
         data = { 'result' : "error" }
         if vision:
+            # Get reposts
+            repostUsers = vision.repostUsers()
+            repostObjs = []
+            for repostUser in repostUsers:
+                repostObjs.append(repostUser.toDictionary())
+
+            # Get comments
+            commentObjs = []
             comments = vision.comments(100)
             if comments:
-                data = { 'result'    : "success",
-                        'comments'  : comments.toDictionaryDeep() }
+                commentObjs = comments.toDictionary(
+                                        options=[VisionComment.Options.AUTHOR])
+
+            # package them up
+            data = {'result' : 'success',
+                    Vision.Key.COMMENTS : commentObjs,
+                    Vision.Key.REPOST_USERS  : repostObjs }
         return jsonify(data)
     abort(405)
 

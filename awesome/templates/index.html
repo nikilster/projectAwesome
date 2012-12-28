@@ -330,6 +330,13 @@
     </div>
 </script>
 
+<script type="text/template" id="VisionDetailsRepostUserTemplate">
+    <a href="/user/<%= userId %>" <%= target %>>
+    <img class="VisionDetailsRepostUserPicture" src="<%= picture %>"/>
+    <div class="VisionDetailsRepostUserName"><%= name %></div>
+    </a>
+</script>
+
 <script type="text/template" id="VisionDetailsModalTemplate">
     <div id="VisionDetailsModalBox">
         <div class="modal-header">
@@ -385,6 +392,13 @@
                      src="<%= userPicture %>"/>
                 <textarea id="VisionDetailsAddComment" type="text"
                     placeholder="Write a comment..."></textarea>
+            </div>
+            <div id="VisionDetailsRepostUsersContainer" class="Hidden">
+                <div id="VisionDetailsSectionTitle">
+                    Others who reposted this vision
+                </div>
+                <div id="VisionDetailsRepostUsers">
+                </div>
             </div>
         </div>
         <div class="modal-footer">

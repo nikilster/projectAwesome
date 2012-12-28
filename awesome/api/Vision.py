@@ -29,12 +29,21 @@ class Vision:
         PARENT_ID = 'parentId'
         ROOT_ID = 'rootId'
         PRIVACY = 'privacy'
-        # These two aren't always filled 
+        # These are filled when proper options are passed in
         PICTURE = 'picture'
+        PARENT_USER = 'parentUser'
+        # These are used externally
         NAME = 'name'
         COMMENTS = 'comments'
-        PARENT = 'parent'
-
+        REPOST_USERS = 'repostUsers'
+    
+    class Options:
+        '''Extra options to pass to toDictionary'''
+        PICTURE = 0
+        PARENT_USER = 1
+        # Only used in VisionList.toDictionary so far
+        COMMENTS = 2
+    
     #
     # Static methods to get a vision
     #
@@ -125,6 +134,21 @@ class Vision:
         '''
         return VisionCommentList.getFromVision(self, maxComments)
 
+    def reposts(self):
+        '''Get last 5 public vision reposts'''
+        from VisionList import VisionList
+        return VisionList.getVisionReposts(self)
+
+    def repostUsers(self):
+        reposts = self.reposts()
+        userIds = set()
+        users = []
+        if reposts.length() > 0:
+            from User import User
+            for vision in reposts.visions():
+                userIds.add(vision.userId())
+            users = User.getByUserIds(userIds)
+        return users
 
     def edit(self, text, isPublic):
         '''Set new text and/or privacy value'''
@@ -160,34 +184,34 @@ class Vision:
                 return VisionComment._getByModel(commentModel)
         return None
 
-    def toDictionary(self):
-        '''Used for packaging into JSON'''
-        return {Vision.Key.ID           : self.id(),
+    def toDictionary(self, options=[]):
+        '''Used for packaging into JSON
+        
+        Pass in optional input list with other things to package into object.
+
+        If accessing many visions, use VisionList instead! It can batch up
+        DB queries across visions for better performance
+        '''
+        obj = { Vision.Key.ID           : self.id(),
                 Vision.Key.USER_ID      : self.userId(),
                 Vision.Key.TEXT         : self.text(),
                 Vision.Key.PARENT_ID    : self.parentId(),
                 Vision.Key.ROOT_ID      : self.rootId(),
                 Vision.Key.PRIVACY      : self.privacy(),
-               }
-
-    def toDictionaryDeep(self):
-        '''Used for packaging into JSON
-
-        If accessing many visions, use VisionList instead! It can batch up
-        DB queries across visions for better performance
-        '''
-        obj = self.toDictionary()
-        picture = self.picture()
-        if picture:
-            obj[Vision.Key.PICTURE] = picture.toDictionary()
-        if not self.isOriginalVision():
-            parentVision = Vision.getById(self.parentId(), self)
-            # Parent vision MUST be public
-            if parentVision and parentVision.isPublic():
-                from User import User
-                parentUser = User.getById(parentVision.userId())
-                if parentUser:
-                    obj[Vision.Key.PARENT] = parentUser.toDictionary()
+              }
+        if Vision.Options.PICTURE in options:
+            picture = self.picture()
+            if picture:
+                obj[Vision.Key.PICTURE] = picture.toDictionary()
+        if Vision.Options.PARENT_USER in options:
+            if not self.isOriginalVision():
+                parentVision = Vision.getById(self.parentId(), self)
+                # Parent vision MUST be public
+                if parentVision and parentVision.isPublic():
+                    from User import User
+                    parentUser = User.getById(parentVision.userId())
+                    if parentUser:
+                        obj[Vision.Key.PARENT_USER] = parentUser.toDictionary()
         return obj
 
     #

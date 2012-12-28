@@ -300,6 +300,18 @@ class DataApi:
             visionModels = [idToVision[visionId] for visionId in visionIds]
         return visionModels
 
+    @staticmethod
+    def getVisionReposts(vision):
+        '''Get last 5 public vision reposts'''
+        visions = VisionModel.query \
+                             .filter_by(rootId=vision.rootId) \
+                             .filter_by(removed=False) \
+                             .filter_by(privacy=VisionPrivacy.PUBLIC) \
+                             .filter(VisionModel.id != vision.id) \
+                             .order_by(VisionModel.id.desc()) \
+                             .limit(5)
+        visionModels = [model for model in visions]
+        return visionModels
 
     @staticmethod
     def moveUserVision(userModel, visionId, srcIndex, destIndex):

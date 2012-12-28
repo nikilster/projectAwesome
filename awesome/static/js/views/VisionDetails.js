@@ -1,7 +1,29 @@
+App.Backbone.View.VisionDetailsRepostUser = Backbone.View.extend({
+    tagName: "div",
+    className: "VisionDetailsRepostUser",
+    initialize: function() {
+        this.urlTarget = this.options.urlTarget;
+        this.render();
+    },
+    render: function() {
+        var variables = { name : this.model.fullName(),
+                          userId: this.model.userId(),
+                          picture: this.model.picture(),
+                          target: this.urlTarget };
+        var template = _.template($("#VisionDetailsRepostUserTemplate").html(),
+                                  variables);
+        $(this.el).html(template);
+
+        return this;
+    },
+});
+
 App.Backbone.View.VisionDetails = Backbone.View.extend({
     tagName: "div",
     sel: {
         COMMENTS_CONTAINER : "#VisionDetailsCommentsContainer",
+        REPOST_USERS_CONTAINER: "#VisionDetailsRepostUsersContainer",
+        REPOST_USERS: "#VisionDetailsRepostUsers",
         ADD_COMMENT : "#VisionDetailsAddComment",
         TEXT_CONTAINER : "#VisionDetailsTextContainer",
         EDIT_TEXT : "#VisionDetailsEditText",
@@ -153,6 +175,21 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
     ajaxCommentsSuccess: function(data, textStatus, jqXHR) {
         this.model.setComments(data.comments);
         this.renderComments();
+
+        console.log("REPOST USERS: " + JSON.stringify(data.repostUsers));
+        var reposts = data.repostUsers;
+        if (reposts.length > 0) {
+            var repostChildren = [];
+            for (var i = 0 ; i < reposts.length ; i++) {
+                var userModel = new App.Backbone.Model.User(reposts[i]);
+                var userView = new App.Backbone.View.VisionDetailsRepostUser(
+                                                { model: userModel,
+                                                    urlTarget: this.urlTarget});
+                repostChildren.push(userView.el);
+            }
+            $(this.el).find(this.sel.REPOST_USERS).append(repostChildren);
+            $(this.el).find(this.sel.REPOST_USERS_CONTAINER).show();
+        }
     },
     ajaxCommentsError: function(jqXHR, textStatus, errorThrown) {
         // still show comment container

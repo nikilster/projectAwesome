@@ -38,27 +38,27 @@ class VisionCommentList:
     def length(self):
         return len(self._commentModels)
 
-    def toDictionaryDeep(self):
+    def toDictionary(self, options=[]):
         '''For packaging JSON objects
         
-        Deep call accesses DB again for other objects so don't use unless
-        necessary.
+        Pass in list of VisionComment.Options.* for extra information
         '''
         objs = []
         commentList = self._commentModels
 
         if self.length() > 0:
-            authorIds = set([comment.authorId() for comment in self.comments()])
-            authors = DataApi.getUsersFromIds(authorIds)
-            idToAuthor = dict([(user.id, user) for user in authors])
+            if VisionComment.Options.AUTHOR in options:
+                authorIds = set([comment.authorId()
+                                                for comment in self.comments()])
+                authors = DataApi.getUsersFromIds(authorIds)
+                idToAuthor = dict([(user.id, user) for user in authors])
 
             for comment in commentList:
                 obj = VisionComment(comment).toDictionary()
-                author = idToAuthor[comment.authorId]
-
-                obj[VisionComment.Key.NAME] = author.fullName
-                obj[VisionComment.Key.PICTURE] = author.picture
-
+                if VisionComment.Options.AUTHOR in options:
+                    author = idToAuthor[comment.authorId]
+                    obj[VisionComment.Key.NAME] = author.fullName
+                    obj[VisionComment.Key.PICTURE] = author.picture
                 objs.append(obj)
         return objs
 

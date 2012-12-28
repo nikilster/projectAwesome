@@ -734,3 +734,34 @@ footer {
   width: 405px;
   height: 32px;
 }
+#VisionDetailsModal .modal-body #VisionDetailsRepostUsersContainer,
+#VisionInformation .modal-body #VisionDetailsRepostUsersContainer {
+  margin-top: 30px;
+  border-top: 1px solid #EEE;
+  overflow: hidden;
+}
+#VisionDetailsModal .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser,
+#VisionInformation .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser {
+  float: left;
+  margin-right: 10px;
+  width: 75px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser .VisionDetailsRepostUserPicture,
+#VisionInformation .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser .VisionDetailsRepostUserPicture {
+  display: block;
+  width: 75px;
+  height: 75px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser .VisionDetailsRepostUserName,
+#VisionInformation .modal-body #VisionDetailsRepostUsersContainer .VisionDetailsRepostUser .VisionDetailsRepostUserName {
+  font-size: 11px;
+  line-height: 1.3;
+  margin: 3px 0px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsSectionTitle,
+#VisionInformation .modal-body #VisionDetailsSectionTitle {
+  margin: 5px 0px;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #333;
+}

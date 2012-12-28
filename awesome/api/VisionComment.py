@@ -14,9 +14,12 @@ class VisionComment:
         VISION_ID = 'visionId'
         AUTHOR_ID = 'authorId'
         TEXT = 'text'
-        # These aren't always there
+        # These are included when Options.AUTHOR is passed
         NAME = 'name'
         PICTURE = 'picture'
+
+    class Options:
+        AUTHOR = 'author'
 
     #
     # Static methods to get Comment
@@ -49,25 +52,23 @@ class VisionComment:
         from User import User
         return User.getById(self.authorId())
 
-    def toDictionary(self):
-        '''For packaging in JSON objects.'''
-        return { VisionComment.Key.ID : self.id(),
+    def toDictionary(self, options=[]):
+        '''For packaging in JSON objects.
+        
+        Pass in list of VisionComment.Options.* to include other info in objs
+        '''
+        obj = {  VisionComment.Key.ID : self.id(),
                  VisionComment.Key.VISION_ID : self.visionId(),
                  VisionComment.Key.AUTHOR_ID : self.authorId(),
                  VisionComment.Key.TEXT : self.text(),
-               }
-
-    def toDictionaryDeep(self):
-        '''For packaging in JSON objects.
-        
-        Accesses DB again so don't use if possible.
-        '''
-        from User import User
-        obj = self.toDictionary()
-        author = User.getById(self.authorId())
-        if author:
-            obj[VisionComment.Key.NAME] = author.fullName()
-            obj[VisionComment.Key.PICTURE] = author.picture()
+              }
+        if VisionComment.Options.AUTHOR in options:
+            from User import User
+            obj = self.toDictionary()
+            author = User.getById(self.authorId())
+            if author:
+                obj[VisionComment.Key.NAME] = author.fullName()
+                obj[VisionComment.Key.PICTURE] = author.picture()
         return obj
 
     #

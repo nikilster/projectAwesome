@@ -16,7 +16,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         this.set({
             picture: new App.Backbone.Model.Picture(this.get("picture")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
-            parentUser: new App.Backbone.Model.User(this.get("parent")),
+            parentUser: new App.Backbone.Model.User(this.get("parentUser")),
         });
 
         if (null != App.Var.Model &&
