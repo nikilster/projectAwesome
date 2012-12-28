@@ -1,47 +1,13 @@
-{% extends "base.html" %}
+{% extends "about_base.html" %}
 
 {# ------------------------------------------------------------------------- #}
-{% block subtitle %}
-Privacy &amp; Terms of Service
-{% endblock %}
+{% block about_content %}
 
-{# ------------------------------------------------------------------------- #}
-{% block css %}
-    {% if config['PROD'] %}
-    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
-    {% else %}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/register.css') }}"/>
-    {% endif %}
-{% endblock %}
+<div class="Title">
+    Terms of Service
+</div>
 
-{# ------------------------------------------------------------------------- #}
-{% block header_js %}
-{% endblock %}
-
-{# ------------------------------------------------------------------------- #}
-{% block content %}
-        <!-- Title -->
-        <div class="row header">
-            <div class="page-header TextCenter">            
-                <h1 class="title">Privacy &amp; Terms of Service</h1>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="span8 offset2">
-            <div class="explanation">
-            Stuff
-            </div>
-        </div>
-{% endblock %}
-
-{# ------------------------------------------------------------------------- #}
-{% block js %}
-
-    {% if config['PROD'] %}
-<script type="text/javascript" src="{{ s3_asset('js/base.min.js') }}"></script>
-    {% else %}
-    {% endif %}
+Stuff
 
 {% endblock %}
 

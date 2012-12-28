@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+About 
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block css %}
+
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    {% endif %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_info %}
+<div id="AboutNav">
+    <a class="AboutNavLink" href="{{ url_for('about') }}">
+    About visualization
+    </a>
+    <a class="AboutNavLink" href="{{ url_for('about') }}">
+    Etiquette
+    </a>
+    <a class="AboutNavLink" href="{{ url_for('about') }}">
+    Postmarklet
+    </a>
+
+    <div class="AboutNavSeparator"></div>
+
+    <a class="AboutNavLink" href="{{ url_for('terms') }}">
+    Privacy &amp; Terms
+    </a>
+
+    <a class="AboutNavLink" href="{{ url_for('terms') }}">
+    Contact
+    </a>
+</div>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
+<!-- Content -->
+<div class="CenterContent">
+    <div id="AboutContent">
+    {% block about_content %}
+    {% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+    {% if config['PROD'] %}
+<script type="text/javascript" src="{{ s3_asset('js/base.min.js') }}"></script>
+    {% else %}
+    {% endif %}
+{% endblock %}
+
+{# $eof #}
