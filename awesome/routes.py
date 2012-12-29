@@ -685,6 +685,12 @@ def terms():
 def new_relic_ping_target():
     return "pong..."
 
+@app.route('/rq/test', methods=['GET'])
+def rq_test():
+    from WorkerJobs import Queue_print
+    Queue_print("Hello world")
+    return "testing..."
+
 # Target URL for New Relic availability monitoring
 @app.route('/test/daily_email', methods=['GET'])
 def test_daily_email():
