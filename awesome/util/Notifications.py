@@ -58,25 +58,27 @@ class Notifications:
     # These emails only work in production right now
     # TODO: need better way of testing these things
     def sendRepostEmail(self, user, origVision, newVision):
-        if user and origVision:
-            origUser = User.getById(origVision.userId())
-            if origUser:
-                emailAddress = origUser.email()
-                emailSubject = user.fullName() + " reposted your vision"
-                emailText = emailSubject
-                emailHtml = render_template("email/repost.html",
-                                            origUser = origUser,
-                                            origVision = origVision,
-                                            user = user,
-                                            vision = newVision)
-                email = {
-                    Constant.EMAIL_TO_KEY : emailAddress,
-                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
-                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
-                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
-                }
-                emailer = Emailer()
-                emailer.sendBatch([email])
+        '''Takes dictionaries as input'''
+        origUser = User.getById(origVision['userId'])
+        if origUser:
+            origUser = origUser.toDictionaryFull()
+
+            emailAddress = origUser[User.Key.EMAIL]
+            emailSubject = user[User.Key.FULL_NAME] + " reposted your vision"
+            emailText = emailSubject
+            emailHtml = render_template("email/repost.html",
+                                        origUser = origUser,
+                                        origVision = origVision,
+                                        user = user,
+                                        vision = newVision)
+            email = {
+                Constant.EMAIL_TO_KEY : emailAddress,
+                Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+            }
+            emailer = Emailer()
+            emailer.sendBatch([email])
 
     def sendFollowEmail(self):
         pass
@@ -85,55 +87,58 @@ class Notifications:
     # TODO: need better way of testing these things
 
     def sendCommentEmail(self, authorUser, vision, comment):
-        if authorUser and vision and comment:
-            visionUser = User.getById(vision.userId())
-            if visionUser:
-                emailAddress = visionUser.email()
-                emailSubject = authorUser.fullName() + " wrote on your vision"
-                emailText = emailSubject
-                emailHtml = render_template("email/comment.html", 
-                                            author = authorUser,
-                                            user = visionUser,
-                                            vision = vision,
-                                            comment = comment)
-                email = {
-                    Constant.EMAIL_TO_KEY : emailAddress,
-                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
-                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
-                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
-                }
-                emailer = Emailer()
-                emailer.sendBatch([email])
+        '''Takes dictionary inputs'''
+        visionUser = User.getById(vision[Vision.Key.USER_ID])
+        if visionUser:
+            visionUser = visionUser.toDictionaryFull()
+            emailAddress = visionUser[User.Key.EMAIL]
+            emailSubject = authorUser[User.Key.FULL_NAME] + " wrote on your vision"
+            emailText = emailSubject
+            emailHtml = render_template("email/comment.html", 
+                                        author = authorUser,
+                                        user = visionUser,
+                                        vision = vision,
+                                        comment = comment)
+            email = {
+                Constant.EMAIL_TO_KEY : emailAddress,
+                Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+            }
+            emailer = Emailer()
+            emailer.sendBatch([email])
 
     # These emails only work in production right now
     # TODO: need better way of testing these things
     def sendCommentNotificationEmail(self, userToEmail, authorUser,
                                            vision, comment):
-        if userToEmail and authorUser and vision and comment:
-            visionUser = User.getById(vision.userId())
-            if visionUser:
-                emailAddress = userToEmail.email()
-                if authorUser.id() == visionUser.id():
-                    emailSubject = authorUser.fullName() + \
-                                   " responded on their vision"
-                else:
-                    emailSubject = authorUser.fullName() + " responded on " + \
-                                visionUser.fullName() + "\'s vision"
-                emailText = emailSubject
-                emailHtml = render_template("email/commentNotification.html",
-                                            userToEmail=userToEmail,
-                                            authorUser=authorUser,
-                                            visionUser=visionUser,
-                                            vision=vision,
-                                            comment=comment)
-                email = {
-                    Constant.EMAIL_TO_KEY : emailAddress,
-                    Constant.EMAIL_SUBJECT_KEY : emailSubject,
-                    Constant.EMAIL_BODY_TEXT_KEY : emailText,
-                    Constant.EMAIL_BODY_HTML_KEY : emailHtml,
-                }
-                emailer = Emailer()
-                emailer.sendBatch([email])
+        '''Takes dictionary inputs'''
+        visionUser = User.getById(vision[Vision.Key.USER_ID])
+        if visionUser:
+            visionUser = visionUser.toDictionary()
+            emailAddress = userToEmail[User.Key.EMAIL]
+            if authorUser[User.Key.ID] == visionUser[User.Key.ID]:
+                emailSubject = authorUser[User.Key.FULL_NAME] + \
+                                " responded on their vision"
+            else:
+                emailSubject = authorUser[User.Key.FULL_NAME] + \
+                               " responded on " + \
+                               visionUser[User.Key.FULL_NAME] + "\'s vision"
+            emailText = emailSubject
+            emailHtml = render_template("email/commentNotification.html",
+                                        userToEmail=userToEmail,
+                                        authorUser=authorUser,
+                                        visionUser=visionUser,
+                                        vision=vision,
+                                        comment=comment)
+            email = {
+                Constant.EMAIL_TO_KEY : emailAddress,
+                Constant.EMAIL_SUBJECT_KEY : emailSubject,
+                Constant.EMAIL_BODY_TEXT_KEY : emailText,
+                Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+            }
+            emailer = Emailer()
+            emailer.sendBatch([email])
 
 
     #

@@ -30,6 +30,7 @@ class User:
         ID = 'id'
         FIRST_NAME = 'firstName'
         LAST_NAME = 'lastName'
+        FULL_NAME = 'fullName'
         PICTURE = 'picture'
         DESCRIPTION = 'description'
         VISION_PRIVACY = 'visionPrivacy'
@@ -133,6 +134,7 @@ class User:
         return { User.Key.ID                : self.id(),
                  User.Key.FIRST_NAME        : self.firstName(),
                  User.Key.LAST_NAME         : self.lastName(),
+                 User.Key.FULL_NAME         : self.fullName(),
                  User.Key.PICTURE           : self.picture(),
                  User.Key.DESCRIPTION       : self.description(),
                  User.Key.VISION_PRIVACY    : self.visionPrivacy(),
@@ -232,11 +234,9 @@ class User:
 
     def repostVision(self, vision):
         '''Repost a vision and return new vision if successful, else None'''
-        from ..util.Notifications import Notifications
         assert vision, "Invalid vision"
 
         isPublic = self.visionDefaultIsPublic()
-        notifications = Notifications(test=False)
         newVisionId = DataApi.repostVision(self.model(),
                                            vision.model(),
                                            isPublic)
@@ -246,7 +246,10 @@ class User:
                 # Only let original user know if this vision is posted
                 # publicly
                 if isPublic:
-                    notifications.sendRepostEmail(self, vision, newVision)
+                    from ..WorkerJobs import Queue_repostEmail
+                    Queue_repostEmail(self.toDictionary(),
+                                  vision.toDictionary(),
+                                  newVision.toDictionary())
                 return newVision
         return None
 
@@ -282,8 +285,8 @@ class User:
 
     def commentOnVision(self, visionId, text):
         '''Returns comment if successful, else returns None'''
-        from ..util.Notifications import Notifications
-        notifications = Notifications(test=False)
+        from ..WorkerJobs import Queue_commentEmail, \
+                                 Queue_commentNotificationEmail
 
         vision = Vision.getById(visionId, self)
         if vision:
@@ -291,7 +294,9 @@ class User:
             if comment:
                 # If comment is on someone else's vision, email them
                 if vision.userId() != self.id():
-                    notifications.sendCommentEmail(self, vision, comment)
+                    Queue_commentEmail(self.toDictionary(),
+                                       vision.toDictionary(),
+                                       comment.toDictionary())
                 # send comment notifications for others that have commented
                 # that are not the vision user or the author user
                 # TODO: figure out better heuristic for how far to go back
@@ -303,9 +308,11 @@ class User:
                         userIdSet.add(comment.authorId())
                 otherCommenters = User.getByUserIds(userIdSet)
                 for otherCommenter in otherCommenters:
-                    notifications.sendCommentNotificationEmail(
-                                        otherCommenter, self, vision, comment)
-
+                    Queue_commentNotificationEmail(
+                                       otherCommenter.toDictionaryFull(),
+                                       self.toDictionary(),
+                                       vision.toDictionary(),
+                                       comment.toDictionary())
             return comment
         return None
 

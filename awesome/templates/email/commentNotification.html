@@ -6,18 +6,18 @@
  </head>
  <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
   <p>
-   Hi {{ userToEmail.firstName() }}!
+   Hi {{ userToEmail.firstName }}!
   </p>
   <p>
-   <a href="{{full_url_for('user_profile', userId=authorUser.id()) }}">
-    {{ authorUser.fullName() }}
+   <a href="{{full_url_for('user_profile', userId=authorUser.id) }}">
+    {{ authorUser.fullName }}
    </a>
    has left a comment on
-   {% if authorUser.id() == visionUser.id() %}
+   {% if authorUser.id == visionUser.id %}
    their own vision:
    {% else %}
-   <a href="{{ full_url_for('user_profile', userId=visionUser.id()) }}">
-    {{ visionUser.fullName() }}
+   <a href="{{ full_url_for('user_profile', userId=visionUser.id) }}">
+    {{ visionUser.fullName }}
    </a>
    's 
    vision:
@@ -25,11 +25,11 @@
   </p>
   <p>
    <i>
-    {{ comment.text() }}
+    {{ comment.text }}
    </i>
   </p>
   <p>
-   <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+   <a href="{{ full_url_for('vision_page', visionId=vision.id) }}">
     Check out the vision, and respond!
    </a>
   </p>

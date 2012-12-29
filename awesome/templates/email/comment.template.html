@@ -4,23 +4,23 @@
 </head>
 <body>
     <p>
-    Hi {{ user.firstName() }}!
+    Hi {{ user.firstName }}!
     </p>
     <p>
-        <a href="{{ full_url_for('user_profile', userId=author.id()) }}">
-            {{ author.fullName() }}
+        <a href="{{ full_url_for('user_profile', userId=author.id) }}">
+            {{ author.fullName }}
         </a>
         has left a comment on
-        <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+        <a href="{{ full_url_for('vision_page', visionId=vision.id) }}">
             your vision:
         </a>
     </p>
     <p>
-    <i>{{ comment.text() }}</i>
+    <i>{{ comment.text }}</i>
     </p>
     <p>
     Go to your 
-        <a href="{{ full_url_for('vision_page', visionId=vision.id()) }}">
+        <a href="{{ full_url_for('vision_page', visionId=vision.id) }}">
             your vision.
         </a> and write back!
     </p>
