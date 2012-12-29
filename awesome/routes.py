@@ -20,13 +20,10 @@ from util.SessionManager import SessionManager
 from util.Notifications import Notifications
 from util.Logger import Logger
 
-from WorkerJobs import Queue_print
 
 @app.route('/', methods=['GET'])
 def index():
     if request.method == 'GET':
-        Queue_print("Hello")
-
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             return render_template('index.html', user=userInfo, config=app.config)
