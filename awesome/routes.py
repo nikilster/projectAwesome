@@ -24,8 +24,9 @@ from WorkerJobs import Queue_print
 
 @app.route('/', methods=['GET'])
 def index():
-    Queue_print("Hello")
     if request.method == 'GET':
+        Queue_print("Hello")
+
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             return render_template('index.html', user=userInfo, config=app.config)
