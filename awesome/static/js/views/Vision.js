@@ -15,7 +15,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         REPOST : ".Repost",
         MOVE : ".Move",
         //ADD_EXISTING_VISION_SELECTOR : ".AlreadyHaveVision",
-        ADD_EXAMPLE_VISION: ".AddVisionNotAuthenticated",
+        ONBOARDING_ADD_VISION: ".AddVisionNotAuthenticated",
+        ONBOARDING_REMOVE_VISION: ".RemoveVisionNotAuthenticated"
     },
     constant: {
         ANIMATION_TIME : 150,
@@ -37,6 +38,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
             "mouseenter" : "mouseEnter",
             "mouseleave" : "mouseLeave",
         };
+        _events["click " + this.sel.ONBOARDING_ADD_VISION] = "onboardingAddVision";
+        _events["click " + this.sel.ONBOARDING_REMOVE_VISION] = "onboardingRemoveVision";
         _events["click " + this.sel.USER_NAME] = "gotoUser";
         _events["click " + this.sel.REPOST] = "repostVision";
         _events["keyup " + this.sel.COMMENT_INPUT] = "visionCommentInput";
@@ -159,6 +162,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         $(this.el).find(this.sel.COMMENT_CONTAINER).append(this.comments);
 
+
+        //Make the "Add To MY Vision Board" Button clickable
+        //TODO: Need to figure out the correct place / best way for ->
+        $()
         return this;
     },
     renderComment: function(comment, index) {
@@ -172,6 +179,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             this.model.toggleSelected();
+            
+            //TODO: Why is this enter called?
             this.mouseEnter();
         } else if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             //App.Var.View.showVisionDetails(this.model);
@@ -206,7 +215,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             if(!this.model.isSelected()) {
-                this.showElement(this.sel.ADD_EXAMPLE_VISION);  
+                this.showElement(this.sel.ONBOARDING_ADD_VISION);  
             }
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             // don't show anything
@@ -220,7 +229,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         // AND they are not logge din
         // Show the instructions bar (box)  
 
-        //On your own board show move butotn!
+        //On your own board show move button!
         if (pageMode == App.Const.PageMode.USER_PROFILE &&
             App.Var.Model.currentUserId() == USER.id) {
             this.showElement(this.sel.MOVE);
@@ -235,7 +244,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
 
         //Get all of the possible overlays
-        var buttons = [this.sel.ADD_EXAMPLE_VISION,
+        var buttons = [this.sel.ONBOARDING_ADD_VISION,
                        this.sel.REPOST,
                        this.sel.MOVE];
         
@@ -245,6 +254,19 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
 
     },
+
+    //Add to the onboarding first vision board
+    onboardingAddVision: function(e) {
+        e.preventDefault();
+        this.model.select();
+    },
+
+    //Remove from the onboarding initial vision board
+    onboardingRemoveVision: function(e) {
+        e.preventDefault();
+        this.model.unselect();
+    },
+
     repostVision: function(e) {
         e.preventDefault();
         App.Var.View.repostVision(this.model);
@@ -272,4 +294,3 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
     },
 });
-

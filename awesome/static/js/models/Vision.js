@@ -50,26 +50,53 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         return privacy == App.Const.VisionPrivacy.PUBLIC;
     },
 
-    // Setters
+    //Switch the selection
     toggleSelected: function() {
-        if (!this.isSelected()) {
-            if (App.Var.Model.numSelectedVisions() <
-                App.Const.MAX_SELECTED_VISIONS) {
-                App.Var.Model.addToSelectedVisions(this);
-            } else {
-                return;
-            }
-        } else {
-            App.Var.Model.removeFromSelectedVisions(this);
-        }
-        this.set({isSelected: !this.get("isSelected")});
+        
+        if (!this.isSelected()) this.select();
+        else this.unselect();
     },
+
     addComment: function(comment) {
         this.comments().push(new App.Backbone.Model.VisionComment(comment));
     },
     setComments: function(comments) {
         this.comments().reset(comments);
     },
+
+
+    //Select Vision
+    select: function() {
+    
+        //Ignore if this is already selected
+        if(this.isSelected()) return;
+
+        //TODO: Why do we have this limit?
+        if (App.Var.Model.numSelectedVisions() < App.Const.MAX_SELECTED_VISIONS)
+        {
+            //Add
+            App.Var.Model.addToSelectedVisions(this);
+
+            //Set
+            this.set({isSelected: true});
+        }
+            
+    },
+
+    //Unselect Vision
+    unselect: function() {
+
+        //If Already unselected - return
+        if(!this.isSelected()) return;
+
+        //Remove
+        App.Var.Model.removeFromSelectedVisions(this);
+
+        //Set
+        this.set({isSelected: false});
+
+    },
+
     edit: function(text, isPublic) {
         var privacy = App.Const.VisionPrivacy.PRIVATE;
         if (isPublic) {
