@@ -232,7 +232,7 @@ footer {
 }
 #Instructions,
 #ExampleVisionBoardInstructions {
-  width: 575px;
+  width: 565px;
   margin: auto;
   padding-top: 15px;
   line-height: 1.4;
@@ -258,17 +258,41 @@ footer {
 #ExampleVisionBoardInstructions .InstructionsNote {
   margin-left: 20px;
 }
-#Instructions #ViewExampleVisionBoardButton,
-#ExampleVisionBoardInstructions #ViewExampleVisionBoardButton,
+#Instructions .MainButton,
+#ExampleVisionBoardInstructions .MainButton {
+  font-size: 16px;
+  line-height: 1.2;
+  padding: 10px 15px;
+  font-weight: normal;
+}
 #Instructions #RegularRegisterButton,
 #ExampleVisionBoardInstructions #RegularRegisterButton,
 #Instructions #JoinSite,
 #ExampleVisionBoardInstructions #JoinSite {
-  font-size: 16px;
-  line-height: 1.2;
-  padding: 10px 15px;
   float: right;
-  font-weight: normal;
+}
+#Instructions .emphasis,
+#ExampleVisionBoardInstructions .emphasis,
+#Instructions a,
+#ExampleVisionBoardInstructions a {
+  font-weight: bold;
+}
+#Instructions #SelectedThree,
+#ExampleVisionBoardInstructions #SelectedThree {
+  font-size: 16px;
+  text-align: center;
+  line-height: 1.2;
+}
+#Instructions #SelectedThree .Text,
+#ExampleVisionBoardInstructions #SelectedThree .Text {
+  margin-top: 16px;
+  margin-left: 90px;
+  float: left;
+}
+#Instructions #SelectedThree #ViewExampleVisionBoardButton,
+#ExampleVisionBoardInstructions #SelectedThree #ViewExampleVisionBoardButton {
+  float: left;
+  margin-left: 16px;
 }
 /*
     On Hover of Vision

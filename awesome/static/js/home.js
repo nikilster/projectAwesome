@@ -108,7 +108,7 @@ $(document).ready(function() {
         App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
     });
 
-    $(VIEW_EXAMPLE_VISION_BOARD_BUTTON).click(function(e) {
+    $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).click(function(e) {
         e.preventDefault();
         App.Var.Router.navigate("/view_board", {trigger: true});
     });

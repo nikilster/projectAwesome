@@ -49,31 +49,28 @@
 {% block header_info %}
     <!-- Onboarding -->
     <div id="Instructions" class="well Hidden">
-      <a href="{{ url_for('register') }}"
-         id="RegularRegisterButton"
-         class="btn btn-primary">
+      <a href="{{ url_for('register') }}" id="RegularRegisterButton" class="btn btn-primary MainButton">
         Register
       </a>
-      <button id="ViewExampleVisionBoardButton"
-              class="Hidden btn btn-danger">
-        >> See Your Vision Board!
-      </button>
 
       <div class="Tagline">
-        Create, share, and
-        <a href="{{ url_for('about') }}">live your visions</a>.
+        Find goals, get support, and
+        <a href="{{ url_for('about') }}">live your dreams!</a>
       </div>
       <div class="InstructionsNote">
-        <span id="SelectedZero">Get started by browsing and choosing 3 visions!</span>
+        <span id="SelectedZero">Get started by choosing 3 goals!</span>
         <span id="SelectedOne" class="Hidden">
-          <b>Good Job!</b> Chose 2 more pictures!
+          <b>Good job!</b> Chose 2 more goals!
         </span>
         <span id="SelectedTwo" class="Hidden">
           <b>Nice!</b> Now chose one more!
         </span>
-        <span id="SelectedThree" class="Hidden">
-          <b>Done!</b> Continue adding up to 10 visions.
-        </span>
+        <div id="SelectedThree" class="Hidden">
+          <div class="Text"><span class="emphasis">Great job!</span> You did it.</div>
+          <button id="ViewExampleVisionBoardButton" class="Hidden btn btn-success MainButton">
+            See Your Vision Board!
+          </button>
+        </div>
       </div>
     </div>
 
@@ -83,7 +80,7 @@
     </form>
 
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
-      <button id="JoinSite" class="btn btn-success">Start with these visions!</button>  
+      <button id="JoinSite" class="btn btn-success MainButton">Start with these visions!</button>  
       <div class="Tagline">
         Congrats on starting your vision board!
       </div>

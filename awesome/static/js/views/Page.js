@@ -13,13 +13,15 @@ var USER_INFORMATION = "#UserInformation";
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
+var INSTRUCTIONS_TAGLINE = "#Instructions .Tagline";
 var INSTRUCTIONS_PADDING = "#InstructionsPadding";
-//Sync # w/ Spans -> 
 var INSTRUCTIONS_ZERO_VISIONS_SELECTED = "#SelectedZero";
 var INSTRUCTIONS_ONE_VISION_SELECTED = "#SelectedOne";
 var INSTRUCTIONS_TWO_VISIONS_SELECTED = "#SelectedTwo";
 var INSTRUCTIONS_THREE_VISIONS_SELECTED = "#SelectedThree";
-var VIEW_EXAMPLE_VISION_BOARD_BUTTON = "#ViewExampleVisionBoardButton";
+var BUTTON_VIEW_EXAMPLE_VISION_BOARD = "#ViewExampleVisionBoardButton";
+var BUTTON_REGISTER = "#RegularRegisterButton";
+
 var REGISTER_FORM = "#RegisterForm";
 var USER_SELECTED_VISIONS_INPUT = "#UserSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
@@ -390,15 +392,25 @@ App.Backbone.View.Page = Backbone.View.extend({
         //User has selected somewhere from 0 to NUM_VISION_REQUIRED_FOR_USER Selected
         if (length >=0 && length < NUM_VISION_REQUIRED_FOR_USER) {
             this.hideAllExcept(instructions,length);
-            $("#ViewExampleVisionBoardButton").hide();
-            $("#RegularRegisterButton").show();
+
+            //Make sure tagline is shown if they remove visions
+            $(INSTRUCTIONS_TAGLINE).show();
+
+            //Show Register
+            $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).hide();
+            $(BUTTON_REGISTER).show();
         }
 
         //User has selected more
         else if(length >= NUM_VISION_REQUIRED_FOR_USER) {
             this.hideAllExcept(instructions, NUM_VISION_REQUIRED_FOR_USER);
-            $("#RegularRegisterButton").hide();
-            $("#ViewExampleVisionBoardButton").show();
+            
+            //Hide the tagline to focus on "go to board"
+            $(INSTRUCTIONS_TAGLINE).hide();
+
+            //Show View Example Board
+            $(BUTTON_REGISTER).hide();
+            $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).show();
         }
 
         //Should never have < 0 visions selected!

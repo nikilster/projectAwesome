@@ -26,7 +26,7 @@
 @VISION_DETAILS_WIDTH: 530px;
 
 //Instructions
-@INSTRUCTIONS_WIDTH: 575px;
+@INSTRUCTIONS_WIDTH: 565px;
 @INSTRUCTIONS_HEIGHT: 45px;
 @INSTRUCTIONS_MARGIN_BOTTOM: 10px;
 @TEXT_COLOR: #666;
@@ -145,13 +145,44 @@
         margin-left: 20px;
     }
 
-    #ViewExampleVisionBoardButton, #RegularRegisterButton, #JoinSite
+    .MainButton
     {
         font-size: 16px;
         line-height: 1.2;
         padding: 10px 15px;
-        float: right;
         font-weight: normal;
+    }
+
+    #RegularRegisterButton, #JoinSite
+    {
+        float: right;
+    }
+
+    //Emphasize certain words
+    .emphasis, a
+    {
+        font-weight:bold;
+    }
+
+    //After all of the (currently 3) required visions are selected
+    //Hide the main tagline and make this bigger
+    #SelectedThree
+    {
+        font-size:16px;
+        text-align:center;
+        line-height:1.2;
+
+        .Text {
+            margin-top:16px;
+            margin-left:90px;
+            float:left;
+        }
+
+        #ViewExampleVisionBoardButton
+        {
+            float:left;
+            margin-left:16px;
+        }
     }
 }
 
