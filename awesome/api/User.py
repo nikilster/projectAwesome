@@ -205,6 +205,8 @@ class User:
     def addVision(self, imageUrl, text, isUploaded, isPublic):
         '''Creates new vision
         
+        TODO: What does isUploaded mean?
+        
         Returns (Vision/None, None or error_msg if add vision failed)
         '''
         #TODO: Save page title and page URL?

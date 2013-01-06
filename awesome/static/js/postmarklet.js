@@ -1,5 +1,10 @@
 (function(){
 
+
+//TODO: Find a good way to switch this!
+//DOMAIN_BASE_URL = "http://127.0.0.1:5000"
+DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com"
+
 //Load Jquery
 if (!($ = window.jQuery)) { // typeof jQuery=='undefined' works too  
     script = document.createElement( 'script' );  
@@ -24,7 +29,7 @@ function runBookmarklet()
 //Load the CSS file for the images
 function loadCSS()
 {
-  var CSS_FILE_URL = "http://127.0.0.1:5000/static/css/postmarklet.css";
+  var CSS_FILE_URL = DOMAIN_BASE_URL + "/static/css/postmarklet.css";
  
   var cssLink =document.createElement("link")
   cssLink.setAttribute("rel", "stylesheet")
@@ -256,7 +261,7 @@ function saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle)
 		description=Project%20AWESOME
 	*/
 
-	var BASE_URL = "http://127.0.0.1:5000/vision/create/bookmarklet";
+	var BASE_URL = DOMAIN_BASE_URL + "/vision/create/bookmarklet";
 	var MEDIA_URL_KEY = "mediaUrl";
 	var PAGE_URL_KEY = "pageUrl";
 	var PAGE_TITLE_KEY = "pageTitle";
@@ -287,7 +292,7 @@ function getQueryComponent(key, value)
 
 function saveVisionAjax(imageUrl) {  
 
-	var url = "http://127.0.0.1:5000/save";
+	var url = DOMAIN_BASE_URL + "/save";
 	console.log(window.location);
 	//Test
 	$.ajax({

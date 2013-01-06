@@ -81,7 +81,7 @@ class VisionList:
         return VisionList(models)
     
     @staticmethod
-    def getWithVision(vision):
+    def createFromVision(vision):
         '''Create a vision list with a single vision.
 
         Is here to leverage output functions here, even if for just one 

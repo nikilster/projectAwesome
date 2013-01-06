@@ -443,21 +443,28 @@ def apiAddUserVision(userId):
 
             # Create a new vision with the photo
             user = User.getById(userId)
-            if user:
+            
+            # Make sure we have a valid user
+            if not user:
+                data = {'result' : "error"}
+
+            else:
                 vision, errorMsg = user.addVision(url, text, True, isPublic)
 
                 if vision:
                     objList = []
                     if None != vision:
-                        objList = VisionList.getWithVision(vision)
+                        objList = VisionList.createFromVision(vision)
                     if len(objList.visions()) == 1:
                         data = { 'result'    : "success",
                                  'newVision' : objList.toDictionary(
                                         options=[Vision.Options.PICTURE,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS])[0] }
-            else:
-                data = { 'result' : "error" }
+
+                else:
+                    data = { 'result' : "error" }
+
             return jsonify(data)
         abort(403)
     abort(405)
