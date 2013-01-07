@@ -10,8 +10,11 @@ About
 
     {% if config['PROD'] %}
     <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/about.min.css') }}"/>
+
     {% else %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/about.css') }}"/>
     {% endif %}
 {% endblock %}
 
@@ -23,7 +26,7 @@ About
 {% block header_info %}
 <div id="AboutNav">
     <a class="AboutNavLink" href="{{ url_for('about') }}">
-    About visualization
+    About
     </a>
     <a class="AboutNavLink" href="{{ url_for('about') }}">
     Etiquette
