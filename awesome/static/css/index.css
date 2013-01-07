@@ -258,6 +258,11 @@ footer {
 #ExampleVisionBoardInstructions .InstructionsNote {
   margin-left: 20px;
 }
+#Instructions .Motivation,
+#ExampleVisionBoardInstructions .Motivation {
+  font-size: 17px;
+  font-weight: bold;
+}
 #Instructions .MainButton,
 #ExampleVisionBoardInstructions .MainButton {
   font-size: 16px;
