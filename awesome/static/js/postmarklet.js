@@ -1,9 +1,17 @@
+if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
+    __PROJECT_AWESOME_DEBUG__ = false;
+}
+
 (function(){
 
-
 //TODO: Find a good way to switch this!
-//DOMAIN_BASE_URL = "http://127.0.0.1:5000"
-DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com"
+if (__PROJECT_AWESOME_DEBUG__ == true) {
+    DOMAIN_BASE_URL = "http://127.0.0.1:5000";
+    STATIC_BASE_URL = DOMAIN_BASE_URL + "/static";
+} else {
+    DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com";
+    STATIC_BASE_URL = "https://s3.amazonaws.com/project-awesome-static/gen";
+}
 
 //Load Jquery
 if (!($ = window.jQuery)) { // typeof jQuery=='undefined' works too  
@@ -29,7 +37,7 @@ function runBookmarklet()
 //Load the CSS file for the images
 function loadCSS()
 {
-  var CSS_FILE_URL = DOMAIN_BASE_URL + "/static/css/postmarklet.css";
+  var CSS_FILE_URL = STATIC_BASE_URL + "/css/postmarklet.css";
  
   var cssLink =document.createElement("link")
   cssLink.setAttribute("rel", "stylesheet")
@@ -289,7 +297,7 @@ function getQueryComponent(key, value)
 	return key + '=' + encodeURIComponent(value);
 }
 
-
+/*
 function saveVisionAjax(imageUrl) {  
 
 	var url = DOMAIN_BASE_URL + "/save";
@@ -309,5 +317,6 @@ function saveVisionAjax(imageUrl) {
 		}
 	});
 }  
+*/
 
 })();

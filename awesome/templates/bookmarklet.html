@@ -1,12 +1,31 @@
+<p>
 <a href="
 javascript: void((function (doc) {
+    var repinCode = doc.createElement('script');
+    repinCode.setAttribute('type', 'text/javascript');
+    repinCode.setAttribute('charset', 'UTF-8');
+    repinCode.setAttribute('src', 'https://s3.amazonaws.com/project-awesome-static/gen/js/postmarklet.js?r=' + Math.random() * 99999999);
+    doc.body.appendChild(repinCode);
+})(document));
+">Repost</a>
+</p>
+<p>
+<a href="
+javascript: void((function (doc) {
+    var projectAwesomeDebug = doc.createElement('script');
+    projectAwesomeDebug.setAttribute('type', 'text/javascript');
+    projectAwesomeDebug.setAttribute('charset', 'UTF-8');
+    projectAwesomeDebug.innerHTML = 'var __PROJECT_AWESOME_DEBUG__ = true;';
+    doc.body.appendChild(projectAwesomeDebug);
+
     var repinCode = doc.createElement('script');
     repinCode.setAttribute('type', 'text/javascript');
     repinCode.setAttribute('charset', 'UTF-8');
     repinCode.setAttribute('src', 'http://127.0.0.1:5000/static/js/postmarklet.js?r=' + Math.random() * 99999999);
     doc.body.appendChild(repinCode);
 })(document));
-">link</a>
+">LocalRepost</a>
+</p>
 
 <a href="http://bitly.com/a/bitmarklet.js">Bit.ly</a>
 <a href="http://assets.pinterest.com/js/pinmarklet.js">Pinterest</a>

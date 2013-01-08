@@ -90,11 +90,21 @@ def main(argv=None):
         print ""
     if do_css:
         print "---- Upload CSS to S3 ----"
+
+        print "  Copying files"
+        os.system("cp awesome/static/css/postmarklet.css awesome/static/gen/css")
+
+        print "  Transfer to S3"
         os.system("s3put --bucket project-awesome-static --prefix " +
                         staticDir + " awesome/static/gen/css")
         print ""
     if do_js:
         print "---- Upload JS to S3 ----"
+
+        print "  Copying files"
+        os.system("cp awesome/static/js/postmarklet.js awesome/static/gen/js")
+
+        print "  Transfer to S3"
         os.system("s3put --bucket project-awesome-static --prefix " +
                         staticDir + " awesome/static/gen/js")
         print ""

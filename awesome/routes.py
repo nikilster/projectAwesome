@@ -656,6 +656,7 @@ def create():
         or pageTitle is None:
         return "Invalid Vision Parameters"
 
+    Logger.debug("URL: " + mediaUrl)
 
     #Question: Do we really need to check the login again here?
     #Check Login
@@ -677,6 +678,12 @@ def create():
                                    visionId=vision.id())
     #Error
     return render_template('errorCreatingVision.html', message=message)
+
+@app.route('/about/postmarklet', methods=['GET'])
+def about_postmarklet():
+    if request.method == 'GET':
+        return render_template('bookmarklet.html')
+    abort(405)
 
 @app.route('/terms', methods=['GET'])
 def terms():
