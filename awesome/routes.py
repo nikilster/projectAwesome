@@ -670,7 +670,8 @@ def create():
     user = User.getById(userId)
     if user:
         # TODO: should we save pageUrl and pageTitle also?
-        vision, message = user.addVision(mediaUrl, text, False, False)
+        vision, message = user.addVision(mediaUrl, text, False,
+                                         user.visionDefaultIsPublic())
 
         if vision:
             #Successful Create!
