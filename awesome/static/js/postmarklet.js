@@ -1,10 +1,23 @@
+/*
+	Postmarklet
+
+	1/8/2013
+	TODO:
+		1. Handle this page: http://twitter.github.com/bootstrap/base-css.html
+		2. Proportion Thumbnails
+		3. Minify js & css
+*/
+
+
+
 if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
     __PROJECT_AWESOME_DEBUG__ = false;
 }
 
 (function(){
 
-//TODO: Find a good way to switch this!
+//Choose the correct domain
+//TODO: Decide if we want to switch this to a query parameter
 if (__PROJECT_AWESOME_DEBUG__ == true) {
     DOMAIN_BASE_URL = "http://127.0.0.1:5000";
     STATIC_BASE_URL = DOMAIN_BASE_URL + "/static";
@@ -31,7 +44,12 @@ function runBookmarklet()
 {
 	loadCSS();
 	var images = getPostableImages();
-	displayImageSelector(images);
+
+	//Make sure we have at least 1 good image
+	if(images.length == 0)
+		alert("Sorry, we couldn't find any postable images on this page!");
+	else
+		displayImageSelector(images);
 }
 
 //Load the CSS file for the images
