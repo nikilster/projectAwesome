@@ -261,7 +261,7 @@ class ImageFilePreview:
 class ImageUrlUpload:
     def __init__(self, url):
         assert Verifier.urlValid(url), "Invalid url string"
-        self._url = url
+        self._url = str(url)
 
     def url(self):
         return self._url
