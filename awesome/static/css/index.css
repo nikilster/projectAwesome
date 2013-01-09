@@ -190,6 +190,7 @@ footer {
   transition: opacity 0.3s linear;
 }
 /* End Augmenting Bootstrap */
+/* Base Styles */
 .LightShadow {
   -webkit-transition: -webkit-transform 0.15s linear;
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
@@ -201,6 +202,10 @@ footer {
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
+.emphasis {
+  font-weight: bold;
+}
+/* End Base Styles */
 .VisionPlaceholder {
   background-color: #ededed !important;
 }
@@ -282,12 +287,6 @@ footer {
 #Instructions #JoinSite,
 #ExampleVisionBoardInstructions #JoinSite {
   float: right;
-}
-#Instructions .emphasis,
-#ExampleVisionBoardInstructions .emphasis,
-#Instructions a,
-#ExampleVisionBoardInstructions a {
-  font-weight: bold;
 }
 #Instructions #SelectedThree,
 #ExampleVisionBoardInstructions #SelectedThree {
