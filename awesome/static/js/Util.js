@@ -1,5 +1,5 @@
 var URL_REGEXP = new RegExp("^http.*");
-var MAX_URL_TEXT_LENGTH = 25;
+var MAX_URL_TEXT_LENGTH = 40;
 
 function linkify(text) {
     var words = text.split(" ");
