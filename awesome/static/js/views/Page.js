@@ -219,7 +219,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     renderVisionList: function() {
         
-        if(DEBUG) console.log("rendering vision list");
+        //if(DEBUG) console.log("rendering vision list");
 
         var masonryContainer = $(CONTENT_DIV).first();
         masonryContainer.empty();
@@ -414,10 +414,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
 
         //Should never have < 0 visions selected!
-        else
+        else {
             console.log("ERROR - should not have negative count visions!");
-
-
+        }
 
         // Update hidden field in registration
         var visionIds = [];
@@ -425,7 +424,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             visionIds.push(this.model.selectedVisions().at(i).visionId());
         }
         $(USER_SELECTED_VISIONS_INPUT).first().attr("value", JSON.stringify(visionIds));
-        if (DEBUG) console.log("VISION LIST: " + JSON.stringify(visionIds));
+        //if (DEBUG) console.log("VISION LIST: " + JSON.stringify(visionIds));
 
         // If we are in test vision mode, we need to re-render vision
         if (App.Var.Model.pageMode() == App.Const.PageMode.EXAMPLE_VISION_BOARD) {

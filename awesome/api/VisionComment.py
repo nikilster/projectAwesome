@@ -14,6 +14,7 @@ class VisionComment:
         VISION_ID = 'visionId'
         AUTHOR_ID = 'authorId'
         TEXT = 'text'
+        CREATED = 'created'
         # These are included when Options.AUTHOR is passed
         NAME = 'name'
         PICTURE = 'picture'
@@ -44,6 +45,8 @@ class VisionComment:
         return self._model.text
     def removed(self):
         return self._model.removed
+    def created(self):
+        return self._model.created
 
     #
     # Getter methods
@@ -61,6 +64,7 @@ class VisionComment:
                  VisionComment.Key.VISION_ID : self.visionId(),
                  VisionComment.Key.AUTHOR_ID : self.authorId(),
                  VisionComment.Key.TEXT : self.text(),
+                 VisionComment.Key.CREATED: self.created().isoformat(),
               }
         if VisionComment.Options.AUTHOR in options:
             from User import User

@@ -202,6 +202,7 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='opt/date.js') }}"></script>
 
+<script type="text/javascript" src="{{ url_for('static', filename='js/Util.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/Global.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/User.js') }}"></script>
@@ -245,7 +246,7 @@
 <script type="text/template" id="VisionTemplate">
 
 <!-- //Image -->
-<img class="VisionPicture" src="<%= pictureUrl %>" alt="<%= text %>"/>
+<img class="VisionPicture" src="<%= pictureUrl %>" alt="<%= alt %>"/>
 
 <!-- //Description -->
 <div class="text">
@@ -303,12 +304,6 @@
     <button class="btn btn-inverse">Remove</button>
 </div>
 
-<!-- //Already have vision (Logged In) -->
-<div class="AlreadyHaveVision <%= haveVisionVisibility %>">
-    <button class="btn btn-small disabled">On my vision board</button>
-</div>
-
-
 </script>
 
 <!-- Vision Comments -->
@@ -329,6 +324,9 @@
     </a>
     <div class="VisionDetailsCommentText">
         <%= text %>
+    </div>
+    <div class="VisionDetailsCommentTime">
+        <%= created %>
     </div>
 </script>
 
@@ -402,6 +400,9 @@
                        Submit
                     </div>
                 </div>
+            </div>
+            <div id="VisionDetailsTimeCreated">
+            <%= created %>
             </div>
             <div id="VisionDetailsCommentsContainer"></div>
 

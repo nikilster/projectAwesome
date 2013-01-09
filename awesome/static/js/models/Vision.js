@@ -7,6 +7,8 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         text: "",
         name: "",
         privacy: -1,
+        created: null,
+        createdDate: null,
         picture: null,
         comments: null,
         isSelected: false,
@@ -18,6 +20,10 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
             parentUser: new App.Backbone.Model.User(this.get("parentUser")),
         });
+
+        if (this.created() != null) {
+            this.set({ createdDate: dateFromUTC(this.get("created"))});
+        }
 
         if (null != App.Var.Model &&
             null != App.Var.Model.getSelectedVision(this.visionId())) {
@@ -34,6 +40,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
     comments: function() { return this.get("comments"); },
+    created: function() { return this.get("created"); },
+    createdDate: function() { return this.get("createdDate"); },
+    timeString: function() {
+        return timeFromToday(this.createdDate());
+    },
 
     hasParent: function() {
         return this.parentId() != 0 && this.parentId() != -1;
@@ -52,9 +63,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
 
     //Switch the selection
     toggleSelected: function() {
-        
-        if (!this.isSelected()) this.select();
-        else this.unselect();
+        if (!this.isSelected()) {
+            this.select();
+        } else {
+            this.unselect();
+        }
     },
 
     addComment: function(comment) {
@@ -69,25 +82,27 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     select: function() {
     
         //Ignore if this is already selected
-        if(this.isSelected()) return;
+        if(this.isSelected()) {
+            return;
+        }
 
         //TODO: Why do we have this limit?
-        if (App.Var.Model.numSelectedVisions() < App.Const.MAX_SELECTED_VISIONS)
-        {
+        if (App.Var.Model.numSelectedVisions() <
+            App.Const.MAX_SELECTED_VISIONS) {
             //Add
             App.Var.Model.addToSelectedVisions(this);
 
             //Set
             this.set({isSelected: true});
         }
-            
     },
 
     //Unselect Vision
     unselect: function() {
-
         //If Already unselected - return
-        if(!this.isSelected()) return;
+        if(!this.isSelected()) {
+            return;
+        }
 
         //Remove
         App.Var.Model.removeFromSelectedVisions(this);

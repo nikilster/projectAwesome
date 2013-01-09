@@ -7,7 +7,7 @@
 /*
     Debug
 */
-var DEBUG = true;
+var DEBUG = false;
 
 /******************************************************************************
  * Utility functions
@@ -101,11 +101,24 @@ $(document).ready(function() {
 
     $("#NavHome").click(function(e) {
         e.preventDefault();
-        App.Var.Router.navigate("/", {trigger: true});
+        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
+            // Refresh content
+            App.Var.View.showHome();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/", {trigger: true});
+        }
     });
     $("#NavProfile").click(function(e) {
         e.preventDefault();
-        App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
+        if (userLoggedIn() && 
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == App.Var.Model.loggedInUserId()) {
+            App.Var.View.showProfile();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
+        }
     });
 
     $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).click(function(e) {

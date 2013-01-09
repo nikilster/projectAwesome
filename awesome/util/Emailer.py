@@ -15,7 +15,7 @@ class Emailer:
 	password = "bluesteel!"
 
 	#Config Options
-	EMAIL_FROM = "projectAwesomer@gmail.com"
+	EMAIL_FROM = "\"Project Awesome\" <projectAwesomer@gmail.com>"
 	SMTP_SERVER = 'smtp.sendgrid.net' #For Gmail: 'smtp.gmail.com' 
 	PORT = 587
 

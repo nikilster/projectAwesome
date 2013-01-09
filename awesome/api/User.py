@@ -148,6 +148,15 @@ class User:
         obj[User.Key.EMAIL] = self.email()
         return obj
 
+
+    def isAdmin(self):
+        '''Quick way to differentiate between admin users for now'''
+        email = self.email()
+        if email == "alex.shye@gmail.com" or \
+           email == "nikil@stanford.edu":
+            return True
+        return False
+
     #
     # Setters (note: these write to database)
     #

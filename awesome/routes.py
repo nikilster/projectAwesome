@@ -684,7 +684,11 @@ def create():
 @app.route('/about/postmarklet', methods=['GET'])
 def about_postmarklet():
     if request.method == 'GET':
-        return render_template('bookmarklet.html')
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('postmarklet.html',
+                               user=userInfo, config=app.config)
     abort(405)
 
 @app.route('/terms', methods=['GET'])
@@ -694,6 +698,20 @@ def terms():
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
         return render_template('terms.html', user=userInfo, config=app.config)
+    abort(405)
+
+@app.route('/admin/dashboard', methods=['GET'])
+def admin_dashboard():
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+            if user and user.isAdmin():
+                users = User.getAllUsers()
+                return render_template('admin_dashboard.html',
+                                       user=userInfo, config=app.config,
+                                       users=reversed(users))
+        abort(403)
     abort(405)
 
 # Target URL for New Relic availability monitoring
@@ -715,7 +733,7 @@ def test_daily_email():
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             user = User.getById(userInfo['id'])
-            if user and user.email() == "alex.shye@gmail.com":
+            if user and user.isAdmin():
                 notification = Notifications()
                 return notification.testDailyEmail()
     return "Hello."

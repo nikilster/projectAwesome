@@ -1,3 +1,4 @@
+
 App.Backbone.View.VisionComment = Backbone.View.extend({
     className: "VisionComment",
     initialize: function() {
@@ -9,7 +10,7 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
     },
     render: function() {
         var variables = { 'authorId' : this.model.authorId(),
-                          'text': this.model.text(),
+                          'text': linkify(this.model.text()),
                           'name': this.model.name(),
                           'picture': this.model.picture()}
         var template = _.template($("#VisionCommentTemplate").html(),

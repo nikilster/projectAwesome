@@ -29,6 +29,7 @@ class Vision:
         PARENT_ID = 'parentId'
         ROOT_ID = 'rootId'
         PRIVACY = 'privacy'
+        CREATED = 'created'
         # These are filled when proper options are passed in
         PICTURE = 'picture'
         PARENT_USER = 'parentUser'
@@ -98,6 +99,8 @@ class Vision:
         return self._model.removed
     def privacy(self):
         return self._model.privacy
+    def created(self):
+        return self._model.created
     def model(self):
         ''' Get internal DB model'''
         return self._model
@@ -210,6 +213,7 @@ class Vision:
                 Vision.Key.PARENT_ID    : self.parentId(),
                 Vision.Key.ROOT_ID      : self.rootId(),
                 Vision.Key.PRIVACY      : self.privacy(),
+                Vision.Key.CREATED      : self.created().isoformat(),
               }
         if Vision.Options.PICTURE in options:
             picture = self.picture()

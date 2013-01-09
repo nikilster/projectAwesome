@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+Admin Dashboard
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block css %}
+
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/about.min.css') }}"/>
+
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/about.css') }}"/>
+    {% endif %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_info %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
+<div class="CenterContent">
+    <div class="Title">
+        Admin Dashboard
+    </div>
+
+    <div class="SectionHeading">Local Debug Postmarklet button</div>
+    <div class="SectionText">
+    <a href="
+    javascript: void((function (doc) {
+        var projectAwesomeDebug = doc.createElement('script');
+        projectAwesomeDebug.setAttribute('type', 'text/javascript');
+        projectAwesomeDebug.setAttribute('charset', 'UTF-8');
+        projectAwesomeDebug.innerHTML = 'var __PROJECT_AWESOME_DEBUG__ = true;';
+        doc.body.appendChild(projectAwesomeDebug);
+
+        var repinCode = doc.createElement('script');
+        repinCode.setAttribute('type', 'text/javascript');
+        repinCode.setAttribute('charset', 'UTF-8');
+        repinCode.setAttribute('src', 'http://127.0.0.1:5000/static/js/postmarklet.js?r=' + Math.random() * 99999999);
+        doc.body.appendChild(repinCode);
+    })(document));
+    ">LocalRepost</a>
+    </div>
+    <div class="SectionText">
+    Drag this to your bookmarks bar.
+    </div>
+
+    <div class="SectionHeading">Users</div>
+    <div class="SectionText">
+        <table cellpadding="5"> 
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id() }}</td>
+            <td>{{ user.fullName() }}</td>
+            <td><a href="mailto:{{ user.email() }}">{{ user.email() }}</a></td>
+        </tr>
+    {% endfor %}
+        </table>
+    </div>
+
+</div>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+    {% if config['PROD'] %}
+<script type="text/javascript" src="{{ s3_asset('js/base.min.js') }}"></script>
+    {% else %}
+    {% endif %}
+{% endblock %}
+
+{# $eof #}
