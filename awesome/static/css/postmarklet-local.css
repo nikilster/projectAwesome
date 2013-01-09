@@ -1,7 +1,8 @@
 /*
-	The Production Postmarklet
-	Inherits almost everything from postmarklet-base.less 
-	and just provides the correct path assets! 
+	postmarklet-local.less
+
+	This file inherits basically everything from postmarklet-base.less and
+	links assets
 */
 /*
 	postmarklet-base.less
@@ -277,5 +278,5 @@
 		Local Development: postmarklet-local.less
 	*/
 
-  background: transparent url("https://s3.amazonaws.com/project-awesome-static/gen/img/postit-transparent.png") 60px 300px no-repeat;
+  background: transparent url("http://127.0.0.1:5000/static/img/postit-transparent.png") 60px 300px no-repeat;
 }

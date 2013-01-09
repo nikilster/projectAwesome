@@ -20,11 +20,11 @@ if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
 //TODO: Decide if we want to switch this to a query parameter
 if (__PROJECT_AWESOME_DEBUG__ == true) {
     DOMAIN_BASE_URL = "http://127.0.0.1:5000";
-    STATIC_BASE_URL = DOMAIN_BASE_URL + "/static";
+    CSS_FILE_URL = DOMAIN_BASE_URL + "/static/css/postmarklet-local.css";
     console.log("In Local Version");
 } else {
     DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com";
-    STATIC_BASE_URL = "https://s3.amazonaws.com/project-awesome-static/gen";
+    CSS_FILE_URL = "https://s3.amazonaws.com/project-awesome-static/gen/css/postmarklet.css";
     console.log("In Production Version");
 }
 
@@ -56,9 +56,7 @@ function runBookmarklet()
 
 //Load the CSS file for the images
 function loadCSS()
-{
-  var CSS_FILE_URL = STATIC_BASE_URL + "/css/postmarklet.css";
- 
+{ 
   var cssLink =document.createElement("link")
   cssLink.setAttribute("rel", "stylesheet")
   cssLink.setAttribute("type", "text/css")

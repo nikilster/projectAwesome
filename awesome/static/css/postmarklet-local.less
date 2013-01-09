@@ -1,14 +1,16 @@
 /*
-	The Production Postmarklet
-	Inherits almost everything from postmarklet-base.less 
-	and just provides the correct path assets! 
+	postmarklet-local.less
+
+	This file inherits basically everything from postmarklet-base.less and
+	links assets
 */
 
 @import "postmarklet-base.less";
 
-//Production
-@BASE_URL_PRODUCTION: "https://s3.amazonaws.com/project-awesome-static/gen/img/";
-@POST_BUTTON_URL: "@{BASE_URL_PRODUCTION}@{POST_BUTTON}";
+
+//Debug
+@BASE_URL_DEBUG: "http://127.0.0.1:5000/static/img/";
+@POST_BUTTON_URL: "@{BASE_URL_DEBUG}@{POST_BUTTON}";
 
 #CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a {
 

@@ -1,9 +1,4 @@
 /*
-	The Production Postmarklet
-	Inherits almost everything from postmarklet-base.less 
-	and just provides the correct path assets! 
-*/
-/*
 	postmarklet-base.less
 
 	Production
@@ -269,13 +264,4 @@
   color: #fff;
   text-align: center;
   font-weight: normal!important;
-}
-#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a {
-  /* 
-		This is done in the inherited files
-		Production: postmarklet.less
-		Local Development: postmarklet-local.less
-	*/
-
-  background: transparent url("https://s3.amazonaws.com/project-awesome-static/gen/img/postit-transparent.png") 60px 300px no-repeat;
 }
