@@ -182,7 +182,7 @@ function displayHeader(body)
 	$("<a />", {
 		id: "CREATE_VISION_X",
 		text: "Cancel",
-		click: cancelClicked
+		click: clearOverlay
 	}).appendTo(headerDiv);
 }
 
@@ -245,9 +245,13 @@ function showImage(image, index, imageContainer)
 		console.log(image);
 		console.log(image.alt);
 		console.log("Media Description: " + mediaDescription);
-		*/
+		*/		
+
 
 		saveVision(mediaUrl, mediaDescription, pageUrl, pageTitle);
+
+		//Clear the Overlay
+		clearOverlay();
 	})
 	.appendTo(imageSpan);
 }
@@ -258,9 +262,15 @@ function showImage(image, index, imageContainer)
 */
 
 /*
-	Cancel Clicked
+
+	Clears Display
+
+
+	Called On:
+		Cancel Clicked
+		Image to post selected
 */
-function cancelClicked()
+function clearOverlay()
 {
 	//Remove background and body
 	$('#CREATE_VISION_BACKGROUND').remove();
