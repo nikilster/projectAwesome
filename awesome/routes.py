@@ -36,13 +36,14 @@ def view_board():
     return redirect(url_for('index'))
 
 @app.route('/user/<int:userId>', methods=['GET'])
-def user_profile(userId):
+@app.route('/user/<int:userId>/<int:pageOption>') #Page option is used to show the onboarding (= 1)
+def user_profile(userId, pageOption = 0):
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', user=userInfo, config=app.config)
+            return render_template('index.html', user=userInfo, config=app.config, option=pageOption)
         else:
-            return render_template('index.html', user=None, config=app.config)
+            return render_template('index.html', user=None, config=app.config, option=pageOption)
     abort(405)
 
 @app.route('/vision/<int:visionId>', methods=['GET'])

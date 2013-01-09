@@ -94,6 +94,9 @@
 {# -----------Main Container----------- #}
 {% block content %}
 
+    {% if option == 1 %}
+    Showing the tour!!! 
+    {% endif %}
     <!-- Main Content -->
     <div id="InstructionsPadding"></div>
     <div id="UserInformation" class="Center Hidden">
@@ -177,6 +180,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Modal For Onboarding -->
+    <div id="OnboardingModal" class="hide">
     </div>
 
 {% endblock %}

@@ -36,18 +36,18 @@ echo "Activating virtual environment"
 #http://www.anyexample.com/linux_bsd/bash/check_if_program_is_running_with_bash_shell_script.xml
 SERVICE='redis'
 
-#if ps ax | grep -v grep | grep $SERVICE 
-#then
-#    echo "$SERVICE service is already running, so skipping"
-#else
-#    echo "$SERVICE is not running"
-#    echo "Starting $SERVICE"
-#	
-#	#Start Redis
-#	awesome/redis-2.6.4/src/redis-server &
-#
-#	echo "Started Redis!"
-#fi
+if ps ax | grep -v grep | grep $SERVICE 
+then
+    echo "$SERVICE service is already running, so skipping"
+else
+    echo "$SERVICE is not running"
+    echo "Starting $SERVICE"
+	
+	#Start Redis
+	awesome/redis-2.6.4/src/redis-server &
+
+	echo "Started Redis!"
+fi
 
 
 #Wipe & Generate Data
