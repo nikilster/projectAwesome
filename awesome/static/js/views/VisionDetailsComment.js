@@ -10,7 +10,8 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
                           'text': linkify(this.model.text()),
                           'name': this.model.name(),
                           'picture': this.model.picture(),
-                          'urlTarget': this.urlTarget }
+                          'urlTarget': this.urlTarget,
+                          'created' : this.model.timeString(), }
         var template = _.template($("#VisionDetailsCommentTemplate").html(),
                                   variables);
         $(this.el).html(template);

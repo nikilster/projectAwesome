@@ -177,6 +177,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             name : this.model.name(),
             picture : this.model.picture().largeUrl(),
             text : linkify(this.model.text()),
+            created: this.model.timeString(),
             userPicture : USER['picture'],
             addCommentVisibility: addCommentVisibility,
             deleteVisibility: deleteVisibility,

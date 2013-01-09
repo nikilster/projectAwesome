@@ -18,4 +18,45 @@ function linkify(text) {
     return words.join(" ");
 }
 
+function dateFromUTC(dateAsString)
+{         
+    var ymdDelimiter = "-";
+
+    if (dateAsString == null) {
+        return null;
+    }       
+    var pattern = new RegExp( "(\\d{4})" + ymdDelimiter + "(\\d{2})" + ymdDelimiter + "(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})" );
+    var parts = dateAsString.match( pattern );
+
+    return new Date( Date.UTC(  
+                parseInt( parts[1] )
+                , parseInt( parts[2], 10 ) - 1
+                , parseInt( parts[3], 10 )
+                , parseInt( parts[4], 10 )
+                , parseInt( parts[5], 10 )
+                , parseInt( parts[6], 10 )
+                , 0                 
+                ));                 
+}
+
+function timeFromToday(date) {
+    var diff = Date.now() - date;
+    var days = parseInt(diff / (24*3600*1000));
+    var hours = parseInt(diff / (3600*1000));
+    var minutes = parseInt(diff / (60*1000));
+    var seconds = parseInt(diff / (1000));
+
+    if (days > 0) {
+        return days + " days ago";
+    } else if (hours > 0) {
+        return hours + " hours ago";
+    } else if (minutes > 0) {
+        return minutes + " minutes ago";
+    } else if (seconds  > 0 ) {
+        return seconds + " seconds ago";
+    } else {
+        return "just now"
+    }
+}
+
 // $eof

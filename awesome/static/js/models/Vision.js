@@ -7,6 +7,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         text: "",
         name: "",
         privacy: -1,
+        created: null,
         picture: null,
         comments: null,
         isSelected: false,
@@ -14,6 +15,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     },
     initialize: function() {
         this.set({
+            created: dateFromUTC(this.get("created")),
             picture: new App.Backbone.Model.Picture(this.get("picture")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
             parentUser: new App.Backbone.Model.User(this.get("parentUser")),
@@ -34,6 +36,10 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
     comments: function() { return this.get("comments"); },
+    created: function() { return this.get("created"); },
+    timeString: function() {
+        return timeFromToday(this.created());
+    },
 
     hasParent: function() {
         return this.parentId() != 0 && this.parentId() != -1;
