@@ -138,6 +138,9 @@ $(document).ready(function() {
         $(REGISTER_FORM).first().submit();
     });
 
+    //Display intro
+    if(typeof SHOW_ONBOARDING != 'undefined' && SHOW_ONBOARDING === true)
+        $(ONBOARDING_MODAL).modal();
 
     /*
      * File upload stuff

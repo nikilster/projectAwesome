@@ -176,13 +176,20 @@ footer {
 /*
     The Styles!
 */
-/* add to bootstrap */
+/* Begin Augmenting Bootstrap */
 .navbar-inner {
   z-index: 1 !important;
 }
 .modal-backdrop {
   background-color: #fafafa !important;
 }
+.modal.fade {
+  -webkit-transition: opacity 0.3s linear;
+  -moz-transition: opacity 0.3s linear;
+  -o-transition: opacity 0.3s linear;
+  transition: opacity 0.3s linear;
+}
+/* End Augmenting Bootstrap */
 .LightShadow {
   -webkit-transition: -webkit-transform 0.15s linear;
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
@@ -327,6 +334,13 @@ footer {
 }
 .Move {
   right: 16px;
+}
+#OnboardingModal {
+  width: 660px;
+  margin-left: -330px;
+}
+#OnboardingModal .modal-header {
+  text-align: center;
 }
 /*
     Delete
@@ -618,11 +632,6 @@ footer {
   border-radius: 4px;
 }
 #VisionDetailsModal.fade {
-  -webkit-transition: opacity .2s linear, none;
-  -moz-transition: opacity .2s linear, none;
-  -ms-transition: opacity .2s linear, none;
-  -o-transition: opacity .2s linear, none;
-  transition: opacity .2s linear, none;
   top: 300px;
 }
 .NoScroll {

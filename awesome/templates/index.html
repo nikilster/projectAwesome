@@ -94,9 +94,6 @@
 {# -----------Main Container----------- #}
 {% block content %}
 
-    {% if option == 1 %}
-    Showing the tour!!! 
-    {% endif %}
     <!-- Main Content -->
     <div id="InstructionsPadding"></div>
     <div id="UserInformation" class="Center Hidden">
@@ -182,8 +179,52 @@
         </div>
     </div>
 
+    {#### Show onboarding ####}
+    {% if option == 1 %}
+        <script type="text/javascript">
+            var SHOW_ONBOARDING = true;
+        </script>
+    {% endif %}
+
     <!-- Modal For Onboarding -->
-    <div id="OnboardingModal" class="hide">
+    <div id="OnboardingModal" class="modal hide fade">
+        <div class="modal-header">
+            <h1>Welcome to your Vision Board!</h1>
+        </div>
+        <div class="modal-body">
+            <h4>Save your goals here and they will become reality faster than you can believe!</h4>
+            <br/>
+            <h4>To collect pictures of your goals:</h4>
+            <ol>
+                <li>Drag this button to your bookmarks bar: 
+                    <a class="btn btn-large btn-primary" href="
+                    javascript: void((function (doc) {
+                        var repinCode = doc.createElement('script');
+                        repinCode.setAttribute('type', 'text/javascript');
+                        repinCode.setAttribute('charset', 'UTF-8');
+                        repinCode.setAttribute('src', 'https://s3.amazonaws.com/project-awesome-static/gen/js/postmarklet.js?r=' + Math.random() * 99999999);
+                        doc.body.appendChild(repinCode);
+                    })(document));
+                    ">Post it</a>
+                </li>
+                <li>
+                    Go to your favorite site with inpsirational images and click the button
+                </li>
+            </ol>
+
+            <br/>
+            You can upload your own pictures by clicking "Add Vision". <br/>
+            (on the top right hand corner of the page)
+
+            <br/>
+            <br/>
+
+            <h4>We hope you enjoy and may all of your dreams come true! :)</h4>
+        </div>
+        <div class="modal-footer">
+            <!-- Explore the Language: 1st person vs 2nd person vs 3rd person:I want to get started, Let's get started, get started. -->
+            <a href="#" class="btn btn-primary">Let's get started!</a>
+        </div>
     </div>
 
 {% endblock %}

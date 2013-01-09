@@ -236,7 +236,7 @@ def register_user():
                 #                                       str(selectedVisionIds));
                 user.repostVisionList(selectedVisionIds)
                 SessionManager.removeSelectedVisions()
-            return redirect(url_for('user_profile', userId=user.id()))
+            return redirect(url_for('user_profile', userId=user.id(), pageOption=1))
         else:
             assert errorMsg != "", "Error message should exist"
             flash(errorMsg, RegisterError.TAG)

@@ -2,6 +2,8 @@
 ###################
 #Run.sh - Sets up the web app!
 ####################
+#To Start mysql type "mysql.server start"
+#To Check if mysql is running type "mysql.server status"
 
 # Read command line parameters
 

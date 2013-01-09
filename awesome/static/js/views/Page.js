@@ -27,6 +27,8 @@ var USER_SELECTED_VISIONS_INPUT = "#UserSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
 var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 
+var ONBOARDING_MODAL = "#OnboardingModal";
+
 App.Backbone.View.Page = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "masonryReload",

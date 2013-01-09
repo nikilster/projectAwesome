@@ -39,13 +39,23 @@
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
 @OVERLAY_MARGIN: @VISION_PADDING+4;
 
-/* add to bootstrap */
+/* Begin Augmenting Bootstrap */
 .navbar-inner {
     z-index: 1 !important;
 }
 .modal-backdrop {
     background-color: @VISION_BACKGROUND !important;
 }
+
+.modal.fade {
+  -webkit-transition: opacity 0.3s linear;
+     -moz-transition: opacity 0.3s linear;
+       -o-transition: opacity 0.3s linear;
+          transition: opacity 0.3s linear;
+}
+
+/* End Augmenting Bootstrap */
+
 
 .LightShadow
 {
@@ -234,6 +244,19 @@
 .Move
 {
     right:@OVERLAY_MARGIN;
+}
+
+
+// Onboarding Modal
+#OnboardingModal
+{
+    width:660px;
+    margin-left:-330px;
+}
+
+#OnboardingModal .modal-header
+{
+    text-align:center;
 }
 
 //Logged in
@@ -563,12 +586,8 @@
 }
 
 // This overrides the bootstrap modal slide-down animation
+// Moved to the top - override general
 #VisionDetailsModal.fade {
-    -webkit-transition: opacity .2s linear, none;
-    -moz-transition: opacity .2s linear, none;
-    -ms-transition: opacity .2s linear, none;
-    -o-transition: opacity .2s linear, none;
-    transition: opacity .2s linear, none;
     top: 300px;
 }
 
