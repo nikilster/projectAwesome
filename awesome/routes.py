@@ -677,7 +677,7 @@ def create():
         if vision:
             #Successful Create!
             return render_template('successCreatingVision.html',
-                                   visionId=vision.id())
+                                   visionId=vision.id(), userId=userId)
     #Error
     return render_template('errorCreatingVision.html', message=message)
 

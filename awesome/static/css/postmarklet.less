@@ -1,0 +1,273 @@
+/*
+	Postmarklet.less
+
+	Debug flag to switch between development / production
+*/
+
+/*
+	TODO: generate random ids for the css;
+	_bg = CREATE_VISION_BACKGROUND
+	_bd = CREATE_VISION_BODY
+	_hd = CREATE_VISION_HEADER
+	_spacer = CREATE_VISION_SPACER
+	_logo = CREATE_VISION_LOGO
+	_x = CREATE_VISION_X
+	_pinContainer = CREATE_VISION_VISION_CONTAINER
+*/
+
+/**  Debug vs Production **/
+@BASE_URL: @BASE_URL_DEBUG;
+//@BASE_URL: @BASE_URL_PRODUCTION;
+
+/*  Variables */
+
+//Debug
+@BASE_URL_DEBUG: "http://127.0.0.1:5000/static/img/";
+
+//Production
+@BASE_URL_PRODUCTION: "https://s3.amazonaws.com/project-awesome-static/gen/img/";
+
+//Logo
+@LOGO_URL: "@{BASE_URL}logo.png";
+
+//Post It Button
+@POST_BUTTON: "@{BASE_URL}postit-transparent.png";
+
+
+#_shim {
+	z-index:2147483640; 
+	position: absolute; 
+	background: transparent; 
+	top:0; 
+	right:0; 
+	bottom:0; 
+	left:0; 
+	width: 100%; 
+	border: 0;
+}
+
+/*#PIN_1353442274098_bg */
+#CREATE_VISION_BACKGROUND{
+z-index: 2147483641;
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+background-color: #F2F2F2;
+opacity: .95;
+width: 100%;
+}
+
+/*#PIN_1353440772129CREATE_VISION_BODY */
+#CREATE_VISION_BODY {
+z-index: 2147483642;
+position: absolute;
+text-align: center;
+width: 100%;
+top: 0;
+left: 0;
+right: 0;
+font: 16px hevetica neue,arial,san-serif;
+}
+
+/*#PIN_1353440772129_bd #PIN_1353440772129_hd */
+#CREATE_VISION_BODY #CREATE_VISION_HEADER{
+z-index: 2147483643;
+-moz-box-shadow: 0 1px 2px #aaa;
+-webkit-box-shadow: 0 1px 2px #AAA;
+box-shadow: 0 1px 2px #AAA;
+position: fixed;
+width: 100%;
+top: 0;
+left: 0;
+right: 0;
+height: 45px;
+line-height: 45px;
+font-size: 14px;
+font-weight: bold;
+display: block;
+margin: 0;
+
+/*background: #FBF7F7;*/
+border-bottom: 1px solid #AAA;
+
+/* Shadow */
+
+background-color: #fafafa;
+background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+background-repeat: repeat-x;
+border: 1px solid #d4d4d4;
+-webkit-border-radius: 4px;
+ -moz-border-radius: 4px;
+      border-radius: 4px;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
+*zoom: 1;
+-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+ -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+
+#CREATE_VISION_BODY #CREATE_VISION_HEADER.noHeader { 
+	height: 1px; 
+	background-color:#f2f2f2;
+	-moz-box-shadow: none; 
+	-webkit-box-shadow: none; 
+	box-shadow: none; 
+	border: none; 
+}
+
+
+/*#PIN_1353440772129_bd #PIN_1353440772129_hd a#PIN_1353440772129_x */
+#CREATE_VISION_BODY #CREATE_VISION_HEADER a#CREATE_VISION_X{
+display: inline-block;
+cursor: pointer;
+color: #524D4D;
+line-height: 45px;
+text-shadow: 0 1px white;
+float: right;
+text-align: center;
+width: 100px;
+border-left: 1px solid #AAA;
+}
+
+#CREATE_VISION_BODY #CREATE_VISION_HEADER a#CREATE_VISION_X:hover { 
+	color: #524D4D;
+	background: #e1dfdf;
+	text-decoration: none;
+ }
+
+#CREATE_VISION_BODY #CREATE_VISION_HEADER a#CREATE_VISION_X:active { 
+	color: #fff;
+	background: #cb2027;
+	text-decoration: none;
+	text-shadow:none;
+}
+
+
+/*  TODO: Import from common styles */
+.logoFont {
+	font-size: 20px;
+	font-weight: 200;
+	color: #777;
+	text-shadow: 0 1px 0 white;
+}
+
+/*#PIN_1353440772129_bd #PIN_1353440772129_hd #PIN_1353440772129_logo */
+#CREATE_VISION_BODY #CREATE_VISION_HEADER #CREATE_VISION_LOGO {
+height: 43px;
+width: 200px;
+display: inline-block;
+margin-right: -100px;
+/*background: transparent url(http://passets-cdn.pinterest.com/images/LogoRed.png) 50% 50% no-repeat;*/
+/*background: transparent url(@LOGO_URL) 50% 50% no-repeat;*/
+border: none;
+
+.logoFont;
+}
+
+/*_cdn/images/LogoRed.2x.png*/
+//TODO: add a high res logo version here;
+@media only screen and (-webkit-min-device-pixel-ratio: 2) { 
+	#_bd #_hd #_logo {
+		background-size: 100px 26px; 
+		/*background-image: url(@LOGO_URL);*/
+	} 
+}
+
+#CREATE_VISION_BODY #CREATE_VISION_SPACER { 
+	display: block; 
+	height: 50px; 
+}
+
+/*
+	Image Container
+*/
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER { 
+	height:200px;
+	width:200px;
+ 	display:inline-block;
+ 	background:#fff;
+ 	position:relative;
+ 	-moz-box-shadow:0 0 2px #555;
+ 	-webkit-box-shadow: 0 0 2px #555;
+ 	box-shadow: 0 0 2px #555;
+ 	margin: 10px;
+ }
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER { 
+	zoom:1;
+ 	*border: 1px solid #aaa;
+ }
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER img { 
+	margin:0;
+ 	padding:0;
+ 	border:none;
+ }
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER span.CREATE_VISION_IMAGE, 
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER span._play { 
+	position: absolute;
+ 	top: 0;
+ 	left: 0;
+ 	height:200px;
+ 	width:200px;
+ 	overflow:hidden;
+ }
+
+/* Play */
+/*http://passets-cdn.pinterest.com/images/bm/play.png*/
+/*#_bd span._pinContainer span._play { background: transparent url(https://s3.amazonaws.com/project-awesome-static/gen/img/play.png) 50% 50% no-repeat; }*/
+
+#_bd span._pinContainer cite, #_bd span._pinContainer cite span { position: absolute; bottom: 0; left: 0; right: 0; width: 200px; color: #000; height: 22px; line-height: 24px; font-size: 10px; font-style: normal; text-align: center; overflow: hidden; }
+
+#_bd span._pinContainer cite span._mask { background:#eee; opacity:.75; *filter:alpha(opacity=75); }
+
+/* Skiping the domain specific css */
+/*  http://passets-cdn.pinterest.com/images/bm/button.png  
+ 	87x48 pixels
+ */
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a {
+	text-decoration:none; 
+	background:transparent url(@POST_BUTTON) 60px 300px no-repeat;
+ 	cursor:pointer;
+ 	position:absolute;
+ 	top:0;
+ 	left:0;
+ 	height:200px;
+ 	width:200px;
+ }
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a { 
+	-moz-transition-property: background-color; 
+	-moz-transition-duration: .25s; 
+	-webkit-transition-property: background-color; 
+	-webkit-transition-duration: .25s; 
+	transition-property: background-color; 
+	transition-duration: .25s; 
+}
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a:hover { 
+	background-position: 60px 80px;
+ 	background-color:rgba(0, 0, 0, 0.5);
+ }
+
+#CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a._hideMe { 
+	background: rgba(128, 128, 128, .5);
+	*background: #aaa;
+	*filter:alpha(opacity=75);
+	line-height: 200px;
+	font-size: 10px;
+	color: #fff;
+	text-align: center;
+	font-weight: normal!important;
+ }
+

@@ -9,9 +9,8 @@
 */
 
 
-console.log("Project Awesome Debug flag var = ");
-console.log(__PROJECT_AWESOME_DEBUG__);
 if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
+	console.log('debug is not defined, using production!');
     __PROJECT_AWESOME_DEBUG__ = false;
 }
 
@@ -174,7 +173,10 @@ function displayHeader(body)
 
 
 	//Logo
-	$("<span />", {id: "CREATE_VISION_LOGO"}).appendTo(headerDiv);
+	$("<span />", {
+		id: "CREATE_VISION_LOGO",
+		text: "Project Awesome"
+	}).appendTo(headerDiv);
 
 	//Cancel
 	$("<a />", {
