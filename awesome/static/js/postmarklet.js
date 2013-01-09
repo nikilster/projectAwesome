@@ -9,7 +9,8 @@
 */
 
 
-
+console.log("Project Awesome Debug flag var = ");
+console.log(__PROJECT_AWESOME_DEBUG__);
 if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
     __PROJECT_AWESOME_DEBUG__ = false;
 }
@@ -21,9 +22,11 @@ if (typeof __PROJECT_AWESOME_DEBUG__ == 'undefined') {
 if (__PROJECT_AWESOME_DEBUG__ == true) {
     DOMAIN_BASE_URL = "http://127.0.0.1:5000";
     STATIC_BASE_URL = DOMAIN_BASE_URL + "/static";
+    console.log("In Local Version");
 } else {
     DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com";
     STATIC_BASE_URL = "https://s3.amazonaws.com/project-awesome-static/gen";
+    console.log("In Production Version");
 }
 
 //Load Jquery

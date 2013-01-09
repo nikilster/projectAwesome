@@ -132,7 +132,7 @@ width: 100px;
 display: inline-block;
 margin-right: -100px;
 /*background: transparent url(http://passets-cdn.pinterest.com/images/LogoRed.png) 50% 50% no-repeat;*/
-background: transparent url(http://127.0.0.1:5000/static/img/logo.png) 50% 50% no-repeat;
+background: transparent url(https://s3.amazonaws.com/project-awesome-static/gen/img/logo.png) 50% 50% no-repeat;
 border: none;
 }
 
@@ -198,7 +198,7 @@ border: none;
 
 #CREATE_VISION_BODY span.CREATE_VISION_VISION_CONTAINER a {
 	text-decoration:none; 
-	background:transparent url(http://127.0.0.1:5000/static/img/postit-transparent.png) 60px 300px no-repeat;
+	background:transparent url(https://s3.amazonaws.com/project-awesome-static/gen/img/postit-transparent.png) 60px 300px no-repeat;
  	cursor:pointer;
  	position:absolute;
  	top:0;
