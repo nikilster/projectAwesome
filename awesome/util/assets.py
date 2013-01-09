@@ -21,6 +21,7 @@ JS_home = Bundle(
     'opt/backbone.js',
     'opt/date.js',
 
+    'js/Util.js',
     'js/Global.js',
 
     # Order seems to matter between models and collections

@@ -7,7 +7,7 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
     },
     render: function() {
         var variables = { 'authorId' : this.model.authorId(),
-                          'text': this.model.text(),
+                          'text': linkify(this.model.text()),
                           'name': this.model.name(),
                           'picture': this.model.picture(),
                           'urlTarget': this.urlTarget }
