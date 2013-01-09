@@ -28,7 +28,7 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         return _events;
     },
     render: function() {
-        var desc = this.model.description();
+        var desc = linkify(this.model.description());
         var descDisplay = "";
         var noDescDisplay = "hide";
         if (desc == "" && this.model.userId() == USER.id) {

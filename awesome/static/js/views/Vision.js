@@ -124,7 +124,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
 
         //Clean for html (using it in the alt=" attribute of the image so don't want '' or "")
-        var text = _.escape(this.model.text());
+        var alt = _.escape(this.model.text());
+        var text = linkify(this.model.text());
 
         //Selected
         if(selected) $(this.el).addClass(this.sel.SELECTED_CLASS);
@@ -133,6 +134,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //TODO: Figure out how to design move
 
         var variables = {text : text,
+                         alt: alt,
                          pictureUrl: pictureUrl,
                          moveDisplay: moveDisplay,
                          removeDisplay: removeDisplay,
