@@ -230,9 +230,11 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         this.model.setComments(data.comments);
         this.renderComments();
 
-        console.log("REPOST USERS: " + JSON.stringify(data.repostUsers));
-        console.log("ORIG USER: " + JSON.stringify(data.rootUser));
-        console.log("ORIG VISIONS: " + JSON.stringify(data.rootUserVisions));
+        if (DEBUG) {
+            console.log("REPOST USERS: " + JSON.stringify(data.repostUsers));
+            console.log("ORIG USER: " + JSON.stringify(data.rootUser));
+            console.log("ORIG VISIONS: " + JSON.stringify(data.rootUserVisions));
+        }
         var reposts = data.repostUsers;
         if (reposts.length > 0) {
             var repostChildren = [];
