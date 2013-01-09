@@ -55,6 +55,19 @@ Admin Dashboard
     Drag this to your bookmarks bar.
     </div>
 
+    <div class="SectionHeading">Users</div>
+    <div class="SectionText">
+        <table cellpadding="5"> 
+    {% for user in users %}
+        <tr>
+            <td>{{ user.id() }}</td>
+            <td>{{ user.fullName() }}</td>
+            <td><a href="mailto:{{ user.email() }}">{{ user.email() }}</a></td>
+        </tr>
+    {% endfor %}
+        </table>
+    </div>
+
 </div>
 {% endblock %}
 

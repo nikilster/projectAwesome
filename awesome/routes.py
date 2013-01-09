@@ -706,8 +706,10 @@ def admin_dashboard():
             userInfo = SessionManager.getUser()
             user = User.getById(userInfo['id'])
             if user and user.isAdmin():
+                users = User.getAllUsers()
                 return render_template('admin_dashboard.html',
-                                       user=userInfo, config=app.config)
+                                       user=userInfo, config=app.config,
+                                       users=reversed(users))
         abort(403)
     abort(405)
 
