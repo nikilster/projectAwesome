@@ -66,6 +66,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (null != this.model.picture()) {
             pictureUrl = this.model.picture().mediumUrl();
         }
+        var pictureClass = "";
+        if (userLoggedIn()) {
+            pictureClass = "Zoom";
+        }
 
         var addCommentVisibility = "";
         if (!userLoggedIn()) {
@@ -144,6 +148,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         var variables = {text : text,
                          alt: alt,
+                         pictureClass: pictureClass,
                          pictureUrl: pictureUrl,
                          moveDisplay: moveDisplay,
                          removeDisplay: removeDisplay,

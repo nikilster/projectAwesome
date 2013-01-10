@@ -442,6 +442,11 @@ footer {
 #ExampleVisionBoard .VisionPicture:hover {
   cursor: pointer;
 }
+#Content img.Zoom:hover,
+#ExampleVisionBoard img.Zoom:hover {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
 #Content .VisionOverlay,
 #ExampleVisionBoard .VisionOverlay {
   position: absolute;
