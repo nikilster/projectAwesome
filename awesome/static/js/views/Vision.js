@@ -9,6 +9,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         SELECTED_CLASS : "VisionSelected",
         USER_NAME : ".VisionUserName",
         PICTURE : ".VisionPicture",
+        MORE_COMMENTS: ".MoreComments",
         COMMENT_CONTAINER : ".VisionCommentContainer",
         COMMENT_INPUT : ".AddVisionCommentInput",
         // Overlay
@@ -19,6 +20,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
     },
     constant: {
         ANIMATION_TIME : 150,
+        // Number of comments shown in vision tile
+        NUM_COMMENTS : 4,
     },
     initialize: function() {
         _.bindAll(this, "itemSelect", "renderComment",
@@ -43,6 +46,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _events["click " + this.sel.REPOST] = "repostVision";
         _events["keyup " + this.sel.COMMENT_INPUT] = "visionCommentInput";
         _events["click " + this.sel.PICTURE] = "itemSelect";
+        _events["click " + this.sel.MORE_COMMENTS] = "itemSelect";
         return _events;
     },
     render: function() {
@@ -77,6 +81,14 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var nameDisplay = "none";
 
         var visionPrivateVisibility = "Hidden";
+
+        var moreCommentsVisibility = "Hidden";
+        if (userLoggedIn() &&
+            (pageMode == App.Const.PageMode.HOME_USER ||
+             pageMode == App.Const.PageMode.USER_PROFILE) &&
+            this.hasMoreComments()) {
+            moreCommentsVisibility = "";
+        }
 
         var parentUserVisibility = "Hidden";
         var parentUserId = "";
@@ -139,6 +151,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          mineDisplay: mineDisplay,
                          removeButtonVisibility: removeButtonVisibility,
                          addCommentVisibility: addCommentVisibility,
+                         moreCommentsVisibility: moreCommentsVisibility,
                          visionPrivateVisibility: visionPrivateVisibility,
                          name: this.model.name(),
                          nameDisplay: nameDisplay,
@@ -152,18 +165,13 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var template = _.template($("#VisionTemplate").html(), variables);
         $(this.el).html(template);
 
-        // render last 4 comments
         this.comments = []
-        var commentList = this.model.comments().last(4);
+        var commentList = this.model.comments().last(this.constant.NUM_COMMENTS);
         for (var i = 0 ; i < commentList.length ; i++) {
             this.renderComment(commentList[i], i);
         }
         $(this.el).find(this.sel.COMMENT_CONTAINER).append(this.comments);
 
-
-        //Make the "Add To MY Vision Board" Button clickable
-        //TODO: Need to figure out the correct place / best way for ->
-        $()
         return this;
     },
     renderComment: function(comment, index) {
@@ -290,5 +298,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
                 App.Var.View.addVisionComment(this.model.visionId(), text);
             }
         }
+    },
+    // Has more comments than MAX_COMMENTS shown in vision tile
+    hasMoreComments: function() {
+        return this.model.comments().length > this.constant.NUM_COMMENTS;
     },
 });

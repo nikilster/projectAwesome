@@ -160,7 +160,7 @@ class VisionList:
         if Vision.Options.COMMENTS in options:
             commentList = VisionCommentList.getEmptyList()
             for vision in self.visions():
-                commentList.extend(vision.comments(4))
+                commentList.extend(vision.comments(5))
 
             idToComments = {}
             for comment in commentList.comments():
