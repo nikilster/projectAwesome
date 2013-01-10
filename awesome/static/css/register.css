@@ -185,6 +185,11 @@ footer {
 #RegisterContainer h1 {
   margin: 20px 0px 30px 0px;
 }
+#RegisterContainer .Hint {
+  color: gray;
+  padding-left: 10px;
+  font-size: 14px;
+}
 #RegisterContainer .SubmitButton {
   float: right;
   margin-top: 10px;
