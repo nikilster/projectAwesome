@@ -225,6 +225,9 @@ footer {
   width: 175px;
   margin-left: -15px;
 }
+#PictureUploadInput {
+  font-size: 12px;
+}
 #SettingsSubmitInput {
   float: right;
   margin-right: 97px;
