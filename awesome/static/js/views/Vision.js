@@ -100,7 +100,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
             } else {
                 repostDisplay = "inline-block";
             }
-        } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+        } else if (pageMode == App.Const.PageMode.USER_PROFILE ||
+                   pageMode == App.Const.PageMode.VISION_DETAILS) {
             if (userLoggedIn()) {
                 if (App.Var.Model.currentUserId() == USER.id) {
                     moveDisplay = "inline-block";
@@ -112,7 +113,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                         repostDisplay = "inline-block";
                     }
                 }
-                if (!this.model.isPublic()) {
+                if (false == this.model.isPublic()) {
                     visionPrivateVisibility = "";
                 }
             }

@@ -119,7 +119,11 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         }
         this.set({ 'text' : text,
                    'privacy' : privacy,
-                 });
+                 }, { trigger: false});
+        // TODO: Find better way to do this later. Don't have way of
+        //       signalling top level view right now from individual vision
+        this.trigger("change");
+        App.Var.View.masonryReload();
     },
     deepClone: function() {
         var cloneModel = this.clone();
