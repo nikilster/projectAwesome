@@ -7,6 +7,13 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         currentUserId: USER['id'],
         visionList: new App.Backbone.Model.VisionList(),
         selectedVisions: new App.Backbone.Model.VisionList(),
+        
+        /*  
+            Page Option
+            Added by Nikil
+            1/9/2013 
+        */
+        option: App.Const.Options.None,
         otherVisions: new App.Backbone.Model.VisionList(),
         user: null,
         currentVision: null,
@@ -19,6 +26,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     currentUserId: function() { return this.get("currentUserId"); },
     visionList: function() { return this.get("visionList"); },
     selectedVisions: function() { return this.get("selectedVisions"); },
+    /*  Added by Nikil
+        1/9/2013 */
+    option: function() { return this.get("option");},
     otherVisions: function() { return this.get("otherVisions"); },
     user: function() { return this.get("user"); },
     currentVision: function() { return this.get("currentVision"); },
@@ -77,6 +87,23 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         assert(id > 0, "Invalid user id");
         this.set({currentUserId: id}, {silent: true});
     },
+
+    /*  Added by Nikil
+        1/9/2013
+
+        Page Option
+        (passed in by second url parameter in Router.js)
+        0 - nothing
+        1 = show tour
+    */
+    setOption: function(option) {
+
+        //Sanity Check
+        if(option == App.Const.Options.NONE || option == App.Const.Options.ONBOARDING)
+            this.set({ option: option}, {silent: true});
+
+    },
+
     setVisionList: function(visionList) {
         // Note: need to use reset so that the methods bound to this collection
         //       still get called

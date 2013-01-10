@@ -138,8 +138,9 @@ $(document).ready(function() {
         $(REGISTER_FORM).first().submit();
     });
 
+    //If Option
     //Display intro
-    if(typeof SHOW_ONBOARDING != 'undefined' && SHOW_ONBOARDING === true)
+    if(App.Var.Model.option() == App.Const.Options.ONBOARDING)
         $(ONBOARDING_MODAL).modal();
 
     /*

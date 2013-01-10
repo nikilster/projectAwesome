@@ -3,12 +3,14 @@
  */
 App.Backbone.Router = Backbone.Router.extend({
   routes: {
-    ""                : "home",
-    "view_board"      : "viewBoard",
-    "user/:userId"    : "profile",
-    "vision/:visionId" : "vision",
-    "*action"         : "home",
+    ""                          : "home",
+    "view_board"                : "viewBoard",
+    "user/:userId"              : "profile",
+    "user/:userId/:pageOption"  : "profileWithOption",
+    "vision/:visionId"          : "vision",
+    "*action"                   : "home",
   },
+
   home: function() {
     if (userLoggedIn()) {
         App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
@@ -29,6 +31,16 @@ App.Backbone.Router = Backbone.Router.extend({
     App.Var.Model.setCurrentUserId(userId);
     App.Var.Model.setPageMode(App.Const.PageMode.USER_PROFILE);
   },
+  
+
+  profileWithOption: function(userId, pageOption) {
+    
+    //Set Profile
+    this.profile(userId);
+    App.Var.Model.setOption(pageOption);
+    
+  },
+  
   vision: function(visionId) {
     if (App.Var.Model.currentVision() != null) {
       App.Var.Model.setPageMode(App.Const.PageMode.VISION_DETAILS);

@@ -179,13 +179,6 @@
         </div>
     </div>
 
-    {#### Show onboarding ####}
-    {% if option == 1 %}
-        <script type="text/javascript">
-            var SHOW_ONBOARDING = true;
-        </script>
-    {% endif %}
-
     <!-- Modal For Onboarding -->
     <div id="OnboardingModal" class="modal hide fade">
         <div class="modal-header">
@@ -224,7 +217,7 @@
         </div>
         <div class="modal-footer">
             <!-- Explore the Language: 1st person vs 2nd person vs 3rd person:I want to get started, Let's get started, get started. -->
-            <a href="#" class="btn btn-primary">Let's get started!</a>
+            <a href="#" data-dismiss="modal" aria-hidden="hidden" class="btn btn-primary">Let's get started!</a>
         </div>
     </div>
 

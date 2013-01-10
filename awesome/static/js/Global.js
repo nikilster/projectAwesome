@@ -36,6 +36,12 @@ var App = {
             PUBLIC: 1,
         },
         MAX_SELECTED_VISIONS: 10,
+
+        /* Page Options */
+        Options: {
+            NONE: 0,
+            ONBOARDING: 1
+        }
     },
     // Variables in app
     Var: {

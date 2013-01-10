@@ -38,12 +38,16 @@ def view_board():
 @app.route('/user/<int:userId>', methods=['GET'])
 @app.route('/user/<int:userId>/<int:pageOption>') #Page option is used to show the onboarding (= 1)
 def user_profile(userId, pageOption = 0):
+    
+    #userId and the pageOption are set in the backbone router 
+    #Just used for routing here (not as values)
+
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
-            return render_template('index.html', user=userInfo, config=app.config, option=pageOption)
+            return render_template('index.html', user=userInfo, config=app.config)
         else:
-            return render_template('index.html', user=None, config=app.config, option=pageOption)
+            return render_template('index.html', user=None, config=app.config)
     abort(405)
 
 @app.route('/vision/<int:visionId>', methods=['GET'])
