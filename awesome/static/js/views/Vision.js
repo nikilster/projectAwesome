@@ -206,6 +206,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
                                     {trigger: true});
         }
 
+        console.log('vision clicked');
+        console.log(mixpanel);
         mixpanel.track('vision clicked');
     },
     
