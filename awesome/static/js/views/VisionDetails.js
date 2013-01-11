@@ -172,6 +172,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         // This is stored to be used when rendering comments
         this.urlTarget = urlTarget;
 
+        var commentPrompt = this.model.getCommentPrompt(App.Var.Model.loggedInUserId());
+
         var variables = {
             userId: userId,
             name : this.model.name(),
@@ -187,6 +189,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             parentUserVisibility: parentUserVisibility,
             parentUserId: parentUserId,
             parentUserName: parentUserName,
+            commentPrompt: commentPrompt
         }
         var template = _.template($("#VisionDetailsModalTemplate").html(),
                                   variables);

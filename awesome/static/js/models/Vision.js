@@ -61,6 +61,26 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         return privacy == App.Const.VisionPrivacy.PUBLIC;
     },
 
+    /*  Test to see if this vision was created by the user who is viewing */
+    usersOwnVision: function(viewingUsersId) {
+
+        console.log("comparing " + viewingUsersId + " to vision created by " + this.userId());
+        //Logged in user =? vision creator?
+        return viewingUsersId == this.userId();
+    },
+
+     /* 
+        Prompt the user to type
+    */
+    getCommentPrompt: function(viewingUsersId) {
+        
+        if(!this.usersOwnVision(viewingUsersId))
+            return App.Const.Strings.COMMENT_PROMPT_FRIEND;
+        else 
+            return App.Const.Strings.COMMENT_PROMPT_OWN;
+    },
+
+
     //Switch the selection
     toggleSelected: function() {
         if (!this.isSelected()) {
