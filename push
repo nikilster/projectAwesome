@@ -1,0 +1,13 @@
+#Push Script!
+
+echo "---------------------- Uploading CSS & JS ----------------------"
+
+. venv/bin/activate
+python uploadAssets.py -c
+python uploadAssets.py -j
+
+
+echo "---------------------- Uploading git repository ----------------------"
+
+git pull
+git push heroku master
