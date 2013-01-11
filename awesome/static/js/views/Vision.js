@@ -191,6 +191,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
     },
     itemSelect: function(e) {
+
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
@@ -204,6 +205,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
             App.Var.Router.navigate("/vision/" + this.model.visionId(),
                                     {trigger: true});
         }
+
+        mixpanel.track('vision clicked');
     },
     
     showElement: function(selector) {
