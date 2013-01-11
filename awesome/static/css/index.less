@@ -34,6 +34,10 @@
 @MOTIVATION_TEXT_SIZE: 17px;
 @INSTRUCTIONS_TEXT_SIZE: 15px;
 @BUTTON_MARGIN_TOP: 12px;
+@EXAMPLE_VISION_BOARD_HEIGHT: @INSTRUCTIONS_HEIGHT + 21px;
+@SMALL_SPACER_HEIGHT: 8px;
+//TODO: make this uniform
+@INSTRUCTIONS_PADDING_HEIGHT: @EXAMPLE_VISION_BOARD_HEIGHT + 26px;
 
 //On Hover
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
@@ -135,7 +139,7 @@
 */
 
 #InstructionsPadding {
-    height:@INSTRUCTIONS_HEIGHT+24;
+    height:@INSTRUCTIONS_PADDING_HEIGHT;
 }
 
 #Instructions, #ExampleVisionBoardInstructions
@@ -143,7 +147,6 @@
     width:@INSTRUCTIONS_WIDTH;
     margin:auto;
     padding-top:15px;
-    line-height:1.4;
     margin-top: -5px;
     margin-bottom:@INSTRUCTIONS_MARGIN_BOTTOM;
     height:@INSTRUCTIONS_HEIGHT;
@@ -163,7 +166,7 @@
         font-weight: bold;
     }
     .InstructionsNote {
-        margin-left: 20px;
+        font-size: @INSTRUCTIONS_TAGLINE_SIZE;
     }
 
     .Motivation {
@@ -206,6 +209,15 @@
     }
 }
 
+#ExampleVisionBoardInstructions
+{
+    height: @EXAMPLE_VISION_BOARD_HEIGHT;
+}
+
+.SmallSpacer
+{
+    height:@SMALL_SPACER_HEIGHT;
+}
 /*
     On Hover of Vision
 */

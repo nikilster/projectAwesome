@@ -240,14 +240,13 @@ footer {
     Both (H + Example)
 */
 #InstructionsPadding {
-  height: 69px;
+  height: 92px;
 }
 #Instructions,
 #ExampleVisionBoardInstructions {
   width: 565px;
   margin: auto;
   padding-top: 15px;
-  line-height: 1.4;
   margin-top: -5px;
   margin-bottom: 10px;
   height: 45px;
@@ -268,7 +267,7 @@ footer {
 }
 #Instructions .InstructionsNote,
 #ExampleVisionBoardInstructions .InstructionsNote {
-  margin-left: 20px;
+  font-size: 18px;
 }
 #Instructions .Motivation,
 #ExampleVisionBoardInstructions .Motivation {
@@ -304,6 +303,12 @@ footer {
 #ExampleVisionBoardInstructions #SelectedThree #ViewExampleVisionBoardButton {
   float: left;
   margin-left: 16px;
+}
+#ExampleVisionBoardInstructions {
+  height: 66px;
+}
+.SmallSpacer {
+  height: 8px;
 }
 /*
     On Hover of Vision
