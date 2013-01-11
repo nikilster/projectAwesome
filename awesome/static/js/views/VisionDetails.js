@@ -139,7 +139,6 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         var userId = this.model.userId();
         var addCommentVisibility = "hide";
         var deleteVisibility = "hide";
-        var isPublic = "";
         var closeVisibility = "";
         // All links from vision details modal view should go to new page
         var urlTarget = " target=\"_blank\""
@@ -149,6 +148,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         var parentUserId = "";
         var parentUserName = "";
 
+        var isPrivate = "checked";
         if (userLoggedIn()) {
             addCommentVisibility = "";
 
@@ -161,7 +161,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 urlTarget = ""
             }
             if (this.model.isPublic()) {    
-                isPublic = "checked";
+                isPrivate = "";
             };
             if (this.model.hasParent()) {
                 var parentUserVisibility = "";
@@ -183,7 +183,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             userPicture : USER['picture'],
             addCommentVisibility: addCommentVisibility,
             deleteVisibility: deleteVisibility,
-            isPublic: isPublic,
+            isPrivate: isPrivate,
             closeVisibility: closeVisibility,
             urlTarget: urlTarget,
             parentUserVisibility: parentUserVisibility,
@@ -210,7 +210,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
     toggleEditSubmit: function(e) {
         var text = $.trim($(this.el).find(this.sel.TEXT_INPUT).val());
         var textLength = text.length;
-        var isPublic = $(this.el).find(this.sel.PRIVACY_INPUT).is(":checked");
+        var isPrivate = $(this.el).find(this.sel.PRIVACY_INPUT).is(":checked");
         var change = false;
         var invalid = false;
         if (text != this.model.text()) {
@@ -219,7 +219,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 invalid = true;
             }
         }
-        if (isPublic != this.model.isPublic()) {
+        if (isPrivate == this.model.isPublic()) {
             change = true;
         }
         if (true == change && false == invalid) {
@@ -304,7 +304,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
 
         if (DEBUG) console.log("EDIT");
         var text = $.trim($(this.el).find(this.sel.TEXT_INPUT).val());
-        var isPublic = $(this.el).find(this.sel.PRIVACY_INPUT).is(":checked");
+        var isPublic = !($(this.el).find(this.sel.PRIVACY_INPUT).is(":checked"));
 
         doAjax("/api/vision/" + this.model.visionId() + "/edit",
                 JSON.stringify({

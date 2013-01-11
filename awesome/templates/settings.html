@@ -102,11 +102,11 @@ var USER = { id: '{{ user['id'] }}',
                     <div class="controls">
                         <input id="VisionPrivacyInput" type="checkbox"
                                style="position:relative; top: -3px;"
-                               {% if user['visionPrivacy'] %}
+                               {% if not user['visionPrivacy'] %}
                                checked
                                {% endif %}
                                name="visionPrivacy"/>
-                        New visions are shared.
+                        New visions are private.
                     </div>
                 </div>
 
@@ -187,7 +187,7 @@ function toggleSubmit() {
             invalid = true;
         }
     }
-    if ($("#VisionPrivacyInput").is(":checked") != USER['visionPrivacy']) {
+    if ($("#VisionPrivacyInput").is(":checked") == USER['visionPrivacy']) {
         change = true;
     }
 

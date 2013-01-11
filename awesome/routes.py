@@ -117,7 +117,7 @@ def api_change_info():
             lastName = request.form['lastName']
             email = request.form['email']
             desc = request.form['description']
-            visionPrivacy = 'visionPrivacy' in request.form
+            visionPrivacy = not ('visionPrivacy' in request.form)
 
             user = User.getById(userInfo['id'])
             if user:
