@@ -82,6 +82,14 @@ footer {
 .CursorPointer {
   cursor: pointer;
 }
+.CursorZoomIn {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
+.CursorZoomOut {
+  cursor: -webkit-zoom-out;
+  cursor: -moz-zoom-out;
+}
 .Title {
   font-size: 28px;
   font-weight: bold;

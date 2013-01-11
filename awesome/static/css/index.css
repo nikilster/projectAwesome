@@ -87,6 +87,14 @@ footer {
 .CursorPointer {
   cursor: pointer;
 }
+.CursorZoomIn {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
+.CursorZoomOut {
+  cursor: -webkit-zoom-out;
+  cursor: -moz-zoom-out;
+}
 .Title {
   font-size: 28px;
   font-weight: bold;
@@ -670,6 +678,8 @@ footer {
   padding: 0px !important;
   z-index: 5000;
   background-color: rgba(255, 255, 255, 0.8);
+  cursor: -webkit-zoom-out;
+  cursor: -moz-zoom-out;
 }
 #VisionInformation {
   width: 530px;
@@ -686,6 +696,7 @@ footer {
   margin-top: 20px;
   margin-bottom: 20px;
   overflow: hidden;
+  cursor: default;
   opacity: 1;
   filter: alpha(opacity=100);
   border: 1px solid rgba(0, 0, 0, 0.3);
