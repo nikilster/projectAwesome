@@ -423,6 +423,10 @@
     .VisionPicture:hover {
         .CursorPointer;
     }
+    img.Zoom:hover {
+        cursor: -webkit-zoom-in;
+        cursor: -moz-zoom-in;
+    }
 
     .VisionOverlay {
         position:absolute;
@@ -471,6 +475,17 @@
     }
     .VisionUserName {
         font-weight: bold;
+    }
+
+    .MoreComments {
+        font-size: @VISION_COMMENT_TEXT_SIZE;
+        line-height: @VISION_COMMENT_LINE_HEIGHT;
+        padding: 5px 0px;
+        color: gray;
+    }
+    .MoreComments:hover {
+        cursor: pointer;
+        text-decoration: underline;
     }
 
     .VisionCommentContainer {

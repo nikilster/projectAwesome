@@ -447,6 +447,11 @@ footer {
 #ExampleVisionBoard .VisionPicture:hover {
   cursor: pointer;
 }
+#Content img.Zoom:hover,
+#ExampleVisionBoard img.Zoom:hover {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
 #Content .VisionOverlay,
 #ExampleVisionBoard .VisionOverlay {
   position: absolute;
@@ -503,6 +508,18 @@ footer {
 #Content .VisionUserName,
 #ExampleVisionBoard .VisionUserName {
   font-weight: bold;
+}
+#Content .MoreComments,
+#ExampleVisionBoard .MoreComments {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 5px 0px;
+  color: gray;
+}
+#Content .MoreComments:hover,
+#ExampleVisionBoard .MoreComments:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 #Content .VisionCommentContainer,
 #ExampleVisionBoard .VisionCommentContainer {

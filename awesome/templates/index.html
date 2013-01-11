@@ -282,7 +282,8 @@
 <script type="text/template" id="VisionTemplate">
 
 <!-- //Image -->
-<img class="VisionPicture" src="<%= pictureUrl %>" alt="<%= alt %>"/>
+<img class="VisionPicture <%= pictureClass %>"
+     src="<%= pictureUrl %>" alt="<%= alt %>"/>
 
 <!-- //Description -->
 <div class="text">
@@ -299,6 +300,7 @@
         </a>
     </span>
 </div>
+<div class="MoreComments <%= moreCommentsVisibility %>">More comments</div>
 <div class="VisionCommentContainer"></div>
 <div class="AddVisionComment <%= addCommentVisibility %>">
     <img class="AddVisionCommentProfile" src="<%= profile %>"/>

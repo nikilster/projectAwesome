@@ -109,7 +109,7 @@ App.Backbone.View.Page = Backbone.View.extend({
     repostVision: function(visionModel) {
         assert(visionModel != null, "Vision model to repost is null");
         if (visionModel != null) {
-            console.log("REPOST: " + visionModel.visionId());
+            if (DEBUG) console.log("REPOST: " + visionModel.visionId());
             doAjax("/api/user/" + USER['id'] + "/repost_vision",
                    JSON.stringify({
                                     'visionId' : visionModel.visionId(),
@@ -451,7 +451,12 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showHome: function() {
         this.hideVisionDetailsModal();
-        if (this.model.cameFromVisionDetails()) { return; }
+
+        // Stops re-render when coming back from vision details
+        if (this.model.cameFromVisionDetails()) {
+            this.model.clearLastPageMode();
+            return;
+        }
 
         this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
@@ -508,7 +513,12 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showProfile: function() {
         this.hideVisionDetailsModal();
-        if (this.model.cameFromVisionDetails()) { return; }
+
+        // Stops re-render when coming back from vision details
+        if (this.model.cameFromVisionDetails()) {
+            this.model.clearLastPageMode();
+            return;
+        }
 
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();

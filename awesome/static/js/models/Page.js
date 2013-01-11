@@ -76,6 +76,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         this.set({pageMode: mode}, {silent: true});
         this.trigger("change:pageMode");
     },
+    clearLastPageMode: function() {
+        this.set({lastPageMode: this.pageMode()}, {silent: true});
+    },
     setUser: function(user) {
         this.set({ user : new App.Backbone.Model.User(user)});
     },
