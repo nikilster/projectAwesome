@@ -4,7 +4,7 @@ import getopt
 
 from awesome.util.assets import genAssets
 
-PROG_NAME = "gen_fb_item_url.py"
+PROG_NAME = "uploadAssets.py"
 
 USAGE = '''
 %(prog)s

@@ -20,6 +20,7 @@ JS_home = Bundle(
     'opt/underscore.js',
     'opt/backbone.js',
     'opt/date.js',
+    'opt/backbone.analytics-master/backbone.analytics.js',
 
     'js/Util.js',
     'js/Global.js',
