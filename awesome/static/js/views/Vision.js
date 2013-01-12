@@ -289,6 +289,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
     repostVision: function(e) {
         e.preventDefault();
+
+        this.trackVisionAnalytics("Repost");
         App.Var.View.repostVision(this.model);
     },
     removeVision: function(e) {
@@ -333,6 +335,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var page = App.Var.Model.pageString();
         var visionId = this.model.visionId();
 
+        //Optional Argument
+        if(typeof properties === 'undefined')
+            properties = {};
+
         var baseProperties = {
             'Logged In': loggedIn,
             'Page': page,
@@ -341,8 +347,6 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         //Merge Properties
         var allProperties = $.extend(baseProperties, properties);
-
-        console.log(allProperties);
 
         //Track
         mixpanel.track(actionName, allProperties);
