@@ -424,8 +424,7 @@
         .CursorPointer;
     }
     img.Zoom:hover {
-        cursor: -webkit-zoom-in;
-        cursor: -moz-zoom-in;
+        .CursorZoomIn;
     }
 
     .VisionOverlay {
@@ -638,6 +637,8 @@
     padding: 0px !important;
     z-index: 5000;
     background-color: fadeout(white, 20%);
+
+    .CursorZoomOut;
 }
 
 #VisionInformation {
@@ -657,6 +658,8 @@
         margin-top: 20px;
         margin-bottom: 20px;
         overflow:hidden;
+
+        .CursorDefault;
 
         opacity: 1;
         filter: alpha(opacity=100);
