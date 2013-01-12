@@ -33,6 +33,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         this.render();
     },
+
     //Using variables in events
     //http://stackoverflow.com/questions/8400450/using-variable-for-selectors-in-events
     events: function(){
@@ -143,6 +144,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //Selected
         if(selected) $(this.el).addClass(this.sel.SELECTED_CLASS);
 
+        //"Any progress?"
+        var commentPrompt = this.model.getCommentPrompt(App.Var.Model.loggedInUserId());
+
         //Cursor
         //TODO: Figure out how to design move
 
@@ -165,6 +169,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          parentUserName: parentUserName,
                          userId: this.model.userId(),
                          profile: USER['picture'],
+                         commentPrompt: commentPrompt
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
@@ -186,6 +191,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
     },
     itemSelect: function(e) {
+
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
@@ -199,6 +205,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
             App.Var.Router.navigate("/vision/" + this.model.visionId(),
                                     {trigger: true});
         }
+
+        console.log('vision clicked');
+        console.log(mixpanel);
+        mixpanel.track('vision clicked');
     },
     
     showElement: function(selector) {
@@ -296,6 +306,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         App.Var.Router.navigate("/user/" + this.model.userId(),
                                 {trigger: true});
     },
+    
+    
+
     visionCommentInput: function(e) {
         if(e.keyCode == 13) {
             var text = $.trim($(this.el).find(this.sel.COMMENT_INPUT).val());

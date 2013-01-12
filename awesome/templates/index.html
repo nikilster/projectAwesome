@@ -305,7 +305,7 @@
 <div class="AddVisionComment <%= addCommentVisibility %>">
     <img class="AddVisionCommentProfile" src="<%= profile %>"/>
     <input class="AddVisionCommentInput" type="text"
-           placeholder="Any thoughts about this?"></input>
+           placeholder="<%= commentPrompt %>"></input>
 </div>
 
 <!-- //Overlay -->
@@ -449,7 +449,7 @@
                 <img id="VisionDetailsAddCommentPicture"
                      src="<%= userPicture %>"/>
                 <textarea id="VisionDetailsAddComment" type="text"
-                    placeholder="Any thoughts about this?"></textarea>
+                    placeholder="<%= commentPrompt %>"></textarea>
             </div>
             <div id="VisionDetailsRepostUsersContainer"
                  class="VisionDetailsSection Hidden">

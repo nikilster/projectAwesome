@@ -41,6 +41,11 @@ var App = {
         Options: {
             NONE: 0,
             ONBOARDING: 1
+        },
+
+        Strings: {
+            COMMENT_PROMPT_FRIEND: "Any thoughts about this?",
+            COMMENT_PROMPT_OWN: "Any progress?"
         }
     },
     // Variables in app
