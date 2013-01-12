@@ -206,9 +206,8 @@ App.Backbone.View.Vision = Backbone.View.extend({
                                     {trigger: true});
         }
 
-        console.log('vision clicked');
-        console.log(mixpanel);
-        mixpanel.track('vision clicked');
+        //Mixpanel
+       this.trackVisionAnalytics("Vision Clicked");
     },
     
     showElement: function(selector) {
@@ -303,8 +302,13 @@ App.Backbone.View.Vision = Backbone.View.extend({
     gotoUser: function(e) {
         e.stopPropagation();    // prevent propagating to other handlers
         e.preventDefault();     // prevent following link
-        App.Var.Router.navigate("/user/" + this.model.userId(),
-                                {trigger: true});
+
+        var targetUserId = this.model.userId();
+
+        //Mixpanel
+        this.trackVisionAnalytics("Go to User", {'userId': targetUserId});
+
+        App.Var.Router.navigate("/user/" + targetUserId, {trigger: true});
     },
     
     
@@ -321,4 +325,26 @@ App.Backbone.View.Vision = Backbone.View.extend({
     hasMoreComments: function() {
         return this.model.comments().length > this.constant.NUM_COMMENTS;
     },
+
+    //Mixpanel
+    trackVisionAnalytics: function(actionName, properties) {
+
+        var loggedIn = userLoggedIn ? "True" : "False";
+        var page = App.Var.Model.pageString();
+        var visionId = this.model.visionId();
+
+        var baseProperties = {
+            'Logged In': loggedIn,
+            'Page': page,
+            'Vision Id': visionId
+        };
+
+        //Merge Properties
+        var allProperties = $.extend(baseProperties, properties);
+
+        console.log(allProperties);
+
+        //Track
+        mixpanel.track(actionName, allProperties);
+    }
 });

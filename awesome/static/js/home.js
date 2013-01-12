@@ -174,6 +174,9 @@ $(document).ready(function() {
         } else {
             $("#InputVisionPrivacy").removeProp("checked");
         }
+
+        //Mixpanel
+        mixpanel.track("Add Vision Clicked");
     });
     $("#FileUploadInput").change(function() {
         var fileName = $("#FileUploadInput").val();
@@ -246,6 +249,9 @@ $(document).ready(function() {
                     if (DEBUG) console.log("Success: " + JSON.stringify(data));
                     App.Var.Model.addVision(data.newVision);
                     $("#AddVisionModal").modal("hide");
+
+                    //Mixpanel
+                    mixpanel.track("Add Vision Success");
                 },
                 // error
                 function(jqXHR, textStatus, errorThrown) {

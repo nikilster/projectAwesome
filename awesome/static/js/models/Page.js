@@ -22,6 +22,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
     },
     // Getters
     pageMode: function() { return this.get("pageMode"); },
+    pageString: function() { return App.Const.PageNames[this.pageMode()]; },
     loggedInUserId: function() { return this.get("loggedInUserId"); },
     currentUserId: function() { return this.get("currentUserId"); },
     visionList: function() { return this.get("visionList"); },
