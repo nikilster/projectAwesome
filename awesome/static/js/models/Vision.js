@@ -64,7 +64,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     /*  Test to see if this vision was created by the user who is viewing */
     usersOwnVision: function(viewingUsersId) {
 
-        console.log("comparing " + viewingUsersId + " to vision created by " + this.userId());
         //Logged in user =? vision creator?
         return viewingUsersId == this.userId();
     },
