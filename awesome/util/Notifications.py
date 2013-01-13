@@ -140,6 +140,43 @@ class Notifications:
             emailer = Emailer()
             emailer.sendBatch([email])
 
+    def sendVisionLikeEmail(self, user, liker, vision):
+        '''Takes dictionary inputs'''
+        emailAddress = user[User.Key.EMAIL]
+        emailSubject = liker[User.Key.FULL_NAME] + " liked your vision"
+        emailText = emailSubject
+        emailHtml = render_template("email/vision_like.html", 
+                                    user = user,
+                                    liker = liker,
+                                    vision = vision)
+        email = {
+            Constant.EMAIL_TO_KEY : emailAddress,
+            Constant.EMAIL_SUBJECT_KEY : emailSubject,
+            Constant.EMAIL_BODY_TEXT_KEY : emailText,
+            Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+        }
+        emailer = Emailer()
+        emailer.sendBatch([email])
+
+    def sendVisionCommentLikeEmail(self, user, liker, vision, comment):
+        '''Takes dictionary inputs'''
+        emailAddress = user[User.Key.EMAIL]
+        emailSubject = liker[User.Key.FULL_NAME] + " liked your comment"
+        emailText = emailSubject
+        emailHtml = render_template("email/vision_comment_like.html", 
+                                    user = user,
+                                    liker = liker,
+                                    vision = vision,
+                                    comment = comment)
+        email = {
+            Constant.EMAIL_TO_KEY : emailAddress,
+            Constant.EMAIL_SUBJECT_KEY : emailSubject,
+            Constant.EMAIL_BODY_TEXT_KEY : emailText,
+            Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+        }
+        emailer = Emailer()
+        emailer.sendBatch([email])
+
 
     #
     #   Helper Functions

@@ -66,20 +66,23 @@ def vision_page(visionId):
 @app.route('/api/vision/<int:visionId>', methods=['GET'])
 def apiVisionInformation(visionId):
     if request.method == 'GET':
+        user = None;
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
             user = User.getById(userInfo['id'])
-            if user:
-                vision = Vision.getById(visionId, user)
-                if vision:
-                    visionUser = User.getById(vision.userId())
-                    if visionUser:
-                        obj = vision.toDictionary(
-                                        options=[Vision.Options.PICTURE,
-                                                 Vision.Options.PARENT_USER])
-                        obj['name'] = visionUser.fullName()
-                        data = {"vision" : obj }
-                        return jsonify(data)
+
+        vision = Vision.getById(visionId, user)
+        if vision:
+            visionUser = User.getById(vision.userId())
+            if visionUser:
+                obj = vision.toDictionary(
+                                options=[Vision.Options.PICTURE,
+                                            Vision.Options.PARENT_USER,
+                                            Vision.Options.LIKES],
+                                user=user)
+                obj['name'] = visionUser.fullName()
+                data = {"vision" : obj }
+                return jsonify(data)
         abort(403)
     abort(405)
 
@@ -250,19 +253,24 @@ def register_user():
 @app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
+        user = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+
         mainPageVisions = VisionList.getMainPageVisions()
 
         data = { 'otherVisions' : mainPageVisions.toDictionary(
                                         options=[Vision.Options.PICTURE,
                                                  Vision.Options.PARENT_USER,
-                                                 Vision.Options.COMMENTS]),
+                                                 Vision.Options.COMMENTS,
+                                                 Vision.Options.LIKES,
+                                                 Vision.Options.COMMENT_LIKES],
+                                        user=user),
                  'visionList'   : [] }
 
         # TODO: be smarter about when to load user vision list later
-        if SessionManager.userLoggedIn():
-            userInfo = SessionManager.getUser()
-            user = User.getById(userInfo['id'])
-
+        if user:
             userVisions = VisionList.getUserVisions(user, user)
             data['visionList'] = userVisions.toDictionary()
 
@@ -286,7 +294,10 @@ def apiGetUserVisions(targetUserId):
                     data['visionList'] = userVisions.toDictionary(
                                            options=[Vision.Options.PICTURE,
                                                     Vision.Options.PARENT_USER,
-                                                    Vision.Options.COMMENTS])
+                                                    Vision.Options.COMMENTS,
+                                                    Vision.Options.LIKES,
+                                                    Vision.Options.COMMENT_LIKES],
+                                           user=user)
                 else:
                     data['visionList'] = userVisions.toDictionary()
 
@@ -303,7 +314,10 @@ def apiGetUserVisions(targetUserId):
             data['otherVisions'] = targetUserVisions.toDictionary(
                                         options=[Vision.Options.PICTURE,
                                                  Vision.Options.PARENT_USER,
-                                                 Vision.Options.COMMENTS])
+                                                 Vision.Options.COMMENTS,
+                                                 Vision.Options.LIKES,
+                                                 Vision.Options.COMMENT_LIKES],
+                                        user=user)
             data['user'] = targetUser.toDictionary();
 
         return jsonify(data)
@@ -389,6 +403,72 @@ def apiRepostVision(userId):
                         data = { 'result'    : "success",
                                  'repostParentId' : visionId,
                                  'newVision'      : newVision.toDictionary() }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/like_vision', methods=['POST'])
+def apiLikeVision(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not ('visionId' in parameters or
+                    'like' in parameters):
+                abort(406)
+            visionId = parameters['visionId']
+            like = parameters['like']
+
+            user = User.getById(userInfo['id'])
+            data = { 'result' : "error" }
+            if user:
+                vision = Vision.getById(visionId, user)
+                if vision:
+                    if like == True:
+                        vision.like(user)
+                    else:
+                        vision.unlike(user)
+                    data = { 'result'    : "success",
+                             'like' : vision.likedBy(user),
+                             'likeCount' : vision.likeCount() }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/like_vision_comment', methods=['POST'])
+def apiLikeVisionComment(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not ('visionCommentId' in parameters and
+                    'like' in parameters):
+                abort(406)
+            visionCommentId = parameters['visionCommentId']
+            like = parameters['like']
+
+            user = User.getById(userInfo['id'])
+            data = { 'result' : "error" }
+            if user:
+                comment = VisionComment.getById(visionCommentId)
+                if comment:
+                    vision = Vision.getById(comment.visionId(), user)
+                    if vision:
+                        if like == True:
+                            comment.like(user)
+                        else:
+                            comment.unlike(user)
+                        data = { 'result'    : "success",
+                                 'like' : comment.likedBy(user),
+                                 'likeCount' : comment.likeCount() }
             return jsonify(data)
         abort(403)
     abort(405)
@@ -491,11 +571,13 @@ def apiAddVisionComment(visionId):
                 user = User.getById(userInfo['id'])
                 if user:
                     newComment = user.commentOnVision(visionId, text)
-                if newComment:
-                    data = { 'result'    : "success",
-                             'newComment' : newComment.toDictionary(
-                                        options=[VisionComment.Options.AUTHOR])
-                           }
+                    if newComment:
+                        data = { 'result'    : "success",
+                                 'newComment' : newComment.toDictionary(
+                                     options=[VisionComment.Options.AUTHOR,
+                                              VisionComment.Options.LIKES],
+                                     user=user)
+                            }
                     return jsonify(data)
             data = { 'result' : "error" }
             return jsonify(data)
@@ -576,7 +658,9 @@ def apiVisionComments(visionId):
             comments = vision.comments(100)
             if comments:
                 commentObjs = comments.toDictionary(
-                                        options=[VisionComment.Options.AUTHOR])
+                                        options=[VisionComment.Options.AUTHOR,
+                                                 VisionComment.Options.LIKES],
+                                        user=user)
 
             # package them up
             data = {'result' : 'success',

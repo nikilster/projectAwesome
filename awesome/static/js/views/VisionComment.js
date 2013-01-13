@@ -5,6 +5,9 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
         _.bindAll(this, "gotoUser");
         this.render();
     },
+    sel: {
+        LIKE: ".VisionLikeInfo",
+    },
     events: {
         "click .VisionCommentUserLink" : "gotoUser",
     },
@@ -16,6 +19,13 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
         var template = _.template($("#VisionCommentTemplate").html(),
                                   variables);
         $(this.el).html(template);
+
+        if (this.model.like() != null) {
+            var likeView = new App.Backbone.View.Like(
+                                                { model: this.model.like(),
+                                                  parentView: this });
+            $(this.el).find(this.sel.LIKE).append(likeView.el);
+        }
 
         return this;
     },

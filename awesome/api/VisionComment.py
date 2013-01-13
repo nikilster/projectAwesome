@@ -1,6 +1,9 @@
 from data.DataApi import DataApi
 
+from VisionCommentLike import VisionCommentLike
+
 from ..util.Logger import Logger
+
 
 class VisionComment:
     '''For getting properties about vision comments.'''
@@ -18,14 +21,28 @@ class VisionComment:
         # These are included when Options.AUTHOR is passed
         NAME = 'name'
         PICTURE = 'picture'
+        LIKE = 'like'
+        # - these keys are used within Vision.Key.LIKE object
+        USER_LIKE = 'userLike'
+        LIKE_COUNT = 'likeCount'
 
     class Options:
         AUTHOR = 'author'
+        LIKES = 'likes'
 
     #
     # Static methods to get Comment
     #
 
+    @staticmethod
+    def getById(visionCommentId):
+        '''Gets by ID. MUST remember to check if access to Vision is OK.'''
+        model = DataApi.getVisionComment(visionCommentId)
+        if DataApi.NO_OBJECT_EXISTS == model:
+            return None
+        return VisionComment(model)
+
+    
     @staticmethod
     def _getByModel(model):
         '''This is used internally within API. Try not to use this.'''
@@ -47,6 +64,8 @@ class VisionComment:
         return self._model.removed
     def created(self):
         return self._model.created
+    def model(self):
+        return self._model
 
     #
     # Getter methods
@@ -55,7 +74,11 @@ class VisionComment:
         from User import User
         return User.getById(self.authorId())
 
-    def toDictionary(self, options=[]):
+    def vision(self, inquiringUser):
+        from Vision import Vision
+        return Vision.getById(self.visionId(), inquiringUser)
+
+    def toDictionary(self, options=[], user=None):
         '''For packaging in JSON objects.
         
         Pass in list of VisionComment.Options.* to include other info in objs
@@ -73,7 +96,53 @@ class VisionComment:
             if author:
                 obj[VisionComment.Key.NAME] = author.fullName()
                 obj[VisionComment.Key.PICTURE] = author.picture()
+        if VisionComment.Options.LIKES in options:
+            obj[VisionComment.Key.LIKE] = { 
+                                VisionComment.Key.LIKE_COUNT: self.likeCount() }
+            if user:
+                obj[VisionComment.Key.LIKE][VisionComment.Key.USER_LIKE] = \
+                                                            self.likedBy(user)
         return obj
+
+    #
+    # Like methods
+    #
+
+    def likeCount(self):
+        return VisionCommentLike.getCount(self)
+
+    def getLike(self, user):
+        '''Returns VisionCommentLike or None'''
+        return VisionCommentLike.get(self, user)
+
+    def likedBy(self, user):
+        '''Returns True of user likes vision comment, else False.'''
+        like = self.getLike(user)
+        return like != None
+
+    def like(self, user):
+        '''Returns true if successful, false otherwise'''
+        like = DataApi.addVisionCommentLike(self.model(), user.model())
+        if like:
+            # If liker different than author, email the author of the comment
+            if user.id() != self.authorId():
+                from ..WorkerJobs import Queue_visionCommentLikeEmail
+                author = self.author()
+                if author:
+                    vision = self.vision(user)
+                    if vision:
+                        Queue_visionCommentLikeEmail(
+                                            author.toDictionaryFull(),
+                                            user.toDictionary(),
+                                            vision.toDictionary(),
+                                            self.toDictionary())
+            return True
+        return False
+
+    def unlike(self, user):
+        '''Returns true if successful, false otherwise'''
+        return DataApi.removeVisionCommentLike(self.model(), user.model())
+
 
     #
     # Private methods

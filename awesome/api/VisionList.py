@@ -113,7 +113,7 @@ class VisionList:
             return random.choice(self.visions())
         return None
 
-    def toDictionary(self, options=[]):
+    def toDictionary(self, options=[], user=None):
         '''For packaging to JSON output.
 
         options input is list of Vision.Options when we want more information
@@ -123,6 +123,10 @@ class VisionList:
         visions. Whenever we want to get all this data across a list of 
         visions, it is good to use VisionList.toDictionary() instead of the
         individual toDictionary() calls on objects.
+
+        'user' parameter is only used when LIKES in provided as
+        an option. If it is passed in, we also check whether this user likes
+        the visions or not.
         '''
         from User import User
 
@@ -152,14 +156,13 @@ class VisionList:
         # Get all users (including parent users if needed)
         userIds = set([vision.userId() for vision in self.visions()])
         users = User.getByUserIds(userIds.union(parentUserIds))
-        idToUser = dict([(user.id(), user) for user in users])
+        idToUser = dict([(u.id(), u) for u in users])
 
-        # Grab comments if necessary
-        #
-        # TODO: this isn't fast, but will do for now.
+        # If COMMENTS, get comments
         if Vision.Options.COMMENTS in options:
             commentList = VisionCommentList.getEmptyList()
             for vision in self.visions():
+                # TODO: Speed up performance of this some time!
                 commentList.extend(vision.comments(5))
 
             idToComments = {}
@@ -173,6 +176,19 @@ class VisionList:
                                         for comment in commentList.comments()])
             authors = User.getByUserIds(authorIds)
             idToAuthor = dict([(author.id(), author) for author in authors])
+
+            # If COMMENT_LIKES
+            # TODO: SPEED UP!
+            idToCommentLike = {}
+            if Vision.Options.COMMENT_LIKES in options:
+                for comment in commentList.comments():
+                    idToCommentLike[comment.id()] = { 
+                             VisionComment.Key.LIKE_COUNT: comment.likeCount() }
+
+                    if user:
+                        idToCommentLike[comment.id()]\
+                                       [VisionComment.Key.USER_LIKE] = \
+                                                        comment.likedBy(user)
 
         # Now start building object list to return
         for vision in self.visions():
@@ -193,7 +209,13 @@ class VisionList:
                         author = idToAuthor[comment.authorId()]
                         commentObj[VisionComment.Key.NAME] = author.fullName()
                         commentObj[VisionComment.Key.PICTURE] = author.picture()
+
+                        if Vision.Options.COMMENT_LIKES in options:
+                            commentObj[VisionComment.Key.LIKE] = \
+                                                idToCommentLike[comment.id()]
+                            
                         obj[Vision.Key.COMMENTS].append(commentObj)
+
             # If PARENT_USER
             if Vision.Options.PARENT_USER in options:
                 if not vision.isOriginalVision():
@@ -201,7 +223,16 @@ class VisionList:
                         parentVision = idToParentVisions[vision.parentId()]
                         if parentVision.userId() in idToUser:
                             parentUser = idToUser[parentVision.userId()]
-                            obj[Vision.Key.PARENT_USER] = parentUser.toDictionary()
+                            obj[Vision.Key.PARENT_USER] = \
+                                                     parentUser.toDictionary()
+            # If LIKES
+            # TODO: speed up performance of this!!!!
+            if Vision.Options.LIKES in options:
+                obj[Vision.Key.LIKE] = { Vision.Key.LIKE_COUNT: vision.likeCount() }
+                if user:
+                    obj[Vision.Key.LIKE][Vision.Key.USER_LIKE] = vision.likedBy(user)
+
+            # finally append object to list
             retObj.append(obj)
         return retObj
 

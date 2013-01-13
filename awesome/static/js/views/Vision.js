@@ -12,6 +12,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         MORE_COMMENTS: ".MoreComments",
         COMMENT_CONTAINER : ".VisionCommentContainer",
         COMMENT_INPUT : ".AddVisionCommentInput",
+        LIKE: ".VisionLikeInfo",
         // Overlay
         REPOST : ".Repost",
         MOVE : ".Move",
@@ -169,11 +170,18 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          parentUserName: parentUserName,
                          userId: this.model.userId(),
                          profile: USER['picture'],
-                         commentPrompt: commentPrompt
+                         commentPrompt: commentPrompt,
                         };
 
         var template = _.template($("#VisionTemplate").html(), variables);
         $(this.el).html(template);
+
+        if (this.model.like() != null) {
+            var likeView = new App.Backbone.View.Like(
+                                                { model: this.model.like(),
+                                                  parentView: this });
+            $(this.el).find(this.sel.LIKE).append(likeView.el);
+        }
 
         this.comments = []
         var commentList = this.model.comments().last(this.constant.NUM_COMMENTS);
@@ -342,7 +350,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         //Merge Properties
         var allProperties = $.extend(baseProperties, properties);
 
-        console.log(allProperties);
+        //console.log(allProperties);
 
         //Track
         mixpanel.track(actionName, allProperties);

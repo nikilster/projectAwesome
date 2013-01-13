@@ -38,7 +38,7 @@ class VisionCommentList:
     def length(self):
         return len(self._commentModels)
 
-    def toDictionary(self, options=[]):
+    def toDictionary(self, options=[], user=None):
         '''For packaging JSON objects
         
         Pass in list of VisionComment.Options.* for extra information
@@ -51,7 +51,20 @@ class VisionCommentList:
                 authorIds = set([comment.authorId()
                                                 for comment in self.comments()])
                 authors = DataApi.getUsersFromIds(authorIds)
-                idToAuthor = dict([(user.id, user) for user in authors])
+                idToAuthor = dict([(u.id, u) for u in authors])
+
+            # If LIKES
+            # TODO: SPEED UP!
+            idToCommentLike = {}
+            if VisionComment.Options.LIKES in options:
+                for comment in self.comments():
+                    idToCommentLike[comment.id()] = { 
+                             VisionComment.Key.LIKE_COUNT: comment.likeCount() }
+
+                    if user:
+                        idToCommentLike[comment.id()]\
+                                       [VisionComment.Key.USER_LIKE] = \
+                                                        comment.likedBy(user)
 
             for comment in commentList:
                 obj = VisionComment(comment).toDictionary()
@@ -59,6 +72,11 @@ class VisionCommentList:
                     author = idToAuthor[comment.authorId]
                     obj[VisionComment.Key.NAME] = author.fullName
                     obj[VisionComment.Key.PICTURE] = author.picture
+                    # If LIKES
+                    if VisionComment.Options.LIKES in options:
+                        obj[VisionComment.Key.LIKE] = \
+                                                idToCommentLike[comment.id]
+
                 objs.append(obj)
         return objs
 

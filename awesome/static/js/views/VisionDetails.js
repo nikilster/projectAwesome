@@ -87,6 +87,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         PRIVACY_INPUT : "#VisionDetailsPrivacyInput",
         EDIT_SUBMIT : "#VisionDetailsEditSubmit",
         DELETE_BUTTON : "#VisionDeleteButton",
+        LIKE: ".VisionLikeInfo",
     },
     initialize: function() {
         _.bindAll(this, "toggleEditSubmit",
@@ -189,11 +190,18 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             parentUserVisibility: parentUserVisibility,
             parentUserId: parentUserId,
             parentUserName: parentUserName,
-            commentPrompt: commentPrompt
+            commentPrompt: commentPrompt,
         }
         var template = _.template($("#VisionDetailsModalTemplate").html(),
                                   variables);
         $(this.el).html(template);
+
+        if (this.model.like() != null) {
+            var likeView = new App.Backbone.View.Like(
+                                                { model: this.model.like(),
+                                                  parentView: this });
+            $(this.el).find(this.sel.LIKE).append(likeView.el);
+        }
 
         this.toggleEditSubmit();
 

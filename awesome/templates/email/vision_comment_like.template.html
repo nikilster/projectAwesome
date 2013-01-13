@@ -1,0 +1,29 @@
+<html>
+<head>
+    <title>{{ liker.fullName }} likes your comment!</title>
+</head>
+<body>
+    <p>
+    Hi {{ user.firstName }}!
+    </p>
+    <p>
+        <a href="{{ full_url_for('user_profile', userId=liker.id) }}">
+            {{ liker.fullName }}
+        </a>
+        likes
+        <a href="{{ full_url_for('vision_page', visionId=vision.id) }}">
+            your comment:
+        </a>
+    </p>
+
+  <p>
+   <i>
+    {{ comment.text }}
+   </i>
+  </p>
+    <p>
+    Cheers,<br>
+    - The Project Awesome Team
+    </p>
+</body>
+</html>

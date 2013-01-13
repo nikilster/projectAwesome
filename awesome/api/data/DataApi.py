@@ -371,6 +371,85 @@ class DataApi:
         return True
 
     # 
+    # Vision Like methods
+    #
+
+    @staticmethod
+    def getVisionLike(visionModel, userModel):
+        like = VisionLikeModel.query.filter_by(visionId=visionModel.id)\
+                                    .filter_by(userId=userModel.id)\
+                                    .first()
+        return like if None != like else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getVisionLikeCount(visionModel):
+        return VisionLikeModel.query.filter_by(visionId=visionModel.id).count()
+
+    @staticmethod
+    def addVisionLike(visionModel, userModel):
+        '''Returns new VisionLikeModel, or None'''
+        existing = DataApi.getVisionLike(visionModel, userModel)
+        if existing != DataApi.NO_OBJECT_EXISTS:
+            # if a like is already there, return None
+            return None
+        like = VisionLikeModel(visionModel.id, userModel.id)
+        DB.session.add(like)
+        DB.session.commit()
+        return like
+
+    @staticmethod
+    def removeVisionLike(visionModel, userModel):
+        '''Returns True if removed, False if like doesn't exist'''
+        like = DataApi.getVisionLike(visionModel, userModel)
+        if like != DataApi.NO_OBJECT_EXISTS:
+            DB.session.delete(like)
+            DB.session.commit()
+            return True
+        return False
+
+
+    # 
+    # Vision Comment Like methods
+    #
+
+    @staticmethod
+    def getVisionCommentLike(commentModel, userModel):
+        like = VisionCommentLikeModel.query\
+                                    .filter_by(visionCommentId=commentModel.id)\
+                                    .filter_by(userId=userModel.id)\
+                                    .first()
+        return like if None != like else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getVisionCommentLikeCount(commentModel):
+        return VisionCommentLikeModel.query\
+                                   .filter_by(visionCommentId=commentModel.id)\
+                                   .count()
+
+    @staticmethod
+    def addVisionCommentLike(commentModel, userModel):
+        '''Returns new VisionCommentLikeModel, or None'''
+        existing = DataApi.getVisionCommentLike(commentModel, userModel)
+        if existing != DataApi.NO_OBJECT_EXISTS:
+            # if a like is already there, return None
+            return None
+        like = VisionCommentLikeModel(commentModel.id, userModel.id)
+        DB.session.add(like)
+        DB.session.commit()
+        return like
+
+    @staticmethod
+    def removeVisionCommentLike(commentModel, userModel):
+        '''Returns True if removed, False if like doesn't exist'''
+        like = DataApi.getVisionCommentLike(commentModel, userModel)
+        if like != DataApi.NO_OBJECT_EXISTS:
+            DB.session.delete(like)
+            DB.session.commit()
+            return True
+        return False
+
+
+    # 
     # Vision Comment methods
     #
     @staticmethod
@@ -382,6 +461,12 @@ class DataApi:
         DB.session.add(comment)
         DB.session.commit()
         return comment
+
+    @staticmethod
+    def getVisionComment(visionCommentId):
+        '''Get vision comment from id, or NO_OBJECT_EXISTS.'''
+        comment = VisionCommentModel.query.filter_by(id=visionCommentId).first()
+        return comment if None != comment else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
     def getVisionComments(visionModel, maxComments):

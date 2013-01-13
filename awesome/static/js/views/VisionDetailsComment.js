@@ -1,5 +1,8 @@
 App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
     className: "VisionDetailsComment",
+    sel: {
+        LIKE: ".VisionLikeInfo",
+    },
     initialize: function() {
         //_.bindAll(this, "gotoUser");
         this.urlTarget = this.options.urlTarget;
@@ -15,6 +18,13 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
         var template = _.template($("#VisionDetailsCommentTemplate").html(),
                                   variables);
         $(this.el).html(template);
+
+        if (this.model.like() != null) {
+            var likeView = new App.Backbone.View.Like(
+                                                { model: this.model.like(),
+                                                  parentView: this });
+            $(this.el).find(this.sel.LIKE).append(likeView.el);
+        }
 
         return this;
     },

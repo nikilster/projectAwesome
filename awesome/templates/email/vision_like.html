@@ -1,0 +1,26 @@
+<html>
+ <head>
+  <title>
+   {{ liker.fullName }} likes your vision!
+  </title>
+ </head>
+ <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
+  <p>
+   Hi {{ user.firstName }}!
+  </p>
+  <p>
+   <a href="{{ full_url_for('user_profile', userId=liker.id) }}">
+    {{ liker.fullName }}
+   </a>
+   is checking out your vision board and
+   <a href="{{ full_url_for('vision_page', visionId=vision.id) }}">
+    likes your vision!
+   </a>
+  </p>
+  <p>
+   Cheers,
+   <br />
+   - The Project Awesome Team
+  </p>
+ </body>
+</html>

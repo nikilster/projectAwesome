@@ -243,12 +243,14 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/User.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Picture.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/models/Like.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/VisionComment.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/collections/VisionCommentList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Vision.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/collections/VisionList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Page.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/UserInformation.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/views/Like.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionComment.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionDetailsComment.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionDetails.js') }}"></script>
@@ -278,6 +280,16 @@
 </div>
 </script>
 
+<script type="text/template" id="VisionLikeTemplate">
+    <span class="VisionLike <%= likeVisibility %>">
+        <%= likeText %>
+    </span>
+    <span class="VisionLikeCount">
+        <i class="<%= thumbVisibility %> VisionThumbsUp icon-thumbs-up"/> 
+        <%= likeCount %>
+    </span>
+</script>
+
 <!-- HTML dynamically generated for a vision -->
 <script type="text/template" id="VisionTemplate">
 
@@ -300,6 +312,7 @@
         </a>
     </span>
 </div>
+<div class="VisionLikeInfo"></div>
 <div class="MoreComments <%= moreCommentsVisibility %>">More comments</div>
 <div class="VisionCommentContainer"></div>
 <div class="AddVisionComment <%= addCommentVisibility %>">
@@ -352,6 +365,7 @@
     </a>
     <br>
     <%= text %>
+    <div class="VisionLikeInfo"></div>
 </script>
 
 <script type="text/template" id="VisionDetailsCommentTemplate">
@@ -363,9 +377,10 @@
     <div class="VisionDetailsCommentText">
         <%= text %>
     </div>
-    <div class="VisionDetailsCommentTime">
+    <span class="VisionLikeInfo"></span>
+    <span class="VisionDetailsCommentTime">
         <%= created %>
-    </div>
+    </span>
 </script>
 
 <script type="text/template" id="VisionDetailsRepostUserTemplate">
@@ -439,9 +454,11 @@
                     </div>
                 </div>
             </div>
-            <div id="VisionDetailsTimeCreated">
-            <%= created %>
-            </div>
+            <span class="VisionLikeInfo"></span>
+            <span id="VisionDetailsTimeCreated">
+                <%= created %>
+            </span>
+
             <div id="VisionDetailsCommentsContainer"></div>
 
             <div id="VisionDetailsAddCommentContainer"

@@ -4,8 +4,10 @@ from VisionComment import VisionComment
 from VisionCommentList import VisionCommentList
 from Picture import Picture
 from Privacy import Relationship, VisionPrivacy
+from VisionLike import VisionLike
 
 from ..util.Logger import Logger
+
 
 class Vision:
     '''For fetching and getting properties on visions.
@@ -33,6 +35,10 @@ class Vision:
         # These are filled when proper options are passed in
         PICTURE = 'picture'
         PARENT_USER = 'parentUser'
+        LIKE = 'like'
+        # - these keys are used within Vision.Key.LIKE object
+        USER_LIKE = 'userLike'
+        LIKE_COUNT = 'likeCount'
         # These are used externally
         NAME = 'name'
         COMMENTS = 'comments'
@@ -42,8 +48,10 @@ class Vision:
         '''Extra options to pass to toDictionary'''
         PICTURE = 0
         PARENT_USER = 1
+        LIKES = 2
         # Only used in VisionList.toDictionary so far
-        COMMENTS = 2
+        COMMENTS = 3
+        COMMENT_LIKES = 4
     
     #
     # Static methods to get a vision
@@ -199,13 +207,16 @@ class Vision:
                 return VisionComment._getByModel(commentModel)
         return None
 
-    def toDictionary(self, options=[]):
+    def toDictionary(self, options=[], user=None):
         '''Used for packaging into JSON
         
         Pass in optional input list with other things to package into object.
 
         If accessing many visions, use VisionList instead! It can batch up
         DB queries across visions for better performance
+
+        The 'user' parameter is used when LIKES option is provided to
+        determine whether this vision is liked by the user
         '''
         obj = { Vision.Key.ID           : self.id(),
                 Vision.Key.USER_ID      : self.userId(),
@@ -228,7 +239,45 @@ class Vision:
                     parentUser = User.getById(parentVision.userId())
                     if parentUser:
                         obj[Vision.Key.PARENT_USER] = parentUser.toDictionary()
+        if Vision.Options.LIKES in options:
+            obj[Vision.Key.LIKE] = { Vision.Key.LIKE_COUNT: self.likeCount() }
+            if user:
+                obj[Vision.Key.LIKE][Vision.Key.USER_LIKE] = self.likedBy(user)
         return obj
+
+    #
+    # Like methods
+    #
+
+    def likeCount(self):
+        return VisionLike.getCount(self)
+
+    def getLike(self, user):
+        '''Returns VisionLike or None'''
+        return VisionLike.get(self, user)
+
+    def likedBy(self, user):
+        '''Returns True of user likes vision, else False.'''
+        like = self.getLike(user)
+        return like != None
+
+    def like(self, user):
+        '''Returns true if successful, false otherwise'''
+        like = DataApi.addVisionLike(self.model(), user.model())
+        if like:
+            # If liker is different from owner of vision, email the owner
+            if user.id() != self.userId():
+                from ..WorkerJobs import Queue_visionLikeEmail
+                owner = self.user()
+                if owner:
+                    Queue_visionLikeEmail(owner.toDictionaryFull(),
+                                          user.toDictionary(),
+                                          self.toDictionary())
+            return True
+        return False
+    def unlike(self, user):
+        '''Returns true if successful, false otherwise'''
+        return DataApi.removeVisionLike(self.model(), user.model())
 
     #
     # Private methods

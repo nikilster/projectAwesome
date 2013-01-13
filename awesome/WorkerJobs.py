@@ -25,6 +25,12 @@ def Queue_commentNotificationEmail(userToEmail, authorUser, vision, comment):
     REDIS_QUEUE.enqueue(Worker_commentNotificationEmail,
                         userToEmail, authorUser, vision, comment)
 
+def Queue_visionLikeEmail(user, liker, vision):
+    REDIS_QUEUE.enqueue(Worker_visionLikeEmail, user, liker, vision)
+
+def Queue_visionCommentLikeEmail(user, liker, vision, comment):
+    REDIS_QUEUE.enqueue(Worker_visionCommentLikeEmail,
+                        user, liker, vision, comment)
 
 ###############################################################################
 # Worker jobs done by worker dyno
@@ -69,5 +75,26 @@ def Worker_commentNotificationEmail(userToEmail, authorUser, vision, comment):
 
     ctx.pop()
 
+def Worker_visionLikeEmail(user, liker, vision):
+    ctx = app.test_request_context()
+    ctx.push()
+
+    ## WORK START ##
+    notifications = Notifications(test=False)
+    notifications.sendVisionLikeEmail(user, liker, vision)
+    ## WORK END ##
+
+    ctx.pop()
+
+def Worker_visionCommentLikeEmail(user, liker, vision, comment):
+    ctx = app.test_request_context()
+    ctx.push()
+
+    ## WORK START ##
+    notifications = Notifications(test=False)
+    notifications.sendVisionCommentLikeEmail(user, liker, vision, comment)
+    ## WORK END ##
+
+    ctx.pop()
 
 # $eof
