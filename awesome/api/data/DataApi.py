@@ -1,4 +1,5 @@
 from . import DB
+from sqlalchemy import func
 from sqlalchemy.sql import desc
 from DbSchema import *
 from awesome.util.Logger import Logger
@@ -386,6 +387,26 @@ class DataApi:
         return VisionLikeModel.query.filter_by(visionId=visionModel.id).count()
 
     @staticmethod
+    def getVisionListLikeCount(visionIds):
+        if len(visionIds) > 0:
+            return DB.session.query(VisionLikeModel.visionId,
+                                    func.count(VisionLikeModel.visionId))\
+                            .filter(VisionLikeModel.visionId.in_(visionIds))\
+                            .group_by(VisionLikeModel.visionId)\
+                            .all()
+        return []
+
+    @staticmethod
+    def getVisionIdsLikedByUser(visionIds, userId):
+        if len(visionIds) > 0:
+            likes = VisionLikeModel.query\
+                             .filter_by(userId=userId)\
+                             .filter(VisionLikeModel.visionId.in_(visionIds))\
+                             .all()
+            return [like.visionId for like in likes]
+        return []
+
+    @staticmethod
     def addVisionLike(visionModel, userModel):
         '''Returns new VisionLikeModel, or None'''
         existing = DataApi.getVisionLike(visionModel, userModel)
@@ -447,6 +468,26 @@ class DataApi:
             DB.session.commit()
             return True
         return False
+
+    @staticmethod
+    def getVisionCommentListLikeCount(commentIds):
+        if len(commentIds) > 0:
+            return DB.session.query(VisionCommentLikeModel.visionCommentId,
+                         func.count(VisionCommentLikeModel.visionCommentId))\
+                .filter(VisionCommentLikeModel.visionCommentId.in_(commentIds))\
+                .group_by(VisionCommentLikeModel.visionCommentId)\
+                .all()
+        return []
+
+    @staticmethod
+    def getVisionCommentIdsLikedByUser(commentIds, userId):
+        if len(commentIds) > 0:
+            likes = VisionCommentLikeModel.query\
+              .filter_by(userId=userId)\
+              .filter(VisionCommentLikeModel.visionCommentId.in_(commentIds))\
+              .all()
+            return [like.visionCommentId for like in likes]
+        return []
 
 
     # 

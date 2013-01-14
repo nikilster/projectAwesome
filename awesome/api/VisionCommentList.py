@@ -54,17 +54,14 @@ class VisionCommentList:
                 idToAuthor = dict([(u.id, u) for u in authors])
 
             # If LIKES
-            # TODO: SPEED UP!
-            idToCommentLike = {}
             if VisionComment.Options.LIKES in options:
-                for comment in self.comments():
-                    idToCommentLike[comment.id()] = { 
-                             VisionComment.Key.LIKE_COUNT: comment.likeCount() }
-
-                    if user:
-                        idToCommentLike[comment.id()]\
-                                       [VisionComment.Key.USER_LIKE] = \
-                                                        comment.likedBy(user)
+                commentIds = [c.id() for c in self.comments()]
+                tuples = DataApi.getVisionCommentListLikeCount(commentIds)
+                idToLikeCount = dict([(commentId, count)
+                                       for commentId, count in tuples])
+                if user:
+                    commentUserLikes = DataApi.getVisionCommentIdsLikedByUser(
+                                                        commentIds, user.id())
 
             for comment in commentList:
                 obj = VisionComment(comment).toDictionary()
@@ -75,8 +72,13 @@ class VisionCommentList:
                     # If LIKES
                     if VisionComment.Options.LIKES in options:
                         obj[VisionComment.Key.LIKE] = \
-                                                idToCommentLike[comment.id]
-
+                                    { VisionComment.Key.LIKE_COUNT :
+                                      idToLikeCount[comment.id] if
+                                      comment.id in idToLikeCount else 0 }
+                        if user:
+                            obj[VisionComment.Key.LIKE]\
+                               [VisionComment.Key.USER_LIKE] =\
+                                                comment.id in commentUserLikes
                 objs.append(obj)
         return objs
 

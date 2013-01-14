@@ -167,7 +167,7 @@ class VisionList:
 
             idToComments = {}
             for comment in commentList.comments():
-                if not comment.visionId() in idToComments.keys():
+                if not comment.visionId() in idToComments:
                     idToComments[comment.visionId()] = [comment]
                 else:
                     idToComments[comment.visionId()].append(comment)
@@ -178,17 +178,23 @@ class VisionList:
             idToAuthor = dict([(author.id(), author) for author in authors])
 
             # If COMMENT_LIKES
-            # TODO: SPEED UP!
-            idToCommentLike = {}
             if Vision.Options.COMMENT_LIKES in options:
-                for comment in commentList.comments():
-                    idToCommentLike[comment.id()] = { 
-                             VisionComment.Key.LIKE_COUNT: comment.likeCount() }
+                commentIds = [c.id() for c in commentList.comments()]
+                tuples = DataApi.getVisionCommentListLikeCount(commentIds)
+                idToCommentLikes = dict([(commentId, count)
+                                                for commentId, count in tuples])
+                if user:
+                    commentUserLikes = DataApi.getVisionCommentIdsLikedByUser(
+                                                        commentIds, user)
 
-                    if user:
-                        idToCommentLike[comment.id()]\
-                                       [VisionComment.Key.USER_LIKE] = \
-                                                        comment.likedBy(user)
+        # If LIKES, get vision likes in batch
+        if Vision.Options.LIKES in options:
+            visionIds = [v.id() for v in self.visions()]
+            tuples = DataApi.getVisionListLikeCount(visionIds)
+            idToLikes = dict([(visionId, count) for visionId, count in tuples])
+            if user:
+                userLikes = DataApi.getVisionIdsLikedByUser(visionIds,
+                                                            user.id())
 
         # Now start building object list to return
         for vision in self.visions():
@@ -203,7 +209,7 @@ class VisionList:
             # If COMMENTS
             if Vision.Options.COMMENTS in options:
                 obj[Vision.Key.COMMENTS] = []
-                if vision.id() in idToComments.keys():
+                if vision.id() in idToComments:
                     for comment in idToComments[vision.id()]:
                         commentObj = comment.toDictionary()
                         author = idToAuthor[comment.authorId()]
@@ -211,9 +217,15 @@ class VisionList:
                         commentObj[VisionComment.Key.PICTURE] = author.picture()
 
                         if Vision.Options.COMMENT_LIKES in options:
-                            commentObj[VisionComment.Key.LIKE] = \
-                                                idToCommentLike[comment.id()]
-                            
+                            commentObj[VisionComment.Key.LIKE] = {
+                                            VisionComment.Key.LIKE_COUNT:
+                                            idToCommentLikes[comment.id()]
+                                            if comment.id() in idToCommentLikes
+                                            else 0 }
+                            if user:
+                                commentObj[VisionComment.Key.LIKE]\
+                                          [VisionComment.Key.USER_LIKE] = \
+                                            comment.id() in commentUserLikes
                         obj[Vision.Key.COMMENTS].append(commentObj)
 
             # If PARENT_USER
@@ -226,11 +238,13 @@ class VisionList:
                             obj[Vision.Key.PARENT_USER] = \
                                                      parentUser.toDictionary()
             # If LIKES
-            # TODO: speed up performance of this!!!!
             if Vision.Options.LIKES in options:
-                obj[Vision.Key.LIKE] = { Vision.Key.LIKE_COUNT: vision.likeCount() }
+                obj[Vision.Key.LIKE] = { Vision.Key.LIKE_COUNT: 
+                                         idToLikes[vision.id()]
+                                         if vision.id() in idToLikes else 0 }
                 if user:
-                    obj[Vision.Key.LIKE][Vision.Key.USER_LIKE] = vision.likedBy(user)
+                    obj[Vision.Key.LIKE][Vision.Key.USER_LIKE] = \
+                                                    vision.id() in userLikes
 
             # finally append object to list
             retObj.append(obj)

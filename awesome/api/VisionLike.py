@@ -21,6 +21,7 @@ class VisionLike:
         '''Get number of likes for a given vision'''
         return DataApi.getVisionLikeCount(vision.model())
 
+
     #
     # Getters
     #
