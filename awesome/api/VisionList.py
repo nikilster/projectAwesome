@@ -66,12 +66,13 @@ class VisionList:
             return None
 
     @staticmethod
-    def getByIds(visionIds):
+    def getByIds(visionIds, allowMissingVisions=False):
         '''Note that this assumes we have access to all these visions.
 
         MUST do privacy checks before calling.
         '''
-        models = DataApi.getVisionsById(visionIds)
+        models = DataApi.getVisionsById(visionIds,
+                                        allowMissingVisions=allowMissingVisions)
         return VisionList(models)
 
     @staticmethod
@@ -147,7 +148,8 @@ class VisionList:
             parentVisionIds = set([vision.parentId()
                                                  for vision in self.visions()])
             parentVisionIds.discard(0)
-            parentVisions = VisionList.getByIds(parentVisionIds)
+            parentVisions = VisionList.getByIds(parentVisionIds,
+                                                allowMissingVisions=True)
             idToParentVisions = dict([(v.id(), v)
                                              for v in parentVisions.visions()])
             parentUserIds = set([parent.userId()

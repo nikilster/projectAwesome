@@ -287,7 +287,7 @@ class DataApi:
         return visionModels
 
     @staticmethod
-    def getVisionsById(visionIds):
+    def getVisionsById(visionIds, allowMissingVisions=False):
         '''Get vision models from a list of vision ids.'''
         visionModels = []
         if len(visionIds) > 0:
@@ -299,7 +299,12 @@ class DataApi:
             # hash from visionId to vision
             idToVision = dict([(vision.id, vision) for vision in all_visions])
 
-            visionModels = [idToVision[visionId] for visionId in visionIds]
+            for visionId in visionIds:
+                if allowMissingVisions:
+                    if visionId in idToVision:
+                        visionModels.append(idToVision[visionId])
+                else:
+                    visionModels.append(idToVision[visionId])
         return visionModels
 
     @staticmethod
