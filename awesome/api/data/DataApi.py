@@ -179,11 +179,12 @@ class DataApi:
         return vision if None != vision else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
-    def visionHasComments(visionModel):
+    def visionHasCommentsFromOthers(visionModel, userId):
         '''Returns True if vision has some comments, False otherwise.'''
         assert visionModel != DataApi.NO_OBJECT_EXISTS, "Invalid vision modal"
         comment = VisionCommentModel.query.filter_by(visionId=visionModel.id) \
                                           .filter_by(removed=False) \
+                                          .filter(VisionCommentModel.authorId != userId)\
                                           .first()
         return True if None != comment else False
 

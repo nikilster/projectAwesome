@@ -599,19 +599,24 @@ def apiVisionEdit(visionId):
                 abort(406)
             text = parameters['text']
             isPublic = parameters['isPublic']
-       
+
             user = User.getById(userInfo['id'])
             vision = Vision.getById(visionId, user)
             if (vision == None) or vision.userId() != userInfo['id']:
                 abort(406)
 
-            change = vision.edit(text, isPublic);
+            (change, errorMsg) = vision.edit(text, isPublic);
 
             data = { 'result' : "error" }
-            if change:
+            if change and errorMsg == "":
                 data = { 'result'    : "success",
                          'text'      : text,
                          'isPublic'  : isPublic,
+                         'errorMsg'  : "",
+                       }
+            elif errorMsg != "":
+                data = { 'result' : "success", 
+                         'errorMsg':  errorMsg
                        }
             return jsonify(data)
         abort(403)

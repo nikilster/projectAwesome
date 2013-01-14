@@ -80,6 +80,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         TEXT_CONTAINER : "#VisionDetailsTextContainer",
         EDIT_TEXT : "#VisionDetailsEditText",
         EDIT_FORM : "#VisionDetailsEditForm",
+        EDIT_ERROR : "#VisionDetailsEditError",
         TEXT : "#VisionDetailsText",
         MODAL_BOX : "#VisionDetailsModalBox",
         CLOSE : "#VisionDetailsClose",
@@ -88,6 +89,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         EDIT_SUBMIT : "#VisionDetailsEditSubmit",
         DELETE_BUTTON : "#VisionDeleteButton",
         LIKE: ".VisionLikeInfo",
+        LOCK: ".VisionDetailsLock",
     },
     initialize: function() {
         _.bindAll(this, "toggleEditSubmit",
@@ -108,9 +110,11 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "onTextMouseLeave",
                         "onEditClick",
                         "ignoreClick",
-                        "closeModal"
+                        "closeModal",
+                        "privacyChange"
         );
         this.model.comments().bind("add", this.renderComments, this);
+        this.model.bind("change:privacy", this.privacyChange, this);
         this.render();
     },
     events: function(){
@@ -150,6 +154,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         var parentUserName = "";
 
         var isPrivate = "checked";
+        var lockVisibility = "";
         if (userLoggedIn()) {
             addCommentVisibility = "";
 
@@ -163,6 +168,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             }
             if (this.model.isPublic()) {    
                 isPrivate = "";
+                lockVisibility = "Hidden";
             };
             if (this.model.hasParent()) {
                 var parentUserVisibility = "";
@@ -185,6 +191,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             addCommentVisibility: addCommentVisibility,
             deleteVisibility: deleteVisibility,
             isPrivate: isPrivate,
+            lockVisibility: lockVisibility,
             closeVisibility: closeVisibility,
             urlTarget: urlTarget,
             parentUserVisibility: parentUserVisibility,
@@ -325,7 +332,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
               );
     },
     ajaxEditSuccess: function(data, textStatus, jqXHR) {
-        if (this.model) {
+        if (data.errorMsg != "") {
+            $(this.el).find(this.sel.EDIT_ERROR).html(data.errorMsg).show();
+        } else if (this.model) {
             this.model.edit(data.text, data.isPublic);
             $(this.el).find(this.sel.TEXT).html(data.text);
             this.toggleEditSubmit();
@@ -393,6 +402,13 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         if (this.currentVisionEditable()) {
             $(this.el).find(this.sel.TEXT_CONTAINER).hide();
             $(this.el).find(this.sel.EDIT_FORM).show();
+        }
+    },
+    privacyChange: function() {
+        if (this.model.isPublic()) {
+            $(this.el).find(this.sel.LOCK).hide();
+        } else {
+            $(this.el).find(this.sel.LOCK).show();
         }
     },
 });

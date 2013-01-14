@@ -174,24 +174,27 @@ class Vision:
         return users
 
     def edit(self, text, isPublic):
-        '''Set new text and/or privacy value'''
-
+        '''Set new text and/or privacy value
+       
+        Returns (True if change happened, error_msg if there is one)
+        '''
         # Make sure text is valid
         text = text.strip()
-        if len(text) < 0 or len(text) > 200:
-            return False
+        if len(text) < 0:
+            return (False, "Text field is required.")
 
         # Make sure to maintain privacy! If already private, can't change to
         # public!
         if False == self.isPublic() and \
            True == isPublic and \
-           DataApi.visionHasComments(self.model()):
-            return False
+           DataApi.visionHasCommentsFromOthers(self.model(), self.userId()):
+            return (False,
+                    "Can't make vision public once there are comments from others.")
         # ok, now we can make the change
         privacy = VisionPrivacy.PRIVATE
         if isPublic:
             privacy = VisionPrivacy.PUBLIC
-        return DataApi.editVision(self.model(), text, privacy)
+        return (DataApi.editVision(self.model(), text, privacy), "")
 
     def addComment(self, user, text):
         '''Return new comment, or None.

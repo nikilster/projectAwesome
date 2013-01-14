@@ -456,9 +456,15 @@
                     </div>
                 </div>
             </div>
+            <div id="VisionDetailsEditError" class="Hidden"
+                 style="color:red;"></div>
             <span class="VisionLikeInfo"></span>
             <span id="VisionDetailsTimeCreated">
                 <%= created %>
+            </span>
+            <span class="VisionDetailsLock <%= lockVisibility %>"
+                  style="margin-left: 15px;">
+                <i class="icon-lock"/>
             </span>
 
             <div id="VisionDetailsCommentsContainer"></div>
