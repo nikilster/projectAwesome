@@ -22,6 +22,7 @@
 <script type="text/javascript">
     {% if user != None %}
         var USER = { id: '{{ user['id'] }}',
+                     email: '{{ user['email'] }}',
                      firstName: '{{ user['firstName'] }}',
                      lastName: '{{ user['lastName'] }}',
                      picture: '{{ user['picture'] }}',
@@ -30,6 +31,7 @@
                    }
     {% else %}
        var USER = { id: -1,
+                    email: 'Invalid',
                     firstName: "Invalid",
                     lastName: "Name",
                     picture: "",

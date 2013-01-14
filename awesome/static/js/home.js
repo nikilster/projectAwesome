@@ -99,6 +99,10 @@ $(document).ready(function() {
     // Do this after we have created Page model and view
     Backbone.history.start({pushState: true});
 
+
+    //Analytics
+    trackUser();
+    
     $("#NavHome").click(function(e) {
         e.preventDefault();
         if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
@@ -265,4 +269,34 @@ $(document).ready(function() {
         App.Var.View.hideVisionDetails();
     });
 });
+
+/*
+    Track the user's actions on the site 
+
+    Mixpanel 
+
+    */
+function trackUser()
+{   
+    //Make sure the user is logged in!
+    if(!userLoggedIn()) return;
+
+    //Properties
+    var userId = USER['id'];
+    var email = USER['email'];
+    var firstName = USER['firstName'];
+    var lastName = USER['lastName'];
+
+    
+    //Associate with email
+    mixpanel.identify(email);
+
+    //Add additional info
+    mixpanel.register({
+        'User Id': userId,
+        'Email': email,
+        'First Name': firstName,
+        'Last Name': lastName
+    });
+}
 /* $eof */
