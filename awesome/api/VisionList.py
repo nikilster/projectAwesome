@@ -185,7 +185,7 @@ class VisionList:
                                                 for commentId, count in tuples])
                 if user:
                     commentUserLikes = DataApi.getVisionCommentIdsLikedByUser(
-                                                        commentIds, user)
+                                                        commentIds, user.id())
 
         # If LIKES, get vision likes in batch
         if Vision.Options.LIKES in options:
