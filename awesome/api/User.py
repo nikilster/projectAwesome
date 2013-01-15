@@ -1,5 +1,6 @@
 from data.DataApi import DataApi
 
+from Follow import Follow
 from Vision import Vision
 from VisionList import VisionList
 from VisionComment import VisionComment
@@ -326,6 +327,49 @@ class User:
                                        comment.toDictionary())
             return comment
         return None
+
+    #
+    # Follow methods
+    #
+    def followUser(self, user):
+        '''Returns new follow, or None'''
+        if self.id() == user.id():
+            return None
+        followModel = DataApi.addFollow(self.model(), user.model())
+        return Follow(followModel)
+
+    def unfollowUser(self, user):
+        '''Remove an existing follow'''
+        if self.id() == user.id():
+            return False
+        return DataApi.removeFollow(self.model(), user.model())
+
+    def followCount(self):
+        '''Returns count of number of people this user follows'''
+        return Follow.getUserFollowCount(self.model())
+
+    def followerCount(self):
+        '''Returns count of number of people following this user'''
+        return Follow.getUserFollowerCount(self.model())
+
+     def getFollows(self, number=0):
+        '''Returns list of users this user follows.
+        
+        (Optional) use 'number' to limit number of recent follows
+        '''
+        follows = Follow.getUserFollows(self.model(), number)
+        userIds = [follow.userId() for follow in follows]
+        return User.getByUserIds(userIds)
+
+
+     def getFollowers(self, number=0):
+        '''Returns list of users this user follows
+
+        (Optional) use 'number' to limit number of recent follows
+        '''
+        follows = Follow.getUserFollowers(self.model(), number)
+        userIds = [follow.followerId() for follow in follows]
+        return User.getByUserIds(userIds)
 
     #
     # Private methods

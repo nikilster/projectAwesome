@@ -144,6 +144,78 @@ class DataApi:
         '''Gets all user models'''
         return UserModel.query.all();
 
+
+    # 
+    # Follow methods
+    #
+
+    @staticmethod
+    def addFollow(followerModel, userModel):
+        '''Add and return new FollowModel to DB (unless it already exists).'''
+        existing = DataApi.getFollow(followerModel, userModel)
+        if existing != DataApi.NO_OBJECT_EXISTS:
+            return existing
+        newFollow = FollowModel(followerModel.id, userModel.id, False)
+        DB.session.add(newFollow)
+        DB.session.commit()
+        return newFollow
+
+    @staticmethod
+    def removeFollow(followerModel, userModel):
+        '''Remove follow from DB. Returns True of successful, else False.'''
+        follow = DataApi.getFollow(followerModel, userModel)
+        if follow != DataApi.NO_OBJECT_EXISTS:
+            DB.session.delete(follow)
+            DB.session.commit()
+            return True
+        return False
+
+    @staticmethod
+    def getFollow(followerModel, userModel):
+        '''Get follow model, else, NO_OBJECT_EXISTS'''
+        follow = FollowModel.query\
+                            .filter_by(followerId=followerModel.id)\
+                            .filter_by(userId=userModel.id)\
+                            .first()
+        return follow if None != follow else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getUserFollowCount(userModel):
+        '''Get number of people this user follows'''
+        return FollowModel.query\
+                          .filter_by(followerId=userModel.id)\
+                          .count()
+
+    @staticmethod
+    def getUserFollows(userModel, number=0):
+        '''Get list of models for people this user follows'''
+        query = FollowModel.query\
+                           .filter_by(followerId=userModel.id)\
+                           .order_by(FollowModel.id.desc())
+        if number <= 0:
+            return query.all()
+        else:
+            return query.limit(number)
+
+    @staticmethod
+    def getUserFollowerCount(userModel):
+        '''Get number of people this user follows'''
+        return FollowModel.query\
+                          .filter_by(userId=userModel.id)\
+                          .count()
+
+    @staticmethod
+    def getUserFollowers(userModel, number=0):
+        '''Get list of models for people following this user'''
+        query = FollowModel.query\
+                           .filter_by(userId=userModel.id)\
+                           .order_by(FollowModel.id.desc())
+        if number <= 0:
+            return query.all()
+        else:
+            return query.limit(number)
+
+
     #
     # VisionListModel-related DB methods
     #
