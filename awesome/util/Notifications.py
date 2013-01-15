@@ -19,7 +19,7 @@ import random
 class Notifications:
     
     TEST = True
-    TEST_EMAIL_ADDRESS = "alex.shye@gmail.com"
+    TEST_EMAIL_ADDRESS = "nikilster@gmail.com"
 
     class UserKey:
         RANDOM_VISION = 'randomVision'
@@ -332,15 +332,15 @@ class Notifications:
                       "Stay cool",
                       "And.. we're out",
                       "See ya later, alligator",
-                      "C U L8R",
                       "Ciao",
                     ]
         return random.choice(farewells)
 
     def __challenge(self):
-        challenges = [ "How are you moving towards this vision today?",
+        challenges = [ "What can you do to move towards this vision today?",
                        "What can you do today make this real?",
-                       "Who should you connect with about this vision?",
+                       "Who can you connect with about this vision?",
+                       "Who can help you out with this?",
                        "Where are you with this?",
                        "Why does this vision resonate with you?",
                      ]
