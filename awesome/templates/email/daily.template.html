@@ -407,15 +407,22 @@
                                                     <tr>
                                                         <td valign="top">
 <!-- Main content -->
+<div class="quoteBox">
+    <div class="quote">
+        "{{ quote }}"
+    </div>
+    <div class="attribution">
+        - {{ quoteAttribution  }}
+    </div>
+</div>
+
 {% if visionPictureUrl != "" %}
-<h2>Your daily vision</h2>
 <div class="pictureBox">
     <img src="{{ visionPictureUrl }}"/>
     <div class="pictureText">
         {{ visionText }}
     </div>
 </div>
-    <p>Food for thought:</p>
     <p class="challenge">{{ challenge }}</p>
 <center>
     <!-- TODO: FIX LINKS when they are supported -->
@@ -432,15 +439,7 @@
 </p>
 {% endif %}
 
-<h2>Daily quotable</h2>
-<div class="quoteBox">
-    <div class="quote">
-        "{{ quote }}"
-    </div>
-    <div class="attribution">
-        - {{ quoteAttribution  }}
-    </div>
-</div>
+
 
 <div class="farewell">
 <p>

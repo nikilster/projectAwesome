@@ -70,19 +70,21 @@
              <tr>
               <td valign="top" style="border-collapse: collapse">
                <!-- Main content -->
+               <div class="quoteBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin-top: 10px; padding: 0 30px">
+                <div class="quote" style="color: #888; font-family: times, serif; font-size: 19px; line-height: 150%; text-align: left; font-style: italic; font-weight: 400">
+                 "{{ quote }}"
+                </div>
+                <div class="attribution" style="color: #AAA; font-family: Arial; font-size: 14px; line-height: 150%; text-align: right; margin-top: 10px">
+                 - {{ quoteAttribution  }}
+                </div>
+               </div>
                {% if visionPictureUrl != "" %}
-               <h2 style="font-size: 20px; font-weight: bold; color: #777; margin: 20px 5px 5px 10px; padding: 5px; border-bottom: 1px solid #b3b3b3; display: block">
-                Your daily vision
-               </h2>
                <div class="pictureBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin: auto; margin-top: 10px; margin-bottom: 20px; height: auto; width: 400px; background-color: #fafafa; padding: 10px; -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5)">
                 <img src="{{ visionPictureUrl }}" style="border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 100%" />
                 <div class="pictureText" style="color: #505050; font-family: Arial; font-size: 12pt; line-height: 1.2; text-align: left; padding: 10px">
                  {{ visionText }}
                 </div>
                </div>
-               <p style="margin: 5px 10px">
-                Food for thought:
-               </p>
                <p class="challenge" style="margin: 5px 10px; text-align: center; color: black; font-weight: bold; font-size: 16px; line-height: 1.2; padding: 10px 20px">
                 {{ challenge }}
                </p>
@@ -99,17 +101,6 @@
                 </a>
                </center>
                {% endif %}
-               <h2 style="font-size: 20px; font-weight: bold; color: #777; margin: 20px 5px 5px 10px; padding: 5px; border-bottom: 1px solid #b3b3b3; display: block">
-                Daily quotable
-               </h2>
-               <div class="quoteBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin-top: 10px; padding: 0 30px">
-                <div class="quote" style="color: #888; font-family: times, serif; font-size: 19px; line-height: 150%; text-align: left; font-style: italic; font-weight: 400">
-                 "{{ quote }}"
-                </div>
-                <div class="attribution" style="color: #AAA; font-family: Arial; font-size: 14px; line-height: 150%; text-align: right; margin-top: 10px">
-                 - {{ quoteAttribution  }}
-                </div>
-               </div>
                <div class="farewell" style="color: #505050; font-family: Arial; font-size: 15px; line-height: 150%; text-align: left; margin: 30px 0 25px 0; border-bottom: 0">
                 <p style="margin: 5px 10px">
                  <b>

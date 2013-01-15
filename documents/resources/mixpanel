@@ -1,0 +1,64 @@
+Managing User-Specific Properties
+Updated Jan. 12, 2013
+For Events (“Super properties”)
+In our client-side libraries, the register methods are the best way to store user-specific properties. The register methods take a group of property names and values and store them in a cookie (JS) or local storage (mobile). From the register point forward, every time this user sends an event, we’ll automatically append the registered properties. They are not specially labeled as Super properties in your reports.
+
+Register creates or sets a new value for a super property.
+
+mixpanel.register({'Account Status': 'Paid'});
+Register_once sets a super property that cannot be overwritten with a new value.
+
+mixpanel.register_once({'Account Created Date': '2012-12-24'});
+For People Analytics
+You can use People properties in your People Analytics user profiles to target specific users for notifications. When you call people.set or people.increment, we store that information in a cookie until you call mixpanel.identify (or mixpanel.alias if at the point of signup). Once you’ve called identify or alias, we flush the People properties stored in the cookie to the user’s People profile. The properties will not appear in any of your Engagement reports (Funnels, Retention, etc.) – they are only for the People tool.
+
+People.set creates or sets a new value for a People property.
+
+mixpanel.people.set({'Account Status': 'Paid'});
+People.increment increases the total of a numeric People property. If you do not pass a number as the second parameter, it will be incremented by 1.
+
+mixpanel.people.increment('Lifetime Revenue', 21.99);
+If you want to be able to filter your People profiles by event-based metrics, you can call increment at the same moment you call track.
+
+mixpanel.track(“Share”, {'Social Network': 'Facebook'});
+mixpanel.people.increment('Share');
+For Both
+If you want to segment both your events and People profiles by the same property, you’ll want to use both methods in conjunction.
+
+mixpanel.register({'Email': 'jeffrey@stuff.biz'});
+mixpanel.people.set({'$email': 'jeffrey@stuff.biz'});
+For Streams
+If you want to see the name of a given user in your Streams tab, you’ll need to call name_tag. This function only affects Streams.
+
+mixpanel.name_tag(“jeffrey@stuff.biz”);
+Example Signup Implementation
+Jeffrey Thompson has just signed up for a paid account with our subscription-based SaaS business. Our company uses email as our internal identifier. He’s signed up on the “Enterprise” plan, which costs $21.99 per year.
+
+mixpanel.register({  
+'Account Status': 'Paid',
+'Plan': 'Enterprise',
+'Email': 'jeffrey@stuff.biz',
+'Account Created Date': '2012-12-24',
+'Company': 'stuff.biz'
+});
+If you’re using People:
+
+mixpanel.people.set({
+'$email': 'jeffrey@stuff.biz',
+'Account Status': 'Paid',
+'$first_name': 'Jeffrey',
+'$last_name': 'Thompson',
+'$name': 'Jeffrey Thompson',
+'$created': new Date(),
+'Company': 'stuff.biz'
+});
+ 
+mixpanel.people.increment('Lifetime Revenue', 21.99);
+Then:
+
+mixpanel.track('Signup', {
+'Plan': 'Enterprise',
+'Revenue': 21.99
+});
+
+mixpanel.alias('jeffrey@stuff.biz');
