@@ -287,24 +287,30 @@ class DataApi:
         return visionModels
 
     @staticmethod
-    def getVisionsById(visionIds, allowMissingVisions=False):
-        '''Get vision models from a list of vision ids.'''
+    def getVisionsById(visionIds, allowRemovedVisions=False):
+        '''Get vision models from a list of vision ids.
+       
+        'allowRemovedVisions': be careful when using. Usually we don't want
+                        removed visions. An example of using it now is when
+                        we want a list of all parent visions to know who we
+                        reposted from.
+        '''
         visionModels = []
         if len(visionIds) > 0:
-            all_visions = VisionModel.query \
-                                     .filter_by(removed=False) \
-                                     .filter(VisionModel.id.in_(visionIds)) \
-                                     .all()
-
+            if allowRemovedVisions:
+                all_visions = VisionModel.query \
+                                        .filter(VisionModel.id.in_(visionIds)) \
+                                        .all()
+            else:
+                all_visions = VisionModel.query \
+                                        .filter_by(removed=False) \
+                                        .filter(VisionModel.id.in_(visionIds)) \
+                                        .all()
             # hash from visionId to vision
             idToVision = dict([(vision.id, vision) for vision in all_visions])
 
             for visionId in visionIds:
-                if allowMissingVisions:
-                    if visionId in idToVision:
-                        visionModels.append(idToVision[visionId])
-                else:
-                    visionModels.append(idToVision[visionId])
+                visionModels.append(idToVision[visionId])
         return visionModels
 
     @staticmethod
