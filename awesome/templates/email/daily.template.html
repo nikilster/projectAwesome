@@ -409,27 +409,23 @@
 <!-- Main content -->
 {% if visionPictureUrl != "" %}
 <h2>Your daily vision</h2>
+<p class="challenge">{{ challenge }}</p>
 <div class="pictureBox">
     <img src="{{ visionPictureUrl }}"/>
     <div class="pictureText">
         {{ visionText }}
     </div>
 </div>
-    <p>Food for thought:</p>
-    <p class="challenge">{{ challenge }}</p>
 <center>
-    <!-- TODO: FIX LINKS when they are supported -->
-    <!--
-    <a class="Button" href="http://project-awesome.herokuapp.com">
+    <a class="Button" href="{{ visionUrl }}">
         Comment on your vision
     </a>
     or
-    -->
     <a class="Button" href="{{ visionBoardUrl }}">
-        Comment on or check out your vision board
+        Check out your vision board
     </a>
 </center>
-</p>
+
 {% endif %}
 
 <h2>Daily quotable</h2>
