@@ -352,7 +352,7 @@ class User:
         '''Returns count of number of people following this user'''
         return Follow.getUserFollowerCount(self.model())
 
-     def getFollows(self, number=0):
+    def getFollows(self, number=0):
         '''Returns list of users this user follows.
         
         (Optional) use 'number' to limit number of recent follows
@@ -362,7 +362,7 @@ class User:
         return User.getByUserIds(userIds)
 
 
-     def getFollowers(self, number=0):
+    def getFollowers(self, number=0):
         '''Returns list of users this user follows
 
         (Optional) use 'number' to limit number of recent follows
