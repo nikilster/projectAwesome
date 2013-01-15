@@ -21,6 +21,7 @@ class DataApi:
     #Returned when the object does not exist
     NO_OBJECT_EXISTS = None
 
+    MAX_VISIONS = 20
 
     # 
     # User methods
@@ -209,7 +210,7 @@ class DataApi:
     def addVision(userModel, text, pictureId, parentId, rootId, privacy):
         '''Adds new vision to beginning of a user's vision list.
 
-        Returns the new vision id.
+        Returns the new vision id, or NO_OBJECT_EXISTS_ID
         '''
         assert userModel, "Invalid user model"
 
@@ -217,6 +218,11 @@ class DataApi:
         userId = userModel.id
         visionListModel = DataApi.getVisionListModelForUser(userModel)
         assert DataApi.NO_OBJECT_EXISTS != visionListModel, "No vision list"
+
+        # ensure we can add a vision
+        visionIds = visionListModel.getVisionIdList()
+        if len(visionIds) >= DataApi.MAX_VISIONS:
+            return DataApi.NO_OBJECT_EXISTS_ID
 
         vision = VisionModel(userId, text, pictureId, parentId, rootId, privacy)
         DB.session.add(vision)
@@ -228,7 +234,6 @@ class DataApi:
             DB.session.add(vision)
 
         # now add to vision list
-        visionIds = visionListModel.getVisionIdList()
         visionIds.insert(0, vision.id)
         visionListModel.setVisionIdList(visionIds)
         DB.session.add(visionListModel)
@@ -287,19 +292,30 @@ class DataApi:
         return visionModels
 
     @staticmethod
-    def getVisionsById(visionIds):
-        '''Get vision models from a list of vision ids.'''
+    def getVisionsById(visionIds, allowRemovedVisions=False):
+        '''Get vision models from a list of vision ids.
+       
+        'allowRemovedVisions': be careful when using. Usually we don't want
+                        removed visions. An example of using it now is when
+                        we want a list of all parent visions to know who we
+                        reposted from.
+        '''
         visionModels = []
         if len(visionIds) > 0:
-            all_visions = VisionModel.query \
-                                     .filter_by(removed=False) \
-                                     .filter(VisionModel.id.in_(visionIds)) \
-                                     .all()
-
+            if allowRemovedVisions:
+                all_visions = VisionModel.query \
+                                        .filter(VisionModel.id.in_(visionIds)) \
+                                        .all()
+            else:
+                all_visions = VisionModel.query \
+                                        .filter_by(removed=False) \
+                                        .filter(VisionModel.id.in_(visionIds)) \
+                                        .all()
             # hash from visionId to vision
             idToVision = dict([(vision.id, vision) for vision in all_visions])
 
-            visionModels = [idToVision[visionId] for visionId in visionIds]
+            for visionId in visionIds:
+                visionModels.append(idToVision[visionId])
         return visionModels
 
     @staticmethod

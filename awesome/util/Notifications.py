@@ -284,6 +284,9 @@ class Notifications:
         visionText = vision[Vision.Key.TEXT]
         visionPictureUrl = ""
         visionBoardUrl = "http://project-awesome.herokuapp.com/user/" + str(userInfo[User.Key.ID])
+        visionUrl = "http://project-awesome.herokuapp.com/vision/" + \
+                    str(userInfo[Notifications.UserKey.RANDOM_VISION]\
+                                [Vision.Key.ID])
         if vision:
             picture = vision[Vision.Key.PICTURE]
             visionPictureUrl = picture[Picture.Key.LARGE_URL]
@@ -295,6 +298,7 @@ class Notifications:
                     farewell = farewell,
                     visionBoardUrl = visionBoardUrl,
                     visionPictureUrl = visionPictureUrl,
+                    visionUrl = visionUrl,
                     visionText = visionText,
                     quote = quote,
                     quoteAttribution = quoteAttribution)
@@ -324,7 +328,7 @@ class Notifications:
                       "Sayanora",
                       "Hasta la vista, baby",
                       "Adios",
-                      "Be well, fellow citizen"
+                      "Be well, fellow citizen",
                       "Stay cool",
                       "And.. we're out",
                       "See ya later, alligator",
