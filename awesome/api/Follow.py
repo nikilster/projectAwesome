@@ -59,5 +59,6 @@ class Follow:
     #
     def __init__(self, model):
         assert model != None, "Invalid model for follow"
+        self._model = model
 
 # eof

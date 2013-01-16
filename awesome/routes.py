@@ -318,7 +318,10 @@ def apiGetUserVisions(targetUserId):
                                                  Vision.Options.LIKES,
                                                  Vision.Options.COMMENT_LIKES],
                                         user=user)
-            data['user'] = targetUser.toDictionary();
+            data['user'] = targetUser.toDictionary(
+                                        options=[User.Options.FOLLOW_COUNTS,
+                                                 User.Options.FOLLOWING],
+                                        user=user);
 
         return jsonify(data)
     abort(405)
@@ -407,6 +410,8 @@ def apiRepostVision(userId):
         abort(403)
     abort(405)
 
+
+
 @app.route('/api/user/<int:userId>/like_vision', methods=['POST'])
 def apiLikeVision(userId):
     if request.method == 'POST':
@@ -469,6 +474,44 @@ def apiLikeVisionComment(userId):
                         data = { 'result'    : "success",
                                  'like' : comment.likedBy(user),
                                  'likeCount' : comment.likeCount() }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/follow_user', methods=['POST'])
+def apiFollowUser(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not ('userId' in parameters or
+                    'follow' in parameters):
+                abort(406)
+            userToFollowId = parameters['userId']
+            follow = parameters['follow']
+
+            if userToFollowId == userId:
+                # can't follow or unfollow self
+                abort(406)
+
+            user = User.getById(userInfo['id'])
+            userToFollow = User.getById(userToFollowId)
+            data = { 'result' : "error" }
+            if user and userToFollow:
+                if follow:
+                    user.followUser(userToFollow)
+                else:
+                    user.unfollowUser(userToFollow)
+                data = { 'result'    : "success",
+                         'user' : userToFollow.toDictionary(
+                                        options=[User.Options.FOLLOW_COUNTS,
+                                                 User.Options.FOLLOWING],
+                                        user=user)
+                       }
             return jsonify(data)
         abort(403)
     abort(405)

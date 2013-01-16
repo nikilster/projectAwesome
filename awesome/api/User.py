@@ -35,8 +35,19 @@ class User:
         PICTURE = 'picture'
         DESCRIPTION = 'description'
         VISION_PRIVACY = 'visionPrivacy'
+        # If using Option.FOLLOW_COUNT
+        FOLLOW_COUNT = 'followCount'
+        FOLLOWER_COUNT = 'followerCount'
+        # If using Option.FOLLOWING
+        FOLLOW = 'follow'
         # Only if calling toDictionaryFull.
         EMAIL = 'email'
+
+    class Options:
+        '''Extra options to pass into toDictionary()'''
+        FOLLOW_COUNTS = 0       # Add follow and follower counts into dict
+        FOLLOWING = 1           # If this user is following 'user' parameter
+
 
     #
     # Static user get methods
@@ -130,9 +141,9 @@ class User:
         '''Gets VisionList with respect to privacy of inquiringUser, or None'''
         return VisionList.getUserVisions(inquiringUser, self)
 
-    def toDictionary(self):
+    def toDictionary(self, options=[], user=None):
         '''Translate to object when we want to package together JSON'''
-        return { User.Key.ID                : self.id(),
+        obj =  { User.Key.ID                : self.id(),
                  User.Key.FIRST_NAME        : self.firstName(),
                  User.Key.LAST_NAME         : self.lastName(),
                  User.Key.FULL_NAME         : self.fullName(),
@@ -140,6 +151,14 @@ class User:
                  User.Key.DESCRIPTION       : self.description(),
                  User.Key.VISION_PRIVACY    : self.visionPrivacy(),
                }
+        if User.Options.FOLLOW_COUNTS in options:
+            obj[User.Key.FOLLOW_COUNT] = self.followCount()
+            obj[User.Key.FOLLOWER_COUNT] = self.followerCount()
+        if User.Options.FOLLOWING:
+            if user:
+                if user.id() != self.id():
+                    obj[User.Key.FOLLOW] = user.follows(self)
+        return obj
 
     def toDictionaryFull(self):
         '''Like toDictionary() but with all user information.
@@ -331,6 +350,18 @@ class User:
     #
     # Follow methods
     #
+    def follows(self, user):
+        '''Returns True if self follows user, else False'''
+        Logger.debug("GET FOLLOW: " + str(self.id()) + " " +
+                     str(user.id()))
+        follow = Follow.get(self, user)
+        if follow:
+            Logger.debug("FOLLOW: " + str(follow.followerId()) + " " +
+                        str(follow.userId()))
+        else:
+            Logger.debug("NO FOLLOW");
+        return follow != None
+
     def followUser(self, user):
         '''Returns new follow, or None'''
         if self.id() == user.id():
@@ -346,11 +377,11 @@ class User:
 
     def followCount(self):
         '''Returns count of number of people this user follows'''
-        return Follow.getUserFollowCount(self.model())
+        return Follow.getUserFollowCount(self)
 
     def followerCount(self):
         '''Returns count of number of people following this user'''
-        return Follow.getUserFollowerCount(self.model())
+        return Follow.getUserFollowerCount(self)
 
     def getFollows(self, number=0):
         '''Returns list of users this user follows.

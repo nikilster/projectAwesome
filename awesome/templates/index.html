@@ -511,6 +511,14 @@
           </button>
           <div id="UserDescriptionLength"></div>
       </div>
+      <div class="FollowButton <%= followButtonColor %> <%= followButtonVisibility %> btn">
+        <%= followButtonText %>
+      </div>
+      <div id="UserInformationBar">
+        Follows: <span class="FollowCount"><%= followCount %></span>
+        &nbsp;&nbsp;
+        Followers: <span class="FollowerCount"><%= followerCount %></span>
+      </div>
 </script>
 
 {% endblock %}

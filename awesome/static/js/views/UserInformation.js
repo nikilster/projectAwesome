@@ -7,13 +7,16 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         LENGTH: "#UserDescriptionLength",
         DESCRIPTION : "#UserDescription",
         NO_DESCRIPTION : "#NoUserDescription",
+        FOLLOW_BUTTON: ".FollowButton",
     },
     constant: {
         MAX_USER_DESCRIPTION_LENGTH : 200,
     },
     initialize: function() {
         _.bindAll(this, "countDesc", "onMouseEnter", "onMouseLeave", "onClick",
-                        "submitDesc", "setUserDescription");
+                        "submitDesc", "setUserDescription",
+                        "followButtonClick");
+        this.model.bind("change:follow", this.render, this);
         this.render();
     },
     events: function() {
@@ -25,6 +28,7 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         _events["cut " + this.sel.INPUT] = "countDesc";
         _events["paste " + this.sel.INPUT] = "countDesc";
         _events["click " + this.sel.SUBMIT] = "submitDesc";
+        _events["click " + this.sel.FOLLOW_BUTTON] = "followButtonClick";
         return _events;
     },
     render: function() {
@@ -35,6 +39,18 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
             descDisplay = "hide";
             noDescDisplay = "";
         }
+        var followButtonColor = "btn-primary";
+        var followButtonVisibility = "Hidden";
+        var followButtonText = "Follow";
+        if (this.model.follow() != null &&
+            this.model.userId() != USER.id) {
+            followButtonVisibility = "";
+
+            if (this.model.follow() == true) {
+                followButtonText ="Unfollow";
+                followButtonColor = "";
+            }
+        }
 
         var variables = { 
             name: this.model.fullName(),
@@ -42,6 +58,11 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
             descDisplay: descDisplay,
             noDescDisplay: noDescDisplay,
             picture: this.model.picture(),
+            followCount: this.model.followCount(),
+            followerCount: this.model.followerCount(),
+            followButtonVisibility: followButtonVisibility,
+            followButtonText: followButtonText,
+            followButtonColor: followButtonColor,
         };
         var template = _.template($("#UserInformationTemplate").html(),
                                   variables);
@@ -95,6 +116,16 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
             $(this.el).find(this.sel.NO_DESCRIPTION).hide();
             $(this.el).find(this.sel.SET_DESCRIPTION).hide();
             $(this.el).find(this.sel.DESCRIPTION).html(description).show();
+        }
+    },
+    followButtonClick: function() {
+        var follow = this.model.follow();
+        if (follow != null) {
+            if (follow == true) {
+                this.model.unfollowUser();
+            } else {
+                this.model.followUser();
+            }
         }
     },
 });
