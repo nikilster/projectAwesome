@@ -14,6 +14,7 @@ from api.User import User
 from api.Vision import Vision
 from api.VisionList import VisionList
 from api.VisionComment import VisionComment
+from api.FollowList import FollowList
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
@@ -511,6 +512,60 @@ def apiFollowUser(userId):
                                         options=[User.Options.FOLLOW_COUNTS,
                                                  User.Options.FOLLOWING],
                                         user=user)
+                       }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/follows', methods=['POST'])
+def apiUserFollows(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('userId' in parameters):
+                abort(406)
+            assert userId == parameters['userId'], "Invalid user"
+
+            myInfo = SessionManager.getUser()
+            me = User.getById(myInfo['id'])
+            user = User.getById(userId)
+
+            data = { 'result' : "error" }
+            if me and user:
+                follows = user.getFollows()
+
+                data = { 'result'    : "success",
+                         'users' : follows.toDictionary(
+                                    options=[FollowList.Options.FOLLOW_LIST,
+                                             FollowList.Options.USER_FOLLOW],
+                                    user=me)
+                       }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/followers', methods=['POST'])
+def apiUserFollowers(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('userId' in parameters):
+                abort(406)
+            assert userId == parameters['userId'], "Invalid user"
+
+            myInfo = SessionManager.getUser()
+            me = User.getById(myInfo['id'])
+            user = User.getById(userId)
+
+            data = { 'result' : "error" }
+            if me and user:
+                follows = user.getFollowers()
+
+                data = { 'result'    : "success",
+                         'users' : follows.toDictionary(
+                                    options=[FollowList.Options.FOLLOWER_LIST,
+                                             FollowList.Options.USER_FOLLOW],
+                                    user=me)
                        }
             return jsonify(data)
         abort(403)

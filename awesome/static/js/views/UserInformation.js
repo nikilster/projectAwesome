@@ -8,6 +8,8 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         DESCRIPTION : "#UserDescription",
         NO_DESCRIPTION : "#NoUserDescription",
         FOLLOW_BUTTON: ".FollowButton",
+        SHOW_FOLLOWS: ".Follows",
+        SHOW_FOLLOWERS: ".Followers",
     },
     constant: {
         MAX_USER_DESCRIPTION_LENGTH : 200,
@@ -15,7 +17,8 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "countDesc", "onMouseEnter", "onMouseLeave", "onClick",
                         "submitDesc", "setUserDescription",
-                        "followButtonClick");
+                        "followButtonClick",
+                        "showUserFollows", "showUserFollowers");
         this.model.bind("change:follow", this.render, this);
         this.render();
     },
@@ -29,6 +32,8 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         _events["paste " + this.sel.INPUT] = "countDesc";
         _events["click " + this.sel.SUBMIT] = "submitDesc";
         _events["click " + this.sel.FOLLOW_BUTTON] = "followButtonClick";
+        _events["click " + this.sel.SHOW_FOLLOWS] = "showUserFollows";
+        _events["click " + this.sel.SHOW_FOLLOWERS] = "showUserFollowers";
         return _events;
     },
     render: function() {
@@ -127,6 +132,14 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
                 this.model.followUser();
             }
         }
+    },
+    showUserFollows: function() {
+        App.Var.View.showUserList(App.Const.UserList.FOLLOWS,
+                                  this.model.userId());
+    },
+    showUserFollowers: function() {
+        App.Var.View.showUserList(App.Const.UserList.FOLLOWERS,
+                                  this.model.userId());
     },
 });
 

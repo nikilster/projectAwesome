@@ -59,7 +59,14 @@ var App = {
         Strings: {
             COMMENT_PROMPT_FRIEND: "Any thoughts about this?",
             COMMENT_PROMPT_OWN: "Any progress?"
-        }
+        },
+
+        UserList: {
+            FOLLOWS: 0,
+            FOLLOWERS: 1,
+            VISION_LIKERS: 2,
+            VISION_COMMENT_LIKERS: 3,
+        },
     },
     // Variables in app
     Var: {

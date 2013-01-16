@@ -10,6 +10,8 @@ var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 
 var USER_INFORMATION = "#UserInformation";
 
+var USER_LIST_MODAL = "#UserListModal";
+
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
@@ -78,7 +80,11 @@ App.Backbone.View.Page = Backbone.View.extend({
                         // Show vision page
                         "showVisionPage",
                         "showVisionPageSuccess",
-                        "showVisionPageError"
+                        "showVisionPageError",
+                        // User List modal
+                        "showUserList",
+                        "ajaxUserListSuccess",
+                        "ajaxUserListError"
                         );
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
@@ -611,23 +617,57 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.currentVision = new App.Backbone.View.VisionDetails(
                                          {model: this.model.currentVision()});
         $(VISION_INFORMATION_DIV).empty().append(this.currentVision.el);
-
-
-        /*
-        if (DEBUG) console.log("Rendering Profile");
-
-        this.model.setVisionList(App.Var.JSON.visionList);
-        if (App.Var.Model.currentUserId() != USER.id) {
-            this.model.setOtherVisions(App.Var.JSON.otherVisions);
-        }
-        this.model.setUser(App.Var.JSON.user);
-        */
     },
     showVisionPageError: function() {
-        /*
-        var masonryContainer = $(CONTENT_DIV).first();
-        masonryContainer.empty().masonry();
-        */
+    },
+    showUserList: function(listType, id) {
+        // Set variables to pass to AJAX success function
+        this.userListType = listType;
+        this.userListId = id;
+
+        // Now do the proper AJAX request
+        if (listType == App.Const.UserList.FOLLOWS) {
+            console.log("List follows: user" + id);
+            doAjax("/api/user/" + id + "/follows",
+                   JSON.stringify({
+                                    'userId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.FOLLOWERS) {
+            console.log("List followers: user" + id);
+            doAjax("/api/user/" + id + "/followers",
+                   JSON.stringify({
+                                    'userId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.VISION_LIKERS) {
+            console.log("List vision likers: vision" + id);
+            doAjax("/api/vision/" + id + "/likers",
+                   JSON.stringify({
+                                    'visionId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.VISION_COMMENT_LIKERS) {
+            console.log("List vision comment likers: comment" + id);
+            doAjax("/api/comment/" + id + "/likers",
+                   JSON.stringify({
+                                    'visionCommentId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        }
+    },
+    ajaxUserListSuccess: function(data, textStatus, jqXHR) {
+        console.log("DATA: " + JSON.stringify(data));
+    },
+    ajaxUserListError: function(jqXHR, textStatus, errorThrown) {
     },
 });
 

@@ -392,6 +392,11 @@ footer {
   bottom: 10px;
   left: 190px;
 }
+#UserInformation #UserInformationBar .Follows:hover,
+#UserInformation #UserInformationBar .Followers:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 #UserInformation .FollowButton {
   position: absolute;
   top: 10px;

@@ -1,6 +1,7 @@
 from data.DataApi import DataApi
 
 from Follow import Follow
+from FollowList import FollowList
 from Vision import Vision
 from VisionList import VisionList
 from VisionComment import VisionComment
@@ -38,10 +39,12 @@ class User:
         # If using Option.FOLLOW_COUNT
         FOLLOW_COUNT = 'followCount'
         FOLLOWER_COUNT = 'followerCount'
-        # If using Option.FOLLOWING
+        # If using Option.FOLLOWING, or in FollowList.Options.USER_FOLLOW
         FOLLOW = 'follow'
         # Only if calling toDictionaryFull.
         EMAIL = 'email'
+        # Used in FollowList.toDictionary
+        BLESSED = 'blessed'
 
     class Options:
         '''Extra options to pass into toDictionary()'''
@@ -160,11 +163,14 @@ class User:
                     obj[User.Key.FOLLOW] = user.follows(self)
         return obj
 
-    def toDictionaryFull(self):
+    def toDictionaryFull(self, options=[], user=None):
         '''Like toDictionary() but with all user information.
         
-        Avoid using when you don't want private info to leak (e.g. email).'''
-        obj = self.toDictionary()
+        This is a whole different method because we want to avoid leaking
+        private information (such as the user's email address).
+        Use this function only when necessary and be aware of privacy.
+        '''
+        obj = self.toDictionary(options, user)
         obj[User.Key.EMAIL] = self.email()
         return obj
 
@@ -384,23 +390,21 @@ class User:
         return Follow.getUserFollowerCount(self)
 
     def getFollows(self, number=0):
-        '''Returns list of users this user follows.
+        '''Returns FollowList for finding out who this user follows.
         
         (Optional) use 'number' to limit number of recent follows
         '''
-        follows = Follow.getUserFollows(self.model(), number)
-        userIds = [follow.userId() for follow in follows]
-        return User.getByUserIds(userIds)
+        follows = FollowList.getUserFollows(self, number)
+        return follows
 
 
     def getFollowers(self, number=0):
-        '''Returns list of users this user follows
+        '''Returns FollowList for finding out who follows this user.
 
         (Optional) use 'number' to limit number of recent follows
         '''
-        follows = Follow.getUserFollowers(self.model(), number)
-        userIds = [follow.followerId() for follow in follows]
-        return User.getByUserIds(userIds)
+        follows = FollowList.getUserFollowers(self, number)
+        return follows
 
     #
     # Private methods

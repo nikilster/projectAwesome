@@ -215,6 +215,16 @@ class DataApi:
         else:
             return query.limit(number)
 
+    @staticmethod
+    def getUserFollowsFromList(userModel, userIds):
+        '''Get list of where userModel follows people in list of userIds'''
+        if len(userIds) > 0:
+            return FollowModel.query\
+                              .filter_by(followerId=userModel.id)\
+                              .filter(FollowModel.userId.in_(userIds))\
+                              .all()
+        return []
+
 
     #
     # VisionListModel-related DB methods

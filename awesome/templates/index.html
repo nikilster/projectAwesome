@@ -99,15 +99,16 @@
 
     <!-- Main Content -->
     <div id="InstructionsPadding"></div>
-    <div id="UserInformation" class="Center Hidden">
-    </div>
+    <div id="UserInformation" class="Center Hidden"></div>
     <div id="Content" class="Center"></div>
     <div id="ExampleVisionBoard" class="Center"></div>
     <div id="VisionInformation" class="hide">Vision</div>
 
     <!-- Modal for vision details -->
-    <div id="VisionDetailsModal" class="hide">
-    </div>
+    <div id="VisionDetailsModal" class="hide"></div>
+
+    <!-- Modal for user lists: follows, followers, likes, etc -->
+    <div id="UserListModal" class="hide"></div>
 
     <!-- Modal for Add Vision -->
     <div id="AddVisionModal" class="modal hide fade">
@@ -515,9 +516,13 @@
         <%= followButtonText %>
       </div>
       <div id="UserInformationBar">
-        Follows: <span class="FollowCount"><%= followCount %></span>
+        <span class="Follows">
+            Follows: <span class="FollowCount"><%= followCount %></span>
+        </span>
         &nbsp;&nbsp;
-        Followers: <span class="FollowerCount"><%= followerCount %></span>
+        <span class="Followers">
+            Followers: <span class="FollowerCount"><%= followerCount %></span>
+        </span>
       </div>
 </script>
 
