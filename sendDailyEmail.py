@@ -54,8 +54,7 @@ def main(argv=None):
     # One of these should be True
     if do_test == False and do_it == False:
         Usage("Need to do test email or real user email")
-    
-    if do_it:
+    else:
         # Create fake Flask request context and push onto context stack.
         # The request context is needed for render_template to work.
         ctx = app.test_request_context()
@@ -68,10 +67,10 @@ def main(argv=None):
         # Pop the request context
         ctx.pop()
 
-        print "\n *** Sent " + str(numEmails) + " emails  ***\n"
-
-    else:
-        print "\n *** Sent test email ***\n"
+        if do_it:
+            print "\n *** Sent " + str(numEmails) + " emails  ***\n"
+        else:
+            print "\n *** Sent test email ***\n"
 
 
 if __name__ == '__main__':
