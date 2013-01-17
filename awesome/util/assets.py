@@ -27,6 +27,7 @@ JS_home = Bundle(
 
     # Order seems to matter between models and collections
     'js/models/User.js',
+    'js/collections/UserList.js',
     'js/models/Picture.js',
     'js/models/Like.js',
     'js/models/VisionComment.js',
@@ -41,6 +42,7 @@ JS_home = Bundle(
     'js/views/VisionDetailsComment.js',
     'js/views/VisionDetails.js',
     'js/views/Vision.js',
+    'js/views/UserList.js',
     'js/views/Page.js',
 
     'js/routers/Router.js',

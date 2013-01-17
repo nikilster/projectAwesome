@@ -14,6 +14,7 @@ from api.User import User
 from api.Vision import Vision
 from api.VisionList import VisionList
 from api.VisionComment import VisionComment
+from api.FollowList import FollowList
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
@@ -318,7 +319,10 @@ def apiGetUserVisions(targetUserId):
                                                  Vision.Options.LIKES,
                                                  Vision.Options.COMMENT_LIKES],
                                         user=user)
-            data['user'] = targetUser.toDictionary();
+            data['user'] = targetUser.toDictionary(
+                                        options=[User.Options.FOLLOW_COUNTS,
+                                                 User.Options.FOLLOWING],
+                                        user=user);
 
         return jsonify(data)
     abort(405)
@@ -407,6 +411,8 @@ def apiRepostVision(userId):
         abort(403)
     abort(405)
 
+
+
 @app.route('/api/user/<int:userId>/like_vision', methods=['POST'])
 def apiLikeVision(userId):
     if request.method == 'POST':
@@ -469,6 +475,102 @@ def apiLikeVisionComment(userId):
                         data = { 'result'    : "success",
                                  'like' : comment.likedBy(user),
                                  'likeCount' : comment.likeCount() }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/follow_user', methods=['POST'])
+def apiFollowUser(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+
+            userInfo = SessionManager.getUser()
+            if userInfo['id'] != userId:
+                abort(406)
+
+            parameters = request.json
+            if not ('userId' in parameters or
+                    'follow' in parameters):
+                abort(406)
+            userToFollowId = parameters['userId']
+            follow = parameters['follow']
+
+            if userToFollowId == userId:
+                # can't follow or unfollow self
+                abort(406)
+
+            user = User.getById(userInfo['id'])
+            userToFollow = User.getById(userToFollowId)
+            data = { 'result' : "error" }
+            if user and userToFollow:
+                if follow:
+                    user.followUser(userToFollow)
+                else:
+                    user.unfollowUser(userToFollow)
+
+                userToFollowDict = userToFollow.toDictionary(
+                                        options=[User.Options.FOLLOW_COUNTS,
+                                                 User.Options.FOLLOWING],
+                                        user=user)
+                meDict = user.toDictionary(options=[User.Options.FOLLOW_COUNTS])
+                data = { 'result'    : "success",
+                         'user' : userToFollowDict,
+                         'me'   : meDict
+                       }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/follows', methods=['POST'])
+def apiUserFollows(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('userId' in parameters):
+                abort(406)
+            assert userId == parameters['userId'], "Invalid user"
+
+            myInfo = SessionManager.getUser()
+            me = User.getById(myInfo['id'])
+            user = User.getById(userId)
+
+            data = { 'result' : "error" }
+            if me and user:
+                follows = user.getFollows()
+
+                data = { 'result'    : "success",
+                         'users' : follows.toDictionary(
+                                    options=[FollowList.Options.FOLLOW_LIST,
+                                             FollowList.Options.USER_FOLLOW],
+                                    user=me)
+                       }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/user/<int:userId>/followers', methods=['POST'])
+def apiUserFollowers(userId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('userId' in parameters):
+                abort(406)
+            assert userId == parameters['userId'], "Invalid user"
+
+            myInfo = SessionManager.getUser()
+            me = User.getById(myInfo['id'])
+            user = User.getById(userId)
+
+            data = { 'result' : "error" }
+            if me and user:
+                follows = user.getFollowers()
+
+                data = { 'result'    : "success",
+                         'users' : follows.toDictionary(
+                                    options=[FollowList.Options.FOLLOWER_LIST,
+                                             FollowList.Options.USER_FOLLOW],
+                                    user=me)
+                       }
             return jsonify(data)
         abort(403)
     abort(405)

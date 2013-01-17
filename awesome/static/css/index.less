@@ -349,6 +349,22 @@
     background-color:@VISION_BACKGROUND;
     .LightShadow;
 
+    #UserInformationBar {
+        position: absolute;
+        bottom: 10px;
+        left: 190px;
+
+        .Follows:hover, .Followers:hover {
+            text-decoration: underline;
+            .CursorPointer;
+        }
+    }
+    .FollowButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
     #UserProfilePicture {
         position:absolute;
         top: 10px;
@@ -879,6 +895,40 @@
                     line-height: 1.3;
                     margin: 3px 0px;
                 }
+            }
+        }
+    }
+}
+
+#UserListModal {
+    .UserListBody {
+        min-height: 150px;
+        overflow: scroll;
+
+        .User {
+            overflow: hidden;
+            position: relative;
+            padding: 0px 90px 10px 60px;
+            min-height: 50px;
+
+            .Picture {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 50px;
+                height: 50px;
+            }
+            .Name {
+                font-size: 16px;
+                line-height: 1.2;
+            }
+            .Description {
+                color: gray;
+            }
+            .FollowButton {
+                position: absolute;
+                top: 0px;
+                right: 0px;
             }
         }
     }

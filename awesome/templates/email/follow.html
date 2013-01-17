@@ -1,0 +1,27 @@
+<html>
+ <head>
+  <title>
+   {{ follower.fullName }} is following you!
+  </title>
+ </head>
+ <body style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left">
+  <p>
+   Hi {{ user.firstName }}!
+  </p>
+  <p>
+   {{ follower.fullName }} is following you.
+  </p>
+  <p>
+   Check out their
+   <a href="{{ full_url_for('user_profile', userId=follower.id) }}">
+    vision board here
+   </a>
+   !
+  </p>
+  <p>
+   Cheers,
+   <br />
+   - The Project Awesome Team
+  </p>
+ </body>
+</html>

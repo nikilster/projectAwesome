@@ -37,5 +37,6 @@ class VisionLike:
     #
     def __init__(self, model):
         assert model != None, "Invalid model for vision like"
+        self._model = model
 
 # eof
