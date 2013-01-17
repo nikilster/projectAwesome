@@ -51,6 +51,18 @@ App.Backbone.Model.User = Backbone.Model.extend({
            followerCount: data.user.followerCount,
            follow: data.user.follow,
         });
+
+        /* This is a total hack. When we have a proper model data store in 
+         * JS, we should be able to set any user and all views of them will
+         * update. But right now, we need to manually go in and do this
+         */
+        if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == App.Var.Model.loggedInUserId()) {
+            App.Var.Model.user().set({
+                followCount: data.me.followCount,
+                followerCount: data.me.followerCount,
+            });
+        }
     },
     ajaxFollowError: function(jqXHR, textStatus, errorThrown) {
     },

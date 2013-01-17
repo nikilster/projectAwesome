@@ -507,11 +507,15 @@ def apiFollowUser(userId):
                     user.followUser(userToFollow)
                 else:
                     user.unfollowUser(userToFollow)
-                data = { 'result'    : "success",
-                         'user' : userToFollow.toDictionary(
+
+                userToFollowDict = userToFollow.toDictionary(
                                         options=[User.Options.FOLLOW_COUNTS,
                                                  User.Options.FOLLOWING],
                                         user=user)
+                meDict = user.toDictionary(options=[User.Options.FOLLOW_COUNTS])
+                data = { 'result'    : "success",
+                         'user' : userToFollowDict,
+                         'me'   : meDict
                        }
             return jsonify(data)
         abort(403)

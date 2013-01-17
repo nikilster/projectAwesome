@@ -32,6 +32,9 @@ def Queue_visionCommentLikeEmail(user, liker, vision, comment):
     REDIS_QUEUE.enqueue(Worker_visionCommentLikeEmail,
                         user, liker, vision, comment)
 
+def Queue_followEmail(follower, user):
+    REDIS_QUEUE.enqueue(Worker_followEmail, follower, user)
+
 ###############################################################################
 # Worker jobs done by worker dyno
 #
@@ -93,6 +96,17 @@ def Worker_visionCommentLikeEmail(user, liker, vision, comment):
     ## WORK START ##
     notifications = Notifications(test=False)
     notifications.sendVisionCommentLikeEmail(user, liker, vision, comment)
+    ## WORK END ##
+
+    ctx.pop()
+
+def Worker_followEmail(follower, user):
+    ctx = app.test_request_context()
+    ctx.push()
+
+    ## WORK START ##
+    notifications = Notifications(test=False)
+    notifications.sendFollowEmail(follower, user)
     ## WORK END ##
 
     ctx.pop()

@@ -373,6 +373,11 @@ class User:
         if self.id() == user.id():
             return None
         followModel = DataApi.addFollow(self.model(), user.model())
+
+        if followModel:
+            from ..WorkerJobs import Queue_followEmail
+            Queue_followEmail(self.toDictionary(),
+                              user.toDictionaryFull())
         return Follow(followModel)
 
     def unfollowUser(self, user):

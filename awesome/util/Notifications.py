@@ -80,8 +80,6 @@ class Notifications:
             emailer = Emailer()
             emailer.sendBatch([email])
 
-    def sendFollowEmail(self):
-        pass
 
     # These emails only work in production right now
     # TODO: need better way of testing these things
@@ -168,6 +166,23 @@ class Notifications:
                                     liker = liker,
                                     vision = vision,
                                     comment = comment)
+        email = {
+            Constant.EMAIL_TO_KEY : emailAddress,
+            Constant.EMAIL_SUBJECT_KEY : emailSubject,
+            Constant.EMAIL_BODY_TEXT_KEY : emailText,
+            Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+        }
+        emailer = Emailer()
+        emailer.sendBatch([email])
+
+    def sendFollowEmail(self, follower, user):
+        '''Takes dictionary inputs'''
+        emailAddress = user[User.Key.EMAIL]
+        emailSubject = follower[User.Key.FULL_NAME] + " is following you!"
+        emailText = emailSubject
+        emailHtml = render_template("email/follow.html", 
+                                    follower = follower,
+                                    user = user)
         email = {
             Constant.EMAIL_TO_KEY : emailAddress,
             Constant.EMAIL_SUBJECT_KEY : emailSubject,

@@ -900,4 +900,38 @@
     }
 }
 
+#UserListModal {
+    .UserListBody {
+        min-height: 150px;
+        overflow: scroll;
+
+        .User {
+            overflow: hidden;
+            position: relative;
+            padding: 0px 90px 10px 60px;
+            min-height: 50px;
+
+            .Picture {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 50px;
+                height: 50px;
+            }
+            .Name {
+                font-size: 16px;
+                line-height: 1.2;
+            }
+            .Description {
+                color: gray;
+            }
+            .FollowButton {
+                position: absolute;
+                top: 0px;
+                right: 0px;
+            }
+        }
+    }
+}
+
 // $eof

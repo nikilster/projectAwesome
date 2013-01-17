@@ -84,7 +84,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         // User List modal
                         "showUserList",
                         "ajaxUserListSuccess",
-                        "ajaxUserListError"
+                        "ajaxUserListError",
+                        "hideUserList"
                         );
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
@@ -666,8 +667,28 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     ajaxUserListSuccess: function(data, textStatus, jqXHR) {
         console.log("DATA: " + JSON.stringify(data));
+        var listName = "";
+        if (this.userListType == App.Const.UserList.FOLLOWS) {
+            listName = "Follows";
+        } else if (this.userListType == App.Const.UserList.FOLLOWERS) {
+            listName = "Followers";
+        } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
+            listName = "Likes";
+        } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
+            listName = "Likes";
+        }
+        if (listName != "") {
+            var users = new App.Backbone.Model.UserList(data.users);
+            var view = new App.Backbone.View.UserList({
+                                                    collection: users,
+                                                    listName: listName });
+            $("#UserListModal").empty().append(view.el).modal();
+        }
     },
     ajaxUserListError: function(jqXHR, textStatus, errorThrown) {
+    },
+    hideUserList: function() {
+        $("#UserListModal").empty().modal("hide");
     },
 });
 

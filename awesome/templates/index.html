@@ -108,7 +108,7 @@
     <div id="VisionDetailsModal" class="hide"></div>
 
     <!-- Modal for user lists: follows, followers, likes, etc -->
-    <div id="UserListModal" class="hide"></div>
+    <div id="UserListModal" class="modal hide fade"></div>
 
     <!-- Modal for Add Vision -->
     <div id="AddVisionModal" class="modal hide fade">
@@ -245,6 +245,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/Global.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/User.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/collections/UserList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Picture.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Like.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/VisionComment.js') }}"></script>
@@ -258,6 +259,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionDetailsComment.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionDetails.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/Vision.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/views/UserList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/Page.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/routers/Router.js') }}"></script>
@@ -524,6 +526,38 @@
             Followers: <span class="FollowerCount"><%= followerCount %></span>
         </span>
       </div>
+</script>
+
+<script type="text/template" id="UserTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<div class="Name">
+    <a href="/user/<%= userId %>"><%= name %></a>
+</div>
+<div class="Description"><%= description %></div>
+<% if (follow != null) { %>
+<div class="FollowButton btn
+            <% if (follow==false) { %>
+            btn-primary
+            <% } %>">
+            <% if (follow==false) { %>
+            Follow
+            <% } else { %>
+            Unfollow
+            <% } %>
+<% } %>
+</div>
+</script>
+
+<script type="text/template" id="UserListTemplate">
+<div class="modal-header" style="font-size:18pt">
+    <%= listName %>
+</div>
+<div class="UserListBody modal-body"></div>
+
+<div class="modal-footer">
+    <a href="#" data-dismiss="modal" aria-hidden="hidden"
+       class="btn btn-primary">Close</a>
+</div>
 </script>
 
 {% endblock %}

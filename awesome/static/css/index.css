@@ -935,3 +935,32 @@ footer {
   line-height: 1.3;
   margin: 3px 0px;
 }
+#UserListModal .UserListBody {
+  min-height: 150px;
+  overflow: scroll;
+}
+#UserListModal .UserListBody .User {
+  overflow: hidden;
+  position: relative;
+  padding: 0px 90px 10px 60px;
+  min-height: 50px;
+}
+#UserListModal .UserListBody .User .Picture {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 50px;
+}
+#UserListModal .UserListBody .User .Name {
+  font-size: 16px;
+  line-height: 1.2;
+}
+#UserListModal .UserListBody .User .Description {
+  color: gray;
+}
+#UserListModal .UserListBody .User .FollowButton {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}

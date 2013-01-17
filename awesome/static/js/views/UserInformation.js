@@ -19,7 +19,7 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
                         "submitDesc", "setUserDescription",
                         "followButtonClick",
                         "showUserFollows", "showUserFollowers");
-        this.model.bind("change:follow", this.render, this);
+        this.model.bind("change", this.render, this);
         this.render();
     },
     events: function() {
