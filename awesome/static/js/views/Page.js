@@ -13,6 +13,8 @@ var USER_INFORMATION = "#UserInformation";
 var EXPLANATION_DIV = "#Explanation";
 var EXPLANATION_PADDING = "#ExplanationPadding";
 
+var USER_LIST_MODAL = "#UserListModal";
+
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
 var INSTRUCTIONS_DIV = "#Instructions";
@@ -81,7 +83,12 @@ App.Backbone.View.Page = Backbone.View.extend({
                         // Show vision page
                         "showVisionPage",
                         "showVisionPageSuccess",
-                        "showVisionPageError"
+                        "showVisionPageError",
+                        // User List modal
+                        "showUserList",
+                        "ajaxUserListSuccess",
+                        "ajaxUserListError",
+                        "hideUserList"
                         );
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
@@ -617,23 +624,77 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.currentVision = new App.Backbone.View.VisionDetails(
                                          {model: this.model.currentVision()});
         $(VISION_INFORMATION_DIV).empty().append(this.currentVision.el);
-
-
-        /*
-        if (DEBUG) console.log("Rendering Profile");
-
-        this.model.setVisionList(App.Var.JSON.visionList);
-        if (App.Var.Model.currentUserId() != USER.id) {
-            this.model.setOtherVisions(App.Var.JSON.otherVisions);
-        }
-        this.model.setUser(App.Var.JSON.user);
-        */
     },
     showVisionPageError: function() {
-        /*
-        var masonryContainer = $(CONTENT_DIV).first();
-        masonryContainer.empty().masonry();
-        */
+    },
+    showUserList: function(listType, id) {
+        // Set variables to pass to AJAX success function
+        this.userListType = listType;
+        this.userListId = id;
+
+        // Now do the proper AJAX request
+        if (listType == App.Const.UserList.FOLLOWS) {
+            console.log("List follows: user" + id);
+            doAjax("/api/user/" + id + "/follows",
+                   JSON.stringify({
+                                    'userId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.FOLLOWERS) {
+            console.log("List followers: user" + id);
+            doAjax("/api/user/" + id + "/followers",
+                   JSON.stringify({
+                                    'userId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.VISION_LIKERS) {
+            console.log("List vision likers: vision" + id);
+            doAjax("/api/vision/" + id + "/likers",
+                   JSON.stringify({
+                                    'visionId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        } else if (listType == App.Const.UserList.VISION_COMMENT_LIKERS) {
+            console.log("List vision comment likers: comment" + id);
+            doAjax("/api/comment/" + id + "/likers",
+                   JSON.stringify({
+                                    'visionCommentId' : id,
+                                  }),
+                   this.ajaxUserListSuccess,
+                   this.ajaxUserListError
+            );
+        }
+    },
+    ajaxUserListSuccess: function(data, textStatus, jqXHR) {
+        console.log("DATA: " + JSON.stringify(data));
+        var listName = "";
+        if (this.userListType == App.Const.UserList.FOLLOWS) {
+            listName = "Follows";
+        } else if (this.userListType == App.Const.UserList.FOLLOWERS) {
+            listName = "Followers";
+        } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
+            listName = "Likes";
+        } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
+            listName = "Likes";
+        }
+        if (listName != "") {
+            var users = new App.Backbone.Model.UserList(data.users);
+            var view = new App.Backbone.View.UserList({
+                                                    collection: users,
+                                                    listName: listName });
+            $("#UserListModal").empty().append(view.el).modal();
+        }
+    },
+    ajaxUserListError: function(jqXHR, textStatus, errorThrown) {
+    },
+    hideUserList: function() {
+        $("#UserListModal").empty().modal("hide");
     },
 });
 

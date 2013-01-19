@@ -256,36 +256,17 @@ class FollowModel(DB.Model):
     id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
     followerId      = DB.Column(DB.BigInteger(unsigned=True), index=True)
     userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    blessed         = DB.Column(DB.Boolean, default=False)
 
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
-    modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
-                                             onupdate=datetime.datetime.utcnow)
 
-    def __init__(self, followerId, userId):
+    def __init__(self, followerId, userId, blessed):
         self.followerId = followerId
         self.userId = userId
+        self.blessed = blessed
     def __str__(self):
-        return '<Follow %s:%s>' % (str(self.followerId), str(self.userId))
-
-#
-# FriendModel: Represents a one-way share of information
-#
-# This is for our inner-circle, master-mind group type functionality
-#
-class FriendModel(DB.Model):
-    __tablename__   = 'friend'
-    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
-    userId          = DB.Column(DB.BigInteger(unsigned=True), index=True)
-    friendId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
-
-    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
-    modified        = DB.Column(DB.DateTime, default=datetime.datetime.utcnow,
-                                             onupdate=datetime.datetime.utcnow)
-
-    def __init__(self, userId, friendId):
-        self.userId = userId
-        self.friendId = friendId
-    def __str__(self):
-        return '<Friend %s:%s>' % (str(self.userId), str(self.friendId))
+        return '<Follow %s:%s:%s>' % (str(self.followerId),
+                                      str(self.userId),
+                                      str(self.blessed))
 
 # $eof
