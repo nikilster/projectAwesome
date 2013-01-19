@@ -7,6 +7,5 @@ if not os.path.exists(Constant.LOCAL_IMAGE_DIR):
   os.makedirs(Constant.LOCAL_IMAGE_DIR)
 
 #Run
-port = int(os.environ.get('PORT', 5000))
-app.run(host='0.0.0.0', port=port, debug=app.config['DEBUG'])
+app.run(port=6705, debug=app.config['DEBUG'])
 
