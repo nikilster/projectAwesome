@@ -126,7 +126,8 @@ class Activity:
                 return None
             model = idToVision[id]
             vision = Vision(model)
-            if vision.privacy() == VisionPrivacy.PRIVATE and\
+            if vision.removed == False and \
+               vision.privacy() == VisionPrivacy.PRIVATE and\
                vision.userId() != user.id():
                 return None
             obj = vision.toDictionary()
