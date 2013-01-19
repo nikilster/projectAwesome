@@ -3,25 +3,25 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
         id: -1,
         authorId: -1,
         text: "",
-        name: "",
         picture: "",
         created: null,
         like: null,
+        author: null,
     },
     initialize: function() {
         _.bindAll(this, "ajaxLikeSuccess", "ajaxLikeError");
 
-        this.set({ created: dateFromUTC(this.get("created")) });
+        this.set({ author: new App.Backbone.Model.User(this.get("author")),
+                   created: dateFromUTC(this.get("created")) });
 
         if (this.get("like") != null) {
             this.set({ like: new App.Backbone.Model.Like(this.get("like")) });
         }
     },
     visionCommentId: function() { return this.get("id"); },
+    author: function() { return this.get("author"); },
     authorId: function() { return this.get("authorId"); },
     text: function() { return this.get("text"); },
-    name: function() { return this.get("name"); },
-    picture: function() { return this.get("picture"); },
     like: function() { return this.get("like"); },
     created: function() { return this.get("created"); },
     timeString: function() {

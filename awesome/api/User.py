@@ -287,6 +287,7 @@ class User:
                     Queue_repostEmail(self.toDictionary(),
                                   vision.toDictionary(),
                                   newVision.toDictionary())
+
                 return newVision
         return None
 

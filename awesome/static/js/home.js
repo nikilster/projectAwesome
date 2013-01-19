@@ -105,9 +105,9 @@ $(document).ready(function() {
     
     $("#NavHome").click(function(e) {
         e.preventDefault();
-        if (App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
+        if (App.Var.Model.pageMode() == App.Const.PageMode.FEED) {
             // Refresh content
-            App.Var.View.showHome();
+            App.Var.View.showFeed();
         } else {
             // Navigate
             App.Var.Router.navigate("/", {trigger: true});
@@ -122,6 +122,20 @@ $(document).ready(function() {
         } else {
             // Navigate
             App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
+        }
+    });
+    $("#HomePageFeed").click(function(e) {
+        e.preventDefault();
+        App.Var.Router.navigate("/", {trigger: true});
+    });
+    $("#HomePageRecent").click(function(e) {
+        e.preventDefault();
+        if (userLoggedIn() && 
+            App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
+            App.Var.View.showHome();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/recent", {trigger: true});
         }
     });
 

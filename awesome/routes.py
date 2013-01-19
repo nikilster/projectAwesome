@@ -15,6 +15,7 @@ from api.Vision import Vision
 from api.VisionList import VisionList
 from api.VisionComment import VisionComment
 from api.FollowList import FollowList
+from api.Activity import Activity
 from api.FlashMessages import *
 
 from util.SessionManager import SessionManager
@@ -35,6 +36,16 @@ def index():
 @app.route('/view_board', methods=['GET'])
 def view_board():
     return redirect(url_for('index'))
+
+@app.route('/recent', methods=['GET'])
+def recent_vision():
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            return render_template('index.html', user=userInfo, config=app.config)
+        else:
+            return redirect(url_for('index'))
+    abort(405)
 
 @app.route('/user/<int:userId>', methods=['GET'])
 @app.route('/user/<int:userId>/<int:pageOption>') #Page option is used to show the onboarding (= 1)
@@ -74,15 +85,14 @@ def apiVisionInformation(visionId):
 
         vision = Vision.getById(visionId, user)
         if vision:
-            visionUser = User.getById(vision.userId())
             if visionUser:
-                obj = vision.toDictionary(
-                                options=[Vision.Options.PICTURE,
-                                            Vision.Options.PARENT_USER,
-                                            Vision.Options.LIKES],
-                                user=user)
-                obj['name'] = visionUser.fullName()
-                data = {"vision" : obj }
+                data = {'vision' : vision.toDictionary(
+                                        options=[Vision.Options.PICTURE,
+                                                Vision.Options.USER,
+                                                Vision.Options.PARENT_USER,
+                                                Vision.Options.LIKES],
+                                        user=user)
+                       }
                 return jsonify(data)
         abort(403)
     abort(405)
@@ -251,6 +261,19 @@ def register_user():
             return redirect(url_for('register'))
     abort(405)
 
+@app.route('/api/get_feed', methods=['GET'])
+def apiUserFeed():
+    if request.method == 'GET':
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+
+            data = { 'activities' : Activity.getUserFeed(user)
+                   }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
 @app.route('/api/get_main_page_visions', methods=['GET'])
 def apiGetMainPageVisions():
     if request.method == 'GET':
@@ -263,6 +286,7 @@ def apiGetMainPageVisions():
 
         data = { 'otherVisions' : mainPageVisions.toDictionary(
                                         options=[Vision.Options.PICTURE,
+                                                 Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS,
                                                  Vision.Options.LIKES,
@@ -294,6 +318,7 @@ def apiGetUserVisions(targetUserId):
                 if targetUserId == user.id():
                     data['visionList'] = userVisions.toDictionary(
                                            options=[Vision.Options.PICTURE,
+                                                    Vision.Options.USER,
                                                     Vision.Options.PARENT_USER,
                                                     Vision.Options.COMMENTS,
                                                     Vision.Options.LIKES,
@@ -314,6 +339,7 @@ def apiGetUserVisions(targetUserId):
         if targetUser and targetUserVisions:
             data['otherVisions'] = targetUserVisions.toDictionary(
                                         options=[Vision.Options.PICTURE,
+                                                 Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS,
                                                  Vision.Options.LIKES,
@@ -646,6 +672,7 @@ def apiAddUserVision(userId):
                         data = { 'result'    : "success",
                                  'newVision' : objList.toDictionary(
                                         options=[Vision.Options.PICTURE,
+                                                 Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS])[0] }
 

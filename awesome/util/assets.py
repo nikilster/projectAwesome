@@ -34,6 +34,8 @@ JS_home = Bundle(
     'js/collections/VisionCommentList.js',
     'js/models/Vision.js',
     'js/collections/VisionList.js',
+    'js/models/Activity.js',
+    'js/collections/ActivityList.js',
     'js/models/Page.js',
 
     'js/views/UserInformation.js',
@@ -43,6 +45,7 @@ JS_home = Bundle(
     'js/views/VisionDetails.js',
     'js/views/Vision.js',
     'js/views/UserList.js',
+    'js/views/Activity.js',
     'js/views/Page.js',
 
     'js/routers/Router.js',

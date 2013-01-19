@@ -26,23 +26,26 @@ var App = {
             
             //Example vision board (not logged in)
             EXAMPLE_VISION_BOARD: 3,
-            
+           
+            //User feed
+            FEED: 4,
+
             //User Page (logged in)
-            USER_PROFILE: 4,
+            USER_PROFILE: 5,
             
             //Vision details modal
-            VISION_DETAILS: 5,
+            VISION_DETAILS: 6,
             
             //Vision details full page (if we came directly here)
-            VISION_PAGE: 6,
+            VISION_PAGE: 7,
 
-            INVALID: 7, // Keep at end: we use to check validity of pageMode
+            INVALID: 8, // Keep at end: we use to check validity of pageMode
         },
 
         /* Human Readable names for Page Mode */
         PageNames: ["Not a Page", "Index (not logged in)", "Index (logged in)",
-                    "Example Vision Board", "User Page (logged in)", "Vision Modal", 
-                    "Vision Page", "Invalid"],
+                    "Example Vision Board", "Feed", "User Page (logged in)", 
+                    "Vision Modal", "Vision Page", "Invalid"],
 
         VisionPrivacy: {
             PRIVATE: 0,

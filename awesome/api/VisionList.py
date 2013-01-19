@@ -201,7 +201,8 @@ class VisionList:
         # Now start building object list to return
         for vision in self.visions():
             obj = vision.toDictionary()
-            obj[Vision.Key.NAME] = idToUser[vision.userId()].fullName()
+            if Vision.Options.USER in options:
+                obj[Vision.Key.USER] = idToUser[vision.userId()].toDictionary()
 
             # If PICTURE
             if Vision.Options.PICTURE in options:
@@ -215,8 +216,7 @@ class VisionList:
                     for comment in idToComments[vision.id()]:
                         commentObj = comment.toDictionary()
                         author = idToAuthor[comment.authorId()]
-                        commentObj[VisionComment.Key.NAME] = author.fullName()
-                        commentObj[VisionComment.Key.PICTURE] = author.picture()
+                        commentObj[VisionComment.Key.AUTHOR] = author.toDictionary()
 
                         if Vision.Options.COMMENT_LIKES in options:
                             commentObj[VisionComment.Key.LIKE] = {

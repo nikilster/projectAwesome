@@ -249,6 +249,22 @@ footer {
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
 }
+#HomePageNav {
+  width: 250px;
+  margin-top: -5px;
+  padding: 10px 5px 5px 5px;
+  z-index: -1;
+  position: relative;
+  text-align: center;
+  font-size: 14px;
+  -webkit-transition: -webkit-transform 0.15s linear;
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+#HomePageNav a.HomePageNavLink {
+  margin: 0px 15px;
+}
 /*
     Explanation
 */
@@ -403,6 +419,61 @@ footer {
 /* 
     ----------------- End ------------------
 */
+/*
+ * Feed
+ */
+#Feed {
+  margin: 70px auto 25px auto;
+  width: 600px;
+}
+#Feed .Activity {
+  margin: 20px 10px 10px 10px;
+  min-height: 50px;
+  padding: 0px 0px 0px 60px;
+  position: relative;
+}
+#Feed .Activity .Picture {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 50px;
+}
+#Feed .Activity .CommentBox {
+  position: relative;
+  padding: 18px 18px 5px 55px;
+}
+#Feed .Activity .CommentBox .CommentText {
+  font-size: 16px;
+  font-style: italic;
+}
+#Feed .Activity .CommentBox .CommentText:before {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 50px;
+  height: 50px;
+  background-image: url('https://s3.amazonaws.com/project-awesome-static/gen/img/quote-icon.png');
+  z-index: 1;
+  content: "";
+}
+#Feed .Activity .VisionBox {
+  width: 275px;
+  margin: 10px auto;
+  padding: 10px;
+  position: relative;
+  background-color: #fafafa;
+  -webkit-transition: -webkit-transform 0.15s linear;
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+#Feed .Activity .VisionBox .VisionPicture {
+  width: 275px;
+}
+#Feed .Activity .VisionBox .VisionText {
+  background-color: white;
+}
 /*
     Delete
 */

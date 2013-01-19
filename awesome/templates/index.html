@@ -95,6 +95,12 @@
       </div>
     </div>
 
+    <!-- Onboarding -->
+    <div id="HomePageNav" class="well Center">
+    <a id="HomePageNewsFeed" class="HomePageNavLink" href="/">News Feed</a>
+    <a id="HomePageRecent" class="HomePageNavLink" href="/recent">Recent Visions</a>
+    </div>
+
 {% endblock %}
 
 
@@ -106,8 +112,11 @@
     <div id="ExplanationPadding"></div>
     <div id="InstructionsPadding"></div>
     <div id="UserInformation" class="Center Hidden"></div>
-    <div id="Content" class="Center"></div>
-    <div id="ExampleVisionBoard" class="Center"></div>
+    <div id="Content" class="Center Hidden"></div>
+    <div id="Feed" class="Center Hidden">
+        <div id="FeedContent"></div>
+    </div>
+    <div id="ExampleVisionBoard" class="Center Hidden"></div>
     <div id="VisionInformation" class="hide">Vision</div>
 
     <!-- Modal for vision details -->
@@ -288,6 +297,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/collections/VisionCommentList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Vision.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/collections/VisionList.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/models/Activity.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/collections/ActivityList.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/models/Page.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/UserInformation.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/Like.js') }}"></script>
@@ -296,6 +307,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/VisionDetails.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/Vision.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/UserList.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/views/Activity.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/views/Page.js') }}"></script>
 
 <script type="text/javascript" src="{{ url_for('static', filename='js/routers/Router.js') }}"></script>
@@ -594,6 +606,93 @@
     <a href="#" data-dismiss="modal" aria-hidden="hidden"
        class="btn btn-primary">Close</a>
 </div>
+</script>
+
+<script type="text/template" id="ActivityJoinSiteTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+joined Project Awesome.
+</script>
+
+<script type="text/template" id="ActivityAddVisionTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+added a
+<a class="VisionLink" href="/vision/<%= visionId %>">new vision</a>.
+
+<div class="VisionBox">
+    <a class="VisionLink" href="/vision/<%=visionId %>">
+        <img class="VisionPicture" src="<%= visionPicture %>"/>
+    </a>
+    <div class="VisionText"><%= visionText %></div>
+</div>
+</script>
+
+<script type="text/template" id="ActivityLikeVisionTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+likes
+<a class="VisionUserLink" href="/vision/<%= visionUserId %>">
+<%= visionUserName %>'s</a> vision.
+
+<div class="VisionBox">
+    <a class="VisionLink" href="/vision/<%=visionId %>">
+        <img class="VisionPicture" src="<%= visionPicture %>"/>
+    </a>
+    <div class="VisionText"><%= visionText %></div>
+</div>
+</script>
+
+<script type="text/template" id="ActivityLikeVisionCommentTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+likes
+<a class="AuthorLink" href="/user/<%= authorUserId %>">
+<%= authorUserName %>'s</a> 
+comment on 
+<a class="VisionUserLink" href="/user/<%= visionUserId %>">
+<%= visionUserName %>'s</a> 
+vision.
+
+<div class="CommentBox">
+<div class="CommentText"><%= commentText %></div>
+</div>
+
+<div class="VisionBox">
+    <a class="VisionLink" href="/vision/<%=visionId %>">
+        <img class="VisionPicture" src="<%= visionPicture %>"/>
+    </a>
+    <div class="VisionText"><%= visionText %></div>
+</div>
+</script>
+
+<script type="text/template" id="ActivityCommentOnVisionTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+commented on 
+<a class="VisionUserLink" href="/user/<%= visionUserId %>">
+    <%=visionUserName %>'s
+</a>
+vision.
+
+<div class="CommentBox">
+<div class="CommentText"><%= commentText %></div>
+</div>
+
+<div class="VisionBox">
+    <a class="VisionLink" href="/vision/<%=visionId %>">
+        <img class="VisionPicture" src="<%= visionPicture %>"/>
+    </a>
+    <div class="VisionText"><%= visionText %></div>
+</div>
+</script>
+
+<script type="text/template" id="ActivityFollowTemplate">
+<img class="Picture" src="<%= picture %>"/>
+<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+is following 
+<a class="FollowingUserLink" href="/user/<%= followingUserId %>">
+<%= followingName %></a>.
 </script>
 
 {% endblock %}
