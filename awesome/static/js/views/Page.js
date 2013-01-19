@@ -32,9 +32,33 @@ var USER_SELECTED_VISIONS_INPUT = "#UserSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
 var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 
+
+//Onboarding
 var ONBOARDING_MODAL = "#OnboardingModal";
+//Generalized button (so we can have different text)
+var ONBOARDING_NEXT_BUTTON = "#OnboardingModal .modal-footer a.btn";
+var ONBOARDING_STEPS = ["#OnboardingPage1", "#OnboardingPage2",
+                        "#OnboardingPage3", "#OnboardingPage4"];
+
 
 App.Backbone.View.Page = Backbone.View.extend({
+    
+    //Added by Nikil
+    //1-18-2013 For Onboarding
+    /*
+        Fix!
+
+    events: function() {
+
+        //So we can use the ONBOARDING constant :)
+        // --> Vision.js
+        var _events = {};
+        _events["click " + ONBOARDING_NEXT_BUTTON] = "masonryReload";
+
+        return _events;
+
+    },
+    */
     initialize: function() {
         _.bindAll(this, "masonryReload",
                         // Vision details modal
@@ -89,7 +113,11 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "ajaxUserListSuccess",
                         "ajaxUserListError",
                         "hideUserList"
+
+                        //Onboarding modal
+                        //"onboardingNext"
                         );
+
         this.model.bind("change:pageMode", this.changePageMode, this);
         this.model.otherVisions().bind("reset", 
                                        this.renderVisionList,
@@ -115,7 +143,10 @@ App.Backbone.View.Page = Backbone.View.extend({
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
         this.visionDetails = null;
+
+        this.onboardingStep = 0;
     },
+
     repostVision: function(visionModel) {
         assert(visionModel != null, "Vision model to repost is null");
         if (visionModel != null) {
@@ -699,5 +730,24 @@ App.Backbone.View.Page = Backbone.View.extend({
     hideUserList: function() {
         $("#UserListModal").empty().modal("hide");
     },
+
+    /*
+    onboardingNext: function() {
+
+        console.log("next clicked!");
+
+        //Step n
+        if(this.onboardingStep == ONBOARDING_STEPS.length - 1)
+            $(OnboardingModal).modal('hide');
+
+        else {
+            $(ONBOARDING_STEPS[this.onboardingStep]).hide();
+            $(ONBOARDING[this.onboardingStep+1]).show();
+        }
+
+        this.onboardingStep++;
+        
+    }
+    */
 });
 

@@ -145,7 +145,25 @@ $(document).ready(function() {
     //If Option
     //Display intro
     if(App.Var.Model.option() == App.Const.Options.ONBOARDING)
+    {
+        //TODO: fix this!
+        var onboardingStep = 0;
         $(ONBOARDING_MODAL).modal();
+        $(ONBOARDING_NEXT_BUTTON).click(function() {
+
+             //Step n
+            if(onboardingStep == ONBOARDING_STEPS.length - 1)
+                $(OnboardingModal).modal('hide');
+
+            else {
+                $(ONBOARDING_STEPS[onboardingStep]).hide();
+                $(ONBOARDING_STEPS[onboardingStep+1]).show();
+            }
+
+            onboardingStep++;
+
+        });
+    }
 
     /*
      * File upload stuff
@@ -299,4 +317,5 @@ function trackUser()
         'Last Name': lastName
     });
 }
+
 /* $eof */
