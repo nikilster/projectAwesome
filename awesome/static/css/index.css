@@ -385,6 +385,9 @@ footer {
 .Move {
   right: 16px;
 }
+/* 
+    ----------------- Begin Onboarding Modal ------------------
+*/
 #OnboardingModal {
   width: 660px;
   margin-left: -330px;
@@ -392,6 +395,14 @@ footer {
 #OnboardingModal .modal-header {
   text-align: center;
 }
+#OnboardingModal .modal-body {
+  padding-left: 40px;
+  padding-right: 20px;
+  color: #555555;
+}
+/* 
+    ----------------- End ------------------
+*/
 /*
     Delete
 */

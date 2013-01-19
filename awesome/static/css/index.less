@@ -50,6 +50,10 @@
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
 @OVERLAY_MARGIN: @VISION_PADDING+4;
 
+
+//Onboarding
+@ONBOARDING_MODAL_WIDTH: 660px;
+@ONBOARDING_TEXT_COLOR: #555;
 /* Begin Augmenting Bootstrap */
 .navbar-inner {
     z-index: 1 !important;
@@ -298,17 +302,41 @@
 }
 
 
-// Onboarding Modal
+/* 
+    ----------------- Begin Onboarding Modal ------------------
+*/
+
 #OnboardingModal
 {
-    width:660px;
-    margin-left:-330px;
+    width:@ONBOARDING_MODAL_WIDTH;
+
+    //To Center the modal
+    margin-left:-@ONBOARDING_MODAL_WIDTH/2; 
+
+    
+    //Header
+    .modal-header {
+        text-align:center;
+    }
+
+    .modal-body {
+        padding-left:40px;
+        padding-right:20px;
+
+        color: @ONBOARDING_TEXT_COLOR;
+    }
+
 }
 
-#OnboardingModal .modal-header
-{
-    text-align:center;
-}
+/* 
+    ----------------- End ------------------
+*/
+
+
+
+
+
+
 
 //Logged in
 

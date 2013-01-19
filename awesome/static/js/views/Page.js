@@ -378,6 +378,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         if (onboarding) {
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
             $(EXPLANATION_DIV).show();
+            $(EXPLANATION_PADDING).show();
             $(INSTRUCTIONS_DIV).show();
             $(INSTRUCTIONS_PADDING).show();
         } else {
@@ -389,6 +390,8 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
     hideInfoBar: function() {
+        $(EXPLANATION_DIV).hide();
+        $(EXPLANATION_PADDING).hide();
         $(INSTRUCTIONS_PADDING).hide();
         $(INSTRUCTIONS_DIV).hide();
     },

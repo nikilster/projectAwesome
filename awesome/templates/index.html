@@ -195,12 +195,26 @@
             <h1>Welcome to your Vision Board!</h1>
         </div>
         <div class="modal-body">
-            <h4>Save your goals here and they will become reality faster than you can believe!</h4>
-            <br/>
-            <h4>To collect pictures of your goals:</h4>
-            <ol>
-                <li>Drag this button to your bookmarks bar: 
-                    <a class="btn btn-large btn-primary" href="
+            
+            <!-- Explanation -->
+            <div id="OnboardingPage1" class="hide">
+                <h3>
+                    This is your home for your dreams.
+                </h3>
+                <h3>
+                    You will achieve everything on here if you look at this page at least 2 times daily (<a target="_BLANK" href="{{ url_for('about') }}">Success Stories</a>).
+                </h3>
+
+            </div>
+
+            <div id="OnboardingPage2" class="hide">
+                <h2>
+                    Lets add a couple more goals.
+                </h2>  
+                <br/>
+                <h2>
+                    Drag this button to your bookmarks bar --> 
+                     <a class="btn btn-large btn-primary" href="
                     javascript: void((function (doc) {
                         var repinCode = doc.createElement('script');
                         repinCode.setAttribute('type', 'text/javascript');
@@ -209,25 +223,31 @@
                         doc.body.appendChild(repinCode);
                     })(document));
                     ">Post it</a>
-                </li>
-                <li>
-                    Go to your favorite site with inpsirational images and click the button
-                </li>
-            </ol>
+                </h2>
+            </div>
 
-            <br/>
-            You can upload your own pictures by clicking <span class="emphasis muted">Add Vision</span>.            
-            (on the top right corner of the page)
+            <div id="OnboardingPage3" class="">
+                <h2>
+                    Now open a new browser window, <br/>
+                    go to a page with a picture of your goal <br/>
+                    and click the button.  
+                    <small>(Tip: Try Google images) </small>
+                                <!--You can upload your own pictures by clicking <span class="emphasis muted">Add Vision</span>.-->
+                    <br/>
+                    <br/>
+                    Try it now!
+                </h2>
+            </div>
 
-            <br/>
-            <br/>
-
-            <h4>Now post <span class="text-success">2</span> more dreams on here!</h4>
+            <div 
+            
+           <!-- <h4>Now post <span class="text-success">2</span> more dreams on here!</h4>
             <h4>We hope you enjoy this and may all of your dreams come true! :)</h4>
+        -->
         </div>
         <div class="modal-footer">
             <!-- Explore the Language: 1st person vs 2nd person vs 3rd person:I want to get started, Let's get started, get started. -->
-            <a href="#" data-dismiss="modal" aria-hidden="hidden" class="btn btn-primary">Let's get started!</a>
+            <a href="#" aria-hidden="hidden" class="btn btn-primary">Let's get started!</a>
         </div>
     </div>
 
