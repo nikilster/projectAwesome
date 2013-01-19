@@ -329,17 +329,28 @@ function trackUser()
     var email = USER['email'];
     var firstName = USER['firstName'];
     var lastName = USER['lastName'];
-
+    var fullName = firstName + " " + lastName;
     
     //Associate with email
     mixpanel.identify(email);
 
     //Add additional info
-    mixpanel.register({
+    mixpanel.register_once({
         'User Id': userId,
         'Email': email,
         'First Name': firstName,
         'Last Name': lastName
+    });
+
+
+    //For People
+    mixpanel.people.set({
+    '$email': email,
+    'User Id': userId,
+    '$first_name': firstName,
+    '$last_name': lastName,
+    '$name': fullName,
+    //'$created': new Date(),
     });
 }
 
