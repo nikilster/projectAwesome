@@ -51,7 +51,7 @@
 {% block header_info %}
 
     <!-- The Explanation -->
-    <div id="Explanation" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
+    <div id="Explanation" class="Hidden" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
     </div>
 
     <!-- Onboarding -->
@@ -96,7 +96,7 @@
     </div>
 
     <!-- Onboarding -->
-    <div id="HomePageNav" class="well Center">
+    <div id="HomePageNav" class="well Center Hidden">
     <a id="HomePageNewsFeed" class="HomePageNavLink" href="/">News Feed</a>
     <a id="HomePageRecent" class="HomePageNavLink" href="/recent">Recent Visions</a>
     </div>
@@ -109,8 +109,9 @@
 {% block content %}
 
     <!-- Main Content -->
-    <div id="ExplanationPadding"></div>
-    <div id="InstructionsPadding"></div>
+    <div id="ExplanationPadding" class="Hidden"></div>
+    <div id="InstructionsPadding" class="Hidden"></div>
+    <div id="HomePagePadding" class="Hidden"></div>
     <div id="UserInformation" class="Center Hidden"></div>
     <div id="Content" class="Center Hidden"></div>
     <div id="Feed" class="Center Hidden">

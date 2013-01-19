@@ -136,10 +136,9 @@ body .bodyContent .quoteBox {
 }
 body .bodyContent .quoteBox .quote {
   font-family: times, serif;
-  font-style: italic;
-  font-size: 19px;
-  font-weight: 400;
-  color: #888;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
 }
 body .bodyContent .quoteBox .attribution {
   text-align: right;

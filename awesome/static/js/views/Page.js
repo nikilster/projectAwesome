@@ -13,6 +13,9 @@ var USER_INFORMATION = "#UserInformation";
 var EXPLANATION_DIV = "#Explanation";
 var EXPLANATION_PADDING = "#ExplanationPadding";
 
+var HOME_PAGE_NAV = "#HomePageNav";
+var HOME_PAGE_PADDING = "#HomePagePadding";
+
 var USER_LIST_MODAL = "#UserListModal";
 
 //Instructions
@@ -78,6 +81,8 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "changePageMode",
                         "showInfoBar",
                         "hideInfoBar",
+                        "showHomePageNav",
+                        "hideHomePageNav",
                         // For onboarding
                         "showAddItemButton",
                         "hideAddItemButton",
@@ -234,26 +239,26 @@ App.Backbone.View.Page = Backbone.View.extend({
         var pageMode = this.model.pageMode();
 
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
-            $("#HomePageNav").hide();
+            this.hideHomePageNav();
             this.showInfoBar(true);
             this.hideAddItemButton();
             this.showHome();
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
-            $("#HomePageNav").hide();
+            this.hideHomePageNav();
             this.showInfoBar(false);
             this.showExampleVisionBoard();
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
             this.hideInfoBar();
             this.hideAddItemButton();
             this.showHome();
-            $("#HomePageNav").show();
+            this.showHomePageNav();
         } else if (pageMode == App.Const.PageMode.FEED) {
             this.hideInfoBar();
             this.hideAddItemButton();
-            $("#HomePageNav").show();
+            this.showHomePageNav();
             this.showFeed();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
-            $("#HomePageNav").hide();
+            this.hideHomePageNav();
             if (userLoggedIn()) {
                 this.hideInfoBar();
                 this.showAddItemButton();
@@ -263,12 +268,12 @@ App.Backbone.View.Page = Backbone.View.extend({
             }
             this.showProfile();
         } else if (pageMode == App.Const.PageMode.VISION_DETAILS) {
-            $("#HomePageNav").hide();
+            this.hideHomePageNav();
             assert(null != this.model.currentVision(),
                    "Invalid current vision");
             this.showVisionDetails();
         } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
-            $("#HomePageNav").hide();
+            this.hideHomePageNav();
             this.showVisionPage();
         } else {
             assert(false, "Invalid page mode in changePageMode");
@@ -443,6 +448,15 @@ App.Backbone.View.Page = Backbone.View.extend({
         $(EXPLANATION_PADDING).hide();
         $(INSTRUCTIONS_PADDING).hide();
         $(INSTRUCTIONS_DIV).hide();
+    },
+
+    showHomePageNav: function() {
+        $(HOME_PAGE_NAV).show();
+        $(HOME_PAGE_PADDING).show();
+    },
+    hideHomePageNav: function() {
+        $(HOME_PAGE_NAV).hide();
+        $(HOME_PAGE_PADDING).hide();
     },
 
     changeInSelectedVisions: function() {

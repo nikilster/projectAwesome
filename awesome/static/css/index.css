@@ -297,6 +297,9 @@ footer {
 #ExplanationPadding {
   height: 155px;
 }
+#HomePagePadding {
+  height: 25px;
+}
 /*
     Instructions
     Both (H + Example)
@@ -496,7 +499,7 @@ footer {
 }
 #UserInformation {
   width: 410px;
-  margin-top: 25px;
+  margin-top: 20px;
   padding: 10px 10px 10px 190px;
   overflow: hidden;
   position: relative;
