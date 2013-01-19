@@ -85,15 +85,14 @@ def apiVisionInformation(visionId):
 
         vision = Vision.getById(visionId, user)
         if vision:
-            if visionUser:
-                data = {'vision' : vision.toDictionary(
-                                        options=[Vision.Options.PICTURE,
-                                                Vision.Options.USER,
-                                                Vision.Options.PARENT_USER,
-                                                Vision.Options.LIKES],
-                                        user=user)
-                       }
-                return jsonify(data)
+            data = {'vision' : vision.toDictionary(
+                                    options=[Vision.Options.PICTURE,
+                                            Vision.Options.USER,
+                                            Vision.Options.PARENT_USER,
+                                            Vision.Options.LIKES],
+                                    user=user)
+                    }
+            return jsonify(data)
         abort(403)
     abort(405)
 
