@@ -19,8 +19,8 @@ class VisionComment:
         TEXT = 'text'
         CREATED = 'created'
         # These are included when Options.AUTHOR is passed
-        NAME = 'name'
-        PICTURE = 'picture'
+        AUTHOR = 'author'
+        # Options.LIKES
         LIKE = 'like'
         # - these keys are used within Vision.Key.LIKE object
         USER_LIKE = 'userLike'
@@ -94,8 +94,7 @@ class VisionComment:
             obj = self.toDictionary()
             author = User.getById(self.authorId())
             if author:
-                obj[VisionComment.Key.NAME] = author.fullName()
-                obj[VisionComment.Key.PICTURE] = author.picture()
+                obj[VisionComment.Key.AUTHOR] = author.toDictionary()
         if VisionComment.Options.LIKES in options:
             obj[VisionComment.Key.LIKE] = { 
                                 VisionComment.Key.LIKE_COUNT: self.likeCount() }

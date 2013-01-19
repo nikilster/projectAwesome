@@ -132,6 +132,22 @@
    .DarkShadow;
 }
 
+#HomePageNav {
+    width: 250px;
+    margin-top: -5px;
+    padding: 10px 5px 5px 5px;
+    z-index: -1;
+    position: relative;
+    text-align: center;
+    font-size: 14px;
+
+    //Shadow
+    .LightShadow;
+
+    a.HomePageNavLink {
+        margin: 0px 15px;
+    }
+}
 
 /*
     Instructions
@@ -280,12 +296,64 @@
 
 
 
+/*
+ * Feed
+ */
+#Feed {
+    margin: 70px auto 25px auto;
+    width: 600px;
 
+    .Activity {
+        margin: 20px 10px 10px 10px;
+        min-height: 50px;
+        padding: 0px 0px 0px 60px;
+        position: relative;
 
+        .Picture {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 50px;
+            height: 50px;
+        }
+        .CommentBox {
+            position: relative;
+            padding: 18px 18px 5px 55px;
 
+            .CommentText {
+                font-size: 16px;
+                font-style: italic;
+            }
+            .CommentText:before {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 50px;
+                height: 50px;
+                background-image: url('https://s3.amazonaws.com/project-awesome-static/gen/img/quote-icon.png');
+                z-index:1;
+                content:"";
+            }
 
+        }
 
+        .VisionBox {
+            width: 275px;
+            margin: 10px auto;
+            padding: 10px;
+            position: relative;
+            background-color: @VISION_BACKGROUND;
+            .LightShadow;
 
+            .VisionPicture {
+                width: 275px;
+            }
+            .VisionText {
+                background-color: white;
+            }
+        }
+    }
+}
 
 
 /*

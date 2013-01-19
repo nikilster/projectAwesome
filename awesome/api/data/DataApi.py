@@ -13,6 +13,9 @@ class DataApi:
 
     One of details in implementation is that wheneve we alter a users vision
     list, we need to keep the VisionListModel consistent.
+
+    The activity table is updated within transactions here so user doesn't need
+    to think about adding or removing activities
     '''
 
     #Returned when we dont have an object for that id
@@ -22,6 +25,7 @@ class DataApi:
     NO_OBJECT_EXISTS = None
 
     MAX_VISIONS = 20
+
 
     # 
     # User methods
@@ -123,6 +127,11 @@ class DataApi:
         DB.session.add(user)
         DB.session.flush() # so user id is valid
 
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(user.id, Activity.Action.JOIN_SITE, None)
+        DB.session.add(activity)
+
         # new VisionListModel
         visionList = VisionListModel(user.id)
         DB.session.add(visionList)
@@ -157,6 +166,15 @@ class DataApi:
             return existing
         newFollow = FollowModel(followerModel.id, userModel.id, False)
         DB.session.add(newFollow)
+        DB.session.flush()
+
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(followerModel.id,
+                                 Activity.Action.FOLLOW,
+                                 newFollow.id)
+        DB.session.add(activity)
+
         DB.session.commit()
         return newFollow
 
@@ -165,7 +183,17 @@ class DataApi:
         '''Remove follow from DB. Returns True of successful, else False.'''
         follow = DataApi.getFollow(followerModel, userModel)
         if follow != DataApi.NO_OBJECT_EXISTS:
+            followId = follow.id
             DB.session.delete(follow)
+
+            # remove activity
+            from ..Activity import Activity
+            activity = DataApi.getActivity(followerModel.id,
+                                           Activity.Action.FOLLOW,
+                                           followId)
+            if activity:
+                DB.session.delete(activity)
+
             DB.session.commit()
             return True
         return False
@@ -222,6 +250,15 @@ class DataApi:
             return FollowModel.query\
                               .filter_by(followerId=userModel.id)\
                               .filter(FollowModel.userId.in_(userIds))\
+                              .all()
+        return []
+
+    @staticmethod
+    def getFollowsById(followIds):
+        '''Get list of follows by ids'''
+        if len(followIds) > 0:
+            return FollowModel.query\
+                              .filter(FollowModel.id.in_(followIds))\
                               .all()
         return []
 
@@ -319,6 +356,11 @@ class DataApi:
         visionIds.insert(0, vision.id)
         visionListModel.setVisionIdList(visionIds)
         DB.session.add(visionListModel)
+
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(userId, Activity.Action.ADD_VISION, vision.id)
+        DB.session.add(activity)
 
         DB.session.commit()
 
@@ -482,6 +524,14 @@ class DataApi:
         return like if None != like else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
+    def getVisionLikesById(ids):
+        if len(ids) > 0:
+            return VisionLikeModel.query\
+                                .filter(VisionLikeModel.id.in_(ids))\
+                                .all()
+        return []
+
+    @staticmethod
     def getVisionLikeCount(visionModel):
         return VisionLikeModel.query.filter_by(visionId=visionModel.id).count()
 
@@ -514,15 +564,35 @@ class DataApi:
             return None
         like = VisionLikeModel(visionModel.id, userModel.id)
         DB.session.add(like)
+        DB.session.flush()
+
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(userModel.id,
+                                 Activity.Action.LIKE_VISION,
+                                 like.id)
+        DB.session.add(activity)
+
         DB.session.commit()
         return like
+
 
     @staticmethod
     def removeVisionLike(visionModel, userModel):
         '''Returns True if removed, False if like doesn't exist'''
         like = DataApi.getVisionLike(visionModel, userModel)
         if like != DataApi.NO_OBJECT_EXISTS:
+            likeId = like.id
             DB.session.delete(like)
+
+            # remove activity
+            from ..Activity import Activity
+            activity = DataApi.getActivity(userModel.id,
+                                           Activity.Action.LIKE_VISION,
+                                           likeId)
+            if activity:
+                DB.session.delete(activity)
+
             DB.session.commit()
             return True
         return False
@@ -555,6 +625,15 @@ class DataApi:
             return None
         like = VisionCommentLikeModel(commentModel.id, userModel.id)
         DB.session.add(like)
+        DB.session.flush()
+
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(userModel.id,
+                                 Activity.Action.LIKE_VISION_COMMENT, 
+                                 like.id)
+        DB.session.add(activity)
+
         DB.session.commit()
         return like
 
@@ -563,10 +642,28 @@ class DataApi:
         '''Returns True if removed, False if like doesn't exist'''
         like = DataApi.getVisionCommentLike(commentModel, userModel)
         if like != DataApi.NO_OBJECT_EXISTS:
+            likeId = like.id
             DB.session.delete(like)
+
+            # remove activity
+            from ..Activity import Activity
+            activity = DataApi.getActivity(userModel.id,
+                                           Activity.Action.LIKE_VISION_COMMENT,
+                                           likeId)
+            if activity:
+                DB.session.delete(activity)
+
             DB.session.commit()
             return True
         return False
+
+    @staticmethod
+    def getVisionCommentLikesById(ids):
+        if len(ids) > 0:
+            return VisionCommentLikeModel.query\
+                                .filter(VisionCommentLikeModel.id.in_(ids))\
+                                .all()
+        return []
 
     @staticmethod
     def getVisionCommentListLikeCount(commentIds):
@@ -599,6 +696,15 @@ class DataApi:
         assert authorModel, "Invalid user model"
         comment = VisionCommentModel(visionModel.id, authorModel.id, text)
         DB.session.add(comment)
+        DB.session.flush()
+
+        # add activity
+        from ..Activity import Activity
+        activity = ActivityModel(authorModel.id,
+                                 Activity.Action.COMMENT_ON_VISION,
+                                 comment.id)
+        DB.session.add(activity)
+
         DB.session.commit()
         return comment
 
@@ -618,6 +724,18 @@ class DataApi:
                                      .filter_by(visionId=visionModel.id) \
                                      .order_by(VisionCommentModel.id.desc()) \
                                      .limit(maxComments)
+
+        # reverse order since we retried them in decreasing id order
+        return [comment for comment in reversed([c for c in comments])]
+
+    @staticmethod
+    def getVisionCommentsById(commentIds):
+        '''Returns up to maxComments number of recent VisionCommentModels'''
+        if len(commentIds) > 0:
+            return VisionCommentModel.query \
+                                 .filter(VisionCommentModel.id.in_(commentIds))\
+                                 .all()
+        return []
 
         # reverse order since we retried them in decreasing id order
         return [comment for comment in reversed([c for c in comments])]
@@ -660,6 +778,27 @@ class DataApi:
         DB.session.commit()
         return picture.id
 
+    #
+    # Activity
+    #
+    @staticmethod
+    def getActivities(userIds):
+        assert len(userIds) > 0, "User set should include at least user"
+        return ActivityModel.query \
+                            .filter(ActivityModel.subjectId.in_(userIds))\
+                            .order_by(ActivityModel.id.desc()) \
+                            .limit(100)
+
+    @staticmethod
+    def getActivity(subjectId, action, objectId):
+        activity = ActivityModel.query\
+                                .filter_by(subjectId=subjectId)\
+                                .filter_by(action=action)\
+                                .filter_by(objectId=objectId)\
+                                .first()
+        return activity if activity != None else None
+
+
     #Get a random vision for the user
     #Returns a vision dictionary with an embedded picture dictionary
     @staticmethod
@@ -678,5 +817,6 @@ class DataApi:
         vision['picture'] = picture
 
         return vision
+
 
 # $eof

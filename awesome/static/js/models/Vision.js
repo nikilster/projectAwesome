@@ -5,7 +5,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         rootId: -1,
         userId: -1,
         text: "",
-        name: "",
         privacy: -1,
         created: null,
         createdDate: null,
@@ -13,6 +12,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         comments: null,
         isSelected: false,
         parentUser: null,
+        user: null,
         like: null,
     },
     initialize: function() {
@@ -21,6 +21,7 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
             picture: new App.Backbone.Model.Picture(this.get("picture")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
             parentUser: new App.Backbone.Model.User(this.get("parentUser")),
+            user: new App.Backbone.Model.User(this.get("user")),
         });
 
         if (this.get("like") != null) {
@@ -43,7 +44,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     userId: function() { return this.get("userId"); },
     picture: function() { return this.get("picture"); },
     text: function() { return this.get("text"); },
-    name: function() { return this.get("name"); },
     isSelected: function() { return this.get("isSelected"); },
     comments: function() { return this.get("comments"); },
     created: function() { return this.get("created"); },
@@ -58,6 +58,9 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
     parentUser: function() {
         assert (this.hasParent(), "Should have parent user");
         return this.get("parentUser");
+    },
+    user: function() {
+        return this.get("user");
     },
 
     isPublic: function() {

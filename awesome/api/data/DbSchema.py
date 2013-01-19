@@ -214,7 +214,7 @@ class VisionCommentModel(DB.Model):
         return '<VisionComment %s>' % (str(self.id))
 
 #
-# VisionCommentLike
+# VisionLike
 #
 class VisionLikeModel(DB.Model):
     __tablename__   = 'vision_like'
@@ -268,5 +268,31 @@ class FollowModel(DB.Model):
         return '<Follow %s:%s:%s>' % (str(self.followerId),
                                       str(self.userId),
                                       str(self.blessed))
+
+
+#
+# ActivityModel: Represents an activity in the news feed
+#
+# Every activity is: <subject> <action> <object>
+#
+class ActivityModel(DB.Model):
+    __tablename__   = 'activity'
+    id              = DB.Column(DB.BigInteger(unsigned=True), primary_key=True)
+    subjectId       = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    action          = DB.Column(DB.Integer, index=True)
+    objectId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
+    extraJson       = DB.Column(DB.Text())
+
+    created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self, subjectId, action, objectId):
+        self.subjectId = subjectId
+        self.action = action
+        self.objectId = objectId
+        self.extraJson = ""
+    def __str__(self):
+        return '<Activity %s:%s:%s>' % (str(self.subjectId),
+                                      str(self.action),
+                                      str(self.objectId))
 
 # $eof

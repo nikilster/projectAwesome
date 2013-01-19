@@ -17,6 +17,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         otherVisions: new App.Backbone.Model.VisionList(),
         user: null,
         currentVision: null,
+        activities: new App.Backbone.Model.ActivityList(),
     },
     initialize: function() {
     },
@@ -31,6 +32,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         1/9/2013 */
     option: function() { return this.get("option");},
     otherVisions: function() { return this.get("otherVisions"); },
+    activities: function() { return this.get("activities"); },
     user: function() { return this.get("user"); },
     currentVision: function() { return this.get("currentVision"); },
     getSelectedVision: function(visionId) {
@@ -117,6 +119,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // Note: need to use reset so that the methods bound to this collection
         //       still get called
         this.otherVisions().reset(visionList);
+    },
+    setActivities: function(activities) {
+        this.activities().reset(activities);
     },
     addToSelectedVisions: function(model) {
         var vision = this.getSelectedVision(model.visionId());

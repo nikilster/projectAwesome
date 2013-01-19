@@ -163,7 +163,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          addCommentVisibility: addCommentVisibility,
                          moreCommentsVisibility: moreCommentsVisibility,
                          visionPrivateVisibility: visionPrivateVisibility,
-                         name: this.model.name(),
+                         name: this.model.user().fullName(),
                          nameDisplay: nameDisplay,
                          parentUserVisibility: parentUserVisibility,
                          parentUserId: parentUserId,

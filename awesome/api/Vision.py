@@ -39,8 +39,9 @@ class Vision:
         # - these keys are used within Vision.Key.LIKE object
         USER_LIKE = 'userLike'
         LIKE_COUNT = 'likeCount'
+        # With USER Option
+        USER = 'user'
         # These are used externally
-        NAME = 'name'
         COMMENTS = 'comments'
         REPOST_USERS = 'repostUsers'
     
@@ -49,9 +50,10 @@ class Vision:
         PICTURE = 0
         PARENT_USER = 1
         LIKES = 2
+        USER = 3
         # Only used in VisionList.toDictionary so far
-        COMMENTS = 3
-        COMMENT_LIKES = 4
+        COMMENTS = 4
+        COMMENT_LIKES = 5
     
     #
     # Static methods to get a vision
@@ -229,16 +231,20 @@ class Vision:
                 Vision.Key.PRIVACY      : self.privacy(),
                 Vision.Key.CREATED      : self.created().isoformat(),
               }
+        from User import User
         if Vision.Options.PICTURE in options:
             picture = self.picture()
             if picture:
                 obj[Vision.Key.PICTURE] = picture.toDictionary()
+        if Vision.Options.USER in options:
+            user = User.getById(self.userId())
+            if user:
+                obj[Vision.Key.USER] = user.toDictionary()
         if Vision.Options.PARENT_USER in options:
             if not self.isOriginalVision():
                 parentVision = Vision.getById(self.parentId(), self)
                 # Parent vision MUST be public
                 if parentVision and parentVision.isPublic():
-                    from User import User
                     parentUser = User.getById(parentVision.userId())
                     if parentUser:
                         obj[Vision.Key.PARENT_USER] = parentUser.toDictionary()

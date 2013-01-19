@@ -59,6 +59,12 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "selectedVisionsSortStop",
                         "renderExampleVisionBoard",
                         "renderSelectedVision",
+                        // Feed
+                        "showFeed",
+                        "renderFeed",
+                        "renderFeedError",
+                        "renderActivity",
+                        "hideFeed",
                         // Show main page
                         "showHome",
                         "renderHome",
@@ -193,17 +199,26 @@ App.Backbone.View.Page = Backbone.View.extend({
         var pageMode = this.model.pageMode();
 
         if (pageMode == App.Const.PageMode.HOME_GUEST) {
+            $("#HomePageNav").hide();
             this.showInfoBar(true);
             this.hideAddItemButton();
             this.showHome();
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
+            $("#HomePageNav").hide();
             this.showInfoBar(false);
             this.showExampleVisionBoard();
         } else if (pageMode == App.Const.PageMode.HOME_USER) {
             this.hideInfoBar();
             this.hideAddItemButton();
             this.showHome();
+            $("#HomePageNav").show();
+        } else if (pageMode == App.Const.PageMode.FEED) {
+            this.hideInfoBar();
+            this.hideAddItemButton();
+            $("#HomePageNav").show();
+            this.showFeed();
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
+            $("#HomePageNav").hide();
             if (userLoggedIn()) {
                 this.hideInfoBar();
                 this.showAddItemButton();
@@ -213,10 +228,12 @@ App.Backbone.View.Page = Backbone.View.extend({
             }
             this.showProfile();
         } else if (pageMode == App.Const.PageMode.VISION_DETAILS) {
+            $("#HomePageNav").hide();
             assert(null != this.model.currentVision(),
                    "Invalid current vision");
             this.showVisionDetails();
         } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
+            $("#HomePageNav").hide();
             this.showVisionPage();
         } else {
             assert(false, "Invalid page mode in changePageMode");
@@ -456,7 +473,63 @@ App.Backbone.View.Page = Backbone.View.extend({
     /*
      * Render home page
      */
+    showFeed: function() {
+        this.hideUserInformation();
+        this.hideVisionDetailsModal();
+
+        // Stops re-render when coming back from vision details
+        if (this.model.cameFromVisionDetails()) {
+            this.model.clearLastPageMode();
+            return;
+        }
+
+        $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
+        $(CONTENT_DIV).empty().masonry().hide();
+        $("#Feed").show();
+
+        var ajaxUrl = "/api/get_feed";
+        $.ajax({
+            type: "GET",
+            cache: false,
+            contentType : "application/json",
+            url: ajaxUrl,
+            beforeSend: function(jqXHR, settings) {
+                if (jqXHR.overrideMimeType) {
+                    jqXHR.overrideMimeType("application/json");
+                }
+            },
+            complete: function(jqXHR, textStatus) {},
+            error: function(jqXHR, textStatus, errorThrown) {
+                App.Var.View.renderFeedError();
+            },
+            success: function(data, textStatus, jqXHR) {
+                App.Var.JSON = data;
+                App.Var.View.renderFeed();
+            }
+        });
+    },
+    hideFeed: function() {
+        $("#Feed").hide();
+        $("#FeedContent").empty();
+    },
+    renderFeed: function() {
+        console.log("RENDER FEED");
+        this.model.setActivities(App.Var.JSON.activities);
+        this.children = [];
+        this.model.activities().each(this.renderActivity);
+        $("#FeedContent").empty().show().append(this.children);
+    },
+    renderFeedError: function() {
+    },
+    renderActivity: function(activity, index) {
+        var view = new App.Backbone.View.Activity({model: activity});
+        this.children.push(view.el);
+    },
+    /*
+     * Render home page
+     */
     showHome: function() {
+        this.hideFeed();
         this.hideVisionDetailsModal();
 
         // Stops re-render when coming back from vision details
@@ -519,6 +592,7 @@ App.Backbone.View.Page = Backbone.View.extend({
      * Render user profile page
      */
     showProfile: function() {
+        this.hideFeed();
         this.hideVisionDetailsModal();
 
         // Stops re-render when coming back from vision details

@@ -4,6 +4,7 @@
 App.Backbone.Router = Backbone.Router.extend({
   routes: {
     ""                          : "home",
+    "recent"                    : "recent",
     "view_board"                : "viewBoard",
     "user/:userId"              : "profile",
     "user/:userId/:pageOption"  : "profileWithOption",
@@ -13,9 +14,16 @@ App.Backbone.Router = Backbone.Router.extend({
 
   home: function() {
     if (userLoggedIn()) {
-        App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
+        App.Var.Model.setPageMode(App.Const.PageMode.FEED);
     } else {
         App.Var.Model.setPageMode(App.Const.PageMode.HOME_GUEST);
+    }
+  },
+  recent: function() {
+    if (userLoggedIn()) {
+        App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
+    } else {
+        assert(False, "Should be logged in to go to feed");
     }
   },
   viewBoard: function() {

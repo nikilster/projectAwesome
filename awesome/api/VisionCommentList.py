@@ -66,9 +66,9 @@ class VisionCommentList:
             for comment in commentList:
                 obj = VisionComment(comment).toDictionary()
                 if VisionComment.Options.AUTHOR in options:
+                    from User import User
                     author = idToAuthor[comment.authorId]
-                    obj[VisionComment.Key.NAME] = author.fullName
-                    obj[VisionComment.Key.PICTURE] = author.picture
+                    obj[VisionComment.Key.AUTHOR] = User(author).toDictionary()
                     # If LIKES
                     if VisionComment.Options.LIKES in options:
                         obj[VisionComment.Key.LIKE] = \

@@ -160,7 +160,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
 
             if (pageMode == App.Const.PageMode.VISION_DETAILS &&
                 App.Var.Model.loggedInUserId() ==
-                    App.Var.Model.currentUserId()) {
+                App.Var.Model.currentVision().userId()) {
                 deleteVisibility = "";
             } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
                 closeVisibility = "hide";
@@ -183,7 +183,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
 
         var variables = {
             userId: userId,
-            name : this.model.name(),
+            name : this.model.user().fullName(),
             picture : this.model.picture().largeUrl(),
             text : linkify(this.model.text()),
             created: this.model.timeString(),
