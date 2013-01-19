@@ -61,7 +61,7 @@ Admin Dashboard
     {% for user in users %}
         <tr>
             <td>{{ user.id() }}</td>
-            <td>{{ user.fullName() }}</td>
+            <td><a href="/user/{{ user.id() }}">{{ user.fullName() }}</a></td>
             <td><a href="mailto:{{ user.email() }}">{{ user.email() }}</a></td>
         </tr>
     {% endfor %}
