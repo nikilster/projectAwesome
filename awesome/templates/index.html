@@ -49,6 +49,11 @@
 
 {# ----------- Header Information ----------- #}
 {% block header_info %}
+
+    <!-- The Explanation -->
+    <div id="Explanation" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
+    </div>
+
     <!-- Onboarding -->
     <div id="Instructions" class="well Hidden">
       <a href="{{ url_for('register') }}" id="RegularRegisterButton" class="btn btn-primary MainButton">
@@ -56,10 +61,10 @@
       </a>
 
       <div class="Tagline">
-        Create a <a href="{{ url_for('about') }}">vision board</a> and live your dreams!
+        Step 1 of 2: &nbsp; Create a <a href="{{ url_for('about') }}">Vision Board</a>
       </div>
       <div class="InstructionsNote">
-        <span id="SelectedZero">Get started by choosing 3 goals for yourself!</span>
+        <span id="SelectedZero">Do this by clicking 3 dreams you want!</span>
         <span id="SelectedOne" class="Hidden">
           <b>Good job!</b> Chose 2 more goals!
         </span>
@@ -83,7 +88,7 @@
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
       <button id="JoinSite" class="btn btn-success MainButton">Save your board!</button>  
       <div class="Motivation">
-        We will help you focus on these goals daily. <br/>
+        We will motivate you to focus on these goals daily. <br/>
         Try this out and <span class="emphasis">you will</span> achieve everything on it.
         <div class="SmallSpacer"></div> 
         Skeptical?  Do it and see for yourself.
@@ -98,6 +103,7 @@
 {% block content %}
 
     <!-- Main Content -->
+    <div id="ExplanationPadding"></div>
     <div id="InstructionsPadding"></div>
     <div id="UserInformation" class="Center Hidden">
     </div>

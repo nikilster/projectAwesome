@@ -9,6 +9,9 @@ var VISION_INFORMATION_DIV = "#VisionInformation";
 var VISION_DETAILS_MODAL = "#VisionDetailsModal";
 
 var USER_INFORMATION = "#UserInformation";
+//Explanation
+var EXPLANATION_DIV = "#Explanation";
+var EXPLANATION_PADDING = "#ExplanationPadding";
 
 //Instructions
 var NUM_VISION_REQUIRED_FOR_USER = 3;
@@ -367,9 +370,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     showInfoBar: function(onboarding) {
         if (onboarding) {
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
+            $(EXPLANATION_DIV).show();
             $(INSTRUCTIONS_DIV).show();
             $(INSTRUCTIONS_PADDING).show();
         } else {
+            $(EXPLANATION_DIV).hide();
+            $(EXPLANATION_PADDING).hide();
             $(INSTRUCTIONS_DIV).hide();
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).show();
             $(INSTRUCTIONS_PADDING).show();
