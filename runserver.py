@@ -6,6 +6,11 @@ from awesome import app
 if not os.path.exists(Constant.LOCAL_IMAGE_DIR):
   os.makedirs(Constant.LOCAL_IMAGE_DIR)
 
+if os.getenv('PORT'):
+    port = os.getenv('PORT')
+else:
+    port = 5000
+
 #Run
-app.run(port=6705, debug=app.config['DEBUG'])
+app.run(port=port, debug=app.config['DEBUG'])
 
