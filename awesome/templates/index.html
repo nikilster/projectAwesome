@@ -50,10 +50,6 @@
 {# ----------- Header Information ----------- #}
 {% block header_info %}
 
-    <!-- The Explanation -->
-    <div id="Explanation" class="Hidden" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
-    </div>
-
     <!-- Onboarding -->
     <div id="Instructions" class="well Hidden">
       <a href="{{ url_for('register') }}" id="RegularRegisterButton" class="btn btn-primary MainButton">
@@ -110,8 +106,14 @@
 
     <!-- Main Content -->
     <div id="ExplanationPadding" class="Hidden"></div>
-    <div id="InstructionsPadding" class="Hidden"></div>
+
     <div id="HomePagePadding" class="Hidden"></div>
+    <div id="InstructionsPadding" class="Hidden"></div>
+
+    <!-- The Explanation -->
+    <div id="Explanation" class="Hidden" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
+    </div>
+
     <div id="UserInformation" class="Center Hidden"></div>
     <div id="Content" class="Center Hidden"></div>
     <div id="Feed" class="Center Hidden">

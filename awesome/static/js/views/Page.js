@@ -432,7 +432,7 @@ App.Backbone.View.Page = Backbone.View.extend({
         if (onboarding) {
             $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
             $(EXPLANATION_DIV).show();
-            $(EXPLANATION_PADDING).show();
+            //$(EXPLANATION_PADDING).show();
             $(INSTRUCTIONS_DIV).show();
             $(INSTRUCTIONS_PADDING).show();
         } else {
