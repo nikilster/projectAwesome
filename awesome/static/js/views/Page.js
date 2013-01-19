@@ -40,6 +40,7 @@ var ONBOARDING_NEXT_BUTTON = "#OnboardingModal .modal-footer a.btn";
 var ONBOARDING_STEPS = ["#OnboardingPage1", "#OnboardingPage2",
                         "#OnboardingPage3", "#OnboardingPage4"];
 
+var POSTMARKLET = "#postmarklet";
 
 App.Backbone.View.Page = Backbone.View.extend({
     

@@ -148,7 +148,11 @@ $(document).ready(function() {
     {
         //TODO: fix this!
         var onboardingStep = 0;
+
+        //Open Modal
         $(ONBOARDING_MODAL).modal();
+
+        //Wire Next Clicks
         $(ONBOARDING_NEXT_BUTTON).click(function() {
 
              //Step n
@@ -163,6 +167,13 @@ $(document).ready(function() {
             onboardingStep++;
 
         });
+
+        //Cancel postmarklet click
+        $(POSTMARKLET).click(function(event) {
+
+            //Don't let it activate the postmarklet on this page
+            event.preventDefault();
+        })
     }
 
     /*
