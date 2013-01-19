@@ -279,14 +279,14 @@ footer {
   filter: alpha(opacity=80);
 }
 #ExplanationPadding {
-  height: 160px;
+  height: 155px;
 }
 /*
     Instructions
     Both (H + Example)
 */
 #InstructionsPadding {
-  height: 92px;
+  height: 96px;
 }
 #Instructions,
 #ExampleVisionBoardInstructions {
@@ -351,7 +351,7 @@ footer {
   margin-left: 16px;
 }
 #ExampleVisionBoardInstructions {
-  height: 66px;
+  height: 70px;
 }
 .SmallSpacer {
   height: 8px;
