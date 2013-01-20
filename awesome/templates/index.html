@@ -223,7 +223,7 @@
                 <br/>
                 <h2>
                     Drag this button to your bookmarks bar --> 
-                     <a id="postmarklet" class="btn btn-large btn-primary" href="
+                     <a id="postmarklet" href="
                     javascript: void((function (doc) {
                         var repinCode = doc.createElement('script');
                         repinCode.setAttribute('type', 'text/javascript');
@@ -231,7 +231,9 @@
                         repinCode.setAttribute('src', 'https://s3.amazonaws.com/project-awesome-static/gen/js/postmarklet.js?r=' + Math.random() * 99999999);
                         doc.body.appendChild(repinCode);
                     })(document));
-                    ">Post it</a>
+                    ">
+                        <img src="{{ url_for('static', filename='img/postit-transparent.png') }}" alt="Post It Button"/>
+                    </a>
                 </h2>
             </div>
 
