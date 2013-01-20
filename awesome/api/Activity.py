@@ -126,7 +126,7 @@ class Activity:
                 return None
             model = idToVision[id]
             vision = Vision(model)
-            if vision.removed == True or \
+            if vision.removed() == True or \
                (vision.privacy() == VisionPrivacy.PRIVATE and\
                 vision.userId() != user.id()):
                 return None
