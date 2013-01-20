@@ -767,6 +767,10 @@ footer {
 .VisionLikeInfo .VisionLikeCount .VisionThumbsUp {
   margin-top: 0px;
 }
+.VisionLikeInfo .VisionLikeCount:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 #VisionDeleteButton {
   float: right;
   font-size: 15px;

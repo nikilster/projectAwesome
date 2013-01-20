@@ -28,7 +28,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
-                        "visionCommentInput");
+                        "visionCommentInput",
+                        //Called from Like view
+                        "showLikes"
+                        );
         this.model.bind("change", this.render, this);
         this.model.comments().bind("add", this.render, this);
 
@@ -321,7 +324,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         App.Var.Router.navigate("/user/" + targetUserId, {trigger: true});
     },
     
-    
+    showLikes: function() {
+        App.Var.View.showVisionLikes(this.model.visionId());
+    },
 
     visionCommentInput: function(e) {
         if(e.keyCode == 13) {

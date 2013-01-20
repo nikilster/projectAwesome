@@ -8,9 +8,10 @@ App.Backbone.View.Like = Backbone.View.extend({
     tagName: "span",
     sel: {
         LIKE_BUTTON: ".VisionLike",
+        LIKE_COUNT: ".VisionLikeCount",
     },
     initialize: function() {
-        _.bindAll(this, "likeClick");
+        _.bindAll(this, "likeClick", "likeCountClick");
 
         assert(this.options.parentView != null, "No parent for like view");
         this.parentView = this.options.parentView;
@@ -23,6 +24,7 @@ App.Backbone.View.Like = Backbone.View.extend({
         var _events = {};
 
         _events["click " + this.sel.LIKE_BUTTON] = "likeClick";
+        _events["click " + this.sel.LIKE_COUNT] = "likeCountClick";
 
         return _events;
     },
@@ -71,6 +73,10 @@ App.Backbone.View.Like = Backbone.View.extend({
     },
     likeClick: function() {
         this.parentView.model.toggleLike();
+    },
+    likeCountClick: function(e) {
+        e.stopPropagation();
+        this.parentView.showLikes();
     },
 });
 

@@ -11,6 +11,7 @@ from . import app
 from Constant import Constant
 
 from api.User import User
+from api.UserList import UserList
 from api.Vision import Vision
 from api.VisionList import VisionList
 from api.VisionComment import VisionComment
@@ -596,6 +597,62 @@ def apiUserFollowers(userId):
                                              FollowList.Options.USER_FOLLOW],
                                     user=me)
                        }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/vision/<int:visionId>/likes', methods=['POST'])
+def apiVisionLikes(visionId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('visionId' in parameters):
+                abort(406)
+            assert visionId == parameters['visionId'], "Invalid vision id"
+
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+
+            data = { 'result' : "error" }
+            if user:
+                vision = Vision.getById(visionId, user)
+                if vision:
+                    userList = vision.getLikesUserList()
+
+                    data = { 'result'    : "success",
+                             'users' : userList.toDictionary(
+                                        options=[UserList.Options.USER_FOLLOW],
+                                        user=user)
+                        }
+            return jsonify(data)
+        abort(403)
+    abort(405)
+
+@app.route('/api/vision_comment/<int:visionCommentId>/likes', methods=['POST'])
+def apiVisionCommentLikes(visionCommentId):
+    if request.method == 'POST':
+        if SessionManager.userLoggedIn():
+            parameters = request.json
+            if not ('visionCommentId' in parameters):
+                abort(406)
+            assert visionCommentId == parameters['visionCommentId'], \
+                   "Invalid vision comment id"
+
+            userInfo = SessionManager.getUser()
+            user = User.getById(userInfo['id'])
+            comment = VisionComment.getById(visionCommentId)
+            data = { 'result' : "error" }
+            if user and comment:
+                vision = Vision.getById(comment.visionId(), user)
+
+                if vision:
+                    userList = comment.getLikesUserList()
+
+                    data = { 'result'    : "success",
+                            'users' : userList.toDictionary(
+                                        options=[UserList.Options.USER_FOLLOW],
+                                        user=user)
+                        }
             return jsonify(data)
         abort(403)
     abort(405)
