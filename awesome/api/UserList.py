@@ -39,7 +39,8 @@ class UserList:
             userFollows = DataApi.getUserFollowsFromList(user.model(),
                                                          idToUser.keys())
             userFollowIds = [f.userId for f in userFollows]
-            idToFollow = dict([(f.userId, f) for f in userFollows])
+            from Follow import Follow
+            idToFollow = dict([(f.userId, Follow(f)) for f in userFollows])
 
         objList = []
         for u in self.users():
