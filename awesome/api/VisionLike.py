@@ -27,6 +27,11 @@ class VisionLike:
         '''Get number of likes for a given vision'''
         return DataApi.getVisionLikeCount(vision.model())
 
+    @staticmethod
+    def getCount():
+        '''Gets count of vision likes'''
+        return DataApi.getVisionLikeCount()
+
 
     #
     # Getters

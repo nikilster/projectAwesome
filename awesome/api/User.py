@@ -100,6 +100,11 @@ class User:
         models = DataApi.getAllUsers()
         return [User(model) for model in models]
 
+    @staticmethod
+    def getCount():
+        '''Gets count list of Users'''
+        return DataApi.getUserCount()
+
 
     #
     # Getters

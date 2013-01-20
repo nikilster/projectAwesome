@@ -88,6 +88,11 @@ class Vision:
         else:
             return None
 
+    @staticmethod
+    def getCount():
+        '''Gets count list of Visions'''
+        return DataApi.getVisionCount()
+
     #
     # Getter methods
     #

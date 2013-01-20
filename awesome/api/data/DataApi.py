@@ -153,6 +153,11 @@ class DataApi:
         '''Gets all user models'''
         return UserModel.query.all();
 
+    @staticmethod
+    def getUserCount():
+        '''Gets user count'''
+        return UserModel.query.count();
+
 
     # 
     # Follow methods
@@ -233,6 +238,11 @@ class DataApi:
                           .count()
 
     @staticmethod
+    def getFollowCount():
+        '''Get number of follows'''
+        return FollowModel.query.count()
+
+    @staticmethod
     def getUserFollowers(userModel, number=0):
         '''Get list of models for people following this user'''
         query = FollowModel.query\
@@ -297,6 +307,11 @@ class DataApi:
         '''Get vision from vision id, or NO_OBJECT_EXISTS.'''
         vision = VisionModel.query.filter_by(id=visionId).first()
         return vision if None != vision else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getVisionCount():
+        '''Gets vision count'''
+        return VisionModel.query.filter_by(removed=False).count();
 
     @staticmethod
     def visionHasCommentsFromOthers(visionModel, userId):
@@ -541,6 +556,10 @@ class DataApi:
         return VisionLikeModel.query.filter_by(visionId=visionModel.id).count()
 
     @staticmethod
+    def getVisionLikeCount():
+        return VisionLikeModel.query.count()
+
+    @staticmethod
     def getVisionListLikeCount(visionIds):
         if len(visionIds) > 0:
             return DB.session.query(VisionLikeModel.visionId,
@@ -626,6 +645,10 @@ class DataApi:
         return VisionCommentLikeModel.query\
                                    .filter_by(visionCommentId=commentModel.id)\
                                    .count()
+
+    @staticmethod
+    def getVisionCommentLikeCount():
+        return VisionCommentLikeModel.query.count()
 
     @staticmethod
     def addVisionCommentLike(commentModel, userModel):
@@ -750,6 +773,11 @@ class DataApi:
 
         # reverse order since we retried them in decreasing id order
         return [comment for comment in reversed([c for c in comments])]
+
+    @staticmethod
+    def getVisionCommentCount():
+        '''Gets vision commentcount'''
+        return VisionCommentModel.query.filter_by(removed=False).count();
 
     # 
     # Picture methods

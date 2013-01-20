@@ -42,7 +42,11 @@ class VisionComment:
             return None
         return VisionComment(model)
 
-    
+    @staticmethod
+    def getCount():
+        '''Gets count of Vision comments'''
+        return DataApi.getVisionCommentCount()
+
     @staticmethod
     def _getByModel(model):
         '''This is used internally within API. Try not to use this.'''
