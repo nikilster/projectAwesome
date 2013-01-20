@@ -126,9 +126,9 @@ class Activity:
                 return None
             model = idToVision[id]
             vision = Vision(model)
-            if vision.removed == False and \
-               vision.privacy() == VisionPrivacy.PRIVATE and\
-               vision.userId() != user.id():
+            if vision.removed == False or \
+               (vision.privacy() == VisionPrivacy.PRIVATE and\
+                vision.userId() != user.id()):
                 return None
             obj = vision.toDictionary()
             obj[Vision.Key.PICTURE] = Picture(idToPicture[vision.pictureId()]).toDictionary()
