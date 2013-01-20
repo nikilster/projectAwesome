@@ -103,58 +103,8 @@ $(document).ready(function() {
     //Analytics
     trackUser();
     
-    $("#NavHome").click(function(e) {
-        e.preventDefault();
-        if (App.Var.Model.pageMode() == App.Const.PageMode.FEED) {
-            // Refresh content
-            App.Var.View.showFeed();
-        } else {
-            // Navigate
-            App.Var.Router.navigate("/", {trigger: true});
-        }
-    });
-    $("#NavProfile").click(function(e) {
-        e.preventDefault();
-        if (userLoggedIn() && 
-            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
-            App.Var.Model.currentUserId() == App.Var.Model.loggedInUserId()) {
-            App.Var.View.showProfile();
-        } else {
-            // Navigate
-            App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
-        }
-    });
-    $("#HomePageFeed").click(function(e) {
-        e.preventDefault();
-        App.Var.Router.navigate("/", {trigger: true});
-    });
-    $("#HomePageRecent").click(function(e) {
-        e.preventDefault();
-        if (userLoggedIn() && 
-            App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
-            App.Var.View.showHome();
-        } else {
-            // Navigate
-            App.Var.Router.navigate("/recent", {trigger: true});
-        }
-    });
-
-    $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).click(function(e) {
-        e.preventDefault();
-        App.Var.Router.navigate("/view_board", {trigger: true});
-    });
-
-    $("#ReloadHome").live("click", function(e) {
-        e.preventDefault();
-        App.Var.View.showHome();
-    });
-    $("#ReloadProfile").live("click", function(e) {
-        e.preventDefault();
-        App.Var.View.showProfile();
-    });
-    $(JOIN_SITE_BUTTON).click(function() {
-        $(REGISTER_FORM).first().submit();
-    });
+    //Click Handlers
+    navigationClickHandlers();
 
     //If Option
     //Display intro
@@ -313,6 +263,129 @@ $(document).ready(function() {
     });
 });
 
+
+function navigationClickHandlers()
+{
+
+    setupNavigationBarHandlers();
+
+    $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).click(function(e) {
+        e.preventDefault();
+        App.Var.Router.navigate("/view_board", {trigger: true});
+    });
+
+    $("#ReloadHome").live("click", function(e) {
+        e.preventDefault();
+        App.Var.View.showHome();
+    });
+    $("#ReloadProfile").live("click", function(e) {
+        e.preventDefault();
+        App.Var.View.showProfile();
+    });
+    $(JOIN_SITE_BUTTON).click(function() {
+        $(REGISTER_FORM).first().submit();
+    });
+}
+
+
+function setupNavigationBarHandlers()
+{
+    //Logo
+    $(LOGO).click(function(e) {
+        
+        e.preventDefault();
+        
+        selectNavItem(NAVIGATION_MAIN);
+
+        if (userLoggedIn() && 
+            App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
+            App.Var.View.showHome();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/", {trigger: true});
+        }
+    });
+
+
+    //Profile
+    $(NAVIGATION_PROFILE_LINK).click(function(e) {
+        
+        e.preventDefault();
+        
+        //Do this first - speed :)
+        selectNavItem(NAVIGATION_PROFILE);
+
+        if (userLoggedIn() && 
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.currentUserId() == App.Var.Model.loggedInUserId()) {
+            App.Var.View.showProfile();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/user/" + USER['id'], {trigger: true});
+        }
+    });
+
+    //Feed
+    $(NAVIGATION_FEED_LINK).click(function(e) {
+        
+        e.preventDefault();
+        
+        selectNavItem(NAVIGATION_FEED);
+
+        if (App.Var.Model.pageMode() == App.Const.PageMode.FEED) {
+            // Refresh content
+            App.Var.View.showFeed();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/recent", {trigger: true});
+        }
+    });
+
+
+    $(NAVIGATION_MAIN_LINK).click(function(e) {
+        e.preventDefault();
+        
+        selectNavItem(NAVIGATION_MAIN);
+
+        if (userLoggedIn() && 
+            App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
+            App.Var.View.showHome();
+        } else {
+            // Navigate
+            App.Var.Router.navigate("/", {trigger: true});
+        }
+    });
+}
+
+/*
+    Highlight Item
+*/
+function selectNavItem(navItemSelector)
+{
+    //Clear
+    clearNavSelection();
+
+    $(navItemSelector).addClass("active");
+}
+
+/*
+    Clear Nav Selection
+
+    Visually unselects all of the navigation link (removes the button effect)
+    Used to show that a certain page is selected (first removing all of the current selections)
+*/
+function clearNavSelection()
+{
+        
+    //Elements
+    var navigationElements = [NAVIGATION_PROFILE, NAVIGATION_FEED, NAVIGATION_MAIN];
+
+    //Remove
+    for(var i=0; i<navigationElements.length; i++)
+        $(navigationElements[i]).removeClass("active");
+}
+
+
 /*
     Track the user's actions on the site 
 
@@ -349,7 +422,7 @@ function trackUser()
     'User Id': userId,
     '$first_name': firstName,
     '$last_name': lastName,
-    '$name': fullName,
+    '$name': fullName
     //'$created': new Date(),
     });
 }

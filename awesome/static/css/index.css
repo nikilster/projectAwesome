@@ -447,8 +447,11 @@ footer {
   margin: 70px auto 25px auto;
   width: 600px;
 }
+#Feed h2 {
+  margin-left: 10px;
+}
 #Feed .Activity {
-  margin: 20px 10px 10px 10px;
+  margin: 20px 10px 50px 10px;
   min-height: 50px;
   padding: 0px 0px 0px 60px;
   position: relative;
@@ -584,6 +587,10 @@ footer {
 #ContentContainer {
   margin-bottom: 20px;
   padding: 0px 21px 21px 21px;
+}
+#ContentSize {
+  width: 75%;
+  float: left;
 }
 #Content,
 #ExampleVisionBoard {

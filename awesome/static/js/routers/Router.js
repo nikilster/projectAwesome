@@ -14,15 +14,16 @@ App.Backbone.Router = Backbone.Router.extend({
 
   home: function() {
     if (userLoggedIn()) {
-        App.Var.Model.setPageMode(App.Const.PageMode.FEED);
+        App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
     } else {
         App.Var.Model.setPageMode(App.Const.PageMode.HOME_GUEST);
     }
   },
   recent: function() {
     if (userLoggedIn()) {
-        App.Var.Model.setPageMode(App.Const.PageMode.HOME_USER);
+        App.Var.Model.setPageMode(App.Const.PageMode.FEED);
     } else {
+        console.log("here");
         assert(False, "Should be logged in to go to feed");
     }
   },
