@@ -2,6 +2,23 @@
 * DOM Element Constants
 *******************************************************************************/
 
+
+// ------ Logo ------
+var LOGO = "#Logo";
+
+// ------ Navigation li's ------
+var NAVIGATION_PROFILE = "#NavigationProfile";
+var NAVIGATION_FEED = "#NavigationFeed";
+var NAVIGATION_MAIN = "#NavigationMain";
+
+// ------ Navigation Links ------
+var NAVIGATION_PROFILE_LINK = NAVIGATION_PROFILE + " a";
+var NAVIGATION_FEED_LINK = NAVIGATION_FEED + " a";
+var NAVIGATION_MAIN_LINK = NAVIGATION_MAIN + " a";
+
+
+// ------ Container Divs ------
+
 var CONTENT_DIV = "#Content";  //Main container for the visions
 var EXAMPLE_VISION_BOARD_DIV = "#ExampleVisionBoard";
 var VISION_INFORMATION_DIV = "#VisionInformation";
@@ -252,11 +269,15 @@ App.Backbone.View.Page = Backbone.View.extend({
             this.hideAddItemButton();
             this.showHome();
             this.showHomePageNav();
+            selectNavItem(NAVIGATION_MAIN);
+
         } else if (pageMode == App.Const.PageMode.FEED) {
             this.hideInfoBar();
             this.hideAddItemButton();
             this.showHomePageNav();
             this.showFeed();
+            selectNavItem(NAVIGATION_FEED);
+
         } else if (pageMode == App.Const.PageMode.USER_PROFILE) {
             this.hideHomePageNav();
             if (userLoggedIn()) {
@@ -266,7 +287,7 @@ App.Backbone.View.Page = Backbone.View.extend({
                 this.showInfoBar(true);
                 this.hideAddItemButton();
             }
-            this.showProfile();
+            this.showProfile();            
         } else if (pageMode == App.Const.PageMode.VISION_DETAILS) {
             this.hideHomePageNav();
             assert(null != this.model.currentVision(),
@@ -562,13 +583,14 @@ App.Backbone.View.Page = Backbone.View.extend({
                 App.Var.View.renderFeed();
             }
         });
+        
     },
     hideFeed: function() {
         $("#Feed").hide();
         $("#FeedContent").empty();
     },
     renderFeed: function() {
-        console.log("RENDER FEED");
+
         this.model.setActivities(App.Var.JSON.activities);
         this.children = [];
         this.model.activities().each(this.renderActivity);
@@ -595,6 +617,11 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         this.hideUserInformation();
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
+        
+        this.displayHomeVisions();
+    },
+
+    displayHomeVisions: function() {
         $(CONTENT_DIV).empty().masonry().show();
 
         var ajaxUrl = "/api/get_main_page_visions";
@@ -663,7 +690,11 @@ App.Backbone.View.Page = Backbone.View.extend({
             //Increment view vision board count
             mixpanel.people.increment('Vision Board Views');
 
+            selectNavItem(NAVIGATION_PROFILE);
         }
+        else
+            //No Selection
+            clearNavSelection();
 
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();

@@ -52,7 +52,9 @@ App.Backbone.Model.Page = Backbone.Model.extend({
             pageMode = this.get("lastPageMode");
         }
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
-            pageMode == App.Const.PageMode.HOME_USER) {
+            pageMode == App.Const.PageMode.HOME_USER  ||
+            pageMode == App.Const.PageMode.FEED //Hack (Combining w/ Feed)
+            ) {
             return this.otherVisions();
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             return this.selectedVisions();
