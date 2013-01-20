@@ -871,6 +871,9 @@ footer {
   cursor: -webkit-zoom-out;
   cursor: -moz-zoom-out;
 }
+#UserListModal {
+  z-index: 5001;
+}
 #VisionInformation {
   width: 530px;
   background-color: white;
