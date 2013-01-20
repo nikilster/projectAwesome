@@ -151,22 +151,20 @@ App.Backbone.View.Page = Backbone.View.extend({
                         );
 
         this.model.bind("change:pageMode", this.changePageMode, this);
-        this.model.otherVisions().bind("reset", 
-                                       this.renderVisionList,
-                                       this);
-        this.model.visionList().bind("add", 
+        this.model.otherVisions().bind("reset", this.renderVisionList, this);
+        this.model.visionList().bind("add",
                                      this.renderVisionList,
                                      this);
-        this.model.visionList().bind("remove", 
+        this.model.visionList().bind("remove",
                                      this.renderVisionList,
                                      this);
-        this.model.visionList().bind("reset", 
+        this.model.visionList().bind("reset",
                                      this.renderVisionList,
                                      this);
-        this.model.selectedVisions().bind("add", 
+        this.model.selectedVisions().bind("add",
                                           this.changeInSelectedVisions,
                                           this);
-        this.model.selectedVisions().bind("remove", 
+        this.model.selectedVisions().bind("remove",
                                           this.changeInSelectedVisions,
                                           this);
         this.model.bind("change:user", this.showUserInformation, this);

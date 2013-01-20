@@ -302,7 +302,7 @@ function setupNavigationBarHandlers()
             App.Var.View.showHome();
         } else {
             // Navigate
-            App.Var.Router.navigate("/recent", {trigger: true});
+            App.Var.Router.navigate("/", {trigger: true});
         }
     });
 
@@ -337,7 +337,7 @@ function setupNavigationBarHandlers()
             App.Var.View.showFeed();
         } else {
             // Navigate
-            App.Var.Router.navigate("/", {trigger: true});
+            App.Var.Router.navigate("/recent", {trigger: true});
         }
     });
 
@@ -352,7 +352,7 @@ function setupNavigationBarHandlers()
             App.Var.View.showHome();
         } else {
             // Navigate
-            App.Var.Router.navigate("/recent", {trigger: true});
+            App.Var.Router.navigate("/", {trigger: true});
         }
     });
 }
@@ -422,7 +422,7 @@ function trackUser()
     'User Id': userId,
     '$first_name': firstName,
     '$last_name': lastName,
-    '$name': fullName,
+    '$name': fullName
     //'$created': new Date(),
     });
 }
