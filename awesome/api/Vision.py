@@ -264,7 +264,7 @@ class Vision:
     #
 
     def likeCount(self):
-        return VisionLike.getCount(self)
+        return VisionLike.getCountForVision(self)
 
     def getLike(self, user):
         '''Returns VisionLike or None'''

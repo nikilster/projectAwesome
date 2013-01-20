@@ -19,9 +19,9 @@ class VisionCommentLike:
         return VisionCommentLike(model)
 
     @staticmethod
-    def getCount(comment):
+    def getCountForComment(comment):
         '''Get number of likes for a given comment'''
-        return DataApi.getVisionCommentLikeCount(comment.model())
+        return DataApi.getVisionCommentLikeCountForComment(comment.model())
 
     @staticmethod
     def getCount():

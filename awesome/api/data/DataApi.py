@@ -552,7 +552,7 @@ class DataApi:
         return []
 
     @staticmethod
-    def getVisionLikeCount(visionModel):
+    def getVisionLikeCountForVision(visionModel):
         return VisionLikeModel.query.filter_by(visionId=visionModel.id).count()
 
     @staticmethod
@@ -641,7 +641,7 @@ class DataApi:
                                     .limit(limit)
 
     @staticmethod
-    def getVisionCommentLikeCount(commentModel):
+    def getVisionCommentLikeCountForComment(commentModel):
         return VisionCommentLikeModel.query\
                                    .filter_by(visionCommentId=commentModel.id)\
                                    .count()

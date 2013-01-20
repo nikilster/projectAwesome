@@ -871,8 +871,11 @@ footer {
   cursor: -webkit-zoom-out;
   cursor: -moz-zoom-out;
 }
-#UserListModal {
+div.modal-backdrop {
   z-index: 5001;
+}
+div.modal {
+  z-index: 5002;
 }
 #VisionInformation {
   width: 530px;
