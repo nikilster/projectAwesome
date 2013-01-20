@@ -265,6 +265,16 @@ class Vision:
         '''Returns VisionLike or None'''
         return VisionLike.get(self, user)
 
+    def getLikes(self):
+        '''Returns list of VisionLikes'''
+        return VisionLike.getLikes(self)
+
+    def getLikesUserList(self):
+        '''Returns list of Users that like this vision'''
+        likes = self.getLikes()
+        from UserList import UserList
+        return UserList.getByUserIds([like.userId() for like in likes])
+
     def likedBy(self, user):
         '''Returns True of user likes vision, else False.'''
         like = self.getLike(user)

@@ -67,8 +67,8 @@ var App = {
         UserList: {
             FOLLOWS: 0,
             FOLLOWERS: 1,
-            VISION_LIKERS: 2,
-            VISION_COMMENT_LIKERS: 3,
+            VISION_LIKES: 2,
+            VISION_COMMENT_LIKES: 3,
         },
     },
     // Variables in app

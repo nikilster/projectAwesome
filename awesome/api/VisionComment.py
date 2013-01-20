@@ -119,6 +119,16 @@ class VisionComment:
         like = self.getLike(user)
         return like != None
 
+    def getLikes(self):
+        '''Returns list of VisionCommentLikes'''
+        return VisionCommentLike.getLikes(self)
+
+    def getLikesUserList(self):
+        '''Returns list of Users that like this comment'''
+        likes = self.getLikes()
+        from UserList import UserList
+        return UserList.getByUserIds([like.userId() for like in likes])
+
     def like(self, user):
         '''Returns true if successful, false otherwise'''
         like = DataApi.addVisionCommentLike(self.model(), user.model())

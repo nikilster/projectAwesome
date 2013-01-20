@@ -4,7 +4,7 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
         LIKE: ".VisionLikeInfo",
     },
     initialize: function() {
-        //_.bindAll(this, "gotoUser");
+        _.bindAll(this, "showLikes");
         this.urlTarget = this.options.urlTarget;
         this.render();
     },
@@ -27,6 +27,9 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
         }
 
         return this;
+    },
+    showLikes: function(e) {
+        App.Var.View.showVisionCommentLikes(this.model.visionCommentId());
     },
 });
 

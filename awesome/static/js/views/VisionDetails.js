@@ -111,7 +111,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "onEditClick",
                         "ignoreClick",
                         "closeModal",
-                        "privacyChange"
+                        "privacyChange",
+                        // Called from like view
+                        "showLikes"
         );
         this.model.comments().bind("add", this.renderComments, this);
         this.model.bind("change:privacy", this.privacyChange, this);
@@ -410,6 +412,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         } else {
             $(this.el).find(this.sel.LOCK).show();
         }
+    },
+    showLikes: function(e) {
+        App.Var.View.showVisionLikes(this.model.visionId());
     },
 });
 

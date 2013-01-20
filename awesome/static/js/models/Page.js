@@ -85,7 +85,8 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         this.set({lastPageMode: this.pageMode()}, {silent: true});
     },
     setUser: function(user) {
-        this.set({ user : new App.Backbone.Model.User(user)});
+        this.set({ user : new App.Backbone.Model.User(user)}, {silent: true});
+        this.trigger("change:user");
     },
     setCurrentVision: function(model) {
         return this.set({currentVision: model}, {silent : true});

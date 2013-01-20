@@ -524,6 +524,11 @@ class DataApi:
         return like if None != like else DataApi.NO_OBJECT_EXISTS
 
     @staticmethod
+    def getVisionLikes(visionModel, limit):
+        return VisionLikeModel.query.filter_by(visionId=visionModel.id)\
+                                    .limit(limit)
+
+    @staticmethod
     def getVisionLikesById(ids):
         if len(ids) > 0:
             return VisionLikeModel.query\
@@ -609,6 +614,12 @@ class DataApi:
                                     .filter_by(userId=userModel.id)\
                                     .first()
         return like if None != like else DataApi.NO_OBJECT_EXISTS
+
+    @staticmethod
+    def getVisionCommentLikes(commentModel, limit):
+        return VisionCommentLikeModel.query\
+                                    .filter_by(visionCommentId=commentModel.id)\
+                                    .limit(limit)
 
     @staticmethod
     def getVisionCommentLikeCount(commentModel):

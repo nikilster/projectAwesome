@@ -141,7 +141,10 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "showUserList",
                         "ajaxUserListSuccess",
                         "ajaxUserListError",
-                        "hideUserList"
+                        "hideUserList",
+                        // Show likes
+                        "showVisionLikes",
+                        "showVisionCommentLikes"
 
                         //Onboarding modal
                         //"onboardingNext"
@@ -814,18 +817,18 @@ App.Backbone.View.Page = Backbone.View.extend({
                    this.ajaxUserListSuccess,
                    this.ajaxUserListError
             );
-        } else if (listType == App.Const.UserList.VISION_LIKERS) {
+        } else if (listType == App.Const.UserList.VISION_LIKES) {
             console.log("List vision likers: vision" + id);
-            doAjax("/api/vision/" + id + "/likers",
+            doAjax("/api/vision/" + id + "/likes",
                    JSON.stringify({
                                     'visionId' : id,
                                   }),
                    this.ajaxUserListSuccess,
                    this.ajaxUserListError
             );
-        } else if (listType == App.Const.UserList.VISION_COMMENT_LIKERS) {
+        } else if (listType == App.Const.UserList.VISION_COMMENT_LIKES) {
             console.log("List vision comment likers: comment" + id);
-            doAjax("/api/comment/" + id + "/likers",
+            doAjax("/api/vision_comment/" + id + "/likes",
                    JSON.stringify({
                                     'visionCommentId' : id,
                                   }),
@@ -842,9 +845,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         } else if (this.userListType == App.Const.UserList.FOLLOWERS) {
             listName = "Followers";
         } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
-            listName = "Likes";
-        } else if (this.userListType == App.Const.UserList.VISION_LIKES) {
-            listName = "Likes";
+            listName = "Vision Likes";
+        } else if (this.userListType == App.Const.UserList.VISION_COMMENT_LIKES) {
+            listName = "Comment Likes";
         }
         if (listName != "") {
             var users = new App.Backbone.Model.UserList(data.users);
@@ -858,6 +861,20 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
     hideUserList: function() {
         $("#UserListModal").empty().modal("hide");
+    },
+
+    showVisionLikes: function(visionId) {
+        if (userLoggedIn()) {
+            console.log("SHOW VISION LIKES: " + visionId);
+            this.showUserList(App.Const.UserList.VISION_LIKES, visionId);
+        }
+    },
+    showVisionCommentLikes: function(visionCommentId) {
+        if (userLoggedIn()) {
+            console.log("SHOW VISION COMMENT LIKES: " + visionCommentId);
+            this.showUserList(App.Const.UserList.VISION_COMMENT_LIKES,
+                              visionCommentId);
+        }
     },
 
     /*

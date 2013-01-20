@@ -2,7 +2,9 @@
 App.Backbone.View.VisionComment = Backbone.View.extend({
     className: "VisionComment",
     initialize: function() {
-        _.bindAll(this, "gotoUser");
+        _.bindAll(this, "gotoUser",
+                        // From like view
+                        "showLikes");
         this.render();
     },
     sel: {
@@ -35,6 +37,9 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
         if (DEBUG) console.log("GOTO USER");
         App.Var.Router.navigate("/user/" + this.model.authorId(),
                                 {trigger: true});
+    },
+    showLikes: function(e) {
+        App.Var.View.showVisionCommentLikes(this.model.visionCommentId());
     },
 });
 

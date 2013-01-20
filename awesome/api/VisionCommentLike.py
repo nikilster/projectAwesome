@@ -23,6 +23,12 @@ class VisionCommentLike:
         '''Get number of likes for a given comment'''
         return DataApi.getVisionCommentLikeCount(comment.model())
 
+    @staticmethod
+    def getLikes(comment, limit=100):
+        '''Get list of VisionCommentLikes'''
+        models = DataApi.getVisionCommentLikes(comment.model(), limit)
+        return [VisionCommentLike(model) for model in models]
+
     #
     # Getters
     #
