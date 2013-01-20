@@ -319,7 +319,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var targetUserId = this.model.userId();
 
         //Mixpanel
-        this.trackVisionAnalytics("Go to User", {'userId': targetUserId});
+        this.trackVisionAnalytics("Go to User", {'User Being Viewed': targetUserId});
 
         App.Var.Router.navigate("/user/" + targetUserId, {trigger: true});
     },

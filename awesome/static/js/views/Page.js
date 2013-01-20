@@ -659,6 +659,15 @@ App.Backbone.View.Page = Backbone.View.extend({
             return;
         }
 
+        //If this is the user's page:
+        //Track "vision board view"!
+        if(App.Var.Model.loggedInUserId() === App.Var.Model.currentUserId()) {
+            
+            //Increment view vision board count
+            mixpanel.people.increment('Vision Board Views');
+
+        }
+
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();
 
