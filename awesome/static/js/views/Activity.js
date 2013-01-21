@@ -2,12 +2,12 @@ App.Backbone.View.Activity = Backbone.View.extend({
     tagName: "div",
     className: "Activity",
     sel: {
-        JOIN_SITE_TEMPLATE: "#ActivityJoinSiteTemplate",
-        ADD_VISION_TEMPLATE: "#ActivityAddVisionTemplate",
-        LIKE_VISION_TEMPLATE: "#ActivityLikeVisionTemplate",
-        COMMENT_ON_VISION_TEMPLATE: "#ActivityCommentOnVisionTemplate",
-        LIKE_VISION_COMMENT_TEMPLATE: "#ActivityLikeVisionCommentTemplate",
+        JOIN_TEMPLATE: "#ActivityJoinSiteTemplate",
         FOLLOW_TEMPLATE: "#ActivityFollowTemplate",
+
+        ADD_VISION_TEMPLATE: "#ActivityAddVisionTemplate",
+        COMMENT_ON_VISION_TEMPLATE: "#ActivityCommentOnVisionTemplate",
+        LIKE_VISION_TEMPLATE: "#ActivityLikeVisionTemplate",
 
         // Links
         USER_LINK: ".UserLink",
@@ -40,62 +40,17 @@ App.Backbone.View.Activity = Backbone.View.extend({
         return _events;
     },
     render: function() {
-        if (this.model.actionJoinSite()) {
+        if (this.model.typeJoin()) {
+            // JOIN ACTIVITY
             var variables = { userId: this.model.user().userId(),
                               name: this.model.user().fullName(),
                               picture: this.model.user().picture(),
                             };
-            var template = _.template($(this.sel.JOIN_SITE_TEMPLATE).html(),
+            var template = _.template($(this.sel.JOIN_TEMPLATE).html(),
                                       variables);
             $(this.el).html(template);
-        } else if (this.model.actionAddVision()) {
-            var variables = { userId: this.model.user().userId(),
-                              name: this.model.user().fullName(),
-                              picture: this.model.user().picture(),
-                              visionId: this.model.vision().visionId(),
-                            };
-            var template = _.template($(this.sel.ADD_VISION_TEMPLATE).html(),
-                                      variables);
-            $(this.el).html(template);
-        } else if (this.model.actionLikeVision()) {
-            var variables = { userId: this.model.user().userId(),
-                              name: this.model.user().fullName(),
-                              picture: this.model.user().picture(),
-                              visionUserId: this.model.vision().user().userId(),
-                              visionUserName: this.model.vision().user().fullName(),
-                              visionId: this.model.vision().visionId(),
-                            };
-            var template = _.template($(this.sel.LIKE_VISION_TEMPLATE).html(),
-                                      variables);
-            $(this.el).html(template);
-        } else if (this.model.actionLikeVisionComment()) {
-            var variables = { userId: this.model.user().userId(),
-                              name: this.model.user().fullName(),
-                              picture: this.model.user().picture(),
-                              visionUserId: this.model.vision().user().userId(),
-                              visionUserName: this.model.vision().user().fullName(),
-                              visionId: this.model.vision().visionId(),
-                              authorUserId: this.model.visionComment().author().userId(),
-                              authorUserName: this.model.visionComment().author().fullName(),
-                              commentText: this.model.visionComment().text(),
-                            };
-            var template = _.template($(this.sel.LIKE_VISION_COMMENT_TEMPLATE).html(),
-                                      variables);
-            $(this.el).html(template);
-        } else if (this.model.actionCommentOnVision()) {
-            var variables = { userId: this.model.user().userId(),
-                              name: this.model.user().fullName(),
-                              picture: this.model.user().picture(),
-                              visionUserId: this.model.vision().user().userId(),
-                              visionUserName: this.model.vision().user().fullName(),
-                              visionId: this.model.vision().visionId(),
-                              commentText: this.model.visionComment().text(),
-                            };
-            var template = _.template($(this.sel.COMMENT_ON_VISION_TEMPLATE).html(),
-                                      variables);
-            $(this.el).html(template);
-
-        } else if (this.model.actionFollow()) {
+        } else if (this.model.typeFollow()) {
+            // FOLLOW ACTIVITY
             var variables = { userId: this.model.user().userId(),
                               name: this.model.user().fullName(),
                               picture: this.model.user().picture(),
@@ -105,16 +60,80 @@ App.Backbone.View.Activity = Backbone.View.extend({
             var template = _.template($(this.sel.FOLLOW_TEMPLATE).html(),
                                       variables);
             $(this.el).html(template);
+        } else if (this.model.typeVision()) {
+            // VISION-RELATED ACTIVITY
+            if (this.model.recentActionAddVision()) {
+                // Newly posted vision
+                var variables = { userId: this.model.vision().user().userId(),
+                                  name: this.model.vision().user().fullName(),
+                                  picture: this.model.vision().user().picture(),
+                                  visionId: this.model.vision().visionId(),
+                                };
+                var template = _.template(
+                                        $(this.sel.ADD_VISION_TEMPLATE).html(),
+                                        variables);
+                $(this.el).html(template);
+            } else if (this.model.recentActionCommentOnVision()) {
+                var comments = this.model.comments();
+                assert(comments.length > 0, "No comments");
+                var comment = comments.at(0);
+                var variables = {
+                            userId: comment.author().userId(),
+                            name: comment.author().fullName(),
+                            picture: comment.author().picture(),
+                            visionUserId: this.model.vision().user().userId(),
+                            visionUserName: this.model.vision().user().fullName(),
+                            visionId: this.model.vision().visionId(),
+                            commentText: comment.text(),
+                            };
+                var template = _.template($(this.sel.COMMENT_ON_VISION_TEMPLATE).html(), variables);
+                $(this.el).html(template);
+            } else if (this.model.recentActionLikeVision()) {
+                var likers = this.model.likers();
+                assert(likers.length > 0, "No likers");
+                var likeUser = likers.at(0);
+                var vision = this.model.vision();
+                var variables = { 
+                            userId: likeUser.userId(),
+                            name: likeUser.fullName(),
+                            picture: likeUser.picture(),
+                            visionUserId: vision.user().userId(),
+                            visionUserName: vision.user().fullName(),
+                            visionId: vision.visionId(),
+                };
+                var template = _.template(
+                                    $(this.sel.LIKE_VISION_TEMPLATE).html(),
+                                    variables);
+                $(this.el).html(template);
+            } else if (this.model.recentActionLikeVisionComment()) {
+                var likers = this.model.commentLikers();
+                assert(likers.length > 0, "No likers");
+                var likeUser = likers.at(0);
+                var vision = this.model.vision();
+                var variables = {
+                            userId: likeUser.userId(),
+                            name: likeUser.fullName(),
+                            picture: likeUser.picture(),
+                            visionUserId: vision.user().userId(),
+                            visionUserName: vision.user().fullName(),
+                            visionId: vision.visionId(),
+                            authorUserId: "",
+                            authorUserName: "",
+                            commentText: "",
+                };
+                var template = _.template(
+                            $(this.sel.LIKE_VISION_COMMENT_TEMPLATE).html(),
+                            variables);
+                $(this.el).html(template);
+            } else {
+                assert(false, "Unsupported vision action type");
+            }
+            // Now tack on vision view
+            var view = new App.Backbone.View.Vision(
+                                            { model: this.model.vision(),
+                                              parentView: null });
+            $(this.el).find(this.sel.VISION_CONTAINER).append(view.el);
         }
-
-        if (this.model.vision() != null) {
-            var visionView = new App.Backbone.View.Vision(
-                                                {model: this.model.vision(),
-                                                 parentView: null });
-            $(this.el).find(this.sel.VISION_CONTAINER).append(visionView.el);
-        }
-
-        return this;
     },
     navigateToUser: function(e, userId) {
         e.preventDefault();
