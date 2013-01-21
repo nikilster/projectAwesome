@@ -91,9 +91,9 @@ App.Backbone.View.Page = Backbone.View.extend({
                         "ajaxRepostVisionSuccess",
                         "ajaxRepostVisionError",
 
-                        "addVisionComment",
-                        "ajaxAddVisionCommentSuccess",
-                        "ajaxAddVisionCommentError",
+                        //"addVisionComment",
+                        //"ajaxAddVisionCommentSuccess",
+                        //"ajaxAddVisionCommentError",
                         // Changing page mode and rendering rest of page
                         "changePageMode",
                         "showInfoBar",
@@ -168,7 +168,6 @@ App.Backbone.View.Page = Backbone.View.extend({
                                           this.changeInSelectedVisions,
                                           this);
         this.model.bind("change:user", this.showUserInformation, this);
-        this.model.bind("new-comment", this.masonryReload, this);
         // initialize a few variables
         this.selectedVisionMoveIndex = -1;
         this.srcIndex = -1;
@@ -197,31 +196,8 @@ App.Backbone.View.Page = Backbone.View.extend({
         // Do nothing, we already showed an error and don't need to change UI
     },
 
-    addVisionComment: function(visionId, text) {
-        if (DEBUG) console.log("VISION " + visionId + " : " + text);
-
-        doAjax("/api/vision/" + visionId + "/add_comment",
-                JSON.stringify({
-                                'visionId' : visionId,
-                                'text' : text,
-                                }),
-                this.ajaxAddVisionCommentSuccess,
-                this.ajaxAddVisionCommentError
-        );
-    },
-    ajaxAddVisionCommentSuccess: function(data, textStatus, jqXHR) {
-        this.model.addVisionComment(data.newComment);
-
-        // TODO: this is kind of a hack for now, but it only renders if the
-        //       details modal is displayed so it works.  Later we really want
-        //       a way where the add event from the comment list triggers a
-        //       re-render
-        if (this.visionDetails != null) {
-            this.visionDetails.renderComments();
-        }
-    },
-    ajaxAddVisionCommentError: function(jqXHR, textStatus, errorThrown) {
-        // Do nothing, we already showed an error and don't need to change UI
+    onNewComment: function() {
+        this.masonryReload();
     },
 
     showVisionDetails: function(visionModel) {
@@ -340,7 +316,8 @@ App.Backbone.View.Page = Backbone.View.extend({
         }
     },
     renderVision: function(vision, index) {
-        var vision = new App.Backbone.View.Vision({ model: vision });
+        var vision = new App.Backbone.View.Vision({ model: vision,
+                                                    parentView: this });
         this.children.push(vision.el);
     },
     sortStart: function(event, ui) {
@@ -415,7 +392,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         });
     },
     renderSelectedVision: function(vision, index) {
-        var vision = new App.Backbone.View.Vision({ model: vision });
+        // Shouldn't need a parent view
+        var vision = new App.Backbone.View.Vision({ model: vision,
+                                                    parentView: null });
         this.testVisions.push(vision.el);
     },
     selectedVisionsSortStart: function(event, ui) {

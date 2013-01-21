@@ -28,11 +28,20 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
-                        "visionCommentInput",
+                        "visionCommentInput", "onNewComment",
                         //Called from Like view
                         "showLikes"
                         );
+        assert (typeof this.options.parentView != 'undefined',
+                "No parent view");
+        if (this.options.parentView) {
+            this.parentView = this.options.parentView;
+        } else {
+            this.parentView;
+        }
+
         this.model.bind("change", this.render, this);
+        this.model.bind("new-comment", this.onNewComment, this);
         this.model.comments().bind("add", this.render, this);
 
         this.render();
@@ -332,8 +341,13 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if(e.keyCode == 13) {
             var text = $.trim($(this.el).find(this.sel.COMMENT_INPUT).val());
             if (text.length > 0) {
-                App.Var.View.addVisionComment(this.model.visionId(), text);
+                this.model.addVisionComment(text);
             }
+        }
+    },
+    onNewComment: function() {
+        if (this.parentView != null) {
+            this.parentView.onNewComment();
         }
     },
     // Has more comments than MAX_COMMENTS shown in vision tile

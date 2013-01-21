@@ -106,7 +106,7 @@
 
 .Vision
 {
-
+    position: relative;
     width:@VISION_WIDTH;
     margin:@VISION_MARGIN;
     padding:@VISION_PADDING;
@@ -136,6 +136,147 @@
         font-size: @VISION_TEXT_SIZE;
         line-height: @VISION_LINE_HEIGHT;
     }
+
+    .VisionPicture:hover {
+        .CursorPointer;
+    }
+    img.Zoom:hover {
+        .CursorZoomIn;
+    }
+
+    .VisionOverlay {
+        position:absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        //height: 100%;
+        //background-color: rgba(255,255,255,.5);
+        z-index: 1;
+    }
+    .AddVisionOverlayText {
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        margin-left:-50px;
+        margin-top:-25px;
+        padding: 4px 12px;
+        text-align: center;
+        background-color: @VisionOverlayBackgroundColor;
+        border: 1px solid @VisionOverlayBorderColor;
+        .RoundBorder(3px);
+        .BoxShadow();
+    }
+    .RemoveVisionOverlayText {
+        position:absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        margin-left:-55px;
+        margin-top:-25px;
+        padding: 4px 12px;
+        text-align: center;
+        background-color: @VisionOverlaySelectedBackgroundColor;
+        border: 1px solid @VisionOverlaySelectedBorderColor;
+        color: green;
+        .RoundBorder(5px);
+        .BoxShadow();
+    }
+    .VisionUserBlock {
+        position:relative;
+        padding:3px 0px;
+        font-size:12px;
+        color:gray;
+        z-index:10;
+    }
+    .VisionUserName {
+        font-weight: bold;
+    }
+
+    .MoreComments {
+        font-size: @VISION_COMMENT_TEXT_SIZE;
+        line-height: @VISION_COMMENT_LINE_HEIGHT;
+        padding: 5px 0px;
+        color: gray;
+    }
+    .MoreComments:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    .VisionCommentContainer {
+        z-index: 1;
+    }
+    .VisionComment {
+        font-size: @VISION_COMMENT_TEXT_SIZE;
+        line-height: @VISION_COMMENT_LINE_HEIGHT;
+        margin: 5px 0px;
+        padding-left: 37px; 
+        position: relative;
+        min-height: 30px;
+
+        .VisionCommentProfile {
+            position: absolute;
+            top: 3px;
+            left: 0px;
+            margin:0px;
+            width:30px;
+            height:30px;
+            float:left;
+        }
+        .VisionLikeInfo {
+            font-size: 11px;
+        }
+    }
+    .AddVisionComment {
+        font-size:12px;
+        line-height:1.2;
+        margin-top: 5px;
+        padding-left: 37px; 
+        position: relative;
+        min-height: 30px;
+
+        .AddVisionCommentProfile {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            width:30px;
+            height:30px;
+            float:left;
+        }
+        .AddVisionCommentInput {
+           width:225px;
+           margin: 0px;
+           font-size: @VISION_COMMENT_TEXT_SIZE;
+           line-height: @VISION_COMMENT_LINE_HEIGHT;
+        }
+    }
+
+    .VisionToolbar {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 1;
+
+        .VisionToolbarButton {
+            display:inline-block;
+            font-size:10pt;
+            line-height:1.2;
+            margin:2px 2px 2px 0px;
+            padding:4px;
+            border:1px solid @VisionToolbarBorderColor;
+            background-color: @VisionToolbarBackgroundColor;
+            color: @VisionToolbarColor;
+            .RoundBorder(3px);
+        }
+        .VisionToolbarButton:hover {
+            background-color: lighten(@VisionToolbarBackgroundColor, 15%);
+            cursor: pointer;
+            .BoxShadow();
+        }
+    }
+
 
 }
 
@@ -369,7 +510,7 @@
  * Feed
  */
 #Feed {
-    margin: 70px auto 25px auto;
+    margin: 15px auto 25px auto;
     width: 600px;
 
     h2 {
@@ -377,7 +518,7 @@
     }
 
     .Activity {
-        margin: 20px 10px 50px 10px;
+        margin: 0px 10px 30px 10px;
         min-height: 50px;
         padding: 0px 0px 0px 60px;
         position: relative;
@@ -410,20 +551,9 @@
 
         }
 
-        .VisionBox {
-            width: 275px;
+        .VisionContainer {
+            width: @VISION_WIDTH + @VISION_PADDING + @VISION_PADDING;
             margin: 10px auto;
-            padding: 10px;
-            position: relative;
-            background-color: @VISION_BACKGROUND;
-            .LightShadow;
-
-            .VisionPicture {
-                width: 275px;
-            }
-            .VisionText {
-                background-color: white;
-            }
         }
     }
 }
@@ -563,162 +693,6 @@
     overflow: hidden;
     margin-top:15px;
     margin-bottom:15px;
-
-    // This is added and removed when we move the vision w/ jquery ui sortable
-    li.MasonryItem {
-        float: left;
-    }
-    li.MasonryBox {
-        width: 285px;
-        margin: 7px;
-        border: 0px;
-        padding: 0px;
-        float: left;
-        background-color: @VisionBackgroundColor;
-        overflow: hidden;
-        cursor: default;
-        list-style-type: none;
-    }
-
-    .VisionPicture:hover {
-        .CursorPointer;
-    }
-    img.Zoom:hover {
-        .CursorZoomIn;
-    }
-
-    .VisionOverlay {
-        position:absolute;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        //height: 100%;
-        //background-color: rgba(255,255,255,.5);
-        z-index: 1;
-    }
-    .AddVisionOverlayText {
-        position:absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 1;
-        margin-left:-50px;
-        margin-top:-25px;
-        padding: 4px 12px;
-        text-align: center;
-        background-color: @VisionOverlayBackgroundColor;
-        border: 1px solid @VisionOverlayBorderColor;
-        .RoundBorder(3px);
-        .BoxShadow();
-    }
-    .RemoveVisionOverlayText {
-        position:absolute;
-        top: 50%;
-        left: 50%;
-        z-index: 1;
-        margin-left:-55px;
-        margin-top:-25px;
-        padding: 4px 12px;
-        text-align: center;
-        background-color: @VisionOverlaySelectedBackgroundColor;
-        border: 1px solid @VisionOverlaySelectedBorderColor;
-        color: green;
-        .RoundBorder(5px);
-        .BoxShadow();
-    }
-    .VisionUserBlock {
-        position:relative;
-        padding:3px 0px;
-        font-size:12px;
-        color:gray;
-        z-index:10;
-    }
-    .VisionUserName {
-        font-weight: bold;
-    }
-
-    .MoreComments {
-        font-size: @VISION_COMMENT_TEXT_SIZE;
-        line-height: @VISION_COMMENT_LINE_HEIGHT;
-        padding: 5px 0px;
-        color: gray;
-    }
-    .MoreComments:hover {
-        cursor: pointer;
-        text-decoration: underline;
-    }
-
-    .VisionCommentContainer {
-        z-index: 1;
-    }
-    .VisionComment {
-        font-size: @VISION_COMMENT_TEXT_SIZE;
-        line-height: @VISION_COMMENT_LINE_HEIGHT;
-        margin: 5px 0px;
-        padding-left: 37px; 
-        position: relative;
-        min-height: 30px;
-
-        .VisionCommentProfile {
-            position: absolute;
-            top: 3px;
-            left: 0px;
-            margin:0px;
-            width:30px;
-            height:30px;
-            float:left;
-        }
-        .VisionLikeInfo {
-            font-size: 11px;
-        }
-    }
-    .AddVisionComment {
-        font-size:12px;
-        line-height:1.2;
-        margin-top: 5px;
-        padding-left: 37px; 
-        position: relative;
-        min-height: 30px;
-
-        .AddVisionCommentProfile {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            margin: 0px;
-            width:30px;
-            height:30px;
-            float:left;
-        }
-        .AddVisionCommentInput {
-           width:225px;
-           margin: 0px;
-           font-size: @VISION_COMMENT_TEXT_SIZE;
-           line-height: @VISION_COMMENT_LINE_HEIGHT;
-        }
-    }
-
-    .VisionToolbar {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        z-index: 1;
-
-        .VisionToolbarButton {
-            display:inline-block;
-            font-size:10pt;
-            line-height:1.2;
-            margin:2px 2px 2px 0px;
-            padding:4px;
-            border:1px solid @VisionToolbarBorderColor;
-            background-color: @VisionToolbarBackgroundColor;
-            color: @VisionToolbarColor;
-            .RoundBorder(3px);
-        }
-        .VisionToolbarButton:hover {
-            background-color: lighten(@VisionToolbarBackgroundColor, 15%);
-            cursor: pointer;
-            .BoxShadow();
-        }
-    }
 }
 
 .VisionLikeInfo {

@@ -15,6 +15,8 @@ App.Backbone.View.Activity = Backbone.View.extend({
         AUTHOR_LINK: ".AuthorLink",
         FOLLOWING_USER_LINK: ".FollowingUserLink",
         VISION_LINK: ".VisionLink",
+
+        VISION_CONTAINER: ".VisionContainer",
     },
     constant: {
     },
@@ -51,8 +53,6 @@ App.Backbone.View.Activity = Backbone.View.extend({
                               name: this.model.user().fullName(),
                               picture: this.model.user().picture(),
                               visionId: this.model.vision().visionId(),
-                              visionPicture: this.model.vision().picture().mediumUrl(),
-                              visionText: this.model.vision().text(),
                             };
             var template = _.template($(this.sel.ADD_VISION_TEMPLATE).html(),
                                       variables);
@@ -64,8 +64,6 @@ App.Backbone.View.Activity = Backbone.View.extend({
                               visionUserId: this.model.vision().user().userId(),
                               visionUserName: this.model.vision().user().fullName(),
                               visionId: this.model.vision().visionId(),
-                              visionPicture: this.model.vision().picture().mediumUrl(),
-                              visionText: this.model.vision().text(),
                             };
             var template = _.template($(this.sel.LIKE_VISION_TEMPLATE).html(),
                                       variables);
@@ -77,8 +75,6 @@ App.Backbone.View.Activity = Backbone.View.extend({
                               visionUserId: this.model.vision().user().userId(),
                               visionUserName: this.model.vision().user().fullName(),
                               visionId: this.model.vision().visionId(),
-                              visionPicture: this.model.vision().picture().mediumUrl(),
-                              visionText: this.model.vision().text(),
                               authorUserId: this.model.visionComment().author().userId(),
                               authorUserName: this.model.visionComment().author().fullName(),
                               commentText: this.model.visionComment().text(),
@@ -93,8 +89,6 @@ App.Backbone.View.Activity = Backbone.View.extend({
                               visionUserId: this.model.vision().user().userId(),
                               visionUserName: this.model.vision().user().fullName(),
                               visionId: this.model.vision().visionId(),
-                              visionPicture: this.model.vision().picture().mediumUrl(),
-                              visionText: this.model.vision().text(),
                               commentText: this.model.visionComment().text(),
                             };
             var template = _.template($(this.sel.COMMENT_ON_VISION_TEMPLATE).html(),
@@ -112,6 +106,14 @@ App.Backbone.View.Activity = Backbone.View.extend({
                                       variables);
             $(this.el).html(template);
         }
+
+        if (this.model.vision() != null) {
+            var visionView = new App.Backbone.View.Vision(
+                                                {model: this.model.vision(),
+                                                 parentView: null });
+            $(this.el).find(this.sel.VISION_CONTAINER).append(visionView.el);
+        }
+
         return this;
     },
     navigateToUser: function(e, userId) {
