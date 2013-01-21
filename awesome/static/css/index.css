@@ -8,8 +8,8 @@
     
     Base file for styles
 */
-@media only screen and (max-width: 850px) {
-  #NavHome {
+@media only screen and (max-width: 900px) {
+  #Logo {
     float: left;
     text-align: left;
     margin-left: 20px;
@@ -17,10 +17,10 @@
 }
 @media only screen and (max-width: 700px) {
   body {
-    min-width: 675px;
+    min-width: 700px;
   }
   .navbar {
-    min-width: 675px;
+    min-width: 700px;
   }
 }
 html,
@@ -36,6 +36,9 @@ body {
   /*background-color: @BACKGROUND_COLOR;*/
 
   background-image: url('../img/patterns/creampaper.png');
+}
+#Logo:hover {
+  color: #222;
 }
 #FooterPadding {
   height: 40px;
@@ -181,6 +184,24 @@ footer {
 #AboutContent {
   margin-left: 150px;
 }
+.SideBar {
+  width: 125px;
+  float: right;
+  background-color: #f8f8f8;
+  margin-top: 40px;
+  padding: 10px 10px 0px 10px;
+  text-align: right;
+}
+.SideBar .SideBarNumber {
+  font-size: 32px;
+  line-height: 1.2;
+}
+.SideBar .SideBarName {
+  font-size: 14px;
+  line-height: 1.2;
+  color: gray;
+  margin-bottom: 15px;
+}
 /*---------------------------------------------------
     LESS Elements 0.9
   ---------------------------------------------------
@@ -224,6 +245,7 @@ footer {
   background-color: #ededed !important;
 }
 .Vision {
+  position: relative;
   width: 275px;
   margin: 6px;
   padding: 12px;
@@ -242,6 +264,146 @@ footer {
   padding: 3px 0px;
   font-size: 14px;
   line-height: 1.4;
+}
+.Vision .VisionPicture:hover {
+  cursor: pointer;
+}
+.Vision img.Zoom:hover {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in;
+}
+.Vision .VisionOverlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  z-index: 1;
+}
+.Vision .AddVisionOverlayText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  margin-left: -50px;
+  margin-top: -25px;
+  padding: 4px 12px;
+  text-align: center;
+  background-color: #f8f8f8;
+  border: 1px solid #888888;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+}
+.Vision .RemoveVisionOverlayText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  margin-left: -55px;
+  margin-top: -25px;
+  padding: 4px 12px;
+  text-align: center;
+  background-color: #f8f8f8;
+  border: 1px solid #888888;
+  color: green;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+}
+.Vision .VisionUserBlock {
+  position: relative;
+  padding: 3px 0px;
+  font-size: 12px;
+  color: gray;
+  z-index: 10;
+}
+.Vision .VisionUserName {
+  font-weight: bold;
+}
+.Vision .MoreComments {
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 5px 0px;
+  color: gray;
+}
+.Vision .MoreComments:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.Vision .VisionCommentContainer {
+  z-index: 1;
+}
+.Vision .VisionComment {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 5px 0px;
+  padding-left: 37px;
+  position: relative;
+  min-height: 30px;
+}
+.Vision .VisionComment .VisionCommentProfile {
+  position: absolute;
+  top: 3px;
+  left: 0px;
+  margin: 0px;
+  width: 30px;
+  height: 30px;
+  float: left;
+}
+.Vision .VisionComment .VisionLikeInfo {
+  font-size: 11px;
+}
+.Vision .AddVisionComment {
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 5px;
+  padding-left: 37px;
+  position: relative;
+  min-height: 30px;
+}
+.Vision .AddVisionComment .AddVisionCommentProfile {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  margin: 0px;
+  width: 30px;
+  height: 30px;
+  float: left;
+}
+.Vision .AddVisionComment .AddVisionCommentInput {
+  width: 225px;
+  margin: 0px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.Vision .VisionToolbar {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+}
+.Vision .VisionToolbar .VisionToolbarButton {
+  display: inline-block;
+  font-size: 10pt;
+  line-height: 1.2;
+  margin: 2px 2px 2px 0px;
+  padding: 4px;
+  border: 1px solid #888888;
+  background-color: #f8f8f8;
+  color: #000000;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.Vision .VisionToolbar .VisionToolbarButton:hover {
+  background-color: #ffffff;
+  cursor: pointer;
+  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
 }
 /* Selected Vision */
 .VisionSelected {
@@ -426,14 +588,14 @@ footer {
  * Feed
  */
 #Feed {
-  margin: 70px auto 25px auto;
+  margin: 15px auto 25px auto;
   width: 600px;
 }
 #Feed h2 {
   margin-left: 10px;
 }
 #Feed .Activity {
-  margin: 20px 10px 50px 10px;
+  margin: 0px 10px 30px 10px;
   min-height: 50px;
   padding: 0px 0px 0px 60px;
   position: relative;
@@ -463,22 +625,9 @@ footer {
   z-index: 1;
   content: "";
 }
-#Feed .Activity .VisionBox {
-  width: 275px;
+#Feed .Activity .VisionContainer {
+  width: 299px;
   margin: 10px auto;
-  padding: 10px;
-  position: relative;
-  background-color: #fafafa;
-  -webkit-transition: -webkit-transform 0.15s linear;
-  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
-}
-#Feed .Activity .VisionBox .VisionPicture {
-  width: 275px;
-}
-#Feed .Activity .VisionBox .VisionText {
-  background-color: white;
 }
 /*
     Delete
@@ -580,181 +729,6 @@ footer {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-#Content li.MasonryItem,
-#ExampleVisionBoard li.MasonryItem {
-  float: left;
-}
-#Content li.MasonryBox,
-#ExampleVisionBoard li.MasonryBox {
-  width: 285px;
-  margin: 7px;
-  border: 0px;
-  padding: 0px;
-  float: left;
-  background-color: #ffffff;
-  overflow: hidden;
-  cursor: default;
-  list-style-type: none;
-}
-#Content .VisionPicture:hover,
-#ExampleVisionBoard .VisionPicture:hover {
-  cursor: pointer;
-}
-#Content img.Zoom:hover,
-#ExampleVisionBoard img.Zoom:hover {
-  cursor: -webkit-zoom-in;
-  cursor: -moz-zoom-in;
-}
-#Content .VisionOverlay,
-#ExampleVisionBoard .VisionOverlay {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  z-index: 1;
-}
-#Content .AddVisionOverlayText,
-#ExampleVisionBoard .AddVisionOverlayText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 1;
-  margin-left: -50px;
-  margin-top: -25px;
-  padding: 4px 12px;
-  text-align: center;
-  background-color: #f8f8f8;
-  border: 1px solid #888888;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-}
-#Content .RemoveVisionOverlayText,
-#ExampleVisionBoard .RemoveVisionOverlayText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 1;
-  margin-left: -55px;
-  margin-top: -25px;
-  padding: 4px 12px;
-  text-align: center;
-  background-color: #f8f8f8;
-  border: 1px solid #888888;
-  color: green;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-}
-#Content .VisionUserBlock,
-#ExampleVisionBoard .VisionUserBlock {
-  position: relative;
-  padding: 3px 0px;
-  font-size: 12px;
-  color: gray;
-  z-index: 10;
-}
-#Content .VisionUserName,
-#ExampleVisionBoard .VisionUserName {
-  font-weight: bold;
-}
-#Content .MoreComments,
-#ExampleVisionBoard .MoreComments {
-  font-size: 12px;
-  line-height: 1.4;
-  padding: 5px 0px;
-  color: gray;
-}
-#Content .MoreComments:hover,
-#ExampleVisionBoard .MoreComments:hover {
-  cursor: pointer;
-  text-decoration: underline;
-}
-#Content .VisionCommentContainer,
-#ExampleVisionBoard .VisionCommentContainer {
-  z-index: 1;
-}
-#Content .VisionComment,
-#ExampleVisionBoard .VisionComment {
-  font-size: 12px;
-  line-height: 1.4;
-  margin: 5px 0px;
-  padding-left: 37px;
-  position: relative;
-  min-height: 30px;
-}
-#Content .VisionComment .VisionCommentProfile,
-#ExampleVisionBoard .VisionComment .VisionCommentProfile {
-  position: absolute;
-  top: 3px;
-  left: 0px;
-  margin: 0px;
-  width: 30px;
-  height: 30px;
-  float: left;
-}
-#Content .VisionComment .VisionLikeInfo,
-#ExampleVisionBoard .VisionComment .VisionLikeInfo {
-  font-size: 11px;
-}
-#Content .AddVisionComment,
-#ExampleVisionBoard .AddVisionComment {
-  font-size: 12px;
-  line-height: 1.2;
-  margin-top: 5px;
-  padding-left: 37px;
-  position: relative;
-  min-height: 30px;
-}
-#Content .AddVisionComment .AddVisionCommentProfile,
-#ExampleVisionBoard .AddVisionComment .AddVisionCommentProfile {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  margin: 0px;
-  width: 30px;
-  height: 30px;
-  float: left;
-}
-#Content .AddVisionComment .AddVisionCommentInput,
-#ExampleVisionBoard .AddVisionComment .AddVisionCommentInput {
-  width: 225px;
-  margin: 0px;
-  font-size: 12px;
-  line-height: 1.4;
-}
-#Content .VisionToolbar,
-#ExampleVisionBoard .VisionToolbar {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 1;
-}
-#Content .VisionToolbar .VisionToolbarButton,
-#ExampleVisionBoard .VisionToolbar .VisionToolbarButton {
-  display: inline-block;
-  font-size: 10pt;
-  line-height: 1.2;
-  margin: 2px 2px 2px 0px;
-  padding: 4px;
-  border: 1px solid #888888;
-  background-color: #f8f8f8;
-  color: #000000;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-#Content .VisionToolbar .VisionToolbarButton:hover,
-#ExampleVisionBoard .VisionToolbar .VisionToolbarButton:hover {
-  background-color: #ffffff;
-  cursor: pointer;
-  -webkit-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  -moz-box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-  box-shadow: 0px 2px 5px rgba(50, 50, 50, 0.75);
-}
 .VisionLikeInfo {
   color: gray;
   font-size: 12px;
@@ -852,6 +826,12 @@ footer {
   background-color: rgba(255, 255, 255, 0.8);
   cursor: -webkit-zoom-out;
   cursor: -moz-zoom-out;
+}
+div.modal-backdrop {
+  z-index: 5001;
+}
+div.modal {
+  z-index: 5002;
 }
 #VisionInformation {
   width: 530px;

@@ -10,8 +10,8 @@
 @FOOTER_HEIGHT: 40px;
 @FOOTER_TEXT_COLOR: #999;//#779997;
 
-@media only screen and (max-width : 850px) {
-    #NavHome {
+@media only screen and (max-width : 900px) {
+    #Logo{
         float: left;
         text-align: left;
         margin-left: 20px;
@@ -19,10 +19,10 @@
 }
 @media only screen and (max-width : 700px) {
     body {
-        min-width: 675px;
+        min-width: 700px;
     }
     .navbar {
-        min-width: 675px;
+        min-width: 700px;
     }
 }
 
@@ -34,6 +34,10 @@ body
 {
     /*background-color: @BACKGROUND_COLOR;*/
     background-image: @BACKGROUND_IMAGE;
+}
+
+#Logo:hover {
+    color: #222;
 }
 
 #FooterPadding {
@@ -196,6 +200,26 @@ footer
 }
 #AboutContent {
     margin-left: 150px;
+}
+
+.SideBar {
+    width: 125px;
+    float:right;
+    background-color: @BACKGROUND_COLOR;
+    margin-top: 40px;
+    padding: 10px 10px 0px 10px;
+    text-align: right;
+
+    .SideBarNumber {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+    .SideBarName {
+        font-size: 14px;
+        line-height: 1.2;
+        color: gray;
+        margin-bottom: 15px;
+    }
 }
 
 // $eof

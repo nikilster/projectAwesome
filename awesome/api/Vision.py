@@ -88,6 +88,11 @@ class Vision:
         else:
             return None
 
+    @staticmethod
+    def getCount():
+        '''Gets count list of Visions'''
+        return DataApi.getVisionCount()
+
     #
     # Getter methods
     #
@@ -259,7 +264,7 @@ class Vision:
     #
 
     def likeCount(self):
-        return VisionLike.getCount(self)
+        return VisionLike.getCountForVision(self)
 
     def getLike(self, user):
         '''Returns VisionLike or None'''

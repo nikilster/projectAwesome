@@ -3,8 +3,8 @@
     
     Base file for styles
 */
-@media only screen and (max-width: 850px) {
-  #NavHome {
+@media only screen and (max-width: 900px) {
+  #Logo {
     float: left;
     text-align: left;
     margin-left: 20px;
@@ -12,10 +12,10 @@
 }
 @media only screen and (max-width: 700px) {
   body {
-    min-width: 675px;
+    min-width: 700px;
   }
   .navbar {
-    min-width: 675px;
+    min-width: 700px;
   }
 }
 html,
@@ -31,6 +31,9 @@ body {
   /*background-color: @BACKGROUND_COLOR;*/
 
   background-image: url('../img/patterns/creampaper.png');
+}
+#Logo:hover {
+  color: #222;
 }
 #FooterPadding {
   height: 40px;
@@ -175,4 +178,22 @@ footer {
 }
 #AboutContent {
   margin-left: 150px;
+}
+.SideBar {
+  width: 125px;
+  float: right;
+  background-color: #f8f8f8;
+  margin-top: 40px;
+  padding: 10px 10px 0px 10px;
+  text-align: right;
+}
+.SideBar .SideBarNumber {
+  font-size: 32px;
+  line-height: 1.2;
+}
+.SideBar .SideBarName {
+  font-size: 14px;
+  line-height: 1.2;
+  color: gray;
+  margin-bottom: 15px;
 }

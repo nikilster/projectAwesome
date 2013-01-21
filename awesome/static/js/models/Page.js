@@ -197,28 +197,6 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         // Add new vision to visionList
         this.visionList().unshift(new App.Backbone.Model.Vision(newVision));
     },
-    addVisionComment: function(newComment) {
-        // Find vision to add to
-        if (DEBUG) console.log("NEW COMMENT: " + JSON.stringify(newComment));
-
-        var vision = null;
-        if (this.pageMode() == App.Const.PageMode.VISION_PAGE) {
-            var vision = this.currentVision();
-            vision.addComment(newComment);
-        } else {
-            var list = this.activeVisionList();
-            for (var i = 0 ; i < list.length ; i++) {
-                if (list.at(i).visionId() == newComment['visionId']) {
-                    vision = list.at(i);
-                }
-            }
-            if (null != vision) {
-                vision.addComment(newComment);
-            }
-            // Trigger that height change and we need to re-layout
-            this.trigger("new-comment");
-        }
-    },
 
     // THIS IS ONLY USED FOR MAKING SURE WE DON'T RE-RENDER FROM COMING BACK
     // AFTER VISION DETAILS RIGHT NOW

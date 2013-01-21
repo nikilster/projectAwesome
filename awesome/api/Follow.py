@@ -26,6 +26,11 @@ class Follow:
         '''Get number of people following this user'''
         return DataApi.getUserFollowerCount(user.model())
 
+    @staticmethod
+    def getCount():
+        '''Gets count of follows'''
+        return DataApi.getFollowCount()
+
 
     #
     # Getters

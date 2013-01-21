@@ -380,9 +380,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
             e.preventDefault();
             var text = $.trim($(this.sel.ADD_COMMENT).val());
             if (text.length > 0) {
-                App.Var.View.addVisionComment(
-                            App.Var.Model.currentVision().visionId(),
-                            text);
+                this.model.addVisionComment(text);
             }
         }
 

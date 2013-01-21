@@ -57,14 +57,16 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
         
         <!-- TODO: make this an eimage so we can fix side -->
         <!-- Side spacing -->
-        <a id="Logo" class="brand" href="/">Project [AWESOME]</a>
+        <div id="NavigationMain">
+            <a id="Logo" class="brand" href="/">Project [AWESOME]</a>
+        </div>
         
         <ul class="nav pull-right">
           
           {#------------ User Is Logged In ------------#}
           {% if user is none or user is not defined%} 
           
-            <li><a href="/">Main</a></li>
+            <!--<li><a href="/">Main</a></li>-->
             <li><a href="{{ url_for('about') }}">About</a></li>
             <li><a href="/login">Login</a></li>
           
@@ -74,10 +76,12 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
             {######### Extra Nav #########}
             {% block nav_extra %}
             {% endblock %}
-         
+        
+            <!--
             <li id="NavigationMain">
                 <a href="/">Main</a>
             </li>
+            -->
             
             <li id="NavigationProfile">
               <a href="/user/{{ user['id'] }}">

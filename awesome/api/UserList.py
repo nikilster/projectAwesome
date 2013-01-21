@@ -51,7 +51,9 @@ class UserList:
                     follow = idToFollow[u.id()]
                     obj[User.Key.BLESSED] = follow.blessed(user)
                     obj[User.Key.FOLLOW] = True
-                obj[User.Key.FOLLOW] = False
+                else:
+                    obj[User.Key.BLESSED] = False
+                    obj[User.Key.FOLLOW] = False
             objList.append(obj)
         return objList
 

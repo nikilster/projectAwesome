@@ -9,14 +9,15 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         created: null,
         createdDate: null,
         picture: null,
-        comments: null,
+        comments: new App.Backbone.Model.VisionCommentList(),
         isSelected: false,
         parentUser: null,
         user: null,
         like: null,
     },
-    initialize: function() {
-        _.bindAll(this, "ajaxLikeSuccess", "ajaxLikeError");
+    initialize: function(attributes, options) {
+        _.bindAll(this, "ajaxLikeSuccess", "ajaxLikeError",
+                        "ajaxCommentSuccess", "ajaxCommentError");
         this.set({
             picture: new App.Backbone.Model.Picture(this.get("picture")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
@@ -101,9 +102,6 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         }
     },
 
-    addComment: function(comment) {
-        this.comments().push(new App.Backbone.Model.VisionComment(comment));
-    },
     setComments: function(comments) {
         this.comments().reset(comments);
     },
@@ -186,7 +184,37 @@ App.Backbone.Model.Vision = Backbone.Model.extend({
         this.setLike(data.like, data.likeCount);
     },
     ajaxLikeError: function(jqXHR, textStatus, errorThrown) {
+    },
 
+    addVisionComment: function(text) {
+        if (text.length > 0) {
+            if (DEBUG) console.log("VISION COMMENT : " + text);
+
+            doAjax("/api/vision/" + this.visionId() + "/add_comment",
+                    JSON.stringify({
+                                    'visionId' : this.visionId(),
+                                    'text' : text,
+                                    }),
+                    this.ajaxCommentSuccess,
+                    this.ajaxCommentError
+            );
+        }
+    },
+    ajaxCommentSuccess: function(data, textStatus, jqXHR) {
+        var newModel = new App.Backbone.Model.VisionComment(data.newComment);
+        this.comments().push(newModel);
+        this.trigger("new-comment");
+
+        // TODO: this is kind of a hack for now, but it only renders if the
+        //       details modal is displayed so it works.  Later we really want
+        //       a way where the add event from the comment list triggers a
+        //       re-render
+        //if (this.visionDetails != null) {
+        //    this.visionDetails.renderComments();
+        //}
+    },
+    ajaxCommentError: function(jqXHR, textStatus, errorThrown) {
+        // Do nothing, we already showed an error and don't need to change UI
     },
 
     deepClone: function() {

@@ -14,8 +14,11 @@ from api.User import User
 from api.UserList import UserList
 from api.Vision import Vision
 from api.VisionList import VisionList
+from api.VisionLike import VisionLike
 from api.VisionComment import VisionComment
+from api.VisionCommentLike import VisionCommentLike
 from api.FollowList import FollowList
+from api.Follow import Follow
 from api.Activity import Activity
 from api.FlashMessages import *
 
@@ -988,6 +991,12 @@ def admin_dashboard():
                 users = User.getAllUsers()
                 return render_template('admin_dashboard.html',
                                        user=userInfo, config=app.config,
+                                       userCount=User.getCount(),
+                                       visionCount=Vision.getCount(),
+                                       commentCount=VisionComment.getCount(),
+                                       visionLikeCount=VisionLike.getCount(),
+                                       commentLikeCount=VisionCommentLike.getCount(),
+                                       followCount=Follow.getCount(),
                                        users=reversed(users))
         abort(403)
     abort(405)
