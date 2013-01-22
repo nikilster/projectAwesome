@@ -283,6 +283,10 @@ function navigationClickHandlers()
         App.Var.View.showProfile();
     });
     $(JOIN_SITE_BUTTON).click(function() {
+
+        //Mixpanel
+        mixpanel.track("Register Button Clicked");
+
         $(REGISTER_FORM).first().submit();
     });
 }

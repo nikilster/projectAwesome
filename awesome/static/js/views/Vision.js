@@ -297,6 +297,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
     //Add to the onboarding first vision board
     onboardingAddVision: function(e) {
+
+        //Mixpanel
+        mixpanel.track("Add To Example Visions");
+        
         e.preventDefault();
         this.model.select();
     },
