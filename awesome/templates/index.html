@@ -623,7 +623,7 @@ joined Project Awesome.
 
 <script type="text/template" id="ActivityAddVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="VisionUserLink" href="/user/<%= userId %>"><%= name %></a> 
 posted a
 <a class="VisionLink" href="/vision/<%= visionId %>">vision</a>.
 
@@ -632,7 +632,7 @@ posted a
 
 <script type="text/template" id="ActivityLikeVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="VisionLikerLink" href="/user/<%= userId %>"><%= name %></a> 
 likes
 <a class="VisionUserLink" href="/vision/<%= visionUserId %>">
 <%= visionUserName %>'s</a> vision.
@@ -642,7 +642,7 @@ likes
 
 <script type="text/template" id="ActivityLikeVisionCommentTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="CommentLikerLink" href="/user/<%= userId %>"><%= name %></a> 
 likes
 <!--
 <a class="AuthorLink" href="/user/<%= authorUserId %>">
@@ -653,29 +653,17 @@ a comment on
 <%= visionUserName %>'s</a> 
 vision.
 
-<!--
-<div class="CommentBox">
-<div class="CommentText"><%= commentText %></div>
-</div>
--->
-
 <div class="VisionContainer"></div>
 </script>
 
 <script type="text/template" id="ActivityCommentOnVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="AuthorLink" href="/user/<%= userId %>"><%= name %></a> 
 commented on 
 <a class="VisionUserLink" href="/user/<%= visionUserId %>">
     <%=visionUserName %>'s
 </a>
 vision.
-
-<!--
-<div class="CommentBox">
-<div class="CommentText"><%= commentText %></div>
-</div>
--->
 
 <div class="VisionContainer"></div>
 </script>

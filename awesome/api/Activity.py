@@ -189,7 +189,7 @@ class Activity:
                     visionId = idToComment[activity.objectId].visionId
                 elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
                     commentLike = idToCommentLike[activity.objectId]
-                    visionId = idToComment[commentLike.visionCommentId]
+                    visionId = idToComment[commentLike.visionCommentId].visionId
 
                 # if we don't know vision id from here, ignore this activity
                 if visionId == None:
@@ -257,7 +257,7 @@ class Activity:
                         obj[Activity.Key.COMMENTS] = [commentObj]
                 elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
                     # get liker
-                    commentLike = idToCommentLike[activity.subjectId]
+                    commentLike = idToCommentLike[activity.objectId]
                     liker = User(idToUser[commentLike.userId])
 
                     if Activity.Key.COMMENT_LIKERS in obj:

@@ -30,7 +30,7 @@ App.Backbone.Model.Activity = Backbone.Model.extend({
             vision: new App.Backbone.Model.Vision(this.get("vision")),
             likers: new App.Backbone.Model.UserList(this.get("likers")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
-            commentLikers: new App.Backbone.Model.UserList(this.get("likers")),
+            commentLikers: new App.Backbone.Model.UserList(this.get("commentLikers")),
             visionComment: new App.Backbone.Model.VisionComment(this.get("visionComment")),
         });
     },

@@ -8,10 +8,13 @@ App.Backbone.View.Activity = Backbone.View.extend({
         ADD_VISION_TEMPLATE: "#ActivityAddVisionTemplate",
         COMMENT_ON_VISION_TEMPLATE: "#ActivityCommentOnVisionTemplate",
         LIKE_VISION_TEMPLATE: "#ActivityLikeVisionTemplate",
+        LIKE_VISION_COMMENT_TEMPLATE: "#ActivityLikeVisionCommentTemplate",
 
         // Links
         USER_LINK: ".UserLink",
         VISION_USER_LINK: ".VisionUserLink",
+        VISION_LIKER_LINK: ".VisionLikerLink",
+        COMMENT_LIKER_LINK: ".CommentLikerLink",
         AUTHOR_LINK: ".AuthorLink",
         FOLLOWING_USER_LINK: ".FollowingUserLink",
         VISION_LINK: ".VisionLink",
@@ -23,6 +26,8 @@ App.Backbone.View.Activity = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, "userLink",
                         "visionUserLink",
+                        "visionLikerLink",
+                        "commentLikerLink",
                         "authorLink",
                         "followingUserLink",
                         "visionLink",
@@ -34,6 +39,8 @@ App.Backbone.View.Activity = Backbone.View.extend({
         var _events = {};
         _events["click " + this.sel.USER_LINK] = "userLink";
         _events["click " + this.sel.VISION_USER_LINK] = "visionUserLink";
+        _events["click " + this.sel.VISION_LIKER_LINK] = "visionLikerLink";
+        _events["click " + this.sel.COMMENT_LIKER_LINK] = "commentLikerLink";
         _events["click " + this.sel.AUTHOR_LINK] = "authorLink";
         _events["click " + this.sel.FOLLOWING_USER_LINK] = "followingUserLink";
         _events["click " + this.sel.VISION_LINK] = "visionLink";
@@ -107,7 +114,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                 $(this.el).html(template);
             } else if (this.model.recentActionLikeVisionComment()) {
                 var likers = this.model.commentLikers();
-                assert(likers.length > 0, "No likers");
+                assert(likers.length > 0, "No comment likers");
                 var likeUser = likers.at(0);
                 var vision = this.model.vision();
                 var variables = {
@@ -153,8 +160,14 @@ App.Backbone.View.Activity = Backbone.View.extend({
     visionUserLink: function(e) {
         this.navigateToUser(e, this.model.vision().user().userId());
     },
+    visionLikerLink: function(e) {
+        this.navigateToUser(e, this.model.likers().at(0).userId());
+    },
+    commentLikerLink: function(e) {
+        this.navigateToUser(e, this.model.commentLikers().at(0).userId());
+    },
     authorLink: function(e) {
-        this.navigateToUser(e, this.model.visionComment().author().userId());
+        this.navigateToUser(e, this.model.comments().at(0).author().userId());
     },
     followingUserLink: function(e) {
         this.navigateToUser(e, this.model.following().userId());
