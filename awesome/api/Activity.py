@@ -110,7 +110,7 @@ class Activity:
         unfilteredVisionsModels = DataApi.getVisionsById(visionIds,
                                               allowRemovedVisions=True)
 
-        userIds = set([a.objectId for a in activities 
+        userIds = set([a.subjectId for a in activities 
                             if a.action == Activity.Action.JOIN_SITE])
         for c in commentModels:
             userIds.add(c.authorId)
