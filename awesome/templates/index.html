@@ -51,8 +51,10 @@
 {% block header_info %}
 
     <!-- The Explanation -->
+    <!--
     <div id="Explanation" class="Hidden" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
     </div>
+    -->
 
     <!-- Onboarding -->
     <div id="Instructions" class="well Hidden">
@@ -61,10 +63,10 @@
       </a>
 
       <div class="Tagline">
-        Create your <a href="{{ url_for('about') }}">Vision Board</a>
+        Create and share your personal <a href="{{ url_for('about') }}">vision board</a>.
       </div>
       <div class="InstructionsNote">
-        <span id="SelectedZero">Click on 3 images you want!</span>
+        <span id="SelectedZero">Get started by choosing 3 visions!</span>
         <span id="SelectedOne" class="Hidden">
           <b>Good job!</b> Choose 2 more!
         </span>
@@ -86,12 +88,12 @@
     </form>
 
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
-      <button id="JoinSite" class="btn btn-success MainButton">Now save your board!</button>  
+      <button id="JoinSite" class="btn btn-success MainButton">Join us!</button>  
       <div class="Motivation">
         <!--We will help you focus on these goals daily. <br/>-->
-        We will help you look at your board often and <span class="emphasis">you will</span> achieve everything on it.
-        <div class="SmallSpacer"></div> 
-        Skeptical?  Do it and see for yourself.
+        <div class="emphasis">Nice!</div>
+        <div class="SmallSpacer"></div>
+        Save your board and join our awesome online community!
       </div>
     </div>
 
@@ -106,7 +108,7 @@
 {% block content %}
 
     <!-- Main Content -->
-    <div id="ExplanationPadding" class=""></div>
+    <div id="ExplanationPadding" class="Hidden"></div>
 
     <div id="HomePagePadding" class="Hidden"></div>
     <div id="InstructionsPadding" class="Hidden"></div>
@@ -619,8 +621,8 @@ joined Project Awesome.
 <script type="text/template" id="ActivityAddVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
 <a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
-added a
-<a class="VisionLink" href="/vision/<%= visionId %>">new vision</a>.
+posted a
+<a class="VisionLink" href="/vision/<%= visionId %>">vision</a>.
 
 <div class="VisionContainer"></div>
 </script>
@@ -639,16 +641,20 @@ likes
 <img class="Picture" src="<%= picture %>"/>
 <a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
 likes
+<!--
 <a class="AuthorLink" href="/user/<%= authorUserId %>">
 <%= authorUserName %>'s</a> 
-comment on 
+-->
+a comment on 
 <a class="VisionUserLink" href="/user/<%= visionUserId %>">
 <%= visionUserName %>'s</a> 
 vision.
 
+<!--
 <div class="CommentBox">
 <div class="CommentText"><%= commentText %></div>
 </div>
+-->
 
 <div class="VisionContainer"></div>
 </script>
@@ -662,9 +668,11 @@ commented on
 </a>
 vision.
 
+<!--
 <div class="CommentBox">
 <div class="CommentText"><%= commentText %></div>
 </div>
+-->
 
 <div class="VisionContainer"></div>
 </script>

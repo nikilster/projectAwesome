@@ -34,6 +34,7 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
 
 <body>
 
+    {% if config['PROD'] %}
     <!-- Google Analytics -->
     <script type="text/javascript">
     
@@ -46,8 +47,8 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-
     </script>
+    {% endif %}
 
     <!-- TODO:               
                 2. Responsive

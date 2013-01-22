@@ -143,11 +143,16 @@ App.Backbone.View.Vision = Backbone.View.extend({
                         repostDisplay = "inline-block";
                     }
                 }
-                if (false == this.model.isPublic()) {
-                    visionPrivateVisibility = "";
-                }
-            }
+                    }
             cursorClass = "MasonryItemPointerCursor";
+        }
+        if (pageMode == App.Const.PageMode.USER_PROFILE ||
+            pageMode == App.Const.PageMode.VISION_DETAILS ||
+            pageMode == App.Const.PageMode.FEED) {
+            if (userLoggedIn() &&
+                (false == this.model.isPublic())) {
+                    visionPrivateVisibility = "";
+            }
         }
 
         //Clean for html (using it in the alt=" attribute of the image so don't want '' or "")

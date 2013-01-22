@@ -197,6 +197,26 @@ footer {
   color: gray;
   margin-bottom: 15px;
 }
+ol.BigList {
+  margin: 10px 20px 10px 50px;
+}
+ol.BigList li {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 2;
+}
+ol.LittleList {
+  margin: 10px 20px 10px 50px;
+}
+ol.LittleList li {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.LargeSpacer {
+  height: 50px;
+}
 .ErrorNotice {
   color: red;
   background-color: rgba(255, 204, 204, 0.9);

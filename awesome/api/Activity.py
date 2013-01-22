@@ -2,6 +2,7 @@ from data.DataApi import DataApi
 
 from User import User
 from Vision import Vision
+from VisionList import VisionList
 from VisionComment import VisionComment
 from Picture import Picture
 from Privacy import VisionPrivacy
@@ -27,6 +28,11 @@ class Activity:
         # Social actions
         FOLLOW = 40
 
+    class FeedItem:
+        JOIN = "join"
+        FOLLOW = "follow"
+        VISION = "vision"
+
     ACTION_STRING = {
         Action.JOIN_SITE : "joinSite",
         Action.UPDATE_PROFILE_PICTURE : "updateProfilePicture",
@@ -43,11 +49,15 @@ class Activity:
     }
 
     class Key:
-        Action = 'action'
-        User = 'user'
-        Following = 'following'
-        Vision = 'vision'
-        VisionComment = 'visionComment'
+        TYPE = 'type'
+        USER = 'user'
+        FOLLOWING = 'following'
+        VISION = 'vision'
+        NEW_VISION = 'newVision'
+        LIKERS = 'likers'
+        COMMENTS = 'comments'
+        COMMENT_LIKERS = 'commentLikers'
+        RECENT_ACTION = 'recentAction'
 
     #
     # Static methods
@@ -97,8 +107,176 @@ class Activity:
             visionIds.add(c.visionId)
         for l in visionLikeModels:
             visionIds.add(l.visionId)
-        visionModels = DataApi.getVisionsById(visionIds,
+        unfilteredVisionsModels = DataApi.getVisionsById(visionIds,
                                               allowRemovedVisions=True)
+
+        userIds = set([a.objectId for a in activities 
+                            if a.action == Activity.Action.JOIN_SITE])
+        for c in commentModels:
+            userIds.add(c.authorId)
+        for l in visionLikeModels:
+            userIds.add(l.userId)
+        for l in commentLikeModels:
+            userIds.add(l.userId)
+        for f in followModels:
+            userIds.add(f.followerId)
+            userIds.add(f.userId)
+        userModels = DataApi.getUsersFromIds(userIds)
+        idToUser = dict([(u.id, u) for u in userModels])
+
+        # At this point we have all the visions models for the activities
+        # We need to remove the visions that we shouldn't allow this user to
+        # see
+        filteredVisionModels = []
+        for vision in unfilteredVisionsModels:
+            # vision should not be removed, and be either public, or a 
+            # private vision you own
+            if vision.removed == False and \
+               (vision.privacy == VisionPrivacy.PUBLIC or\
+                vision.userId == user.id()):
+                filteredVisionModels.append(vision)
+        visionList = VisionList(filteredVisionModels)
+
+        # Now we have a list of all 
+        visionObjs = visionList.toDictionary(options=[Vision.Options.PICTURE,
+                                                Vision.Options.USER,
+                                                Vision.Options.PARENT_USER,
+                                                Vision.Options.COMMENTS,
+                                                Vision.Options.LIKES,
+                                                Vision.Options.COMMENT_LIKES],
+                                             user=user)
+        idToVisionObj = dict([(v[Vision.Key.ID], v) for v in visionObjs])
+
+        # Now build activities!
+        feedObjList = []
+        visionIdToFeedObj = dict()
+        for activity in activities:
+            # JOIN SITE
+            if activity.action == Activity.Action.JOIN_SITE:
+                # Already have enough info to render this activity
+                newUser  = User(idToUser[activity.subjectId])
+
+                obj = dict()
+                obj[Activity.Key.TYPE] = Activity.FeedItem.JOIN
+                obj[Activity.Key.USER] = newUser.toDictionary()
+
+                feedObjList.append(obj)
+            # FOLLOW
+            elif activity.action == Activity.Action.FOLLOW:
+                follow = idToFollow[activity.objectId]
+                follower = User(idToUser[follow.followerId])
+                following = User(idToUser[follow.userId])
+
+                obj = dict()
+                obj[Activity.Key.TYPE] = Activity.FeedItem.FOLLOW
+                obj[Activity.Key.USER] = follower.toDictionary()
+                obj[Activity.Key.FOLLOWING] = following.toDictionary()
+
+                feedObjList.append(obj)
+            # VISION-RELATED
+            elif activity.action == Activity.Action.ADD_VISION or \
+                 activity.action == Activity.Action.LIKE_VISION or \
+                 activity.action == Activity.Action.COMMENT_ON_VISION or \
+                 activity.action == Activity.Action.LIKE_VISION_COMMENT:
+
+                # get vision we are working with
+                visionId = None
+                if activity.action == Activity.Action.ADD_VISION:
+                    visionId = activity.objectId
+                elif activity.action == Activity.Action.LIKE_VISION:
+                    visionId = idToVisionLike[activity.objectId].visionId
+                elif activity.action == Activity.Action.COMMENT_ON_VISION:
+                    visionId = idToComment[activity.objectId].visionId
+                elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
+                    commentLike = idToCommentLike[activity.objectId]
+                    visionId = idToComment[commentLike.visionCommentId]
+
+                # if we don't know vision id from here, ignore this activity
+                if visionId == None:
+                    continue
+
+                # Get the vision object we will be working with
+                if visionId in visionIdToFeedObj:
+                    obj = visionIdToFeedObj[visionId]
+                else:
+                    if visionId in idToVisionObj:
+                        obj = dict()
+                        actionString = Activity.ACTION_STRING[activity.action]
+                        obj[Activity.Key.TYPE] = Activity.FeedItem.VISION
+                        obj[Activity.Key.VISION] = idToVisionObj[visionId]
+                        obj[Activity.Key.RECENT_ACTION] = actionString
+
+                        feedObjList.append(obj)
+                        visionIdToFeedObj[visionId] = obj
+                    else:
+                        continue
+
+                # now append whatever we can to feed obj based on activity type
+                # Vision-related objects fill in these keys:
+                #   VISION - the vision we are working with (with USER in it)
+                #            (this should already be filled in)
+                #   NEW_VISION - T/F if ADD_VISION activity is seen
+                #   LIKER - list of Users that liked vision
+                #   COMMENTS - list of comments with AUTHOR
+                #   COMMENT_LIKES - list of comment likes info:
+                #       USER - user that liked the comment
+                #       COMMENT - comment info
+                if activity.action == Activity.Action.ADD_VISION:
+                    obj[Activity.Key.NEW_VISION] = True
+                elif activity.action == Activity.Action.LIKE_VISION:
+                    # get liker
+                    liker = User(idToUser[activity.subjectId])
+
+                    if Activity.Key.LIKERS in obj:
+                        # If a likers list exists, find out if user is already
+                        # in the list. Only add if the user isn't
+                        existing = [l['id'] for l in obj[Activity.Key.LIKERS]]
+                        if liker.id() not in existing:
+                            likerObj = liker.toDictionary()
+                            obj[Activity.Key.LIKERS].append(likerObj)
+                    else:
+                        # Else, create the list and enter the liker into it
+                        obj[Activity.Key.LIKERS] = [liker.toDictionary()]
+                elif activity.action == Activity.Action.COMMENT_ON_VISION:
+                    # get comment
+                    comment = VisionComment(idToComment[activity.objectId])
+
+                    if Activity.Key.COMMENTS in obj:
+                        existing = [c['id'] for c in obj[Activity.Key.COMMENTS]]
+                        if comment.id() not in existing:
+                            commentObj = comment.toDictionary()
+                            author = User(idToUser[comment.authorId()])
+                            authorObj = author.toDictionary()
+                            commentObj[VisionComment.Key.AUTHOR] = authorObj
+                            obj[Activity.Key.COMMENTS].append(commentObj)
+                    else:
+                        commentObj = comment.toDictionary()
+                        author = User(idToUser[comment.authorId()])
+                        authorObj = author.toDictionary()
+                        commentObj[VisionComment.Key.AUTHOR] = authorObj
+                        obj[Activity.Key.COMMENTS] = [commentObj]
+                elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
+                    # get liker
+                    commentLike = idToCommentLike[activity.subjectId]
+                    liker = User(idToUser[commentLike.userId])
+
+                    if Activity.Key.COMMENT_LIKERS in obj:
+                        # If a likers list exists, find out if user is already
+                        # in the list. Only add if the user isn't
+                        existing = [l['id'] 
+                                     for l in obj[Activity.Key.COMMENT_LIKERS]]
+                        if liker.id() not in existing:
+                            obj[Activity.Key.COMMENT_LIKERS].append(likerObj)
+                    else:
+                        # Else, create the list and enter the liker into it
+                        likerObj = liker.toDictionary()
+                        obj[Activity.Key.COMMENT_LIKERS] = [likerObj]
+                else:
+                    pass
+        return feedObjList
+
+
+        '''
         idToVision = dict([(v.id, v) for v in visionModels])
 
         pictureIds = set([v.pictureId for v in visionModels])
@@ -180,7 +358,7 @@ class Activity:
             if obj:
                 objList.append(obj)
         return objList
-
+        '''
     #
     # Private methods
     #

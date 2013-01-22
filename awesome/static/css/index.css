@@ -202,6 +202,26 @@ footer {
   color: gray;
   margin-bottom: 15px;
 }
+ol.BigList {
+  margin: 10px 20px 10px 50px;
+}
+ol.BigList li {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 2;
+}
+ol.LittleList {
+  margin: 10px 20px 10px 50px;
+}
+ol.LittleList li {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+.LargeSpacer {
+  height: 50px;
+}
 /*---------------------------------------------------
     LESS Elements 0.9
   ---------------------------------------------------
@@ -467,7 +487,7 @@ footer {
     Both (H + Example)
 */
 #InstructionsPadding {
-  height: 96px;
+  height: 71px;
 }
 #Instructions,
 #ExampleVisionBoardInstructions {
@@ -532,7 +552,7 @@ footer {
   margin-left: 16px;
 }
 #ExampleVisionBoardInstructions {
-  height: 70px;
+  height: 45px;
 }
 .SmallSpacer {
   height: 8px;
