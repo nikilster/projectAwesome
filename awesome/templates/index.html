@@ -555,6 +555,24 @@
 
 <script type="text/template" id="UserInformationTemplate">
       <img id="UserProfilePicture" src="<%= picture %>"/>
+
+      <div id="SetProfilePictureContainer"
+           class="<%= setProfilePictureVisibility %>">
+        <div id="SetProfilePictureSwitch">Set profile picture</div>
+        <form id="SetProfilePictureForm" class="Hidden"
+                action="{{url_for("api_change_picture") }}"
+                method="post" enctype="multipart/form-data"
+                style="overflow:hidden;">
+            <input id="PictureUploadInput"
+                    type="file" name="picture"></input><br>
+            <input name="target" type="hidden" value="profile"></input>
+            <input id="PictureUploadSubmit"
+                    type="submit" class="btn btn-primary btn-small"
+                    disabled="disabled"
+                    value="Upload picture"></input>
+        </form>
+      </div>
+
       <div id="UserName"><%= name %></div>
       <div id="UserDescription" class="<%= descDisplay %>"><%= desc %></div>
       <div id="NoUserDescription"
