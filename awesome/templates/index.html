@@ -83,12 +83,15 @@
     </div>
 
     <!-- Pass the selected visions to register -->
-    <form id="RegisterForm" class="Hidden" action="{{ url_for("register") }}" method="POST">
-      <input id="UserSelectedVisions" type="hidden" name="selectedVisions" value=""/>
-    </form>
+    
 
     <div id="ExampleVisionBoardInstructions" class="well Hidden">
-      <button id="JoinSite" class="btn btn-success MainButton">Join us!</button>  
+      
+      <form id="RegisterForm" action="{{ url_for("register") }}" method="POST">
+        <input id="UserSelectedVisions" type="hidden" name="selectedVisions" value=""/>
+        <button id="JoinSite" type="submit" class="btn btn-success MainButton">Join us!</button>  
+      </form>
+
       <div class="Motivation">
         <!--We will help you focus on these goals daily. <br/>-->
         <div class="emphasis">Nice!</div>

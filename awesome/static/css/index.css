@@ -530,9 +530,15 @@ ol.LittleList li {
 }
 #Instructions #RegularRegisterButton,
 #ExampleVisionBoardInstructions #RegularRegisterButton,
+#Instructions #RegisterForm,
+#ExampleVisionBoardInstructions #RegisterForm,
 #Instructions #JoinSite,
 #ExampleVisionBoardInstructions #JoinSite {
   float: right;
+}
+#Instructions #RegisterForm,
+#ExampleVisionBoardInstructions #RegisterForm {
+  width: 100px;
 }
 #Instructions #SelectedThree,
 #ExampleVisionBoardInstructions #SelectedThree {

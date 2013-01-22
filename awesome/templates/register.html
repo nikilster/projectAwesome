@@ -34,7 +34,7 @@ Register
                 {% endif %}
             {% endwith %}
 
-            <form action="{{ url_for('register_user') }}" method="POST"
+            <form id="RegistrationForm" action="{{ url_for('register_user') }}" method="POST"
                   class="form-vertical">
                 <div class="control-group">
                     <div class="controls">
@@ -66,7 +66,7 @@ Register
                     </div>
                 </div>
                 <div class="control-group">
-                    <button type="submit"
+                    <button id="submitRegistration" type="submit"
                             class="SubmitButton btn btn-primary btn-large">
                         Register
                     </button>
@@ -86,7 +86,13 @@ Register
     {% endif %}
 
 <script>
-$("#FirstNameInput").focus();
+  $(document).ready(function(){
+    
+    $("#FirstNameInput").focus();
+    
+    mixpanel.track_forms("#RegistrationForm", "Registration Form Submitted");
+
+  });
 </script>
 
 {% endblock %}

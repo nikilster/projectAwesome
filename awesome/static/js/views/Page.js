@@ -45,11 +45,15 @@ var INSTRUCTIONS_ONE_VISION_SELECTED = "#SelectedOne";
 var INSTRUCTIONS_TWO_VISIONS_SELECTED = "#SelectedTwo";
 var INSTRUCTIONS_THREE_VISIONS_SELECTED = "#SelectedThree";
 var BUTTON_VIEW_EXAMPLE_VISION_BOARD = "#ViewExampleVisionBoardButton";
+
+//Register Button on index page
 var BUTTON_REGISTER = "#RegularRegisterButton";
 
 var REGISTER_FORM = "#RegisterForm";
 var USER_SELECTED_VISIONS_INPUT = "#UserSelectedVisions";
 var EXAMPLE_VISION_BOARD_INSTRUCTIONS = "#ExampleVisionBoardInstructions";
+
+//Register button on example vision board page (register now)
 var JOIN_SITE_BUTTON = "#JoinSite"; //Triggers form
 
 

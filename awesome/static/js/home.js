@@ -271,6 +271,8 @@ function navigationClickHandlers()
 
     $(BUTTON_VIEW_EXAMPLE_VISION_BOARD).click(function(e) {
         e.preventDefault();
+
+        mixpanel.track("View Example Board Clicked");
         App.Var.Router.navigate("/view_board", {trigger: true});
     });
 
@@ -282,13 +284,19 @@ function navigationClickHandlers()
         e.preventDefault();
         App.Var.View.showProfile();
     });
-    $(JOIN_SITE_BUTTON).click(function() {
 
-        //Mixpanel
-        mixpanel.track("Register Button Clicked");
-
+    //From Example Vision 
+    /*$(JOIN_SITE_BUTTON).click(function() {
+        mixpanel.track("test!");
         $(REGISTER_FORM).first().submit();
-    });
+    });*/
+
+
+    //Mixpanel
+    //Register (main) Button
+    mixpanel.track_links(BUTTON_REGISTER,  "Register Button Clicked");
+    mixpanel.track_forms(REGISTER_FORM, "Register (Example Vision Board) Clicked");
+
 }
 
 
