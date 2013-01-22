@@ -109,6 +109,15 @@ def about():
         return render_template('about.html', user=userInfo, config=app.config)
     abort(405)
 
+@app.route('/visualization', methods=['GET'])
+def visualization():
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('visualization.html', user=userInfo, config=app.config)
+    abort(405)
+
 @app.route('/settings', methods=['GET'])
 def settings():
     if request.method == 'GET':

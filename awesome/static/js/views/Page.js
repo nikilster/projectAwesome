@@ -452,12 +452,12 @@ App.Backbone.View.Page = Backbone.View.extend({
     },
 
     showHomePageNav: function() {
-        $(HOME_PAGE_NAV).show();
-        $(HOME_PAGE_PADDING).show();
+        //$(HOME_PAGE_NAV).show();
+        //$(HOME_PAGE_PADDING).show();
     },
     hideHomePageNav: function() {
-        $(HOME_PAGE_NAV).hide();
-        $(HOME_PAGE_PADDING).hide();
+        //$(HOME_PAGE_NAV).hide();
+        //$(HOME_PAGE_PADDING).hide();
     },
 
     changeInSelectedVisions: function() {
