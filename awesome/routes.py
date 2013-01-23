@@ -920,9 +920,17 @@ def bookmarkletCreate():
         #content = callback + "('Please submit the valid data!')"
         #return current_app.response_class(content, mimetype=mimetype)
 
+    userInfo = SessionManager.getUser()
+    user = User.getById(userInfo['id'])
+    checkText = ""
+    if not user.visionDefaultIsPublic():
+        checkText = "checked"
 
-    return render_template('create.html', mediaUrl=mediaUrl, mediaDescription=mediaDescription,\
-        pageUrl=pageUrl, pageTitle=pageTitle)
+    return render_template('create.html', mediaUrl=mediaUrl,
+                                          mediaDescription=mediaDescription,
+                                          pageUrl=pageUrl,
+                                          pageTitle=pageTitle,
+                                          checkText=checkText)
 
 
 @app.route('/vision/create/bookmarklet', methods=['POST'])
