@@ -940,6 +940,14 @@ def create():
     pageUrl = request.form[Constant.BOOKMARKLET_POST_PAGE_URL]
     pageTitle = request.form[Constant.BOOKMARKLET_POST_PAGE_TITLE]
 
+    #Vision Privacy
+    private = False
+    if Constant.BOOKMARKLET_POST_IS_PRIVATE in request.form:
+        private = True
+
+    #Format for saving
+    visionIsPublic = not private
+
     #Validate Parameters
     if mediaUrl is None \
         or text is None \
@@ -961,8 +969,7 @@ def create():
     user = User.getById(userId)
     if user:
         # TODO: should we save pageUrl and pageTitle also?
-        vision, message = user.addVision(mediaUrl, text, False,
-                                         user.visionDefaultIsPublic())
+        vision, message = user.addVision(mediaUrl, text, False, visionIsPublic)
 
         if vision:
             #Successful Create!
