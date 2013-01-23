@@ -93,7 +93,7 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
             <li id="NavigationFeed">
                 <a href="/">Friends</a> 
             </li>
-            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
 
             <li class="dropdown">
                 <a id="settingsDropdown" class="dropdown-toggle" data-toggle="dropdown" href="#" >
@@ -102,6 +102,7 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
                 </a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="aboutDropdown">
                     <li><a href="{{ url_for('settings')}}">Settings</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </li>
