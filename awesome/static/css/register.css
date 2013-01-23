@@ -279,14 +279,20 @@ ol.LittleList li {
   width: 175px;
   margin-left: -15px;
 }
+#ProfilePictureContainer #ProfilePicture {
+  width: 175px;
+  height: 175px;
+  float: left;
+  overflow: hidden;
+}
+#ProfilePictureContainer #SetProfilePictureForm {
+  float: left;
+  clear: both;
+}
 #PictureUploadInput {
   font-size: 12px;
 }
 #SettingsSubmitInput {
   float: right;
   margin-right: 97px;
-}
-#ProfilePicture {
-  width: 175px;
-  float: left;
 }

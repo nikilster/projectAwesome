@@ -38,7 +38,10 @@ var USER = { id: '{{ user['id'] }}',
             <div id="ProfilePictureContainer">
                 <img id="ProfilePicture" src="{{ user['picture'] }}"/>
 
-                <form action="{{url_for("api_change_picture") }}" method="post" enctype="multipart/form-data" style="overflow:hidden;">
+                <form id="SetProfilePictureForm"
+                      action="{{url_for("api_change_picture") }}"
+                      method="post" enctype="multipart/form-data"
+                      style="overflow:hidden;">
                     <input id="PictureUploadInput"
                            type="file" name="picture"></input><br>
                     <input id="PictureUploadSubmit"

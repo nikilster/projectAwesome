@@ -10,15 +10,23 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         FOLLOW_BUTTON: ".FollowButton",
         SHOW_FOLLOWS: ".Follows",
         SHOW_FOLLOWERS: ".Followers",
+
+        SET_PICTURE_SWITCH: "#SetProfilePictureSwitch",
+        SET_PICTURE_FORM: "#SetProfilePictureForm",
+        SET_PICTURE_INPUT: "#PictureUploadInput",
+        SET_PICTURE_SUBMIT: "#PictureUploadSubmit",
     },
     constant: {
         MAX_USER_DESCRIPTION_LENGTH : 200,
+
+        DEFAULT_PROFILE_PICTURE: "https://s3.amazonaws.com/project-awesome-img/img/default-profile-picture.jpg",
     },
     initialize: function() {
         _.bindAll(this, "countDesc", "onMouseEnter", "onMouseLeave", "onClick",
                         "submitDesc", "setUserDescription",
                         "followButtonClick",
-                        "showUserFollows", "showUserFollowers");
+                        "showUserFollows", "showUserFollowers",
+                        "toggleSetProfileForm", "pictureChange");
         this.model.bind("change", this.render, this);
         this.render();
     },
@@ -34,6 +42,9 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
         _events["click " + this.sel.FOLLOW_BUTTON] = "followButtonClick";
         _events["click " + this.sel.SHOW_FOLLOWS] = "showUserFollows";
         _events["click " + this.sel.SHOW_FOLLOWERS] = "showUserFollowers";
+
+        _events["click " + this.sel.SET_PICTURE_SWITCH] = "toggleSetProfileForm";
+        _events["change " + this.sel.SET_PICTURE_INPUT] = "pictureChange";
         return _events;
     },
     render: function() {
@@ -57,6 +68,13 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
             }
         }
 
+        var setProfilePictureVisibility = "Hidden";
+        if (this.model.picture() == this.constant.DEFAULT_PROFILE_PICTURE &&
+            App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&
+            App.Var.Model.loggedInUserId() == App.Var.Model.currentUserId()) {
+            setProfilePictureVisibility = "";
+        }
+
         var variables = { 
             name: this.model.fullName(),
             desc: desc,
@@ -68,6 +86,7 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
             followButtonVisibility: followButtonVisibility,
             followButtonText: followButtonText,
             followButtonColor: followButtonColor,
+            setProfilePictureVisibility: setProfilePictureVisibility,
         };
         var template = _.template($("#UserInformationTemplate").html(),
                                   variables);
@@ -140,6 +159,23 @@ App.Backbone.View.UserInformation = Backbone.View.extend({
     showUserFollowers: function() {
         App.Var.View.showUserList(App.Const.UserList.FOLLOWERS,
                                   this.model.userId());
+    },
+    toggleSetProfileForm: function() {
+        var form = $(this.el).find(this.sel.SET_PICTURE_FORM);
+        if (form.is(':visible')) {
+            $(this.el).find(this.sel.SET_PICTURE_FORM).hide("fast");
+        } else {
+            $(this.el).find(this.sel.SET_PICTURE_FORM).show("fast");
+        }
+    },
+    pictureChange: function() {
+        var filename = $(this.el).find(this.sel.SET_PICTURE_INPUT).val();
+        if (filename != "") {
+            $(this.el).find(this.sel.SET_PICTURE_SUBMIT).removeAttr("disabled");
+        } else {
+            $(this.el).find(this.sel.SET_PICTURE_SUBMIT).attr("disabled",
+                                                              "disabled");
+        }
     },
 });
 

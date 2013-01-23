@@ -651,6 +651,11 @@ ol.LittleList li {
   z-index: 1;
   content: "";
 }
+#Feed .Activity .Time {
+  color: gray;
+  font-size: 12px;
+  line-height: 1.4;
+}
 #Feed .Activity .VisionContainer {
   width: 299px;
   margin: 10px auto;
@@ -687,6 +692,22 @@ ol.LittleList li {
   -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+#UserInformation #SetProfilePictureContainer {
+  position: absolute;
+  bottom: 13px;
+  left: 13px;
+  margin: 0px;
+}
+#UserInformation #SetProfilePictureContainer #SetProfilePictureSwitch:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+#UserInformation #SetProfilePictureContainer #SetProfilePictureForm {
+  position: absolute;
+  bottom: 19px;
+  left: 0px;
+  margin: 0px;
 }
 #UserInformation #UserInformationBar {
   position: absolute;

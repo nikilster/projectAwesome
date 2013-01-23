@@ -105,6 +105,13 @@ class User:
         '''Gets count list of Users'''
         return DataApi.getUserCount()
 
+    @staticmethod
+    def getAlex():
+        return User.getById(1)
+    @staticmethod
+    def getNikil():
+        return User.getById(3)
+        
 
     #
     # Getters
@@ -499,6 +506,15 @@ class User:
 
             user = User.getById(userId)
             if user:
+                # Auto-follow founders so we know who joined, they have
+                # someone in their feed, they know how to connect to founders,
+                # and can look at us as an example of how to use the site.
+                alex = User.getAlex()
+                nikil = User.getNikil()
+                if alex:
+                    user.followUser(alex)
+                if nikil:
+                    user.followUser(nikil)
                 return (user, None)
             else:
                 return (None, RegisterError.DB_ERROR)

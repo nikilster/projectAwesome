@@ -555,6 +555,11 @@
             }
 
         }
+        .Time {
+            color: gray;
+            font-size: 12px;
+            line-height: 1.4;
+        }
 
         .VisionContainer {
             width: @VISION_WIDTH + @VISION_PADDING + @VISION_PADDING;
@@ -624,6 +629,25 @@
 
     background-color:@VISION_BACKGROUND;
     .LightShadow;
+
+
+    #SetProfilePictureContainer {
+        position: absolute;
+        bottom: 13px;
+        left: 13px;
+        margin: 0px;
+
+        #SetProfilePictureSwitch:hover {
+            text-decoration: underline;
+            .CursorPointer;
+        }
+        #SetProfilePictureForm {
+            position: absolute;
+            bottom: 19px;
+            left: 0px;
+            margin: 0px;
+        }
+    }
 
     #UserInformationBar {
         position: absolute;

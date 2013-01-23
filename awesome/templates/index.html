@@ -555,6 +555,24 @@
 
 <script type="text/template" id="UserInformationTemplate">
       <img id="UserProfilePicture" src="<%= picture %>"/>
+
+      <div id="SetProfilePictureContainer"
+           class="<%= setProfilePictureVisibility %>">
+        <div id="SetProfilePictureSwitch">Set profile picture</div>
+        <form id="SetProfilePictureForm" class="Hidden"
+                action="{{url_for("api_change_picture") }}"
+                method="post" enctype="multipart/form-data"
+                style="overflow:hidden;">
+            <input id="PictureUploadInput"
+                    type="file" name="picture"></input><br>
+            <input name="target" type="hidden" value="profile"></input>
+            <input id="PictureUploadSubmit"
+                    type="submit" class="btn btn-primary btn-small"
+                    disabled="disabled"
+                    value="Upload picture"></input>
+        </form>
+      </div>
+
       <div id="UserName"><%= name %></div>
       <div id="UserDescription" class="<%= descDisplay %>"><%= desc %></div>
       <div id="NoUserDescription"
@@ -619,30 +637,35 @@
 <img class="Picture" src="<%= picture %>"/>
 <a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
 joined Project Awesome.
+<div class="Time"><%= time %></div>
 </script>
 
 <script type="text/template" id="ActivityAddVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="VisionUserLink" href="/user/<%= userId %>"><%= name %></a> 
 posted a
 <a class="VisionLink" href="/vision/<%= visionId %>">vision</a>.
+
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
 
 <script type="text/template" id="ActivityLikeVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="VisionLikerLink" href="/user/<%= userId %>"><%= name %></a> 
 likes
 <a class="VisionUserLink" href="/vision/<%= visionUserId %>">
 <%= visionUserName %>'s</a> vision.
+
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
 
 <script type="text/template" id="ActivityLikeVisionCommentTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="CommentLikerLink" href="/user/<%= userId %>"><%= name %></a> 
 likes
 <!--
 <a class="AuthorLink" href="/user/<%= authorUserId %>">
@@ -653,29 +676,21 @@ a comment on
 <%= visionUserName %>'s</a> 
 vision.
 
-<!--
-<div class="CommentBox">
-<div class="CommentText"><%= commentText %></div>
-</div>
--->
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
 
 <script type="text/template" id="ActivityCommentOnVisionTemplate">
 <img class="Picture" src="<%= picture %>"/>
-<a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
+<a class="AuthorLink" href="/user/<%= userId %>"><%= name %></a> 
 commented on 
 <a class="VisionUserLink" href="/user/<%= visionUserId %>">
     <%=visionUserName %>'s
 </a>
 vision.
 
-<!--
-<div class="CommentBox">
-<div class="CommentText"><%= commentText %></div>
-</div>
--->
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
@@ -686,6 +701,8 @@ vision.
 is following 
 <a class="FollowingUserLink" href="/user/<%= followingUserId %>">
 <%= followingName %></a>.
+
+<div class="Time"><%= time %></div>
 </script>
 
 {% endblock %}

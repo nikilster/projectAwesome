@@ -9,6 +9,7 @@ App.Backbone.Model.Activity = Backbone.Model.extend({
         comments: null,
         commentLikers: null,
         recentAction: null,
+        created: null,
     },
     constant: {
         type: {
@@ -30,8 +31,9 @@ App.Backbone.Model.Activity = Backbone.Model.extend({
             vision: new App.Backbone.Model.Vision(this.get("vision")),
             likers: new App.Backbone.Model.UserList(this.get("likers")),
             comments: new App.Backbone.Model.VisionCommentList(this.get("comments")),
-            commentLikers: new App.Backbone.Model.UserList(this.get("likers")),
+            commentLikers: new App.Backbone.Model.UserList(this.get("commentLikers")),
             visionComment: new App.Backbone.Model.VisionComment(this.get("visionComment")),
+            created: dateFromUTC(this.get("created")),
         });
     },
     type: function() { return this.get("type"); },
@@ -43,6 +45,10 @@ App.Backbone.Model.Activity = Backbone.Model.extend({
     likers: function() { return this.get("likers"); },
     comments: function() { return this.get("comments"); },
     commentLikers: function() { return this.get("commentLikers"); },
+    created: function() { return this.get("created"); },
+    timeString: function() {
+        return timeFromToday(this.created());
+    },
 
     typeJoin: function() { return this.type() == this.constant.type.JOIN; },
     typeFollow: function() { return this.type() == this.constant.type.FOLLOW; },

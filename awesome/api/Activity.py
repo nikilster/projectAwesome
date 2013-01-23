@@ -58,6 +58,7 @@ class Activity:
         COMMENTS = 'comments'
         COMMENT_LIKERS = 'commentLikers'
         RECENT_ACTION = 'recentAction'
+        CREATED = 'created'
 
     #
     # Static methods
@@ -110,7 +111,7 @@ class Activity:
         unfilteredVisionsModels = DataApi.getVisionsById(visionIds,
                                               allowRemovedVisions=True)
 
-        userIds = set([a.objectId for a in activities 
+        userIds = set([a.subjectId for a in activities 
                             if a.action == Activity.Action.JOIN_SITE])
         for c in commentModels:
             userIds.add(c.authorId)
@@ -159,6 +160,7 @@ class Activity:
                 obj = dict()
                 obj[Activity.Key.TYPE] = Activity.FeedItem.JOIN
                 obj[Activity.Key.USER] = newUser.toDictionary()
+                obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                 feedObjList.append(obj)
             # FOLLOW
@@ -171,6 +173,7 @@ class Activity:
                 obj[Activity.Key.TYPE] = Activity.FeedItem.FOLLOW
                 obj[Activity.Key.USER] = follower.toDictionary()
                 obj[Activity.Key.FOLLOWING] = following.toDictionary()
+                obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                 feedObjList.append(obj)
             # VISION-RELATED
@@ -189,7 +192,7 @@ class Activity:
                     visionId = idToComment[activity.objectId].visionId
                 elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
                     commentLike = idToCommentLike[activity.objectId]
-                    visionId = idToComment[commentLike.visionCommentId]
+                    visionId = idToComment[commentLike.visionCommentId].visionId
 
                 # if we don't know vision id from here, ignore this activity
                 if visionId == None:
@@ -205,6 +208,7 @@ class Activity:
                         obj[Activity.Key.TYPE] = Activity.FeedItem.VISION
                         obj[Activity.Key.VISION] = idToVisionObj[visionId]
                         obj[Activity.Key.RECENT_ACTION] = actionString
+                        obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                         feedObjList.append(obj)
                         visionIdToFeedObj[visionId] = obj
@@ -257,7 +261,7 @@ class Activity:
                         obj[Activity.Key.COMMENTS] = [commentObj]
                 elif activity.action == Activity.Action.LIKE_VISION_COMMENT:
                     # get liker
-                    commentLike = idToCommentLike[activity.subjectId]
+                    commentLike = idToCommentLike[activity.objectId]
                     liker = User(idToUser[commentLike.userId])
 
                     if Activity.Key.COMMENT_LIKERS in obj:

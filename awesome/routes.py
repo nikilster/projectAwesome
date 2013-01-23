@@ -195,13 +195,20 @@ def api_change_picture():
                 abort(406)
             file = request.files['picture']
 
+            target = ""
+            if 'target' in request.form:
+                target = request.form['target']
+
             user = User.getById(userInfo['id'])
             if user:
                 url = user.setProfilePicture(file)
                 if url:
                     # update session if it worked
                     SessionManager.setUser(user)
-            return redirect(url_for('settings'))
+            if target == "profile":
+                return redirect(url_for('user_profile', userId=user.id()))
+            else:
+                return redirect(url_for('settings'))
         abort(406)
     abort(405)
 

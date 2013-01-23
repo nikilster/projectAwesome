@@ -47,15 +47,35 @@ function timeFromToday(date) {
     var seconds = parseInt(diff / (1000));
 
     if (days > 0) {
-        return days + " days ago";
+        if (days == 1) {
+            return days + " day ago";
+        } else if (days < 30) {
+            return days + " days ago";
+        } else if (date.getYear() == Date.today().getYear()) {
+            return date.toString("MMM d");
+        } else {
+            return date.toString("MMM d, yyyy");
+        }
     } else if (hours > 0) {
-        return hours + " hours ago";
+        if (hours == 1) {
+            return hours + " hour ago";
+        } else {
+            return hours + " hours ago";
+        }
     } else if (minutes > 0) {
-        return minutes + " minutes ago";
+        if (minutes == 1) {
+            return minutes + " minute ago";
+        } else {
+            return minutes + " minutes ago";
+        }
     } else if (seconds  > 0 ) {
-        return seconds + " seconds ago";
+        if (second == 1) {
+            return seconds + " second ago";
+        } else {
+            return seconds + " seconds ago";
+        }
     } else {
-        return "just now"
+        return "Just now"
     }
 }
 
