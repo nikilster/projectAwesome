@@ -63,7 +63,7 @@ def user_profile(userId, pageOption = 0):
             userInfo = SessionManager.getUser()
             return render_template('index.html', user=userInfo, config=app.config)
         else:
-            return render_template('index.html', user=None, config=app.config)
+            return redirect(url_for('login', next="user", id=userId))
     abort(405)
 
 @app.route('/vision/<int:visionId>', methods=['GET'])
@@ -76,7 +76,7 @@ def vision_page(visionId):
             return render_template('index.html',
                                 user=userInfo,
                                 config=app.config)
-        return redirect(url_for('login'))
+        return redirect(url_for('login', next="vision", id=visionId))
     abort(405)
 
 @app.route('/api/vision/<int:visionId>', methods=['GET'])
@@ -218,7 +218,12 @@ def login():
         if SessionManager.userLoggedIn():
             return redirect(url_for('index'))
         else:
-            return render_template('login.html', config=app.config)
+            next = request.args.get('next')
+            id = request.args.get('id')
+
+            return render_template('login.html', config=app.config,
+                                                 next=next,
+                                                 id=id)
     elif request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -227,7 +232,17 @@ def login():
 
         if user:
             SessionManager.setUser(user)
-            return redirect(url_for('user_profile', userId=user.id()))
+
+            nextRef = request.form.get('next')
+            nextId = request.form.get('id')
+
+            Logger.debug("Next: " + str(nextRef) + " : " + str(nextId))
+            if nextRef == "vision":
+                return redirect(url_for('vision_page', visionId=nextId))
+            elif nextRef == "user":
+                return redirect(url_for('user_profile', userId=nextId))
+            else:
+                return redirect(url_for('user_profile', userId=user.id()))
         else:
             assert errorMsg != None, "Error msg should exist"
             flash(errorMsg, LoginError.TAG)

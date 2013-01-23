@@ -53,6 +53,9 @@ Register
                              type="password" name="password"/>
                     </div>
                   </div>
+                  
+                  <input type="hidden" name="next" value="{{ next or None }}"/>
+                  <input type="hidden" name="id" value="{{ id or None }}"/>
 
                   <div class="control-group">
                     <div class="controls">
