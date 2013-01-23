@@ -1,12 +1,10 @@
 #!/bin/bash
-###################
-#Run.sh - Sets up the web app!
-####################
-#To Start mysql type "mysql.server start"
-#To Check if mysql is running type "mysql.server status"
 
-# Read command line parameters
+#run.sh - Sets up the web app!
+#-----------------------------
 
+
+#------Read command line parameters------
 WIPE_AND_GENERATE_DATA=false
 
 while getopts "wh" opt; do
@@ -30,10 +28,31 @@ shift $((OPTIND - 1))
 
 echo "WIPE_AND_GENERATE_DATA = $WIPE_AND_GENERATE_DATA"
 
-#Activate the virutal envronment
+
+
+# ------ Start Mysql ------
+# To Start mysql type "mysql.server start"
+# To Check if mysql is running type "mysql.server status"
+# If Mysql is running, "mysql.server status" returns " SUCCESS! MySQL running (2209)"  (process number is different)
+# If Mysql is not running, "mysql.server status" returns "ERROR! MySQL is not running"
+# Check for "ERROR"
+
+if mysql.server status | grep "ERROR"
+then
+    echo "------ Starting Mysql -------"
+    mysql.server start
+else
+    echo "------ Mysql is already running -------"
+fi
+
+
+
+#------ Activate Virutal Envronment ------
 echo "Activating virtual environment"
 . venv/bin/activate
 
+
+#------ Start Redis ------
 #If redis is not running, start redis
 #http://www.anyexample.com/linux_bsd/bash/check_if_program_is_running_with_bash_shell_script.xml
 SERVICE='redis'
@@ -52,7 +71,7 @@ else
 fi
 
 
-#Wipe & Generate Data
+#------ Wipe & Generate Data ------
 if $WIPE_AND_GENERATE_DATA
 then
 	echo "------Wiping Data and Generating Test Data------"
@@ -65,6 +84,7 @@ else
 fi
 
 
+#------ Run Server ------
 #Run the server in the background
 python runserver.py
 
