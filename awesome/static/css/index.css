@@ -651,6 +651,11 @@ ol.LittleList li {
   z-index: 1;
   content: "";
 }
+#Feed .Activity .Time {
+  color: gray;
+  font-size: 12px;
+  line-height: 1.4;
+}
 #Feed .Activity .VisionContainer {
   width: 299px;
   margin: 10px auto;

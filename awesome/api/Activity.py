@@ -58,6 +58,7 @@ class Activity:
         COMMENTS = 'comments'
         COMMENT_LIKERS = 'commentLikers'
         RECENT_ACTION = 'recentAction'
+        CREATED = 'created'
 
     #
     # Static methods
@@ -159,6 +160,7 @@ class Activity:
                 obj = dict()
                 obj[Activity.Key.TYPE] = Activity.FeedItem.JOIN
                 obj[Activity.Key.USER] = newUser.toDictionary()
+                obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                 feedObjList.append(obj)
             # FOLLOW
@@ -171,6 +173,7 @@ class Activity:
                 obj[Activity.Key.TYPE] = Activity.FeedItem.FOLLOW
                 obj[Activity.Key.USER] = follower.toDictionary()
                 obj[Activity.Key.FOLLOWING] = following.toDictionary()
+                obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                 feedObjList.append(obj)
             # VISION-RELATED
@@ -205,6 +208,7 @@ class Activity:
                         obj[Activity.Key.TYPE] = Activity.FeedItem.VISION
                         obj[Activity.Key.VISION] = idToVisionObj[visionId]
                         obj[Activity.Key.RECENT_ACTION] = actionString
+                        obj[Activity.Key.CREATED] = activity.created.isoformat()
 
                         feedObjList.append(obj)
                         visionIdToFeedObj[visionId] = obj

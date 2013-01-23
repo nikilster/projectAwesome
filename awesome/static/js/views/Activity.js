@@ -47,11 +47,13 @@ App.Backbone.View.Activity = Backbone.View.extend({
         return _events;
     },
     render: function() {
+        var time = this.model.timeString();
         if (this.model.typeJoin()) {
             // JOIN ACTIVITY
             var variables = { userId: this.model.user().userId(),
                               name: this.model.user().fullName(),
                               picture: this.model.user().picture(),
+                              time: time,
                             };
             var template = _.template($(this.sel.JOIN_TEMPLATE).html(),
                                       variables);
@@ -63,6 +65,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                               picture: this.model.user().picture(),
                               followingUserId: this.model.following().userId(),
                               followingName: this.model.following().fullName(),
+                              time: time,
                             };
             var template = _.template($(this.sel.FOLLOW_TEMPLATE).html(),
                                       variables);
@@ -75,6 +78,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                                   name: this.model.vision().user().fullName(),
                                   picture: this.model.vision().user().picture(),
                                   visionId: this.model.vision().visionId(),
+                                  time: time,
                                 };
                 var template = _.template(
                                         $(this.sel.ADD_VISION_TEMPLATE).html(),
@@ -92,6 +96,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                             visionUserName: this.model.vision().user().fullName(),
                             visionId: this.model.vision().visionId(),
                             commentText: comment.text(),
+                            time: time,
                             };
                 var template = _.template($(this.sel.COMMENT_ON_VISION_TEMPLATE).html(), variables);
                 $(this.el).html(template);
@@ -107,6 +112,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                             visionUserId: vision.user().userId(),
                             visionUserName: vision.user().fullName(),
                             visionId: vision.visionId(),
+                            time: time,
                 };
                 var template = _.template(
                                     $(this.sel.LIKE_VISION_TEMPLATE).html(),
@@ -127,6 +133,7 @@ App.Backbone.View.Activity = Backbone.View.extend({
                             authorUserId: "",
                             authorUserName: "",
                             commentText: "",
+                            time: time,
                 };
                 var template = _.template(
                             $(this.sel.LIKE_VISION_COMMENT_TEMPLATE).html(),

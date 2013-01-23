@@ -637,6 +637,7 @@
 <img class="Picture" src="<%= picture %>"/>
 <a class="UserLink" href="/user/<%= userId %>"><%= name %></a> 
 joined Project Awesome.
+<div class="Time"><%= time %></div>
 </script>
 
 <script type="text/template" id="ActivityAddVisionTemplate">
@@ -644,6 +645,8 @@ joined Project Awesome.
 <a class="VisionUserLink" href="/user/<%= userId %>"><%= name %></a> 
 posted a
 <a class="VisionLink" href="/vision/<%= visionId %>">vision</a>.
+
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
@@ -654,6 +657,8 @@ posted a
 likes
 <a class="VisionUserLink" href="/vision/<%= visionUserId %>">
 <%= visionUserName %>'s</a> vision.
+
+<div class="Time"><%= time %></div>
 
 <div class="VisionContainer"></div>
 </script>
@@ -671,6 +676,8 @@ a comment on
 <%= visionUserName %>'s</a> 
 vision.
 
+<div class="Time"><%= time %></div>
+
 <div class="VisionContainer"></div>
 </script>
 
@@ -683,6 +690,8 @@ commented on
 </a>
 vision.
 
+<div class="Time"><%= time %></div>
+
 <div class="VisionContainer"></div>
 </script>
 
@@ -692,6 +701,8 @@ vision.
 is following 
 <a class="FollowingUserLink" href="/user/<%= followingUserId %>">
 <%= followingName %></a>.
+
+<div class="Time"><%= time %></div>
 </script>
 
 {% endblock %}
