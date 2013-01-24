@@ -84,16 +84,16 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
             </li>
             -->
             
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li id="NavigationFeed">
+                <a href="/">Friends</a> 
+            </li>
             <li id="NavigationProfile">
               <a href="/user/{{ user['id'] }}">
                 <img id="NavProfilePicture" src="{{ user['picture'] }}"/>
                 {{ user['firstName'] }}
               </a>
             </li>
-            <li id="NavigationFeed">
-                <a href="/">Friends</a> 
-            </li>
-            <li><a href="{{ url_for('index') }}">Home</a></li>
 
             <li class="dropdown">
                 <a id="settingsDropdown" class="dropdown-toggle" data-toggle="dropdown" href="#" >
