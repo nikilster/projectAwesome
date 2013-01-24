@@ -69,7 +69,7 @@ function timeFromToday(date) {
             return minutes + " minutes ago";
         }
     } else if (seconds  > 0 ) {
-        if (second == 1) {
+        if (seconds == 1) {
             return seconds + " second ago";
         } else {
             return seconds + " seconds ago";
