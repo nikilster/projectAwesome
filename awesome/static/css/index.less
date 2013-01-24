@@ -750,16 +750,6 @@
     }
 }
 
-// This button is in the edit vision modal
-#VisionDeleteButton {
-    float:right;
-    font-size:15px;
-}
-#VisionDeleteButton:hover {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
 //
 // Styles for the notifications during AJAX calls
 //
@@ -881,10 +871,6 @@ div.modal {
     .modal-header {
         font-size: 14pt;
 
-        #VisionDeleteButton {
-            float: right;
-            font-size: 15px;
-        }
         #VisionDetailsName {
         }
     }
@@ -918,13 +904,46 @@ div.modal {
                 }
             }
             #VisionDetailsEditForm {
+                position: relative;
                 overflow: hidden;
 
                 #VisionDetailsTextInput {
                     float: left;
                     width: 350px;
+                    height: 60px;
                     margin-bottom: 0px;
                 }
+
+                #VisionDeleteConfirmation {
+                    position: absolute;
+                    top: 0px;
+                    right: 10px;
+                    z-index: 1;
+                    font-size: 13px;
+                    text-decoration: none;
+                    background-color: white;
+                    border: 1px gray solid;
+                    width: 113px;
+                    padding: 5px;
+                    margin: 0px 10px;
+
+                    .rounded;
+                    .LightShadow;
+                }
+
+                // This button is in the edit vision modal
+                #VisionDeleteButton {
+                    float:left;
+                    font-size:11px;
+                    width: 90px;
+                    margin: 0px 0px 0px 15px;
+                    height: 20px;
+                }
+                #VisionDeleteButton:hover {
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+
                 #VisionDetailsPrivacyBox {
                     margin: 0px 0px 0px 15px;
                     width: 90px;

@@ -799,14 +799,6 @@ ol.LittleList li {
   text-decoration: underline;
   cursor: pointer;
 }
-#VisionDeleteButton {
-  float: right;
-  font-size: 15px;
-}
-#VisionDeleteButton:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
 #UserFeedbackSaving {
   display: none;
   float: right;
@@ -916,11 +908,6 @@ div.modal {
 #VisionInformation .modal-header {
   font-size: 14pt;
 }
-#VisionDetailsModal .modal-header #VisionDeleteButton,
-#VisionInformation .modal-header #VisionDeleteButton {
-  float: right;
-  font-size: 15px;
-}
 #VisionDetailsModal .modal-body,
 #VisionInformation .modal-body {
   min-height: 250px;
@@ -951,13 +938,52 @@ div.modal {
 }
 #VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm,
 #VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm {
+  position: relative;
   overflow: hidden;
 }
 #VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput,
 #VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsTextInput {
   float: left;
   width: 350px;
+  height: 60px;
   margin-bottom: 0px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteConfirmation,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteConfirmation {
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 1;
+  font-size: 13px;
+  text-decoration: none;
+  background-color: white;
+  border: 1px gray solid;
+  width: 113px;
+  padding: 5px;
+  margin: 0px 10px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -moz-background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  -webkit-transition: -webkit-transform 0.15s linear;
+  -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteButton,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteButton {
+  float: left;
+  font-size: 11px;
+  width: 90px;
+  margin: 0px 0px 0px 15px;
+  height: 20px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteButton:hover,
+#VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDeleteButton:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 #VisionDetailsModal .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox,
 #VisionInformation .modal-body #VisionDetailsInfoContainer #VisionDetailsEditForm #VisionDetailsPrivacyBox {

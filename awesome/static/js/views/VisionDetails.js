@@ -88,6 +88,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         PRIVACY_INPUT : "#VisionDetailsPrivacyInput",
         EDIT_SUBMIT : "#VisionDetailsEditSubmit",
         DELETE_BUTTON : "#VisionDeleteButton",
+        DELETE_CONFIRMATION: "#VisionDeleteConfirmation",
+        REALLY_DELETE: "#VisionReallyDeleteButton",
+        DELETE_CLOSE: "#VisionDeleteCloseButton",
         LIKE: ".VisionLikeInfo",
         LOCK: ".VisionDetailsLock",
     },
@@ -101,6 +104,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "editSubmit",
                         "ajaxEditSuccess",
                         "ajaxEditError",
+                        "toggleDeleteConfirmation",
                         "deleteVision",
                         "ajaxDeleteVisionSuccess",
                         "ajaxDeleteVisionError",
@@ -124,7 +128,9 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
 
         _events["click " + this.sel.EDIT_SUBMIT] = "editSubmit";
 
-        _events["click " + this.sel.DELETE_BUTTON] = "deleteVision";
+        _events["click " + this.sel.DELETE_BUTTON] = "toggleDeleteConfirmation";
+        _events["click " + this.sel.DELETE_CLOSE] = "toggleDeleteConfirmation";
+        _events["click " + this.sel.REALLY_DELETE] = "deleteVision";
         _events["keydown " + this.sel.ADD_COMMENT] = "onAddCommentKeydown";
         _events["mouseenter " + this.sel.TEXT_CONTAINER] = "onTextMouseEnter";
         _events["mouseleave " + this.sel.TEXT_CONTAINER] = "onTextMouseLeave";
@@ -164,7 +170,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 App.Var.Model.loggedInUserId() ==
                 App.Var.Model.currentVision().userId()) {
                 deleteVisibility = "";
-            } else if (pageMode == App.Const.PageMode.VISION_PAGE) {
+            }
+            if (pageMode == App.Const.PageMode.VISION_PAGE) {
                 closeVisibility = "hide";
                 urlTarget = ""
             }
@@ -348,6 +355,17 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
         // Do nothing, we already showed an error and don't need to change UI
     },
 
+    toggleDeleteConfirmation: function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var modal = $(this.el).find(this.sel.DELETE_CONFIRMATION).first();
+        if (modal.is(":visible")) {
+            modal.fadeOut();
+        } else {
+            modal.fadeIn();
+        }
+    },
     deleteVision: function() {
         if (this.model!= null) {
             if (DEBUG) console.log("DELETE");

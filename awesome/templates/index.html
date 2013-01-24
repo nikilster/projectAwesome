@@ -470,10 +470,6 @@
 <script type="text/template" id="VisionDetailsModalTemplate">
     <div id="VisionDetailsModalBox">
         <div class="modal-header">
-            <div id="VisionDeleteButton"
-                 class="<%= deleteVisibility %>">
-                Delete vision
-            </div>
             <a href="/user/<%= userId %>" 
                id="VisionDetailsName" <%= urlTarget %>>
                 <%= name %>
@@ -499,7 +495,26 @@
                     <span id="VisionDetailsText"><%= text %></span>
                 </div>
                 <div id="VisionDetailsEditForm" class="hide">
+                    <div id="VisionDeleteConfirmation" class="hide">
+                        Delete vision?
+                        <div>
+                            <button id="VisionReallyDeleteButton"
+                                    class="btn btn-small btn-danger">
+                                Delete
+                            </button>
+                            <button id="VisionDeleteCloseButton"
+                                    class="btn btn-small">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+
                     <textarea id="VisionDetailsTextInput"><%= text %></textarea>
+                    <div id="VisionDeleteButton">
+                        <div class="<%= deleteVisibility %>">
+                        Delete vision
+                        </div>
+                    </div>
                     <div id="VisionDetailsPrivacyBox">
                         <input id="VisionDetailsPrivacyInput" type="checkbox"
                                 style="position:relative; top: -3px;"
