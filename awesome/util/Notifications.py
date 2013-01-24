@@ -19,7 +19,7 @@ import random
 class Notifications:
     
     TEST = True
-    TEST_EMAIL_ADDRESS = "nikilster@gmail.com"
+    TEST_EMAIL_ADDRESS = "alex.shye@gmail.com"
 
     class UserKey:
         RANDOM_VISION = 'randomVision'
@@ -280,8 +280,7 @@ class Notifications:
 
     #Subject of the daily email!
     def __subject(self, userInfo):
-
-        return "You can do it!"
+        return self.__greeting()
 
     def __textEmail(self, userInfo):
 
@@ -338,26 +337,22 @@ class Notifications:
         # We tack a comma onto these for now.. so leave empty at end.
         farewells = [ "Have an awesome day",
                       "Have a great day",
-                      "Bye bye",
+                      "Cheers",
                       "Til tomorrow",
-                      "Sayanora",
-                      "Hasta la vista, baby",
-                      "Adios",
-                      "Be well, fellow citizen",
+                      "Be well",
                       "Stay cool",
-                      "And.. we're out",
-                      "See ya later, alligator",
                       "Ciao",
                     ]
         return random.choice(farewells)
 
     def __challenge(self):
-        challenges = [ "What can you do to move towards this vision today?",
-                       "What can you do today make this real?",
-                       "Who can you connect with about this vision?",
-                       "Who can help you out with this?",
-                       "Where are you with this?",
-                       "Why does this vision resonate with you?",
+        challenges = [ "Any thoughts on this vision?",
+                       "Comment on your vision",
+                       "What's new?",
+                       "Jot down your next steps",
+                       "Made progress recently?",
+                       "Why's this vision awesome?",
+                       "Why does this vision matter?"
                      ]
         return random.choice(challenges)
 
@@ -373,8 +368,6 @@ class Notifications:
          "George Bernard Shaw (1856-1950, playwright, critic, political activist)"),
         ("One should not pursue goals that are easily achieved. One must develop an instinct for what one can just barely achieve through one's greatest efforts.",
          "Albert Einstein (1879-1955, theoretical physicist)"),
-        ("It is not the critic who counts; not the man who points out how the strong man stumbles, or where the doer of deeds could have done them better. The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood; who strives valiantly; who errs, who comes short again and again, because there is no effort without error and shortcoming; but who does actually strive to do the deeds; who knows great enthusiasms, the great devotions; who spends himself in a worthy cause; who at the best knows in the end the triumph of high achievement, and who at the worst, if he fails, at least fails while daring greatly, so that his place shall never be with those cold and timid souls who neither know victory nor defeat.",
-         "Teddy Roosevelt (1858-1919, 26th president of the U.S.)"),
         ("To accomplish great things, we must not only act, but also dream; not only plan, but also believe.",
           "Anatole France (1844-1924, poet, journalist, novelist)"),
         ("It's not whether you get knocked down, it's whether you get up.",
@@ -390,13 +383,13 @@ class Notifications:
         ("You've got to get up every morning with determination if you're going to go to bed with satisfaction.",
          "George Horace Lorimer (1867-1937, journalist, author)"),
         ("As you think, so shall you become.",
-         "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
+         "Bruce Lee (1940-1973, martial artist, actor, philosopher)"),
         ("The key to immortality is first living a life worth remembering.",
-         "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
+         "Bruce Lee (1940-1973, martial artist, actor, philosopher)"),
         ("Don't fear failure. Not failure, but low aim, is the crime. In great attempts it is glorious even to fail.",
-         "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
+         "Bruce Lee (1940-1973, martial artist, actor, philosopher)"),
         ("There are no limits. There are only plateaus, and you must not stay there, you must go beyond them.",
-         "Bruce Lee (1940-1973, martial artist, actor, philosopher"),
+         "Bruce Lee (1940-1973, martial artist, actor, philosopher)"),
         ("I hope you live a life you're proud of. If you find you're not, I hope you have the strength to start all over again.",
          "F. Scott Fitzgerald (1896-1940, author)"),
         ("Reflect upon your present blessings - of which every man has many - not on your past misfortunes, of which all men have some.",

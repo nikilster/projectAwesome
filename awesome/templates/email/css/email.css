@@ -99,14 +99,6 @@ body .bodyContent div {
   line-height: 150%;
   text-align: left;
 }
-body .bodyContent p.challenge {
-  text-align: center;
-  color: black;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 1.2;
-  padding: 10px 20px;
-}
 body .bodyContent p {
   margin: 5px 10px;
 }
@@ -132,18 +124,19 @@ body .bodyContent .pictureText {
 }
 body .bodyContent .quoteBox {
   margin-top: 10px;
-  padding: 0px 30px;
+  margin-bottom: 20px;
+  padding: 0px 20px;
 }
 body .bodyContent .quoteBox .quote {
   font-family: times, serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #333;
 }
 body .bodyContent .quoteBox .attribution {
   text-align: right;
   margin-top: 10px;
-  color: #AAA;
+  color: #777;
 }
 body .bodyContent .farewell {
   margin: 30px 0px 25px 0px;

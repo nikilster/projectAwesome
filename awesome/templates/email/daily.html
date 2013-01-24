@@ -44,18 +44,17 @@
        <tr>
         <td align="center" valign="top" style="border-collapse: collapse">
          <!-- // Begin Template Header \\ -->
-         <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader" style="background-color: #FFF; border-bottom: 0">
-          <tr>
-           <td class="headerContent" style="border-collapse: collapse; color: #202020; font-family: Arial; font-size: 34px; font-weight: bold; line-height: 100%; padding: 0; text-align: center; vertical-align: middle">
-            <div class="header" style="height: 60px; background-color: #DDD; color: #555; padding-top: 25px; border-bottom: 1px solid #DDD">
-             {{ greeting }}
-            </div>
-            <!-- // Begin Module: Standard Header Image \\ -->
-            <!--&lt;img src="https://s3.amazonaws.com/project-awesome-img/visions/4a164bc/76d80e9562c9d7549bf6a70b7218e211_m.jpg" style="max-width:600px;" id="headerImage campaign-icon" mc:label="header_image" mc:edit="header_image" mc:allowdesigner mc:allowtext  /&gt;-->
-            <!-- // End Module: Standard Header Image \\ -->
-           </td>
-          </tr>
-         </table>
+         <!--
+                                	&lt;table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader"&gt;
+                                        &lt;tr&gt;
+                                            &lt;td class="headerContent"&gt;
+                                            	&lt;div class="header"&gt;
+                                                    Project Awesome
+                                            	&lt;/div&gt;
+                                            &lt;/td&gt;
+                                        &lt;/tr&gt;
+                                    &lt;/table&gt;
+                                    -->
          <!-- // End Template Header \\ -->
         </td>
        </tr>
@@ -70,41 +69,46 @@
              <tr>
               <td valign="top" style="border-collapse: collapse">
                <!-- Main content -->
-               <div class="quoteBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin-top: 10px; padding: 0 30px">
-                <div class="quote" style="color: #888; font-family: times, serif; font-size: 19px; line-height: 150%; text-align: left; font-style: italic; font-weight: 400">
+               <div class="quoteBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin-top: 10px; margin-bottom: 20px; padding: 0 20px">
+                <div class="quote" style="color: #333; font-family: times, serif; font-size: 20px; line-height: 150%; text-align: left; font-weight: bold">
                  "{{ quote }}"
                 </div>
-                <div class="attribution" style="color: #AAA; font-family: Arial; font-size: 14px; line-height: 150%; text-align: right; margin-top: 10px">
+                <div class="attribution" style="color: #777; font-family: Arial; font-size: 14px; line-height: 150%; text-align: right; margin-top: 10px">
                  - {{ quoteAttribution  }}
                 </div>
                </div>
                {% if visionPictureUrl != "" %}
+               <!--
+&lt;center&gt;
+    &lt;a class="Button" href="{{ visionUrl }}"&gt;
+        {{ challenge }}
+    &lt;/a&gt;
+&lt;/center&gt;
+-->
+               <center>
+                <div style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; display: inline-block; background-color:#4D90FE;border:1px solid #3079ED;;border-radius:4px;padding:10px; margin:10px 5px">
+                 <div style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; padding-right:10px;padding-left:10px">
+                  <a href="{{ visionUrl }}" style="text-decoration:none" target="_blank">
+                   <span style="font-size:16px;font-weight:bold;color:#fff;white-space:nowrap;display:block; text-align:center">
+                    {{ challenge }}
+                   </span>
+                  </a>
+                 </div>
+                </div>
+               </center>
                <div class="pictureBox" style="color: #505050; font-family: Arial; font-size: 14px; line-height: 150%; text-align: left; margin: auto; margin-top: 10px; margin-bottom: 20px; height: auto; width: 400px; background-color: #fafafa; padding: 10px; -webkit-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5); -moz-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5)">
                 <img src="{{ visionPictureUrl }}" style="border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; display: block; width: 100%" />
                 <div class="pictureText" style="color: #505050; font-family: Arial; font-size: 12pt; line-height: 1.2; text-align: left; padding: 10px">
                  {{ visionText }}
                 </div>
                </div>
-               <center>
-                <a class="Button" href="{{ visionUrl }}" style="-moz-box-shadow: inset 0 1px 0 0 #fff; -webkit-box-shadow: inset 0 1px 0 0 #fff; box-shadow: inset 0 1px 0 0 #fff; background: -moz-linear-gradient(center top, #ededed 5%, #dfdfdf 100%); background-color: #ededed; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; border: 1px solid #dcdcdc; display: inline-block; color: #777; font-family: arial; font-size: 15px; font-weight: bold; padding: 6px 14px; margin: 5px; text-decoration: none; text-shadow: 1px 1px 0 #fff">
-                 Comment on your vision
-                </a>
-                or
-                <a class="Button" href="{{ visionBoardUrl }}" style="-moz-box-shadow: inset 0 1px 0 0 #fff; -webkit-box-shadow: inset 0 1px 0 0 #fff; box-shadow: inset 0 1px 0 0 #fff; background: -moz-linear-gradient(center top, #ededed 5%, #dfdfdf 100%); background-color: #ededed; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; border: 1px solid #dcdcdc; display: inline-block; color: #777; font-family: arial; font-size: 15px; font-weight: bold; padding: 6px 14px; margin: 5px; text-decoration: none; text-shadow: 1px 1px 0 #fff">
-                 Check out your vision board
-                </a>
-               </center>
                {% endif %}
-               <div class="farewell" style="color: #505050; font-family: Arial; font-size: 15px; line-height: 150%; text-align: left; margin: 30px 0 25px 0; border-bottom: 0">
-                <p style="margin: 5px 10px">
-                 <b>
-                  {{ farewell }},
-                 </b>
-                </p>
-                <p style="margin: 5px 10px">
-                 - The Project Awesome Team :)
-                </p>
-               </div>
+               <p style="margin: 5px 10px">
+                {{ farewell }},
+               </p>
+               <p style="margin: 5px 10px">
+                - The Project Awesome Team :)
+               </p>
                <div class="psNote" style="color: #777; font-family: Arial; font-size: 13px; line-height: 150%; text-align: left; padding: 5px; margin: 5px">
                 <b>
                  P.S.
