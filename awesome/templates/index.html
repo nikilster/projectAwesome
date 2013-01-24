@@ -143,6 +143,9 @@
                     action="{% if user != None %}{{ url_for('apiFileUpload', userId=user['id']) }}{% else %}/bogusfileupload/blahblahblah{% endif %}"
                     target="FileUploadTarget"
                     style="margin: 5px; border: 0px; padding: 0px;">
+                    <div style="margin-left: 10px">
+                    Choose an image:
+                    </div>
                     <input id="FileUploadInput" name="picture" type="file"
                            style="width:300px;"/>
                     <br/>
@@ -156,7 +159,7 @@
                             name="text"
                             style="width:300px; height:70px; font-size:15px;
                                   margin-left: 5px;"
-                            placeholder="Describe your goal concretely and in the present tense. (ex: I have rock solid 6-pack abs!)"></textarea>
+                            placeholder="Describe your vision..."></textarea>
                     <div style="margin-left: 15px;">
                     <input id="InputVisionPrivacy" type="checkbox"
                             style="position:relative; top: -3px;"
@@ -165,7 +168,7 @@
                     </div>
                 </div>
             </div>
-            <div style="float:right; width: 175px; margin-top:10px;">
+            <div style="float:right; width: 175px; margin-top:30px;">
                 <div id="FileUploadNoPreview"
                      style="width:150px; height:85px; padding-top: 65px;
                             background-color:#EEEEEE; text-align: center;">
@@ -268,9 +271,8 @@
                 Sharing is caring. But sometimes you want some privacy.
                 </div>
                 <div>
-                Just, zoom into your vision and edit it to be private.
-                When finished you will see this
-                lock icon on your private visions: <i class="icon-lock"></i>
+                Just zoom into your vision and edit it to be private.
+                Private visions are marked with this lock icon: <i class="icon-lock"></i>
                 </div>
                 <div>
                 You can also change your default vision privacy in the settings.
