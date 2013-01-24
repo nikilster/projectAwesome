@@ -600,12 +600,29 @@ ol.LittleList li {
   margin-left: -330px;
 }
 #OnboardingModal .modal-header {
-  text-align: center;
+  font-size: 24px;
 }
 #OnboardingModal .modal-body {
   padding-left: 40px;
   padding-right: 20px;
+  font-size: 16px;
   color: #555555;
+}
+#OnboardingModal .modal-body img {
+  text-align: center;
+  margin: 5px;
+}
+#OnboardingModal .modal-body div {
+  padding-bottom: 15px;
+}
+#OnboardingModal .modal-body div ul li,
+#OnboardingModal .modal-body div ol li {
+  padding: 10px 0px;
+}
+#OnboardingModal .modal-body .Hint {
+  padding: 8px 10px;
+  font-size: 14px;
+  line-height: 1.2;
 }
 /* 
     ----------------- End ------------------
@@ -906,7 +923,7 @@ div.modal {
 }
 #VisionDetailsModal .modal-header,
 #VisionInformation .modal-header {
-  font-size: 14pt;
+  font-size: 24px;
 }
 #VisionDetailsModal .modal-body,
 #VisionInformation .modal-body {

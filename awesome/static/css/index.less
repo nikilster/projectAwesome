@@ -52,9 +52,12 @@
 @ACT_ON_VISION_NOT_AUTHENTICATED_INSET: @VISION_PADDING+4;
 @OVERLAY_MARGIN: @VISION_PADDING+4;
 
+@MODAL_HEADER_FONT_SIZE: 24px;
+@MODAL_BODY_FONT_SIZE: 16px;
 
 //Onboarding
 @ONBOARDING_MODAL_WIDTH: 660px;
+@ONBOARDING_MODAL_BODY_HEIGHT: 325px;
 @ONBOARDING_TEXT_COLOR: #555;
 /* Begin Augmenting Bootstrap */
 .navbar-inner {
@@ -484,14 +487,37 @@
     
     //Header
     .modal-header {
-        text-align:center;
+        font-size: @MODAL_HEADER_FONT_SIZE;
+        //text-align:center;
     }
 
     .modal-body {
         padding-left:40px;
         padding-right:20px;
 
+        font-size: @MODAL_BODY_FONT_SIZE;
+
         color: @ONBOARDING_TEXT_COLOR;
+
+        img {
+            text-align: center;
+            margin: 5px;
+        }
+
+        div {
+            padding-bottom: 15px;
+
+            ul, ol {
+                li {
+                    padding: 10px 0px;
+                }
+            }
+        }
+        .Hint {
+            padding: 8px 10px;
+            font-size: 14px;
+            line-height: 1.2;
+        }
     }
 
 }
@@ -869,7 +895,7 @@ div.modal {
     }
 
     .modal-header {
-        font-size: 14pt;
+        font-size: @MODAL_HEADER_FONT_SIZE;
 
         #VisionDetailsName {
         }

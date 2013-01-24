@@ -206,28 +206,36 @@
     <!-- Modal For Onboarding -->
     <div id="OnboardingModal" data-backdrop="static" class="modal hide fade">
         <div class="modal-header">
-            <h1>Welcome to your Vision Board!</h1>
+            <span id="OnboardingTitle">Welcome to Project Awesome :)</span>
         </div>
         <div class="modal-body">
             
             <!-- Explanation -->
-            <div id="OnboardingPage1" class="">
-                <h3>
-                    This is your home for your dreams.
-                </h3>
-                <h3>
-                    You will achieve everything on here if you look at this page at least 2 times daily (<a target="_BLANK" href="{{ url_for('about') }}">Success Stories</a>).
-                </h3>
 
+            <div id="OnboardingPage1" class="">
+                <center>
+                <img src="https://s3.amazonaws.com/project-awesome-static/gen/img/project-awesome-dudes.jpg" width="350"/>
+                </center>
+                <div class="SmallSpacer"></div>
+                <div>
+                Hi! We are Nikil (left) and Alex (right), the creators of 
+                Project Awesome. When you get the time, drop by our
+                vision boards and say hi!
+                </div>
+                <div>
+                Before you get started, there are a few things you should know.
+                </div>
             </div>
 
             <div id="OnboardingPage2" class="hide">
-                <h2>
-                    Lets add a couple more goals.
-                </h2>  
-                <br/>
-                <h2>
-                    Drag this button to your bookmarks bar --> 
+                <div>
+                There are 3 ways to create new visions:
+                </div>
+                  <ol>
+                    <li><b>Upload</b>: Use the 'Add Vision' button in the top right to upload an image.</li>
+                    <li><b>Repost</b>: Click the 'Repost' button on any vision to copy it to your board.</li>
+                    <li><b>Postmarklet</b>: Use our postmarklet to get your favorite pictures on the web.</li>
+
                      <a id="postmarklet" href="
                     javascript: void((function (doc) {
                         var repinCode = doc.createElement('script');
@@ -239,30 +247,34 @@
                     ">
                         <img src="{{ url_for('static', filename='img/postit-transparent.png') }}" alt="Post It Button"/>
                     </a>
-                </h2>
+
+                  </ol>
+                <div class="Hint">
+                Get the postmarklet by clicking and dragging this button
+                into your browser's bookmarks bar. Click it when you find an
+                image your love on the web!
+                </div>
+                <div class="Hint">
+                Note: The postmarklet does not affect your browser or track
+                you in any way. That would be uncool. We respect your privacy.
+                </div>
             </div>
 
             <div id="OnboardingPage3" class="hide">
-                <h2>
-                    Now open a new browser window, <br/>
-                    go to a page with a picture of your goal <br/>
-                    and click the button.  
-                    <small>(Tip: Try Google images) </small>
-                                <!--You can upload your own pictures by clicking <span class="emphasis muted">Add Vision</span>.-->
-                    <br/>
-                    <br/>
-                    Try it now!
-                </h2>
-            </div>
-
-            <div id="OnboardingPage4" class="hide">
-                <h2>
-                    Awesome Job! You did it.
-                </h2>
-                <h2>
-                    We will remind you about your dreams :).
-                    Let's add 2 more goals and check out your friends' dreams!
-                </h2>
+                <div>
+                One more thing.
+                </div>
+                <div>
+                Sharing is caring. But sometimes you want some privacy.
+                </div>
+                <div>
+                Just, zoom into your vision and edit it to be private.
+                When finished you will see this
+                lock icon on your private visions: <i class="icon-lock"></i>
+                </div>
+                <div>
+                You can also change your default vision privacy in the settings.
+                </div>
             </div>
 
            <!-- <h4>Now post <span class="text-success">2</span> more dreams on here!</h4>
@@ -273,7 +285,7 @@
         <div class="modal-footer">
             <!-- Explore the Language: 1st person vs 2nd person vs 3rd person:I want to get started, Let's get started, get started. -->
             <!--<a href="#" aria-hidden="hidden" class="btn btn-primary">Let's get started!</a>-->
-            <a id="onboardingButton" href="#" aria-hidden="hidden" class="btn btn-primary">Okay!</a>
+            <a id="onboardingButton" href="#" aria-hidden="hidden" class="btn btn-large btn-success">What's that?</a>
         </div>
     </div>
 

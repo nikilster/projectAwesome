@@ -9,6 +9,19 @@
 */
 var DEBUG = false;
 
+//Onboarding
+var ONBOARDING_MODAL = "#OnboardingModal";
+var ONBOARDING_TITLE = "#OnboardingTitle";
+//Generalized button (so we can have different text)
+var ONBOARDING_STEPS = ["#OnboardingPage1", "#OnboardingPage2", "#OnboardingPage3"];
+var ONBOARDING_NEXT_BUTTON = "#OnboardingModal .modal-footer a.btn";
+var ONBOARDING_TITLES = ["Welcome to Project Awesome :)", 
+                         "Creating Visions",
+                         "Sharing and Privacy"]
+var ONBOARDING_NEXT_TEXT = ["What's that?", "OK, got it.", "That's it. Let's go!"];
+
+var POSTMARKLET = "#postmarklet";
+
 /******************************************************************************
  * Utility functions
  */
@@ -126,6 +139,8 @@ $(document).ready(function() {
             else {
                 $(ONBOARDING_STEPS[onboardingStep]).hide();
                 $(ONBOARDING_STEPS[onboardingStep+1]).show();
+                $(ONBOARDING_TITLE).html(ONBOARDING_TITLES[onboardingStep+1])
+                $(ONBOARDING_NEXT_BUTTON).html(ONBOARDING_NEXT_TEXT[onboardingStep+1]);
             }
 
             onboardingStep++;
