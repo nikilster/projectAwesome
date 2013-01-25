@@ -103,6 +103,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var moreCommentsVisibility = "Hidden";
         if (userLoggedIn() &&
             (pageMode == App.Const.PageMode.HOME_USER ||
+             pageMode == App.Const.PageMode.FEED ||
              pageMode == App.Const.PageMode.USER_PROFILE) &&
             this.hasMoreComments()) {
             moreCommentsVisibility = "";
