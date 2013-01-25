@@ -116,9 +116,12 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                         "ignoreClick",
                         "closeModal",
                         "privacyChange",
+                        "onNewComment",
                         // Called from like view
                         "showLikes"
         );
+        this.model.bind("new-comment", this.onNewComment, this);
+
         this.model.comments().bind("add", this.renderComments, this);
         this.model.bind("change:privacy", this.privacyChange, this);
         this.render();
@@ -212,6 +215,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                                   variables);
         $(this.el).html(template);
 
+        $(this.el).find(this.sel.ADD_COMMENT).autosize();
+
         if (this.model.like() != null) {
             var likeView = new App.Backbone.View.Like(
                                                 { model: this.model.like(),
@@ -221,6 +226,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
 
         this.toggleEditSubmit();
 
+
         doAjax("/api/vision/" + this.model.visionId() + "/comments",
                 JSON.stringify({
                                 'visionId' : this.model.visionId(),
@@ -228,7 +234,11 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                 this.ajaxCommentsSuccess,
                 this.ajaxCommentsError
         );
+
         return this;
+    },
+    onNewComment: function() {
+        $(this.sel.ADD_COMMENT).removeAttr("style");
     },
 
     toggleEditSubmit: function(e) {
@@ -394,7 +404,8 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
     },
 
     onAddCommentKeydown: function(e) {
-        if(e.keyCode == 13) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {
             e.preventDefault();
             var text = $.trim($(this.sel.ADD_COMMENT).val());
             if (text.length > 0) {

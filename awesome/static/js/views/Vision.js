@@ -28,7 +28,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
-                        "visionCommentInput", "onNewComment",
+                        "commentInputKeydown",
+                        "onNewComment",
+                        "onResize",
                         //Called from Like view
                         "showLikes"
                         );
@@ -44,6 +46,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         this.model.bind("new-comment", this.onNewComment, this);
         this.model.comments().bind("add", this.render, this);
 
+
         this.render();
     },
 
@@ -58,7 +61,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _events["click " + this.sel.ONBOARDING_REMOVE_VISION] = "onboardingRemoveVision";
         _events["click " + this.sel.USER_NAME] = "gotoUser";
         _events["click " + this.sel.REPOST] = "repostVision";
-        _events["keyup " + this.sel.COMMENT_INPUT] = "visionCommentInput";
+        _events["keydown " + this.sel.COMMENT_INPUT] = "commentInputKeydown";
         _events["click " + this.sel.PICTURE] = "itemSelect";
         _events["click " + this.sel.MORE_COMMENTS] = "itemSelect";
         return _events;
@@ -208,6 +211,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         $(this.el).find(this.sel.COMMENT_CONTAINER).append(this.comments);
 
+        $(this.el).find(this.sel.COMMENT_INPUT).autosize({callback:
+                                                          this.onResize});
+
         return this;
     },
     renderComment: function(comment, index) {
@@ -347,19 +353,31 @@ App.Backbone.View.Vision = Backbone.View.extend({
         App.Var.View.showVisionLikes(this.model.visionId());
     },
 
-    visionCommentInput: function(e) {
-        if(e.keyCode == 13) {
+    commentInputKeydown: function(e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {
+            e.preventDefault(); 
             var text = $.trim($(this.el).find(this.sel.COMMENT_INPUT).val());
             if (text.length > 0) {
                 this.model.addVisionComment(text);
             }
         }
     },
+    onResize: function() {
+        if (this.parentView != null) {
+            this.parentView.onVisionResize();
+        }
+    },
     onNewComment: function() {
         if (this.parentView != null) {
+
+            // resizing the textarea to default size also
+            $(this.el).find(this.sel.COMMENT_INPUT).removeAttr("style");
+
             this.parentView.onNewComment();
         }
     },
+
     // Has more comments than MAX_COMMENTS shown in vision tile
     hasMoreComments: function() {
         return this.model.comments().length > this.constant.NUM_COMMENTS;

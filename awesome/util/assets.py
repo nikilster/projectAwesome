@@ -16,6 +16,7 @@ JS_home = Bundle(
     'opt/bootstrap/js/bootstrap.min.js',
     'opt/jquery-ui-1.8.20/js/jquery-ui-1.8.15.custom.min.js',
     'opt/jquery.masonry.js',
+    'opt/jquery.autosize.js',
     'opt/jquery.placeholder.js',
     'opt/underscore.js',
     'opt/backbone.js',

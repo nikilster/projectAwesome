@@ -191,7 +191,11 @@ App.Backbone.View.Page = Backbone.View.extend({
         // Do nothing, we already showed an error and don't need to change UI
     },
 
+    // Needed by Vision view
     onNewComment: function() {
+        this.masonryReload();
+    },
+    onVisionResize: function() {
         this.masonryReload();
     },
 

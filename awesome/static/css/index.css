@@ -396,6 +396,7 @@ ol.LittleList li {
 }
 .Vision .AddVisionComment .AddVisionCommentInput {
   width: 225px;
+  height: 20px;
   margin: 0px;
   font-size: 12px;
   line-height: 1.4;
@@ -1093,6 +1094,7 @@ div.modal {
 #VisionDetailsModal .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddComment,
 #VisionInformation .modal-body #VisionDetailsAddCommentContainer #VisionDetailsAddComment {
   width: 405px;
+  min-height: 32px;
   height: 32px;
 }
 #VisionDetailsModal .modal-body .VisionDetailsSection,
