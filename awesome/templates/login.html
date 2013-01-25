@@ -81,8 +81,9 @@ Register
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery.placeholder.js') }}"></script>
     {% endif %}
 
-<script>
-$("#EmailInput").focus();
+<script type="text/javascript">
+    $("#EmailInput").focus();
+    $('input[placeholder], textarea[placeholder]').placeholder();
 </script>
 
 {% endblock %}

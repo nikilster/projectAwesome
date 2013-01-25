@@ -85,10 +85,11 @@ Register
 <script type="text/javascript" src="{{ url_for('static', filename='opt/jquery.placeholder.js') }}"></script>
     {% endif %}
 
-<script>
+<script type="text/javascript">
   $(document).ready(function(){
     
     $("#FirstNameInput").focus();
+    $('input[placeholder], textarea[placeholder]').placeholder();
     
     mixpanel.track_forms("#RegistrationForm", "Registration Form Submitted");
 
