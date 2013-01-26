@@ -679,6 +679,7 @@ App.Backbone.View.Page = Backbone.View.extend({
 
         $(EXAMPLE_VISION_BOARD_DIV).empty().hide();
         $(CONTENT_DIV).empty().masonry().show();
+        this.hideUserInformation();
 
         var ajaxUrl = "/api/user/" + App.Var.Model.currentUserId() + "/visions";
 
