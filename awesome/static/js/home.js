@@ -106,6 +106,8 @@ function doAjax(url, data, successFunc, errorFunc) {
 $(document).ready(function() {
     $.ajaxSetup({ cache: false});
 
+    $('input[placeholder], textarea[placeholder]').placeholder();
+
     App.Var.Model = new App.Backbone.Model.Page();
     App.Var.View = new App.Backbone.View.Page({model: App.Var.Model});
 
