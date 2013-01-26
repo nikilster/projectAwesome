@@ -572,7 +572,7 @@ ol.LittleList li {
 .RemoveVisionNotAuthenticated {
   position: absolute;
   top: 16px;
-  right: 16px;
+  left: 16px;
 }
 .VisionIsPrivate {
   position: absolute;
