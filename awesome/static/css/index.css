@@ -396,6 +396,7 @@ ol.LittleList li {
 }
 .Vision .AddVisionComment .AddVisionCommentInput {
   width: 225px;
+  min-height: 20px;
   height: 20px;
   margin: 0px;
   font-size: 12px;
