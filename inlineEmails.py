@@ -18,6 +18,8 @@ Usage: %(prog)s [OPTIONS]
 
     Options flags.
             -i, --inline        Do CSS inline and generate output files
+            -n, --name <name>   Name of file to just inline one file
+                                (e.g., daily)
             -h, --help          Display help
 '''
 
@@ -33,16 +35,19 @@ def main(argv=None):
         argv = sys.argv
     try:
         opts, args = getopt.getopt(argv[1:],
-                                   "hi",
-                                   ["inline", "help"])
+                                   "hin:",
+                                   ["inline", "help", "name="])
     except getopt.error, msg:
         Usage(msg)
 
     # Process options
     doInlining = False
+    name = None
     for o, a in opts:
         if o in ("-i", "--inline"):
             doInlining = True
+        elif o in ("-n", "--name"):
+            name = a
         elif o in ("-h", "--help"):
             Usage()
         else:
@@ -53,9 +58,12 @@ def main(argv=None):
     if not os.path.isdir(templateDir):
         Usage("Can't find email templates in : " + templatesDir)
 
-
-    print "\nLooking for template emails..."
-    files = glob.glob(templateDir + "*.template.html")
+    if name == None:
+        print "\nLooking for template emails..."
+        files = glob.glob(templateDir + "*.template.html")
+    else:
+        print "\nLooking for name: " + str(name)
+        files = glob.glob(templateDir + str(name) + ".template.html")
 
      # Getting email.css
     print "\nGetting CSS..."

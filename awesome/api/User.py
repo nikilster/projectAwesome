@@ -515,6 +515,11 @@ class User:
                     user.followUser(alex)
                 if nikil:
                     user.followUser(nikil)
+
+                # Send welcome email
+                from ..WorkerJobs import Queue_welcomeEmail
+                Queue_welcomeEmail(user.toDictionaryFull())
+
                 return (user, None)
             else:
                 return (None, RegisterError.DB_ERROR)

@@ -15,6 +15,9 @@ REDIS_QUEUE = Queue(connection=REDIS_CONN)
 def Queue_print(string):
     REDIS_QUEUE.enqueue(Worker_print, string)
 
+def Queue_welcomeEmail(user):
+    REDIS_QUEUE.enqueue(Worker_welcomeEmail, user)
+
 def Queue_repostEmail(user, origVision, newVision):
     REDIS_QUEUE.enqueue(Worker_repostEmail, user, origVision, newVision)
 
@@ -43,6 +46,17 @@ def Worker_print(string):
   Logger.debug(string)
 
 from util.Notifications import Notifications
+
+def Worker_welcomeEmail(user):
+    ctx = app.test_request_context()
+    ctx.push()
+
+    ## WORK START ##
+    notifications = Notifications(test=False)
+    notifications.sendWelcomeEmail(user)
+    ## WORK END ##
+
+    ctx.pop()
 
 def Worker_repostEmail(user, origVision, newVision):
     ctx = app.test_request_context()

@@ -1059,8 +1059,8 @@ def rq_test():
     return "testing..."
 
 # Target URL for New Relic availability monitoring
-@app.route('/test/daily_email', methods=['GET'])
-def test_daily_email():
+@app.route('/test/<emailType>', methods=['GET'])
+def test_email(emailType):
     if request.method == 'GET':
         userInfo = None
         if SessionManager.userLoggedIn():
@@ -1068,7 +1068,10 @@ def test_daily_email():
             user = User.getById(userInfo['id'])
             if user and user.isAdmin():
                 notification = Notifications()
-                return notification.testDailyEmail()
+                if emailType == "daily":
+                    return notification.testDailyEmail()
+                elif emailType == "welcome":
+                    return notification.testWelcomeEmail(userInfo)
     return "Hello."
 
 # $eof

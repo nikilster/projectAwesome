@@ -52,8 +52,23 @@ class Notifications:
 
         return emailInfo[0][Constant.EMAIL_BODY_HTML_KEY]
 
-    def sendWelcomeEmail(self):
-        pass
+    def testWelcomeEmail(self, user):
+        return render_template("email/welcome.html", user = user)
+
+    def sendWelcomeEmail(self, user):
+        '''Takes dictionaries as input'''
+        emailAddress = user[User.Key.EMAIL]
+        emailSubject = "Welcome to Project Awesome!"
+        emailText = emailSubject
+        emailHtml = render_template("email/welcome.html", user=user)
+        email = {
+            Constant.EMAIL_TO_KEY : emailAddress,
+            Constant.EMAIL_SUBJECT_KEY : emailSubject,
+            Constant.EMAIL_BODY_TEXT_KEY : emailText,
+            Constant.EMAIL_BODY_HTML_KEY : emailHtml,
+        }
+        emailer = Emailer()
+        emailer.sendBatch([email])
 
     # These emails only work in production right now
     # TODO: need better way of testing these things
