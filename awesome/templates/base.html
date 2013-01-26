@@ -103,8 +103,9 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
                     <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu" role="menu" aria-labelledby="aboutDropdown">
-                    <li><a href="{{ url_for('settings')}}">Settings</a></li>
                     <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('about_postmarklet')}}">Post It Button</a></li>
+                    <li><a href="{{ url_for('settings')}}">Settings</a></li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </li>
