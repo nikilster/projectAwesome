@@ -322,7 +322,7 @@ function setupNavigationBarHandlers()
         
         e.preventDefault();
         
-        selectNavItem(NAVIGATION_MAIN);
+        selectNavItem(NAVIGATION_HOME);
 
         if (userLoggedIn() && 
             App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
@@ -369,10 +369,10 @@ function setupNavigationBarHandlers()
     });
 
 
-    $(NAVIGATION_MAIN_LINK).click(function(e) {
+    function goHome(e) {
         e.preventDefault();
         
-        selectNavItem(NAVIGATION_MAIN);
+        selectNavItem(NAVIGATION_HOME);
 
         if (userLoggedIn() && 
             App.Var.Model.pageMode() == App.Const.PageMode.HOME_USER) {
@@ -381,7 +381,9 @@ function setupNavigationBarHandlers()
             // Navigate
             App.Var.Router.navigate("/", {trigger: true});
         }
-    });
+    }
+    $(NAVIGATION_MAIN_LINK).click(goHome);
+    $(NAVIGATION_HOME_LINK).click(goHome);
 }
 
 /*
@@ -405,7 +407,7 @@ function clearNavSelection()
 {
         
     //Elements
-    var navigationElements = [NAVIGATION_PROFILE, NAVIGATION_FEED, NAVIGATION_MAIN];
+    var navigationElements = [NAVIGATION_PROFILE, NAVIGATION_FEED, NAVIGATION_HOME];
 
     //Remove
     for(var i=0; i<navigationElements.length; i++)

@@ -10,11 +10,13 @@ var LOGO = "#Logo";
 var NAVIGATION_PROFILE = "#NavigationProfile";
 var NAVIGATION_FEED = "#NavigationFeed";
 var NAVIGATION_MAIN = "#NavigationMain";
+var NAVIGATION_HOME = "#NavigationHome";
 
 // ------ Navigation Links ------
 var NAVIGATION_PROFILE_LINK = NAVIGATION_PROFILE + " a";
 var NAVIGATION_FEED_LINK = NAVIGATION_FEED + " a";
 var NAVIGATION_MAIN_LINK = NAVIGATION_MAIN + " a";
+var NAVIGATION_HOME_LINK = NAVIGATION_HOME + " a";
 
 
 // ------ Container Divs ------
@@ -245,7 +247,7 @@ App.Backbone.View.Page = Backbone.View.extend({
             this.hideAddItemButton();
             this.showHome();
             this.showHomePageNav();
-            selectNavItem(NAVIGATION_MAIN);
+            selectNavItem(NAVIGATION_HOME);
 
         } else if (pageMode == App.Const.PageMode.FEED) {
             this.hideInfoBar();
