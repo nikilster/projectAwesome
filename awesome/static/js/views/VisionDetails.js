@@ -215,7 +215,7 @@ App.Backbone.View.VisionDetails = Backbone.View.extend({
                                   variables);
         $(this.el).html(template);
 
-        $(this.el).find(this.sel.ADD_COMMENT).placeholder().autosize();
+        $(this.el).find(this.sel.ADD_COMMENT).autosize().placeholder();
 
         if (this.model.like() != null) {
             var likeView = new App.Backbone.View.Like(

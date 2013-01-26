@@ -211,9 +211,10 @@ App.Backbone.View.Vision = Backbone.View.extend({
         }
         $(this.el).find(this.sel.COMMENT_CONTAINER).append(this.comments);
 
-        $(this.el).find(this.sel.COMMENT_INPUT).placeholder()
-                                               .autosize({callback:
-                                                          this.onResize});
+        $(this.el).find(this.sel.COMMENT_INPUT).autosize({callback:
+                                                          this.onResize})
+                                               .placeholder();
+
         return this;
     },
     renderComment: function(comment, index) {
