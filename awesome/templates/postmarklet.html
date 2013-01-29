@@ -3,23 +3,40 @@
 {# ------------------------------------------------------------------------- #}
 {% block about_content %}
 <div class="Title">
-    Post your favorite images
+    Post your favorite images on the web
 </div>
 
-<div class="SectionHeading">Postmarklet button</div>
-<div class="SectionText">
-<a href="
+<div class="SectionHeading">Post It Button</div>
+<div class="SectionText" style="background-color: #CCCCCC; padding: 10px;">
+
+<a id="postmarklet" href="
 javascript: void((function (doc) {
-    var repinCode = doc.createElement('script');
-    repinCode.setAttribute('type', 'text/javascript');
-    repinCode.setAttribute('charset', 'UTF-8');
-    repinCode.setAttribute('src', 'https://s3.amazonaws.com/project-awesome-static/gen/js/postmarklet.js?r=' + Math.random() * 99999999);
-    doc.body.appendChild(repinCode);
-})(document));
-">Post it</a>
+            var repinCode = doc.createElement('script');
+            repinCode.setAttribute('type', 'text/javascript');
+            repinCode.setAttribute('charset', 'UTF-8');
+            repinCode.setAttribute('src', 'https://s3.amazonaws.com/project-awesome-static/gen/js/postmarklet.js?r=' + Math.random() * 99999999);
+            doc.body.appendChild(repinCode);
+            })(document));
+"><img src="{{ url_for('static', filename='img/postit-transparent.png') }}" alt="Post It"/></a>
+<i class="icon-arrow-left"></i> Drag this to your bookmarks bar.
 </div>
+
 <div class="SectionText">
-Drag this to your bookmarks bar.
+To install and use the Post It button, follow these steps:
+</div>
+
+<div class="SectionText">
+<ol>
+<li><b>Enable your bookmarks bar</b>
+<br/>
+If you see bookmarks at the top of your browser window, you already have your bookmarks bar enabled. If not, go to the browser's view settings and enable the bookmarks bar.</li>
+<li><b>Install the Post It Button</b>
+<br/>
+Put your mouse over the Post It Button above, click down, drag it into the bookmarks bar, and release the mouse button to drop the button into your bookmarks. Your browser may prompt you to change the name of the button. Leave it as 'Post It' or change it to whatever you would like and press OK. The Post It Button is now installed!</li>
+<li><b>Find and post visions</b>
+<br/>
+When you come across an image you'd like for one of your visions, simply click on the Post It Button in your bookmarks bar!</li>
+</ol>
 </div>
 
 {% endblock %}
