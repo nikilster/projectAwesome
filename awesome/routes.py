@@ -42,7 +42,7 @@ def view_board():
     return redirect(url_for('index'))
 
 @app.route('/recent', methods=['GET'])
-def recent_vision():
+def recent():
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()

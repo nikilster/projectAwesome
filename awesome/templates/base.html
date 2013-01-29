@@ -88,7 +88,7 @@ e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
                 <a href="{{ url_for('index') }}">Home</a>
             </li>
             <li id="NavigationFeed">
-                <a href="/">Friends</a> 
+                <a href="{{ url_for('recent') }}">Friends</a> 
             </li>
             <li id="NavigationProfile">
               <a href="/user/{{ user['id'] }}">
