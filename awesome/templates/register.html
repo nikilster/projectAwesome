@@ -65,7 +65,13 @@ Register
                     Password should be 6 or more characters.
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group" style="padding-top: 20px;">
+                    <div class="Hint">
+                    By clicking the Register button, you agree to the
+                    <a href="{{ url_for('terms') }}" target="_blank">
+                        Terms of Service &amp; Privacy
+                    </a>
+                    </div>
                     <button id="submitRegistration" type="submit"
                             class="SubmitButton btn btn-primary btn-large">
                         Register
