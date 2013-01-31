@@ -199,6 +199,8 @@ class VisionCommentModel(DB.Model):
     visionId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
     authorId        = DB.Column(DB.BigInteger(unsigned=True), index=True)
 
+    pictureId       = DB.Column(DB.BigInteger(unsigned=True), default=0)
+
     text            = DB.Column(DB.Text)
 
     created         = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
