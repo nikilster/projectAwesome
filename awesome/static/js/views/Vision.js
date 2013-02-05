@@ -8,6 +8,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
     sel: {
         SELECTED_CLASS : "VisionSelected",
         USER_NAME : ".VisionUserName",
+        PARENT_USER_NAME : ".VisionParentUserName",
         PICTURE : ".VisionPicture",
         MORE_COMMENTS: ".MoreComments",
         COMMENT_CONTAINER : ".VisionCommentContainer",
@@ -28,6 +29,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _.bindAll(this, "itemSelect", "renderComment",
                         "mouseEnter", "mouseLeave",
                         "repostVision", "removeVision", "gotoUser",
+                        "gotoParent",
                         "commentInputKeydown",
                         "onNewComment",
                         "onResize",
@@ -60,6 +62,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
         _events["click " + this.sel.ONBOARDING_ADD_VISION] = "onboardingAddVision";
         _events["click " + this.sel.ONBOARDING_REMOVE_VISION] = "onboardingRemoveVision";
         _events["click " + this.sel.USER_NAME] = "gotoUser";
+        _events["click " + this.sel.PARENT_USER_NAME] = "gotoParent";
         _events["click " + this.sel.REPOST] = "repostVision";
         _events["keydown " + this.sel.COMMENT_INPUT] = "commentInputKeydown";
         _events["click " + this.sel.PICTURE] = "itemSelect";
@@ -354,7 +357,19 @@ App.Backbone.View.Vision = Backbone.View.extend({
 
         App.Var.Router.navigate("/user/" + targetUserId, {trigger: true});
     },
-    
+     gotoParent: function(e) {
+        console.log("GOTO PARENT");
+        e.stopPropagation();    // prevent propagating to other handlers
+        e.preventDefault();     // prevent following link
+
+        var targetUserId = this.model.parentUser().userId();
+
+        //Mixpanel
+        this.trackVisionAnalytics("Go to User", {'User Being Viewed': targetUserId});
+
+        App.Var.Router.navigate("/user/" + targetUserId, {trigger: true});
+    },
+   
     showLikes: function() {
         App.Var.View.showVisionLikes(this.model.visionId());
     },
