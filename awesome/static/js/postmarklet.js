@@ -23,7 +23,7 @@ if (__PROJECT_AWESOME_DEBUG__ == true) {
     CSS_FILE_URL = DOMAIN_BASE_URL + "/static/css/postmarklet-local.css";
     console.log("In Local Version");
 } else {
-    DOMAIN_BASE_URL = "http://project-awesome.herokuapp.com";
+    DOMAIN_BASE_URL = "http://www.goprojectawesome.com";
     CSS_FILE_URL = "https://s3.amazonaws.com/project-awesome-static/gen/css/postmarklet.css";
     console.log("In Production Version");
 }
