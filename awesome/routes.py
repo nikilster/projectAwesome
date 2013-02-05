@@ -809,44 +809,39 @@ def apiAddVisionComment(visionId):
 @app.route('/api/vision/add_picture_comment', methods=['POST'])
 def apiAddVisionPictureComment():
     if request.method == 'POST':
-        if SessionManager.userLoggedIn():
-            userInfo = SessionManager.getUser()
+        parameters = request.form
+        if not ('text' in parameters and 
+                'userId' in parameters and
+                'visionId' in parameters):
+            abort(406)
+        if not 'picture' in request.files:
+            abort(406)
 
-            parameters = request.form
-            if not ('text' in parameters and 
-                    'userId' in parameters and
-                    'visionId' in parameters):
-                abort(406)
-            if not 'picture' in request.files:
-                abort(406)
+        Logger.debug("OK")
 
-            Logger.debug("OK")
+        file = request.files['picture']
+        userId = int(parameters['userId'])
+        visionId = int(parameters['visionId'])
+        user = User.getById(userId)
+        url = user.previewImage(file)
 
-            file = request.files['picture']
-            #user = User.getById(userInfo['id'])
-            userId = int(parameters['userId'])
-            visionId = int(parameters['visionId'])
-            user = User.getById(userId)
-            url = user.previewImage(file)
+        if user and url and userId > 0 and visionId > 0:
+            # We now have url to use for comment
+            text = parameters['text']
 
-            if url and userId > 0 and visionId > 0:
-                # We now have url to use for comment
-                text = parameters['text']
-
-                newComment, error_msg = user.pictureCommentOnVision(visionId,
-                                                                    text, url)
-                if newComment:
-                    data = { 'result'    : "success",
-                                'newComment' : newComment.toDictionary(
-                                    options=[VisionComment.Options.AUTHOR,
-                                            VisionComment.Options.LIKES],
-                                    user=user)
-                            }
-                    return jsonify(data)
-            data = { 'result' : "error",
-                     'error_msg' : error_msg }
-            return jsonify(data)
-        abort(403)
+            newComment, error_msg = user.pictureCommentOnVision(visionId,
+                                                                text, url)
+            if newComment:
+                data = { 'result'    : "success",
+                            'newComment' : newComment.toDictionary(
+                                options=[VisionComment.Options.AUTHOR,
+                                        VisionComment.Options.LIKES],
+                                user=user)
+                        }
+                return jsonify(data)
+        data = { 'result' : "error",
+                    'error_msg' : error_msg }
+        return jsonify(data)
     abort(405)
 
 @app.route('/api/vision/<int:visionId>/edit', methods=['POST'])
