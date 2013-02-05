@@ -123,14 +123,6 @@
 
     .LightShadow;
 
-    //The Picture
-    img 
-    {
-        //TODO: Change this to a fixed width for the picture
-        //Once we decide
-        width:@PICTURE_WIDTH;
-    }
-
     //The Text
     .text
     {
@@ -140,7 +132,12 @@
         line-height: @VISION_LINE_HEIGHT;
     }
 
-    .VisionPicture:hover {
+    //The Picture
+    img.VisionPicture {
+        display: block;
+        margin: 0px auto;
+    }
+    img.VisionPicture:hover {
         .CursorPointer;
     }
     img.Zoom:hover {
