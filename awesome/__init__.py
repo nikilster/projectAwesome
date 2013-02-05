@@ -93,7 +93,7 @@ else:
 S3_HTTPS_HEADER = 'https://s3.amazonaws.com/'
 
 S3_CONN = S3Connection()
-UPLOAD_SIZE_LIMIT = 5 * 1024 * 1024
+UPLOAD_SIZE_LIMIT = 10 * 1024 * 1024
 
 # Set flask max upload size limit
 # - If file is larger, flask will raise RequestEntityTooLarge exception
