@@ -817,8 +817,6 @@ def apiAddVisionPictureComment():
         if not 'picture' in request.files:
             abort(406)
 
-        Logger.debug("OK")
-
         file = request.files['picture']
         userId = int(parameters['userId'])
         visionId = int(parameters['visionId'])
@@ -835,7 +833,8 @@ def apiAddVisionPictureComment():
                 data = { 'result'    : "success",
                             'newComment' : newComment.toDictionary(
                                 options=[VisionComment.Options.AUTHOR,
-                                        VisionComment.Options.LIKES],
+                                         VisionComment.Options.PICTURE,
+                                         VisionComment.Options.LIKES],
                                 user=user)
                         }
                 return jsonify(data)

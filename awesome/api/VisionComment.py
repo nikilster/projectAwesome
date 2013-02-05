@@ -113,6 +113,12 @@ class VisionComment:
             if user:
                 obj[VisionComment.Key.LIKE][VisionComment.Key.USER_LIKE] = \
                                                             self.likedBy(user)
+        if VisionComment.Options.PICTURE in options:
+            if self.hasPicture():
+                from Picture import Picture
+                picture = Picture.getById(self.pictureId())
+                if picture:
+                    obj[VisionComment.Key.PICTURE] = picture.toDictionary()
         return obj
 
     #
