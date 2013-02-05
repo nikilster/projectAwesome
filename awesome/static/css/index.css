@@ -374,12 +374,9 @@ ol.LittleList li {
   height: 30px;
   float: left;
 }
-.Vision .VisionComment .PictureContainer {
-  text-align: center;
-}
-.Vision .VisionComment .PictureContainer .Picture {
+.Vision .VisionComment .Picture {
   padding: 5px 0px;
-  width: 215px;
+  width: 200px;
 }
 .Vision .VisionComment .VisionLikeInfo {
   font-size: 11px;
@@ -669,13 +666,10 @@ ol.LittleList li {
   width: 50px;
   height: 50px;
 }
-#Feed .Activity .Vision .PictureContainer {
-  text-align: center;
-}
-#Feed .Activity .Vision .PictureContainer .Picture {
+#Feed .Activity .Vision .Picture {
   position: static;
   padding: 5px 0px;
-  width: 215px;
+  width: 200px;
   height: auto;
 }
 #Feed .Activity .CommentBox {
@@ -1056,7 +1050,7 @@ div.modal {
 }
 #VisionDetailsModal .modal-body #VisionDetailsCommentsContainer,
 #VisionInformation .modal-body #VisionDetailsCommentsContainer {
-  max-height: 340px;
+  max-height: 500px;
   overflow: scroll;
   margin: 10px 0px;
 }
@@ -1089,14 +1083,10 @@ div.modal {
   line-height: 1.2;
   margin-bottom: 2px;
 }
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer,
-#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer {
-  text-align: center;
-}
-#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer .Picture,
-#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer .Picture {
-  padding: 5px 0px;
-  width: 275px;
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .Picture,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .Picture {
+  padding: 7px 0px;
+  width: 360px;
 }
 #VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentTime,
 #VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentTime {

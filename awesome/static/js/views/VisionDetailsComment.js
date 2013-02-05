@@ -12,7 +12,7 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
         var pictureVisibility = "Hidden";
         var picture = "";
         if (this.model.hasPicture()) {
-            picture = this.model.picture().mediumUrl();
+            picture = this.model.picture().largeUrl();
             pictureVisibility = "";
         }
 
