@@ -143,6 +143,7 @@ class Activity:
                                                 Vision.Options.USER,
                                                 Vision.Options.PARENT_USER,
                                                 Vision.Options.COMMENTS,
+                                                Vision.Options.COMMENT_PICTURES,
                                                 Vision.Options.LIKES,
                                                 Vision.Options.COMMENT_LIKES],
                                              user=user)
