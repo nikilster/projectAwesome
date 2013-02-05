@@ -432,16 +432,25 @@ App.Backbone.View.Page = Backbone.View.extend({
      */
     showInfoBar: function(onboarding) {
         if (onboarding) {
-            $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
-            $(EXPLANATION_DIV).show();
+            if (this.model.useTestVisionBoard()) {
+                $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).hide();
+            }
             //$(EXPLANATION_PADDING).show();
             $(INSTRUCTIONS_DIV).show();
             $(INSTRUCTIONS_PADDING).show();
+
+            if (this.model.pageMode() == App.Const.PageMode.HOME_GUEST) {
+                $(EXPLANATION_DIV).show();
+            } else {
+                $(EXPLANATION_DIV).hide();
+            }
         } else {
             $(EXPLANATION_DIV).hide();
             $(EXPLANATION_PADDING).hide();
             $(INSTRUCTIONS_DIV).hide();
-            $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).show();
+            if (this.model.useTestVisionBoard()) {
+                $(EXAMPLE_VISION_BOARD_INSTRUCTIONS).show();
+            }
             $(INSTRUCTIONS_PADDING).show();
         }
     },

@@ -228,10 +228,12 @@ App.Backbone.View.Vision = Backbone.View.extend({
         var pageMode = App.Var.Model.pageMode();
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
-            this.model.toggleSelected();
-            
-            //TODO: Why is this enter called?
-            this.mouseEnter();
+            if (App.Var.Model.useTestVisionBoard()) {
+                this.model.toggleSelected();
+                
+                //TODO: Why is this enter called?
+                this.mouseEnter();
+            }
         } else if (pageMode != App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             //App.Var.View.showVisionDetails(this.model);
             App.Var.Model.setCurrentVision(this.model);
@@ -268,7 +270,9 @@ App.Backbone.View.Vision = Backbone.View.extend({
         if (pageMode == App.Const.PageMode.HOME_GUEST ||
             (pageMode == App.Const.PageMode.USER_PROFILE && !userLoggedIn())) {
             if(!this.model.isSelected()) {
-                this.showElement(this.sel.ONBOARDING_ADD_VISION);  
+                if (App.Var.Model.useTestVisionBoard()) {
+                    this.showElement(this.sel.ONBOARDING_ADD_VISION);  
+                }
             }
         } else if (pageMode == App.Const.PageMode.EXAMPLE_VISION_BOARD) {
             // don't show anything

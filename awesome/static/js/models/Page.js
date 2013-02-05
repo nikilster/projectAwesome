@@ -18,6 +18,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         user: null,
         currentVision: null,
         activities: new App.Backbone.Model.ActivityList(),
+        useTestVisionBoard: false,
     },
     initialize: function() {
     },
@@ -43,6 +44,7 @@ App.Backbone.Model.Page = Backbone.Model.extend({
         }
         return null;
     },
+    useTestVisionBoard: function() { return this.get("useTestVisionBoard"); },
     numSelectedVisions: function() {
         return this.selectedVisions().length;
     },

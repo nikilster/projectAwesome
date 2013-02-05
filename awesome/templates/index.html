@@ -50,23 +50,19 @@
 {# ----------- Header Information ----------- #}
 {% block header_info %}
 
-    <!-- The Explanation -->
-    <!--
-    <div id="Explanation" class="Hidden" style="background:url('{{ url_for('static', filename='img/explanation.png') }}'); background-size:contain;">
-    </div>
-    -->
-
     <!-- Onboarding -->
     <div id="Instructions" class="well Hidden">
       <a href="{{ url_for('register') }}" id="RegularRegisterButton" class="btn btn-primary MainButton">
-        Or Sign Up
+        Sign Up
       </a>
 
       <div class="Tagline">
-        Create and share your personal <a href="{{ url_for('about') }}">vision board</a>.
+      Create and share your personal vision board.
       </div>
       <div class="InstructionsNote">
-        <span id="SelectedZero">Get started by adding 3 images of the life you want!</span>
+        <span id="SelectedZero">
+        Get motivated and inspire the world around you!
+        </span>
         <span id="SelectedOne" class="Hidden">
           <b>Good job!</b> Choose 2 more!
         </span>
@@ -115,6 +111,54 @@
 
     <div id="HomePagePadding" class="Hidden"></div>
     <div id="InstructionsPadding" class="Hidden"></div>
+
+    <!-- The Explanation -->
+    <div id="Explanation" class="Hidden">
+        <table>
+        <tr>
+          <td>
+            <div class="Large">Create</div>
+            <div class="Small">your life vision</div>
+          </td>
+          <td>
+            <div class="Large">Engage</div>
+            <div class="Small">with your dreams</div>
+          </td>
+          <td>
+            <div class="Large">Support</div>
+            <div class="Small">and be supported</div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img src="{{ s3_asset('img/explanation-create.png') }}"/>
+          </td>
+          <td>
+            <img src="{{ s3_asset('img/explanation-engage.png') }}"/>
+          </td>
+          <td>
+            <img src="{{ s3_asset('img/explanation-support.png') }}"/>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="Explanation">
+            Build a personal vision board for what matters in your life.
+            </div>
+          </td>
+          <td>
+            <div class="Explanation">
+            Share your thoughts and progress. Get daily motivational emails.
+            </div>
+          </td>
+          <td>
+            <div class="Explanation">
+            Join our community! Be awesome and help others be awesome.
+            </div>
+          </td>
+        </tr>
+        </table>
+    </div>
 
     <div id="UserInformation" class="Center Hidden"></div>
     <div id="Content" class="Center Hidden"></div>
