@@ -839,6 +839,16 @@ class DataApi:
                                 .first()
         return activity if activity != None else None
 
+    @staticmethod
+    def getRecentActivities():
+        from ..Activity import Activity
+        actions = [Activity.Action.COMMENT_ON_VISION,
+                   Activity.Action.ADD_VISION]
+        return ActivityModel.query \
+                            .filter(ActivityModel.action.in_(actions))\
+                            .order_by(ActivityModel.id.desc()) \
+                            .limit(300)
+
 
     #Get a random vision for the user
     #Returns a vision dictionary with an embedded picture dictionary

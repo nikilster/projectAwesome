@@ -315,7 +315,8 @@ def apiGetMainPageVisions():
             userInfo = SessionManager.getUser()
             user = User.getById(userInfo['id'])
 
-        mainPageVisions = VisionList.getMainPageVisions()
+        #mainPageVisions = VisionList.getMainPageVisions()
+        mainPageVisions = Activity.getRecentVisionActivity(user)
 
         data = { 'otherVisions' : mainPageVisions.toDictionary(
                                         options=[Vision.Options.PICTURE,

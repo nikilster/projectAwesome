@@ -65,6 +65,51 @@ class Activity:
     #
 
     @staticmethod
+    def getRecentVisionActivity(user):
+        '''Get list of visions we want to display from the recent activities'''
+
+        # Get list of potential visions
+        activities = DataApi.getRecentActivities()
+
+        commentIds = set([a.objectId for a in activities 
+                            if a.action == Activity.Action.COMMENT_ON_VISION])
+        commentModels = DataApi.getVisionCommentsById(commentIds)
+        idToComment = dict([(c.id, c) for c in commentModels])
+
+        visionIds = set([a.objectId for a in activities 
+                            if a.action == Activity.Action.ADD_VISION])
+        for c in commentModels:
+            visionIds.add(c.visionId)
+        visionModels = DataApi.getVisionsById(visionIds,
+                                              allowRemovedVisions=True)
+        idToVision = dict([(v.id, v) for v in visionModels])
+
+        # Now create ordered list without visions that have a duplicate
+        # root vision, and without private visions
+        rootIds = set()
+        orderedVisions = []
+        for a in activities:
+            vision = None
+            if a.action == Activity.Action.ADD_VISION:
+                if a.objectId in idToVision:
+                    vision = idToVision[a.objectId]
+            elif a.action == Activity.Action.COMMENT_ON_VISION:
+                if a.objectId in idToComment:
+                    comment = idToComment[a.objectId]
+                    if comment.visionId in idToVision:
+                        vision = idToVision[comment.visionId]
+            
+            if vision and \
+               vision.removed == False and\
+               (vision.privacy == VisionPrivacy.PUBLIC or\
+                (user != None and vision.userId == user.id())) and\
+               vision.rootId not in rootIds:
+                orderedVisions.append(vision)
+                rootIds.add(vision.rootId)
+        return VisionList(orderedVisions)
+
+
+    @staticmethod
     def getUserFeed(user):
         # Get set of all userIds to fetch activities from
         # This includes following ids, and own userId
