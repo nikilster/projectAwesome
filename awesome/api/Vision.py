@@ -203,14 +203,15 @@ class Vision:
             privacy = VisionPrivacy.PUBLIC
         return (DataApi.editVision(self.model(), text, privacy), "")
 
-    def addComment(self, user, text):
+    def addComment(self, user, text, pictureId=0):
         '''Return new comment, or None.
         
         Note: Assumes vision is already vetted to be written by user.'''
         if len(text.strip()) > 0:
             commentModel = DataApi.addVisionComment(self.model(),
                                                     user.model(),
-                                                    text)
+                                                    text,
+                                                    pictureId)
             if DataApi.NO_OBJECT_EXISTS == commentModel:
                 return None
             else:

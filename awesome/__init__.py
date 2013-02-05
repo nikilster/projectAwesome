@@ -37,7 +37,7 @@ Logger.info("PROD=" + str(app.config['PROD']) +
             "  DEBUG=" + str(app.config['DEBUG']) +
             "  LOCAL_DB=" + str(app.config['LOCAL_DB']))
 
-SITE_DOMAIN = "http://project-awesome.herokuapp.com"
+SITE_DOMAIN = "http://www.goprojectawesome.com"
 if app.config['PROD'] == False:
     SITE_DOMAIN = "http://127.0.0.1:5000"
 
@@ -48,10 +48,12 @@ def full_url_for(*args, **kwargs):
     '''Wrapper for url_for that prepends the domain to the path'''
     path = url_for(*args, **kwargs)
     return SITE_DOMAIN + path
-def s3_asset(filename):
+def s3_asset(name):
     '''Creates a URL to a file on S3'''
-    assert app.config['PROD'], "Should be in production mode"
-    return 'https://s3.amazonaws.com/project-awesome-static/gen/' + filename
+    if app.config['PROD']:
+        return 'https://s3.amazonaws.com/project-awesome-static/gen/' + name
+    else:
+        return url_for('static', filename=name)
 app.jinja_env.globals.update(full_url_for=full_url_for)
 app.jinja_env.globals.update(s3_asset=s3_asset)
 

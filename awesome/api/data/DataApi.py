@@ -724,11 +724,12 @@ class DataApi:
     # Vision Comment methods
     #
     @staticmethod
-    def addVisionComment(visionModel, authorModel, text):
+    def addVisionComment(visionModel, authorModel, text, pictureId=0):
         '''Returns new VisionCommentModel.'''
         assert visionModel, "Invalid vision model"
         assert authorModel, "Invalid user model"
         comment = VisionCommentModel(visionModel.id, authorModel.id, text)
+        comment.pictureId = pictureId
         DB.session.add(comment)
         DB.session.flush()
 

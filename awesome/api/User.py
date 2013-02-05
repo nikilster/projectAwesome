@@ -333,14 +333,14 @@ class User:
     # User actions
     #
 
-    def commentOnVision(self, visionId, text):
+    def commentOnVision(self, visionId, text, pictureId=0):
         '''Returns comment if successful, else returns None'''
         from ..WorkerJobs import Queue_commentEmail, \
                                  Queue_commentNotificationEmail
 
         vision = Vision.getById(visionId, self)
         if vision:
-            comment = vision.addComment(self, text)
+            comment = vision.addComment(self, text, pictureId)
             if comment:
                 # If comment is on someone else's vision, email them
                 if vision.userId() != self.id():
@@ -366,6 +366,23 @@ class User:
             return comment
         return None
 
+    def pictureCommentOnVision(self, visionId, text, url):
+        '''Add a comment with a picture'''
+        if url == "":
+            return [None, "No image"]
+        if len(text.strip()) <= 0:
+            return [None, "No text"]
+
+        pictureId, errorMsg = self._processAndUploadImageUrl(url, True)
+        if pictureId == None:
+            return [None, "Error saving picture"]
+
+            newComment = self.commentOnVision(visionId, text, pictureId)
+            if newComment:
+                return [newComment, ""]
+        return [None, "Error creating comment"]
+
+    
     #
     # Follow methods
     #
