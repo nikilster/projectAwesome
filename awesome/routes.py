@@ -810,9 +810,13 @@ def apiAddVisionPictureComment(visionId):
 
             parameters = request.form
             if not 'text' in parameters:
+                Logger.debug("NO TEXT")
                 abort(406)
             if not 'picture' in request.files:
+                Logger.debug("NO PICTURE")
                 abort(406)
+
+            Logger.debug("OK")
 
             file = request.files['picture']
             #user = User.getById(userInfo['id'])
@@ -833,7 +837,8 @@ def apiAddVisionPictureComment(visionId):
                                     user=user)
                             }
                     return jsonify(data)
-            data = { 'result' : "error" }
+            data = { 'result' : "error",
+                     'error_msg' : error_msg }
             return jsonify(data)
         abort(403)
     abort(405)
@@ -1108,5 +1113,14 @@ def test_email(emailType):
                 elif emailType == "welcome":
                     return notification.testWelcomeEmail(userInfo)
     return "Hello."
+
+@app.route('/test/pictureComment', methods=['GET'])
+def testPictureComment():
+    if request.method == 'GET':
+        userInfo = None
+        if SessionManager.userLoggedIn():
+            userInfo = SessionManager.getUser()
+        return render_template('testPictureComment.html', user=userInfo, config=app.config)
+    abort(405)
 
 # $eof

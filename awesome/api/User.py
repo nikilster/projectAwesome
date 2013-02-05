@@ -377,9 +377,9 @@ class User:
         if pictureId == None:
             return [None, "Error saving picture"]
 
-            newComment = self.commentOnVision(visionId, text, pictureId)
-            if newComment:
-                return [newComment, ""]
+        newComment = self.commentOnVision(visionId, text, pictureId)
+        if newComment:
+            return [newComment, ""]
         return [None, "Error creating comment"]
 
     

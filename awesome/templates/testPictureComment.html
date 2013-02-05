@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------------------------- #}
+{% block subtitle %}
+Test picture comment
+{% endblock %}
+
+{# 
+ #}
+{% block css %}
+
+    {% if config['PROD'] %}
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/base.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ s3_asset('css/about.min.css') }}"/>
+
+    {% else %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/about.css') }}"/>
+    {% endif %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_js %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block header_info %}
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block content %}
+<!-- Content -->
+<div class="CenterContent">
+	<form method="POST" action="/api/vision/71/add_picture_comment" enctype="multipart/form-data">
+		Text <input type="text" value="Test vision comment" name="text"/>
+        Picture <input type="file" name="picture"/>
+        Submit <input type="submit" name="submit"/>
+    </form>
+
+
+</div>
+{% endblock %}
+
+{# ------------------------------------------------------------------------- #}
+{% block js %}
+{% endblock %}
+
+{# $eof #}
