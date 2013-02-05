@@ -17,8 +17,14 @@ class Picture:
         ''' For dictionary use'''
         ID = 'id'
         LARGE_URL = "largeUrl"
+        LARGE_WIDTH = "largeWidth"
+        LARGE_HEIGHT = "largeHeight"
         MEDIUM_URL = "mediumUrl"
+        MEDIUM_WIDTH = "mediumWidth"
+        MEDIUM_HEIGHT = "mediumHeight"
         SMALL_URL = "smallUrl"
+        SMALL_WIDTH = "smallWidth"
+        SMALL_HEIGHT = "smallHeight"
 
 
     #
@@ -101,8 +107,14 @@ class Picture:
         '''For using to package up JSON.'''
         return { Picture.Key.ID         : self.id(),
                  Picture.Key.LARGE_URL  : self.largeUrl(),
+                 Picture.Key.LARGE_WIDTH : self.largeWidth(),
+                 Picture.Key.LARGE_HEIGHT : self.largeHeight(),
                  Picture.Key.MEDIUM_URL : self.mediumUrl(),
-                 Picture.Key.SMALL_URL  : self.smallUrl()
+                 Picture.Key.MEDIUM_WIDTH : self.mediumWidth(),
+                 Picture.Key.MEDIUM_HEIGHT : self.mediumHeight(),
+                 Picture.Key.SMALL_URL  : self.smallUrl(),
+                 Picture.Key.SMALL_WIDTH : self.smallWidth(),
+                 Picture.Key.SMALL_HEIGHT : self.smallHeight()
                }
 
     #

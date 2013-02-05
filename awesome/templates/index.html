@@ -413,7 +413,7 @@
 <script type="text/template" id="VisionTemplate">
 
 <!-- //Image -->
-<img class="VisionPicture <%= pictureClass %>"
+<img class="VisionPicture <%= pictureClass %>" style="height: <%= height %>px;"
      src="<%= pictureUrl %>" alt="<%= alt %>"/>
 
 <!-- //Description -->
@@ -483,7 +483,8 @@
         <%= name %>
     </a>
     <br>
-    <div class="Picture <%= pictureVisibility %>">
+    <div class="Picture <%= pictureVisibility %>"
+         style="height: <%= height %>px; overflow: hidden;">
         <img src="<%= picture %>"/>
     </div>
     <%= text %>

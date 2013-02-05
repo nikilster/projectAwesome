@@ -297,7 +297,9 @@ App.Backbone.View.Page = Backbone.View.extend({
         masonryContainer.masonry({
             itemSelector: VISION_CLASS_SELECTOR,
             isFitWidth: true,
-        }).imagesLoaded(function() {
+        })
+        .masonry('reload')
+        .imagesLoaded(function() {
             $(CONTENT_DIV).masonry('reload');
         });
         if (App.Var.Model.pageMode() == App.Const.PageMode.USER_PROFILE &&

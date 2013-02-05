@@ -377,6 +377,7 @@ ol.LittleList li {
 .Vision .VisionComment .Picture {
   padding: 5px 0px;
   width: 200px;
+  overflow: hidden;
 }
 .Vision .VisionComment .VisionLikeInfo {
   font-size: 11px;

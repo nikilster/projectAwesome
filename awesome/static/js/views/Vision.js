@@ -176,6 +176,7 @@ App.Backbone.View.Vision = Backbone.View.extend({
                          alt: alt,
                          pictureClass: pictureClass,
                          pictureUrl: pictureUrl,
+                         height: this.model.picture().mediumHeight(),
                          moveDisplay: moveDisplay,
                          removeDisplay: removeDisplay,
                          repostDisplay: repostDisplay,
