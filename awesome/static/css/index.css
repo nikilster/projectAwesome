@@ -342,7 +342,8 @@ ol.LittleList li {
   color: gray;
   z-index: 10;
 }
-.Vision .VisionUserName {
+.Vision .VisionUserName,
+.Vision .VisionParentUserName {
   font-weight: bold;
 }
 .Vision .MoreComments {
