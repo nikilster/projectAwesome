@@ -282,14 +282,17 @@ ol.LittleList li {
   font-size: 14px;
   line-height: 1.4;
 }
-.Vision img.VisionPicture {
+.Vision .VisionPictureContainer {
+  background-color: white;
+}
+.Vision .VisionPictureContainer img.VisionPicture {
   display: block;
   margin: 0px auto;
 }
-.Vision img.VisionPicture:hover {
+.Vision .VisionPictureContainer img.VisionPicture:hover {
   cursor: pointer;
 }
-.Vision img.Zoom:hover {
+.Vision .VisionPictureContainer img.Zoom:hover {
   cursor: -webkit-zoom-in;
   cursor: -moz-zoom-in;
 }
