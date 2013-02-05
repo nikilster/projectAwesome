@@ -208,7 +208,7 @@ class Vision:
         '''Return new comment, or None.
         
         Note: Assumes vision is already vetted to be written by user.'''
-        if len(text.strip()) > 0:
+        if len(text.strip()) > 0 or pictureId > 0:
             commentModel = DataApi.addVisionComment(self.model(),
                                                     user.model(),
                                                     text,

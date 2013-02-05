@@ -728,6 +728,7 @@ class DataApi:
         '''Returns new VisionCommentModel.'''
         assert visionModel, "Invalid vision model"
         assert authorModel, "Invalid user model"
+        assert len(text) > 0 or pictureId > 0, "Should have picture or text"
         comment = VisionCommentModel(visionModel.id, authorModel.id, text)
         comment.pictureId = pictureId
         DB.session.add(comment)

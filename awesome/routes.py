@@ -806,28 +806,30 @@ def apiAddVisionComment(visionId):
         abort(403)
     abort(405)
 
-@app.route('/api/vision/<int:visionId>/add_picture_comment', methods=['POST'])
-def apiAddVisionPictureComment(visionId):
+@app.route('/api/vision/add_picture_comment', methods=['POST'])
+def apiAddVisionPictureComment():
     if request.method == 'POST':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
 
             parameters = request.form
-            if not 'text' in parameters:
-                Logger.debug("NO TEXT")
+            if not ('text' in parameters and 
+                    'userId' in parameters and
+                    'visionId' in parameters):
                 abort(406)
             if not 'picture' in request.files:
-                Logger.debug("NO PICTURE")
                 abort(406)
 
             Logger.debug("OK")
 
             file = request.files['picture']
             #user = User.getById(userInfo['id'])
-            user = User.getById(3)
+            userId = int(parameters['userId'])
+            visionId = int(parameters['visionId'])
+            user = User.getById(userId)
             url = user.previewImage(file)
 
-            if url:
+            if url and userId > 0 and visionId > 0:
                 # We now have url to use for comment
                 text = parameters['text']
 

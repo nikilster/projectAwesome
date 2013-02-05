@@ -370,8 +370,6 @@ class User:
         '''Add a comment with a picture'''
         if url == "":
             return [None, "No image"]
-        if len(text.strip()) <= 0:
-            return [None, "No text"]
 
         pictureId, errorMsg = self._processAndUploadImageUrl(url, True)
         if pictureId == None:

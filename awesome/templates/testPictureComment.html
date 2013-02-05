@@ -31,7 +31,9 @@ Test picture comment
 {% block content %}
 <!-- Content -->
 <div class="CenterContent">
-	<form method="POST" action="/api/vision/39/add_picture_comment" enctype="multipart/form-data">
+	<form method="POST" action="/api/vision/add_picture_comment" enctype="multipart/form-data">
+		UserId <input type="text" value="1" name="userId"/>
+		VisionId <input type="text" value="" name="visionId"/>
 		Text <input type="text" value="Test vision comment" name="text"/>
         Picture <input type="file" name="picture"/>
         Submit <input type="submit" name="submit"/>
