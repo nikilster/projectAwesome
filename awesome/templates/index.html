@@ -478,21 +478,27 @@
 
 <!-- Vision Comments -->
 <script type="text/template" id="VisionCommentTemplate">
-    <img class="VisionCommentProfile" src="<%= picture %>"/>
+    <img class="VisionCommentProfile" src="<%= userPicture %>"/>
     <a class="VisionCommentUserLink" href="/user/<%= authorId %>">
         <%= name %>
     </a>
     <br>
+    <div class="PictureContainer <%= pictureVisibility %>">
+        <img class="Picture" src="<%= picture %>"/>
+    </div>
     <%= text %>
     <div class="VisionLikeInfo"></div>
 </script>
 
 <script type="text/template" id="VisionDetailsCommentTemplate">
-    <img class="VisionDetailsCommentProfile" src="<%= picture %>"/>
+    <img class="VisionDetailsCommentProfile" src="<%= userPicture %>"/>
     <a class="VisionDetailsCommentUserLink"
        href="/user/<%= authorId %>" <%= urlTarget %>>
         <%= name %>
     </a>
+    <div class="PictureContainer <%= pictureVisibility %>">
+        <img class="Picture" src="<%= picture %>"/>
+    </div>
     <div class="VisionDetailsCommentText">
         <%= text %>
     </div>

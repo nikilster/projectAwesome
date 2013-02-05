@@ -7,11 +7,13 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
         created: null,
         like: null,
         author: null,
+        picture: null,
     },
     initialize: function() {
         _.bindAll(this, "ajaxLikeSuccess", "ajaxLikeError");
 
         this.set({ author: new App.Backbone.Model.User(this.get("author")),
+                   picture: new App.Backbone.Model.Picture(this.get("picture")),
                    created: dateFromUTC(this.get("created")) });
 
         if (this.get("like") != null) {
@@ -26,6 +28,11 @@ App.Backbone.Model.VisionComment = Backbone.Model.extend({
     created: function() { return this.get("created"); },
     timeString: function() {
         return timeFromToday(this.created());
+    },
+    picture: function() { return this.get("picture"); },
+    hasPicture: function() {
+        return (this.picture() != null) &&
+               (this.picture().pictureId() > 0);
     },
 
     setLike: function(like, likeCount) {

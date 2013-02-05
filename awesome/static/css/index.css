@@ -374,6 +374,13 @@ ol.LittleList li {
   height: 30px;
   float: left;
 }
+.Vision .VisionComment .PictureContainer {
+  text-align: center;
+}
+.Vision .VisionComment .PictureContainer .Picture {
+  padding: 5px 0px;
+  width: 215px;
+}
 .Vision .VisionComment .VisionLikeInfo {
   font-size: 11px;
 }
@@ -1072,6 +1079,15 @@ div.modal {
   font-size: 12px;
   line-height: 1.2;
   margin-bottom: 2px;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer {
+  text-align: center;
+}
+#VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer .Picture,
+#VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .PictureContainer .Picture {
+  padding: 5px 0px;
+  width: 275px;
 }
 #VisionDetailsModal .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentTime,
 #VisionInformation .modal-body #VisionDetailsCommentsContainer .VisionDetailsComment .VisionDetailsCommentTime {

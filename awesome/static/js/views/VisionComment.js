@@ -14,10 +14,18 @@ App.Backbone.View.VisionComment = Backbone.View.extend({
         "click .VisionCommentUserLink" : "gotoUser",
     },
     render: function() {
+        var pictureVisibility = "Hidden";
+        var picture = "";
+        if (this.model.hasPicture()) {
+            picture = this.model.picture().mediumUrl();
+            pictureVisibility = "";
+        }
         var variables = { 'authorId' : this.model.authorId(),
                           'text': linkify(this.model.text()),
                           'name': this.model.author().fullName(),
-                          'picture': this.model.author().picture()}
+                          'userPicture': this.model.author().picture(),
+                          'pictureVisibility': pictureVisibility,
+                          'picture' : picture }
         var template = _.template($("#VisionCommentTemplate").html(),
                                   variables);
         $(this.el).html(template);

@@ -9,10 +9,19 @@ App.Backbone.View.VisionDetailsComment = Backbone.View.extend({
         this.render();
     },
     render: function() {
+        var pictureVisibility = "Hidden";
+        var picture = "";
+        if (this.model.hasPicture()) {
+            picture = this.model.picture().mediumUrl();
+            pictureVisibility = "";
+        }
+
         var variables = { 'authorId' : this.model.authorId(),
                           'text': linkify(this.model.text()),
                           'name': this.model.author().fullName(),
-                          'picture': this.model.author().picture(),
+                          'userPicture': this.model.author().picture(),
+                          'pictureVisibility': pictureVisibility,
+                          'picture' : picture,
                           'urlTarget': this.urlTarget,
                           'created' : this.model.timeString(), }
         var template = _.template($("#VisionDetailsCommentTemplate").html(),

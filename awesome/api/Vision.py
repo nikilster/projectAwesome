@@ -54,6 +54,7 @@ class Vision:
         # Only used in VisionList.toDictionary so far
         COMMENTS = 4
         COMMENT_LIKES = 5
+        COMMENT_PICTURES = 6
     
     #
     # Static methods to get a vision

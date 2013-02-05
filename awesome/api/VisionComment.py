@@ -18,6 +18,8 @@ class VisionComment:
         AUTHOR_ID = 'authorId'
         TEXT = 'text'
         CREATED = 'created'
+        # Included if Options.PICTURE is passed
+        PICTURE = 'picture'
         # These are included when Options.AUTHOR is passed
         AUTHOR = 'author'
         # Options.LIKES
@@ -29,6 +31,7 @@ class VisionComment:
     class Options:
         AUTHOR = 'author'
         LIKES = 'likes'
+        PICTURE = 'usePicture'
 
     #
     # Static methods to get Comment
@@ -68,6 +71,8 @@ class VisionComment:
         return self._model.removed
     def created(self):
         return self._model.created
+    def pictureId(self):
+        return self._model.pictureId
     def model(self):
         return self._model
 
@@ -81,6 +86,9 @@ class VisionComment:
     def vision(self, inquiringUser):
         from Vision import Vision
         return Vision.getById(self.visionId(), inquiringUser)
+
+    def hasPicture(self):
+        return self.pictureId() != None and self.pictureId() > 0
 
     def toDictionary(self, options=[], user=None):
         '''For packaging in JSON objects.

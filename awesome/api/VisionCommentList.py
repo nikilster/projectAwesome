@@ -47,6 +47,15 @@ class VisionCommentList:
         commentList = self._commentModels
 
         if self.length() > 0:
+            from Picture import Picture
+            idToPicture = dict()
+            if VisionComment.Options.PICTURE in options:
+                pictureIds = set([c.pictureId() for c in self.comments()])
+                pictureIds.discard(0)
+                pictures = Picture.getByIds(pictureIds)
+                idToPicture = dict([(picture.id(), picture)
+                                   for picture in pictures])
+
             if VisionComment.Options.AUTHOR in options:
                 authorIds = set([comment.authorId()
                                                 for comment in self.comments()])
@@ -79,6 +88,11 @@ class VisionCommentList:
                             obj[VisionComment.Key.LIKE]\
                                [VisionComment.Key.USER_LIKE] =\
                                                 comment.id in commentUserLikes
+                if VisionComment.Options.PICTURE in options:
+                    if comment.pictureId > 0 and \
+                       comment.pictureId in idToPicture:
+                        cp = idToPicture[comment.pictureId]
+                        obj[VisionComment.Key.PICTURE] = cp.toDictionary()
                 objs.append(obj)
         return objs
 

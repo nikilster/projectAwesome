@@ -322,6 +322,7 @@ def apiGetMainPageVisions():
                                                  Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS,
+                                                 Vision.Options.COMMENT_PICTURES,
                                                  Vision.Options.LIKES,
                                                  Vision.Options.COMMENT_LIKES],
                                         user=user),
@@ -354,6 +355,7 @@ def apiGetUserVisions(targetUserId):
                                                     Vision.Options.USER,
                                                     Vision.Options.PARENT_USER,
                                                     Vision.Options.COMMENTS,
+                                                    Vision.Options.COMMENT_PICTURES,
                                                     Vision.Options.LIKES,
                                                     Vision.Options.COMMENT_LIKES],
                                            user=user)
@@ -375,6 +377,7 @@ def apiGetUserVisions(targetUserId):
                                                  Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
                                                  Vision.Options.COMMENTS,
+                                                 Vision.Options.COMMENT_PICTURES,
                                                  Vision.Options.LIKES,
                                                  Vision.Options.COMMENT_LIKES],
                                         user=user)
@@ -763,6 +766,7 @@ def apiAddUserVision(userId):
                                         options=[Vision.Options.PICTURE,
                                                  Vision.Options.USER,
                                                  Vision.Options.PARENT_USER,
+                                                 Vision.Options.COMMENT_PICTURES,
                                                  Vision.Options.COMMENTS])[0] }
 
                 else:
@@ -923,7 +927,8 @@ def apiVisionComments(visionId):
             if comments:
                 commentObjs = comments.toDictionary(
                                         options=[VisionComment.Options.AUTHOR,
-                                                 VisionComment.Options.LIKES],
+                                                 VisionComment.Options.LIKES,
+                                                 VisionComment.Options.PICTURE],
                                         user=user)
 
             # package them up

@@ -133,14 +133,10 @@ class VisionList:
 
         retObj = []
 
-        # Get pictures and hash if we want them
+        # Start collecting picture ids
+        pictureIds = set()
         if Vision.Options.PICTURE in options:
             pictureIds = set([vision.pictureId() for vision in self.visions()])
-            pictureIds.discard(0)
-            pictures = Picture.getByIds(pictureIds)
-            idToPicture = dict([(picture.id(), picture)
-                                                      for picture in pictures])
-            idToPicture[0] = ""
 
         # Get parent users if we need them
         parentUserIds = set()
@@ -174,6 +170,9 @@ class VisionList:
                 else:
                     idToComments[comment.visionId()].append(comment)
 
+                if Vision.Options.COMMENT_PICTURES:
+                    if comment.hasPicture():
+                        pictureIds.add(comment.pictureId())
             authorIds = set([comment.authorId() 
                                         for comment in commentList.comments()])
             authors = User.getByUserIds(authorIds)
@@ -198,6 +197,15 @@ class VisionList:
                 userLikes = DataApi.getVisionIdsLikedByUser(visionIds,
                                                             user.id())
 
+        # Get pictures and hash them
+        if (Vision.Options.PICTURE in options) or \
+           (Vision.Options.COMMENT_PICTURES in options):
+            pictureIds.discard(0)
+            pictures = Picture.getByIds(pictureIds)
+            idToPicture = dict([(picture.id(), picture)
+                                                      for picture in pictures])
+            idToPicture[0] = ""
+
         # Now start building object list to return
         for vision in self.visions():
             obj = vision.toDictionary()
@@ -217,7 +225,6 @@ class VisionList:
                         commentObj = comment.toDictionary()
                         author = idToAuthor[comment.authorId()]
                         commentObj[VisionComment.Key.AUTHOR] = author.toDictionary()
-
                         if Vision.Options.COMMENT_LIKES in options:
                             commentObj[VisionComment.Key.LIKE] = {
                                             VisionComment.Key.LIKE_COUNT:
@@ -228,6 +235,12 @@ class VisionList:
                                 commentObj[VisionComment.Key.LIKE]\
                                           [VisionComment.Key.USER_LIKE] = \
                                             comment.id() in commentUserLikes
+                            if Vision.Options.COMMENT_PICTURES in options:
+                                if comment.hasPicture() and\
+                                   comment.pictureId() in idToPicture:
+                                    cp = idToPicture[comment.pictureId()]
+                                    commentObj[VisionComment.Key.PICTURE] =\
+                                                            cp.toDictionary()
                         obj[Vision.Key.COMMENTS].append(commentObj)
 
             # If PARENT_USER
