@@ -101,8 +101,7 @@ class Activity:
             
             if vision and \
                vision.removed == False and\
-               (vision.privacy == VisionPrivacy.PUBLIC or\
-                (user != None and vision.userId == user.id())) and\
+               vision.privacy == VisionPrivacy.PUBLIC and\
                vision.rootId not in rootIds:
                 orderedVisions.append(vision)
                 rootIds.add(vision.rootId)
