@@ -13,12 +13,13 @@ var DEBUG = false;
 var ONBOARDING_MODAL = "#OnboardingModal";
 var ONBOARDING_TITLE = "#OnboardingTitle";
 //Generalized button (so we can have different text)
-var ONBOARDING_STEPS = ["#OnboardingPage1", "#OnboardingPage2", "#OnboardingPage3"];
+var ONBOARDING_STEPS = ["#OnboardingPage1", "#OnboardingPage2", "#OnboardingPage3", "#OnboardingPage4"];
 var ONBOARDING_NEXT_BUTTON = "#OnboardingModal .modal-footer a.btn";
 var ONBOARDING_TITLES = ["Welcome to Project Awesome :)", 
                          "Creating Visions",
-                         "Sharing and Privacy"]
-var ONBOARDING_NEXT_TEXT = ["What's that?", "OK, got it.", "That's it. Let's go!"];
+                         "Sharing and Privacy",
+                         "Getting Started"]
+var ONBOARDING_NEXT_TEXT = ["What's that?", "OK, got it.", "Cool, thanks for respecting my privacy", "That's it. Let's go!"];
 
 var POSTMARKLET = "#postmarklet";
 

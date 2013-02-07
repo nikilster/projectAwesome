@@ -37,6 +37,10 @@ def index():
             return render_template('index.html', user=None, config=app.config)
     abort(405)
 
+@app.route('/welcome', methods=['GET']) # For onboarding
+def welcome():
+    return index()
+
 @app.route('/view_board', methods=['GET'])
 def view_board():
     return redirect(url_for('index'))
@@ -52,12 +56,7 @@ def recent():
     abort(405)
 
 @app.route('/user/<int:userId>', methods=['GET'])
-@app.route('/user/<int:userId>/<int:pageOption>') #Page option is used to show the onboarding (= 1)
-def user_profile(userId, pageOption = 0):
-    
-    #userId and the pageOption are set in the backbone router 
-    #Just used for routing here (not as values)
-
+def user_profile(userId):
     if request.method == 'GET':
         if SessionManager.userLoggedIn():
             userInfo = SessionManager.getUser()
@@ -287,7 +286,7 @@ def register_user():
                 #                                       str(selectedVisionIds));
                 user.repostVisionList(selectedVisionIds)
                 SessionManager.removeSelectedVisions()
-            return redirect(url_for('user_profile', userId=user.id(), pageOption=1))
+            return redirect(url_for('welcome'))
         else:
             assert errorMsg != "", "Error message should exist"
             flash(errorMsg, RegisterError.TAG)

@@ -7,7 +7,7 @@ App.Backbone.Router = Backbone.Router.extend({
     "recent"                    : "recent",
     "view_board"                : "viewBoard",
     "user/:userId"              : "profile",
-    "user/:userId/:pageOption"  : "profileWithOption",
+    "welcome"                   : "welcome",
     "vision/:visionId"          : "vision",
     "*action"                   : "home",
   },
@@ -42,12 +42,10 @@ App.Backbone.Router = Backbone.Router.extend({
   },
   
 
-  profileWithOption: function(userId, pageOption) {
-    
+  welcome: function() {
     //Set Profile
-    this.profile(userId);
-    App.Var.Model.setOption(pageOption);
-    
+    this.home();
+    App.Var.Model.setOption(App.Const.Options.ONBOARDING);
   },
   
   vision: function(visionId) {
